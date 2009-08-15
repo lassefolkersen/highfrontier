@@ -1,0 +1,746 @@
+<collection>
+	<subject>
+		<title>iron mining</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<input>power</input>
+			<output>iron</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>-1</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		
+		<co_descriptors>
+			<connecting_word>mining</connecting_word>
+			<connecting_word>drilling</connecting_word>
+			<connecting_word>surveying</connecting_word>
+			<connecting_word>prospecting</connecting_word>
+			<connecting_word>digging</connecting_word>
+			<adjective>iron-homing</adjective>
+			<adjective>deep</adjective>
+			<adjective>hyper</adjective>
+			<adjective>electronic</adjective>
+			<adjective>EMP-based</adjective>
+			<adjective>sonar-based</adjective>
+			<adjective>pulse-wave</adjective>
+			<adjective>advanced</adjective>
+			<noun>equipment</noun>
+			<noun>machinery</noun>
+			<noun>doctrine</noun>
+			<noun>methods</noun>
+			<noun>procedures</noun>
+			<noun>platforms</noun>
+		</co_descriptors>
+		<crossover_dict>
+		</crossover_dict>
+	</subject>
+
+	<subject>
+		<title>nuclear fuel mining</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>nuclear fuel</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>-1</b_value>
+			<c_value>50</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>uranium</connecting_word>
+			<connecting_word>plutonium</connecting_word>
+			<connecting_word>heavy-water</connecting_word>
+			<connecting_word>radiation</connecting_word>
+			<adjective>radar based</adjective>
+			<adjective>deep field</adjective>
+			<adjective>geological</adjective>
+			<adjective>neo-geiger</adjective>
+			<noun>scanning</noun>
+			<noun>prospecting</noun>
+			<noun>drilling</noun>
+			<noun>machinery</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>iron mining</crossover_target>
+				<crossover_weight>50</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+
+	<subject>
+		<title>fossil fuel mining</title>
+		<productivity_multiplier>4</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>fossil fuel</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>-1</b_value>
+			<c_value>200</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>mining</connecting_word>
+			<connecting_word>drilling</connecting_word>
+			<connecting_word>surveying</connecting_word>
+			<connecting_word>prospecting</connecting_word>
+			<connecting_word>digging</connecting_word>
+			<adjective>coal-extracting</adjective>
+			<adjective>oil field</adjective>
+			<adjective>deep</adjective>
+			<adjective>hyper</adjective>
+			<adjective>electronic</adjective>
+			<adjective>EMP-based</adjective>
+			<adjective>sonar-based</adjective>
+			<adjective>pulse-wave</adjective>
+			<adjective>advanced</adjective>
+			<noun>equipment</noun>
+			<noun>machinery</noun>
+			<noun>doctrine</noun>
+			<noun>methods</noun>
+			<noun>procedures</noun>
+			<noun>platforms</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>iron mining</crossover_target>
+				<crossover_weight>30</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+	<subject>
+		<title>ground transport</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<input>power</input>
+			<output>ground transport</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>hovering</connecting_word>
+			<connecting_word>pulsating</connecting_word>
+			<connecting_word>gyrating</connecting_word>
+			<connecting_word>gyrating</connecting_word>
+			<connecting_word>transportation</connecting_word>
+			<connecting_word>non-stop</connecting_word>
+			<connecting_word>transit</connecting_word>
+			<adjective>advanced</adjective>
+			<adjective>fast</adjective>
+			<adjective>mag-lev</adjective>
+			<adjective>low friction</adjective>
+			<adjective>vacuum</adjective>
+			<adjective>swift</adjective>
+			<adjective>efficient</adjective>
+			<adjective>high-speed</adjective>
+			<noun>trains</noun>
+			<noun>engines</noun>
+			<noun>combustion</noun>
+			<noun>cars</noun>
+			<noun>lubrication</noun>
+			<noun>machines</noun>
+			<noun>tubes</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>space transport</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+	<subject>
+		<title>space transport</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>space transport</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>propulsion</connecting_word>
+			<connecting_word>insertation</connecting_word>
+			<connecting_word>transfer</connecting_word>
+			<connecting_word>transportation</connecting_word>
+			<adjective>bulk</adjective>
+			<adjective>advanced</adjective>
+			<adjective>orbital</adjective>
+			<adjective>electronic</adjective>
+			<adjective>fast</adjective>
+			<adjective>high-speed</adjective>
+			<adjective>solar powered</adjective>
+			<adjective>fission powered</adjective>
+			<adjective>bose-einstein</adjective>
+			<noun>plane</noun>
+			<noun>drive</noun>
+			<noun>reaction theory</noun>
+			<noun>shuttle</noun>
+			<noun>ship</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>ground transport</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+
+	<subject>
+		<title>steel processing</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>iron</input>
+			<input>power</input>
+			<input>labor</input>
+			<output>steel</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>retro-fitting</connecting_word>
+			<connecting_word>melting</connecting_word>
+			<connecting_word>conversion</connecting_word>
+			<connecting_word>casting</connecting_word>
+			<connecting_word>processing</connecting_word>
+			<adjective>fast</adjective>
+			<adjective>antimatter</adjective>
+			<adjective>hyper</adjective>
+			<adjective>advanced</adjective>
+			<adjective>high-energy</adjective>
+			<adjective>metallurgic</adjective>
+			<noun>factory</noun>
+			<noun>machinery</noun>
+			<noun>tools</noun>
+			<noun>plant</noun>
+			<noun>methods</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>iron mining</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+			<crossover>
+				<crossover_target>fossil fuel mining</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+			
+		</crossover_dict>
+	</subject>
+	
+	<subject>
+		<title>electronics manufacturing</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>steel</input>
+			<input>power</input>
+			<input>labor</input>
+			<output>electronics</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>binary</connecting_word>
+			<connecting_word>diode</connecting_word>
+			<connecting_word>anode</connecting_word>
+			<connecting_word>embedded</connecting_word>
+			<connecting_word>fuzzy</connecting_word>
+			<connecting_word>I/O</connecting_word>
+			<adjective>retro-analog</adjective>
+			<adjective>micro</adjective>
+			<adjective>nano</adjective>
+			<adjective>femto</adjective>
+			<adjective>advanced</adjective>
+			<adjective>heuristic</adjective>
+			<adjective>robust</adjective>
+			<adjective>low-cost</adjective>
+			<noun>logic gates</noun>
+			<noun>multiplexers</noun>
+			<noun>flip-flops</noun>
+			<noun>schmitt triggers</noun>
+			<noun>multipliers</noun>
+			<noun>controllers</noun>
+			<noun>registers</noun>
+			<noun>processors</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>consumer goods manufacturing</crossover_target>
+				<crossover_weight>30</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+	
+	<subject>
+		<title>consumer goods manufacturing</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>steel</input>
+			<input>power</input>
+			<input>labor</input>
+			<input>electronics</input>
+			<output>consumer goods</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>appliance</connecting_word>
+			<connecting_word>communications</connecting_word>
+			<connecting_word>electronics</connecting_word>
+			<connecting_word>efficiency</connecting_word>
+			<connecting_word>market</connecting_word>
+			<adjective>lean</adjective>
+			<adjective>just-in-time</adjective>
+			<adjective>flexible</adjective>
+			<adjective>advanced</adjective>
+			<adjective>miniature</adjective>
+			<adjective>robust</adjective>
+			<adjective>low-cost</adjective>
+			<noun>processes</noun>
+			<noun>machinery</noun>
+			<noun>methods</noun>
+			<noun>analysis</noun>
+			<noun>factories</noun>
+			<noun>manufacturing</noun>
+			<noun>customization</noun>
+			<noun>systems</noun>
+			
+		</co_descriptors>
+		<crossover_dict>
+		</crossover_dict>
+	</subject>
+	
+	<subject>
+		<title>regular house provision</title>
+		<productivity_multiplier>10</productivity_multiplier>
+		<abstract_process_dict>
+			<input>steel</input>
+			<input>power</input>
+			<input>labor</input>
+			<output>housing</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>construction</connecting_word>
+			<connecting_word>living</connecting_word>
+			<connecting_word>modular</connecting_word>
+			<adjective>exotic material</adjective>
+			<adjective>nano-molecular</adjective>
+			<adjective>organized</adjective>
+			<adjective>public</adjective>
+			<adjective>private</adjective>
+			<adjective>enterprise level</adjective>
+			<noun>housing</noun>
+			<noun>managment</noun>
+			<noun>engineering</noun>
+			<noun>residential areas</noun>
+			<noun>grid distribution</noun>
+			<noun>recycling</noun>
+			<noun>condominiums</noun>
+			<noun>archelogies</noun>
+			<noun>project planning</noun>
+			
+		</co_descriptors>
+		<crossover_dict>
+				<crossover_target>regular house provision</crossover_target>
+				<crossover_weight>30</crossover_weight>
+		</crossover_dict>
+	</subject>
+	
+	<subject>
+		<title>space house provision</title>
+		<productivity_multiplier>10</productivity_multiplier>
+		<abstract_process_dict>
+			<input>steel</input>
+			<input>labor</input>
+			<input>power</input>
+			<input>oxygen</input>
+			<input>nitrogen</input>
+			<output>housing</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>radiation proof</connecting_word>
+			<connecting_word>segmented</connecting_word>
+			<connecting_word>fault proof</connecting_word>
+			<connecting_word>modular</connecting_word>
+			<adjective>domed</adjective>
+			<adjective>secure</adjective>
+			<adjective>regular</adjective>
+			<adjective>experimental</adjective>
+			<adjective>closed-circuit</adjective>
+			<adjective>protective</adjective>
+			<noun>spheres</noun>
+			<noun>housing</noun>
+			<noun>air locks</noun>
+			<noun>homes</noun>
+			<noun>habitats</noun>
+			<noun>condominiums</noun>
+			<noun>re-breathing systems</noun>
+			<noun>connections</noun>
+			<noun>hubs</noun>
+			<noun>archelogies</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>regular house provision</crossover_target>
+				<crossover_weight>30</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+	
+	<subject>
+		<title>nuclear power</title>
+		<productivity_multiplier>4</productivity_multiplier>
+		<abstract_process_dict>
+			<input>nuclear fuel</input>
+			<input>labor</input>
+			<output>power</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>energizing</connecting_word>
+			<connecting_word>power</connecting_word>
+			<connecting_word>fission</connecting_word>
+			<connecting_word>breeding</connecting_word>
+			<connecting_word>bolshoy</connecting_word>
+			<connecting_word>moshchnosti</connecting_word>
+			<connecting_word>KAMINI</connecting_word>
+			<adjective>non-radioactive</adjective>
+			<adjective>fuel cycle-conserving</adjective>
+			<adjective>supercritical</adjective>
+			<adjective>heavy water</adjective>
+			<adjective>sodium-cooled</adjective>
+			<adjective>high level</adjective>
+			<adjective>thermal</adjective>
+			<adjective>neutron</adjective>
+			<noun>devices</noun>
+			<noun>reactors</noun>
+			<noun>plants</noun>
+			<noun>generators</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>solar energy</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+
+
+
+
+	<subject>
+		<title>solar energy</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>power</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>wave-converting</connecting_word>
+			<connecting_word>copper-indium</connecting_word>
+			<connecting_word>gallium arsenide</connecting_word>
+			<connecting_word>multijunction</connecting_word>
+			<connecting_word>polymer</connecting_word>
+			<connecting_word>organic</connecting_word>
+			<adjective>solar</adjective>
+			<adjective>ecological</adjective>
+			<adjective>IR-ray</adjective>
+			<adjective>amplitudal</adjective>
+			<adjective>photovoltaic</adjective>
+			<adjective>nanocrystaline</adjective>
+			<adjective>metamorphic</adjective>
+			<noun>plates</noun>
+			<noun>devices</noun>
+			<noun>cells</noun>
+			<noun>arrays</noun>
+			<noun>parks</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>nuclear power</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>	
+
+
+
+	<subject>
+		<title>terraforming</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>oxygen</input>
+			<input>nitrogen</input>
+			<input>power</input>
+			<input>labor</input>
+			<output>terraforming</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0.1</b_value>
+			<c_value>-20.1</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>emission</connecting_word>
+			<connecting_word>metamorphosis</connecting_word>
+			<connecting_word>space-based</connecting_word>
+			<connecting_word>athmospheric</connecting_word>
+			<connecting_word>gaia</connecting_word>
+			<connecting_word>DNA</connecting_word>
+			<adjective>carbon dioxide</adjective>
+			<adjective>oxygen</adjective>
+			<adjective>bacterial</adjective>
+			<adjective>femto-chemical</adjective>
+			<adjective>self-replicating</adjective>
+			<adjective>ecological</adjective>
+			<adjective>world-wide</adjective>
+			<adjective>feedback-controlled</adjective>
+			<noun>engineering</noun>
+			<noun>theory</noun>
+			<noun>controller</noun>
+			<noun>physics</noun>
+			<noun>techniques</noun>
+			<noun>controllers</noun>
+			<noun>enhancers</noun>
+			<noun>modulators</noun>
+			
+		</co_descriptors>
+		<crossover_dict>
+
+		</crossover_dict>
+	</subject>
+
+
+
+
+	<subject>
+		<title>fossil fuel power</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>fossil fuel</input>
+			<input>labor</input>
+			<output>power</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>-0.50</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>oil</connecting_word>
+			<connecting_word>hydrocarbon</connecting_word>
+			<connecting_word>carbon</connecting_word>
+			<connecting_word>coal</connecting_word>
+			<connecting_word>fossil fuel</connecting_word>
+			<connecting_word>crude</connecting_word>
+			<connecting_word>high molecular weight</connecting_word>
+			<connecting_word>emission</connecting_word>
+			<connecting_word>CO2</connecting_word>
+			<adjective>critical point</adjective>
+			<adjective>plasma</adjective>
+			<adjective>liquified</adjective>
+			<adjective>high-pressure</adjective>
+			<adjective>sequestrating</adjective>
+			<adjective>full cycle</adjective>
+			<adjective>scrubbing</adjective>
+			<adjective>blast</adjective>
+			<adjective>long-chain</adjective>
+			<adjective>knock-down</adjective>
+			<adjective>ultra high-pressure</adjective>
+			<adjective>fast injection</adjective>
+			<adjective>pentamer</adjective>
+			<noun>generators</noun>
+			<noun>machinery</noun>
+			<noun>hydraulics</noun>
+			<noun>refineries</noun>
+			<noun>distribution</noun>
+			<noun>turbines</noun>
+			<noun>furnaces</noun>
+			<noun>ovens</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>nuclear power</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+
+	<subject>
+		<title>food production</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>food</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>nano-technological</connecting_word>
+			<connecting_word>re-growth</connecting_word>
+			<connecting_word>breeding</connecting_word>
+			<connecting_word>robotic</connecting_word>
+			<connecting_word>self-harvesting</connecting_word>
+			<connecting_word>drought-resistant</connecting_word>
+			<adjective>genetic</adjective>
+			<adjective>green</adjective>
+			<adjective>spliced</adjective>
+			<adjective>ecological</adjective>
+			<adjective>yield-enhanced</adjective>
+			<adjective>hybrid</adjective>
+			<adjective>self-pollinating</adjective>
+			<adjective>continous cycle</adjective>
+			<adjective>hydroponic</adjective>
+			<adjective>biodynamic</adjective>
+			<noun>grains</noun>
+			<noun>fertilizer</noun>
+			<noun>farming</noun>
+			<noun>methods</noun>
+			<noun>crops</noun>
+		</co_descriptors>
+		<crossover_dict>
+			<crossover>
+				<crossover_target>terraforming</crossover_target>
+				<crossover_weight>10</crossover_weight>
+			</crossover>
+		</crossover_dict>
+	</subject>
+
+
+
+
+
+
+	<subject>
+		<title>education</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>education</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>-1.6</a_value>
+			<b_value>0</b_value>
+			<c_value>100</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>technology</connecting_word>
+			<connecting_word>science</connecting_word>
+			<connecting_word>mind</connecting_word>
+			<adjective>online</adjective>
+			<adjective>self-aware</adjective>
+			<adjective>progressive</adjective>
+			<noun>schools</noun>
+			<noun>campus</noun>
+			<noun>centers</noun>
+		</co_descriptors>
+		<crossover_dict>
+		</crossover_dict>
+	</subject>
+
+
+
+	<subject>
+		<title>health care</title>
+		<productivity_multiplier>1</productivity_multiplier>
+		<abstract_process_dict>
+			<input>labor</input>
+			<output>health care</output>
+		</abstract_process_dict>
+		<!-- The importance function is defined as y = x^2 * a + x * b + c, where x takes the value 0 at global_variables.starting_data -->
+		<importance_function>
+			<a_value>0</a_value>
+			<b_value>0</b_value>
+			<c_value>50</c_value>
+		</importance_function>
+		<co_descriptors>
+			<connecting_word>organic</connecting_word>
+			<connecting_word>science</connecting_word>
+			<connecting_word>personalized</connecting_word>
+			<connecting_word>immersive</connecting_word>
+			<adjective>automated</adjective>
+			<adjective>algorithmical</adjective>
+			<adjective>genetic</adjective>
+			<adjective>genome-wide</adjective>
+			<adjective>neo-holistic</adjective>
+			<adjective>bio-regenerative</adjective>
+			<noun>hospitals</noun>
+			<noun>diagnostics</noun>
+			<noun>centers</noun>
+			<noun>programmes</noun>
+			<noun>preventive care</noun>
+		</co_descriptors>
+		<crossover_dict>
+		</crossover_dict>
+	</subject>
+
+
+	
+</collection>
+
+
+

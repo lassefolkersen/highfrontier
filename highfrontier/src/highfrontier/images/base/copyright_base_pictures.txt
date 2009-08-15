@@ -1,0 +1,88 @@
+filename	source	licence
+greenhousecolony.jpg	NASA (www.space.gc.ca/asc/img/mars_base.jpg)	NASA
+marscartooncolony.jpg	NASA (http://www.nasa.gov/centers/glenn/images/content/101885main_C91_08781_516x387.jpg)	NASA
+mars-base-by-don-dixon.jpg	http://reneeashleybaker.files.wordpress.com/2007/09/mars-base-by-don-dixon.jpg	Unknown
+neptuneview6.jpg	www.hudsonfla.com/	unknown
+earthview9.jpg	www.hudsonfla.com/	unknown
+marsview5.jpg	www.hudsonfla.com/	unknown
+earthview7.jpg	www.hudsonfla.com/	unknown
+earthview6.jpg	www.hudsonfla.com/	unknown
+earthview.jpg	www.hudsonfla.com/	unknown
+earthview5.jpg	www.hudsonfla.com/	unknown
+marsbase8.jpg	http://www.memagazine.org/feb07/departments/letters/8.jpg unknown
+12_baseconstruct_0.jpg	http://www.memagazine.org/feb07/departments/letters/8.jpg unknown
+13_basegreenhs_0.jpg	http://www.memagazine.org/feb07/departments/letters/8.jpg unknown
+
+All earth-city pictures are from wikipedia
+acapulco.JPG	Wikipedia Mitrush	cc-by-sa-2.0
+accra.jpg	wikipedia	public domain
+agra.jpg	Flickr micbaun	cc-by-2.0
+baghdad.jpg	wikipedia	public domain
+berlin.jpg	wikipedia	public domain
+istanbul.jpg	wikipedia	public domain
+jerusalem.jpg	Wikipedia Wayne McLean	cc-by-sa-2.0
+kiev.jpg	Wikipedia Irpen	by
+medina.jpg	Wikipedia Ali Imran	cc-by-sa-2.0
+moscow.jpg	Wikipedia http://fotki.azovtsev.com	cc-by-sa-2.0
+paris.jpg	Wikipedia Rosss	GNU Free Documentation License
+sydney.jpg	Wikipedia Matthew Field http://www.photography.mattfield.com	cc-by-2.5
+washington.jpg
+
+albuquerque.jpg	Wikipedia Ron Reiring	cc-by-2.0
+durban.jpg	Wikipedia PhilippN	GNU Free Documentation License
+frankfurt.jpg	Wikipedia rupp.de	GNU Free Documentation License
+glasgow.jpg	Wikipedia John Lindie	cc-by-2.0
+göteborg.jpg	Wikipedia	Public Domain
+houston.jpg	Wikipedia	Public Domain
+khartoum.jpg	Wikipedia Scuba Beer	cc-by-2.0
+kinshasa.jpg	Wikipedia	Public Domain
+københavn.jpg	Wikipedia	Public Domain
+muqdisho.jpg	Wikipedia CT Snow	cc-by-2.0
+nashville.jpg	Wikipedia	Public Domain
+oslo.jpg	Wikipedia Pudelek (Marcin Szala)	GNU Free Documentation License
+ottawa.jpg	Wikipedia	Public Domain
+peking.jpg	Wikipedia Mfrk	cc-sa-by-3.0
+pretoria.jpg	Wikipedia Complex01	GNU Free Documentation License
+quebec.jpg	Wikipedia Adam2288	GNU Free Documentation License
+santa fe.jpg	Wikipedia Camerafiend	GNU Free Documentation License
+stockholm.jpg	Wikipedia Oke	GNU Free Documentation License
+tucson.jpg	Wikipedia	Public Domain
+
+barcelona.jpg Wikipedia Sergi Larripa	GNU Free Documentation License
+brasilia.jpg	Wikipedia AnneMarie	cc-by-3.0
+cape town.jpg	Wikipedia Andres de Wet	GNU Free Documentation License
+dresden.jpg	Wikipedia Henry Mühlpfordt	GNU Free Documentation License
+el paso.jpg	Wikipedia	Public Domain
+ho chi minh city.jpg	Wikipedia Hanukikanker	GNU Free Documentation License
+madrid.jpg	Wikipedia Teo X	cc-by-sa-2.0
+nairobi.jpg	Wikipedia Mkimemia	GNU Free Documentation License
+osaka.jpg	Wikipedia Public Domain
+san diego.jpg	Wikipedia Wouter	cc-by-2.0
+sao paulo.jpg	Wikipedia Tatiana Sapateiro	cc-by-2.0
+
+atlanta.jpg		Wikipedia Public Domain
+bombay.jpg	Wikipedia Jasvipul Chawla	cc-by-sa-2.0
+dallas.jpg	Wikipedia fcn80	cc-by-sa-2.0
+düsseldorf.jpg	Wikipedia Rainer Driesen	GNU Free Documentation License
+kuala lumpur.jpg	Wikipedia Erin Silversmith	cc-by-sa-2.0
+mexico city.jpg	Wikipedia Public Domain
+new york.jpg	Wikipedia Jleon 	GNU Free Documentation License
+seoul.jpg	Wikipedia Patriotmissile	GNU Free Documentation License
+
+
+
+PaternosterSquare.jpg	Wikipedia Public Domain
+BSE.jpg	Wikipedia anappaiah	cc-by-sa-2.0
+Zuerich_Boerse.jpg	Wikipedia Ikiwaner	GNU Free Documentation License
+starbucksHQ.jpg	Flickr cromely	cc-by-sa-2.0
+Herbalife HQ.jpg	Flickr andrew collins	cc-by-sa-2.0
+423566814_23047e32b0.jpg	Flickr turbojoe	cc-by-sa-2.0
+HumanaHQ.jpg	Flickr merfam	cc-by-sa-2.0
+InterActiveCorpHG.jpg	Flickr wallyg	cc-by-sa-2.0
+KelloggWorldHQ.jpg	Flickr battlecreekcvb	cc-by-sa-2.0
+TokyoPlace.jpg	Flickr MarianOne		cc-by-sa-2.0
+wallstreet.jpg	Flickr wallyg	cc-by-sa-2.0
+OracleHQ.jpg	Flickr RaghuP	cc-by-sa-2.0
+GlassTowerFrankfurt.jpg	Flickr WireLizard	cc-by-sa-2.0
+
+
