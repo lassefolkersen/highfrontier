@@ -24,7 +24,7 @@ import time
 
 class Intro_gui():
     """
-    The class that holds everything on introdction, starting with the introduction sequence
+    The class that holds everything on introduction, starting with the introduction sequence
     """
     
     def __init__(self):
@@ -461,7 +461,7 @@ class Intro_gui():
         if all_ok:
             self.company_capital = int(company_capital)
             #print "starting new game with " + str(self.company_name) + " and " + str(self.company_capital)
-            main.start_loop(company_name = str(self.company_name), company_capital = self.company_capital, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
+            main.start_loop(company_name = str(self.company_name), company_capital = self.company_capital, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
 
             
             
@@ -470,4 +470,5 @@ class Intro_gui():
 
             
 main.start_loop(company_name = "Player1", company_capital = 1000000, load_previous_game = None)
+
 #intro_gui = Intro_gui()
