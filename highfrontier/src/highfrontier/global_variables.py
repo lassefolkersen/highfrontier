@@ -3,6 +3,7 @@ import datetime
 import pygame
 import time
 import market_decisions
+import os
 pygame.font.init()
 
 # variables that are "meta-gamespecific" ie. that should not follow a savegame
@@ -13,11 +14,12 @@ max_number_of_companies = 500 #hard upper limit on companies
 persons_per_company = 1200000   #upper limit on the number of companies relative to the number of people in the universe
 max_transactions_tracked = 100 #the max number of tracked transaction in a market.
 max_letters_in_company_names = 32
-standard_font = pygame.font.SysFont(pygame.font.get_default_font(), 14, bold=False, italic=False) #some fonts
-courier_font = pygame.font.SysFont("courier", 11, bold=False, italic=False) #some fonts
-courier_font_bold = pygame.font.SysFont("courier", 11, bold=True, italic=False) #some fonts
-standard_font_small= pygame.font.Font(pygame.font.get_default_font(),10)
-standard_font_small_bold = pygame.font.Font(pygame.font.get_default_font(),10)
+
+courier_font = pygame.font.SysFont("monospace", 11, bold=False, italic=False) #some fonts
+courier_font_bold = pygame.font.SysFont("monospace", 11, bold=True, italic=False) #some fonts
+standard_font = pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"), 14, bold=False, italic=False) #some fonts
+standard_font_small= pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"),10)
+standard_font_small_bold = pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"),10)
 standard_font_small_bold.set_bold(True)
 max_stepback_history_size = 10 # how many steps back we can use the "back" key
 

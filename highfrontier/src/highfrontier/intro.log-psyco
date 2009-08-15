@@ -1,6 +1,231 @@
-13:00:35.30  Logging started, 08/15/09                  %%%%%%%%%%%%%%%%%%%%
-13:00:35.30  ActivePassiveProfiler: starting                           %%%%%
-13:00:35.33   ______
+14:12:27.79  Logging started, 08/15/09                  %%%%%%%%%%%%%%%%%%%%
+14:12:27.79  ActivePassiveProfiler: starting                           %%%%%
+14:12:27.87   ______
         #1   |99.7 %|  active_start              ...psyco\profiler.py:273
-13:00:35.33  memory usage: 0+ kb                                           %
-13:00:35.33  program exit, 08/15/09                     %%%%%%%%%%%%%%%%%%%%
+14:12:28.13   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:12:28.29   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:12:28.55   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:12:28.71   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:12:28.88   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:12:29.13   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:12:29.30   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:12:29.50   ______
+        #1   |97.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.7 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.2 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.2 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.1 %|  start_loop                ...hfrontier\main.py:39
+14:12:29.73   ______
+        #1   |96.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.3 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.3 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.3 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.2 %|  get_attr                  ...ets\BaseWidget.py:350
+        #6   | 0.2 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #7   | 0.2 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 0.1 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #9   | 0.1 %|  start_loop                ...hfrontier\main.py:39
+        #10  | 0.1 %|  emit_event                ...dgets\Renderer.py:55
+14:12:29.90   ______
+        #1   |94.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.0 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.5 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.5 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.3 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #6   | 0.3 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 0.3 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #8   | 0.2 %|  emit_event                ...dgets\Renderer.py:55
+14:12:30.12   ______
+        #1   |92.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.7 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.6 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.6 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.4 %|  get_attr                  ...ets\BaseWidget.py:350
+        #6   | 0.4 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #7   | 0.4 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #8   | 0.3 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #9   | 0.3 %|  emit_event                ...dgets\Renderer.py:55
+14:12:30.29   ______
+        #1   |91.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.1 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.7 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.7 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.5 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #6   | 0.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 0.4 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #8   | 0.4 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #9   | 0.3 %|  emit_event                ...dgets\Renderer.py:55
+14:12:30.50   ______
+        #1   |90.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.1 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 0.7 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 0.7 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 0.5 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #6   | 0.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 0.4 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #8   | 0.4 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #9   | 0.3 %|  emit_event                ...dgets\Renderer.py:55
+14:12:30.71   ______
+        #1   |83.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.0 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 1.7 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 0.7 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 0.7 %|  notify                    ...s\ToggleButton.py:202
+        #6   | 0.6 %|  get_style                 ...\widgets\Style.py:440
+        #7   | 0.5 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 0.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #9   | 0.4 %|  draw_border               ...\DefaultEngine.py:86
+        #10  | 0.4 %|  _get_rect                 ...ets\BaseWidget.py:358
+14:12:30.91   ______
+        #1   |81.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.0 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 1.9 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 0.7 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 0.6 %|  get_style                 ...\widgets\Style.py:440
+        #6   | 0.6 %|  notify                    ...s\ToggleButton.py:202
+        #7   | 0.6 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 0.5 %|  draw_border               ...\DefaultEngine.py:86
+        #9   | 0.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #10  | 0.5 %|  _get_rect                 ...ets\BaseWidget.py:358
+14:12:31.10   ______
+        #1   |81.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.0 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 1.9 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 0.7 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 0.6 %|  get_style                 ...\widgets\Style.py:440
+        #6   | 0.6 %|  notify                    ...s\ToggleButton.py:202
+        #7   | 0.6 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 0.5 %|  draw_border               ...\DefaultEngine.py:86
+        #9   | 0.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #10  | 0.5 %|  _get_rect                 ...ets\BaseWidget.py:358
+14:12:31.28   ______
+        #1   |75.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.3 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 2.0 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 1.5 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 1.1 %|  notify                    ...s\ToggleButton.py:202
+        #6   | 0.9 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 0.8 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 0.8 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #9   | 0.7 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #10  | 0.7 %|  emit_event                ...dgets\Renderer.py:55
+14:12:31.50   ______
+        #1   |68.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.9 %|  rect_to_client            ...ets\BaseWidget.py:375
+        #3   | 2.3 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 2.3 %|  get_style_entry           ...\widgets\Style.py:457
+        #5   | 1.5 %|  notify                    ...s\ToggleButton.py:202
+        #6   | 1.1 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 1.1 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #8   | 1.0 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #9   | 1.0 %|  emit_event                ...dgets\Renderer.py:55
+        #10  | 1.0 %|  _get_rect                 ...ets\BaseWidget.py:358
+14:12:31.61  tag function: ocempgui.widgets.BaseWidget.BaseWidget.rect_to_client%
+14:12:31.68   ______
+        #1   |62.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.3 %|  notify                    ...ets\ButtonBase.py:104
+        #3   | 2.1 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 1.9 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 1.6 %|  get_attr                  ...ets\BaseWidget.py:350
+        #6   | 1.4 %|  emit_event                ...dgets\Renderer.py:55
+        #7   | 1.4 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #8   | 1.3 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #9   | 1.2 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #10  | 1.0 %|  distribute_events         ...dgets\Renderer.py:1278
+14:12:31.92   ______
+        #1   |60.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.6 %|  notify                    ...ets\ButtonBase.py:104
+        #3   | 2.1 %|  get_style_entry           ...\widgets\Style.py:457
+        #4   | 2.1 %|  notify                    ...s\ToggleButton.py:202
+        #5   | 1.9 %|  get_attr                  ...ets\BaseWidget.py:350
+        #6   | 1.7 %|  emit_event                ...dgets\Renderer.py:55
+        #7   | 1.6 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #8   | 1.5 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #9   | 1.3 %|  _get_rect                 ...ets\BaseWidget.py:358
+        #10  | 1.2 %|  distribute_events         ...dgets\Renderer.py:1278
+14:12:32.07   ______
+        #1   |54.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.3 %|  notify                    ...ets\ButtonBase.py:104
+        #3   | 2.5 %|  get_research_project      ...ier\technology.py:158
+        #4   | 2.2 %|  get_style_entry           ...\widgets\Style.py:457
+        #5   | 2.0 %|  evaluate_self             ...ontier\company.py:353
+        #6   | 1.9 %|  notify                    ...s\ToggleButton.py:202
+        #7   | 1.8 %|  get_attr                  ...ets\BaseWidget.py:350
+        #8   | 1.6 %|  emit_event                ...dgets\Renderer.py:55
+        #9   | 1.5 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+        #10  | 1.4 %|  <lambda>                  ...ets\BaseWidget.py:943
+14:12:32.30   ______
+        #1   |44.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.3 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 2.8 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 2.0 %|  get_research_project      ...ier\technology.py:158
+        #5   | 1.7 %|  get_attr                  ...ets\BaseWidget.py:350
+        #6   | 1.7 %|  get_style                 ...\widgets\Style.py:440
+        #7   | 1.6 %|  notify                    ...s\ToggleButton.py:202
+        #8   | 1.6 %|  evaluate_self             ...ontier\company.py:353
+        #9   | 1.6 %|  emit_event                ...dgets\Renderer.py:55
+        #10  | 1.6 %|  <lambda>                  ...ets\BaseWidget.py:943
+14:12:32.48   ______
+        #1   |41.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 2.6 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 1.9 %|  get_research_project      ...ier\technology.py:158
+        #5   | 1.8 %|  get_style                 ...\widgets\Style.py:440
+        #6   | 1.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #7   | 1.5 %|  notify                    ...s\ToggleButton.py:202
+        #8   | 1.5 %|  evaluate_self             ...ontier\company.py:353
+        #9   | 1.5 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #10  | 1.5 %|  emit_event                ...dgets\Renderer.py:55
+14:12:32.69   ______
+        #1   |40.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 2.7 %|  notify                    ...ets\ButtonBase.py:104
+        #4   | 1.8 %|  get_research_project      ...ier\technology.py:158
+        #5   | 1.7 %|  get_style                 ...\widgets\Style.py:440
+        #6   | 1.6 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #7   | 1.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #8   | 1.5 %|  notify                    ...s\ToggleButton.py:202
+        #9   | 1.5 %|  evaluate_self             ...ontier\company.py:353
+        #10  | 1.5 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+14:12:32.95   ______
+        #1   |37.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 2.8 %|  _notify_children          ...widgets\Window.py:230
+        #4   | 2.8 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 1.7 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #6   | 1.7 %|  get_style                 ...\widgets\Style.py:440
+        #7   | 1.7 %|  get_research_project      ...ier\technology.py:158
+        #8   | 1.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #9   | 1.4 %|  distribute_events         ...dgets\Renderer.py:1278
+        #10  | 1.4 %|  _get_rect_attr            ...ets\BaseWidget.py:309
+14:12:33.12   ______
+        #1   |36.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 3.2 %|  _notify_children          ...widgets\Window.py:230
+        #4   | 2.8 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 1.8 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #6   | 1.7 %|  get_style                 ...\widgets\Style.py:440
+        #7   | 1.6 %|  get_research_project      ...ier\technology.py:158
+        #8   | 1.5 %|  get_attr                  ...ets\BaseWidget.py:350
+        #9   | 1.5 %|  distribute_events         ...dgets\Renderer.py:1278
+        #10  | 1.4 %|  _get_rect                 ...ets\BaseWidget.py:358
+14:12:33.29   ______
+        #1   |32.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.4 %|  get_style_entry           ...\widgets\Style.py:457
+        #3   | 3.7 %|  _notify_children          ...widgets\Window.py:230
+        #4   | 2.6 %|  notify                    ...ets\ButtonBase.py:104
+        #5   | 2.0 %|  get_style                 ...\widgets\Style.py:440
+        #6   | 1.7 %|  update                    ...ets\BaseWidget.py:826
+        #7   | 1.7 %|  <lambda>                  ...ets\BaseWidget.py:943
+        #8   | 1.6 %|  notify                    ...ets\BaseWidget.py:807
+        #9   | 1.5 %|  get_research_project      ...ier\technology.py:158
+        #10  | 1.4 %|  get_attr                  ...ets\BaseWidget.py:350
+14:12:33.35  memory usage: 46+ kb                                          %
+14:12:33.35  program exit, 08/15/09                     %%%%%%%%%%%%%%%%%%%%
