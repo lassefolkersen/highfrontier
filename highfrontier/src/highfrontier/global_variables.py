@@ -8,7 +8,7 @@ pygame.font.init()
 
 # variables that are "meta-gamespecific" ie. that should not follow a savegame
 window_size=(1024,768)
-fullscreen = False # if the game should run in fullscreen
+fullscreen = True # if the game should run in fullscreen
 action_window_size = window_size # but corrected by initializing the command box, which changes this variable to the size of the action_window (ie. without the commandbox)
 max_number_of_companies = 500 #hard upper limit on companies
 persons_per_company = 1200000   #upper limit on the number of companies relative to the number of people in the universe
