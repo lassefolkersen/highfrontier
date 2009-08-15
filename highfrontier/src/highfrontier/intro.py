@@ -469,6 +469,6 @@ class Intro_gui():
             self.ask_company_capital(give_warning=True)
 
             
-main.start_loop(company_name = "Player1", company_capital = 1000000, load_previous_game = None)
+#main.start_loop(company_name = "Player1", company_capital = 1000000, load_previous_game = None)
 
-#intro_gui = Intro_gui()
+intro_gui = Intro_gui()
