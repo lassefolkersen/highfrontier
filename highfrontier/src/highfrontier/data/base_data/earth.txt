@@ -1,0 +1,46 @@
+dataname	northern_loc	eastern_loc	population	country	GDP_per_capita_in_dollars
+datatype	float	float	int	string	float
+joinville	-26.32	-48.84	500009	brazil	6937.909
+santa fé	-31.6	-60.69	500365	argentina	6606.27
+tabook	28.39	36.57	502743	saudi arabia	15481.226
+londrina	-23.3	-51.18	505932	brazil	6937.909
+atlanta	33.76	-84.42	507076	united states of america	45845.477
+mykolayiv	46.97	32	507213	ukraine	3046.128
+kananga	-5.89	22.4	507846	congo	166.147
+boma	-5.85	13.05	508252	congo	166.147
+wuhu	31.35	118.37	508846	china	2460.786
+maanshan	31.73	118.48	547159	china	2460.786
+san salvador	13.69	-89.19	548269	el salvador	2857.385
+bremen	53.08	8.81	548852	germany	40415.409
+rajpur	22.44	88.44	552216	india	977.738
+ulhasnagar	19.23	73.15	552448	india	977.738
+kolhapur	16.7	74.22	553815	india	977.738
+welkom	-27.97	26.73	553854	south africa	5906.491
+huaiyin	33.58	119.03	554519	china	2460.786
+jiamusi	46.83	130.35	554710	china	2460.786
+louisville	38.22	-85.74	554865	united states of america	45845.477
+glasgow	55.87	-4.27	578640	united kingdom	45574.744
+kingston	17.99	-76.8	578825	jamaica	4172.195
+jiangmen	22.58	113.08	587618	china	2460.786
+genoa	44.42	8.93	588450	italy	35872.419
+denver	39.77	-104.87	588504	united states of america	45845.477
+port said	31.26	32.29	588935	egypt	1738.808
+bhaunagur	21.79	72.13	589351	india	977.738
+cúcuta	7.88	-72.51	589582	colombia	3611.471
+maracay	10.33	-67.47	590421	venezuela	8596.001
+shihezi	44.3	86.03	590662	china	2460.786
+irkutsk	52.33	104.24	591470	russia	9075.052
+bengbu	32.95	117.33	591616	china	2460.786
+san pedro sula	15.47	-88.03	592187	honduras	1635.083
+kisangani	0.53	25.19	592195	congo	166.147
+jinzhou	41.12	121.1	592235	china	2460.786
+rotterdam	51.93	4.48	592995	netherlands	46260.689
+khabarovsk	48.42	135.12	593578	russia	9075.052
+stuttgart	48.79	9.19	595182	germany	40415.409
+seattle	47.62	-122.35	595357	united states of america	45845.477
+københavn	55.67	12.58	1082884	denmark	57260.949
+buenos aires	-34.61	-58.37	12127814	argentina	6606.27
+karachi	24.86	67.01	12461423	pakistan	908.933
+bombay	18.96	72.82	13662885	india	977.738
+shanghai	31.23	121.47	15584627	china	2460.786
+stockholm	59.33	18.07	1265999	sweden	49654.869
