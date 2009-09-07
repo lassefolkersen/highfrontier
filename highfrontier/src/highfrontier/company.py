@@ -142,7 +142,8 @@ class company:
 			file_list = []
 			for files in os.walk(company_base_dir):
 				for found_file in files[2]:
-					file_list.append(found_file)
+					if found_file.find(".jpg", len(found_file) - 4, len(found_file)) != -1:
+						file_list.append(found_file)
 
 			number_of_files_to_pick_from = len(file_list)
 			if number_of_files_to_pick_from == 0:
@@ -760,8 +761,9 @@ class firm():
 			file_list = []
 			for files in os.walk(company_base_dir):
 				for found_file in files[2]:
-					file_list.append(found_file)
-
+					if found_file.find(".jpg", len(found_file) - 4, len(found_file)) != -1:
+						file_list.append(found_file)
+				
 			number_of_files_to_pick_from = len(file_list)
 			if number_of_files_to_pick_from == 0:
 				if self.solar_system_object_link.message_printing["debugging"]:
@@ -1629,7 +1631,6 @@ class base(firm):
 
 			if file_name in file_list:
 				for files in os.walk(planet_base_dir):
-					#print files[2]
 					if file_name in files[2]:
 						file_name_and_path = os.path.join(files[0],file_name)
 			else:
@@ -1640,7 +1641,11 @@ class base(firm):
 				else:
 					size = "medium_random"
 				files_to_choose_from = os.listdir(os.path.join(planet_base_dir,size))
-				number_of_files_to_pick_from = len(files_to_choose_from)
+				files_to_choose_from_filtered = []
+				for file_to_choose_from in files_to_choose_from:
+					if file_to_choose_from.find(".jpg") != -1:
+						files_to_choose_from_filtered.append(file_to_choose_from)
+				number_of_files_to_pick_from = len(files_to_choose_from_filtered)
 				if number_of_files_to_pick_from == 0:
 					if self.solar_system_object_link.message_printing["debugging"]:
 						print_dict = {"text":"DEBUGGING: in get_base_background there are no cities in the given folder","type":"debugging"}
@@ -1648,7 +1653,7 @@ class base(firm):
 
 				else:
 					my_pick = random.randrange(0,number_of_files_to_pick_from)
-					file_name = files_to_choose_from[my_pick]
+					file_name = files_to_choose_from_filtered[my_pick]
 					file_name_and_path = os.path.join(planet_base_dir,size,file_name)
 			self.picture_file = file_name_and_path
 
@@ -1995,7 +2000,7 @@ class merchant(tertiary):
 		self.location = from_location #this is not really used, but for some less important checks throughout the code it is necessary
 
 		if not isinstance(to_location, base):
-			raise Exception(self.name + " is a merchant firm but received a from_location that was not a base: " + str(to_location))
+			raise Exception(self.name + " is a merchant firm but received a to_location that was not a base: " + str(to_location))
 		self.to_location = to_location
 
 		

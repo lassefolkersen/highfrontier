@@ -1,8 +1,8 @@
 import pygame
 import global_variables
 import datetime
-from ocempgui.widgets import *
-from ocempgui.widgets.Constants import *
+#from ocempgui.widgets import *
+#from ocempgui.widgets.Constants import *
 
 
 
