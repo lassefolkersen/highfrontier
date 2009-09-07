@@ -1,7 +1,7 @@
 import primitives
 import pygame, sys,os
 from pygame.locals import *
-from ocempgui.widgets import ImageLabel
+#from ocempgui.widgets import ImageLabel
 import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
 import math
 import cPickle
@@ -1634,7 +1634,7 @@ class planet:
                 
             
             
-    def explode(self,per_hit_intensity,number_of_hits,bases_involved,mainscreen,renderer):
+    def explode(self,per_hit_intensity,number_of_hits,bases_involved,mainscreen):
         """
         Function that animates explosions, decimates bases hit by the explosions and renderes the land 
         ravaged.
@@ -1647,6 +1647,7 @@ class planet:
     
         Returns a tally of total losses as a dict
         """
+
         hit_locations = []
         
         blast_surface = pygame.image.load(os.path.join("images","blast.png"))
@@ -1695,9 +1696,9 @@ class planet:
             
         
         
-        surface = mainscreen.image.copy()
+        surface = mainscreen.copy()
         
-        background = mainscreen.image.copy()
+        background = mainscreen.copy()
 #        print "background.get_size(): " + str(background.get_size())
         
         
@@ -1708,31 +1709,37 @@ class planet:
             for proj_hit_location in proj_hit_locations:
                 proj_hit_location_transposed = (int(proj_hit_location[0] - small_blast_surface.get_width()/2), int(proj_hit_location[1] - small_blast_surface.get_height()/2))
                 surface.blit(small_blast_surface,proj_hit_location_transposed)
-                surface.blit(surface.copy(),(1,0))
-                mainscreen.set_picture(surface)
-                renderer.update()
+                mainscreen.blit(surface.copy(),(1,0))
+                pygame.display.flip()
+#                mainscreen.blit(surface)
+#                renderer.update()
                 pygame.time.delay(33)
-                surface.blit(surface.copy(),(-2,0))
-                mainscreen.set_picture(surface)
-                renderer.update()
+                mainscreen.blit(surface.copy(),(-2,0))
+                pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(33)
-                surface.blit(surface.copy(),(1,0))
-                mainscreen.set_picture(surface)
-                renderer.update()
+                mainscreen.blit(surface.copy(),(1,0))
+                pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(33)
                 proj_hit_location_transposed = (int(proj_hit_location[0] - medium_blast_surface.get_width()/2), int(proj_hit_location[1] - medium_blast_surface.get_height()/2))
-                surface.blit(medium_blast_surface,proj_hit_location_transposed)
-                mainscreen.set_picture(surface)
-                renderer.update()
+                mainscreen.blit(medium_blast_surface,proj_hit_location_transposed)
+                pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(100)
                 proj_hit_location_transposed = (int(proj_hit_location[0] - large_blast_surface.get_width()/2), int(proj_hit_location[1] - large_blast_surface.get_height()/2))
-                surface.blit(large_blast_surface,proj_hit_location_transposed)
-                mainscreen.set_picture(surface)
-                renderer.update()
+                mainscreen.blit(large_blast_surface,proj_hit_location_transposed)
+                pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(100)
                 surface = background.copy()
-                mainscreen.set_picture(background)
-                renderer.update()
+                mainscreen.blit(surface,(0,0))
+                pygame.display.flip()
+#                renderer.update()
                 
                 
                 

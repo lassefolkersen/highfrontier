@@ -16,7 +16,7 @@ import global_variables
 import os
 import sys
 import datetime
-import gui_extras
+import gui_components
 import main
 import time
 
@@ -225,7 +225,7 @@ class Intro_gui():
     def intro_sequence(self):
         """
         This function will run the intro sequence by checking for the presence of aptly named pictures in /intro folder.
-        If all these are not found it will set out to re-create them and this can take some time.
+     
         """
         #Runing the simulation
         skip_intro = False
@@ -265,7 +265,7 @@ class Intro_gui():
     def select_game_to_load_callback(self):
         self.exit()
         
-        self.load_window = gui_extras.fast_list(self.renderer)
+        self.load_window = gui_components.fast_list(self.renderer)
         
         self.load_window.receive_data(os.listdir("savegames"))
         self.load_window.topleft = (global_variables.window_size[0] / 2 - self.load_window.list_size[0] / 2, 100) 
@@ -330,8 +330,14 @@ class Intro_gui():
         """
         The GUI part of starting up the game
         """
+        
         self.exit(stop_world_spinning = False)
-        self.window = VFrame(Label("The High Frontier"))
+        
+        
+        
+        label = Label("The High Frontier")
+        
+        self.window = VFrame(label )
         
         button_names= ["#New game","#Load game","#Game settings","#Quit game"]
         button_functions = [self.ask_company_name,self.select_game_to_load_callback,self.game_settings_callback,self.quit_callback]

@@ -1,9 +1,4 @@
 import os
-from ocempgui.widgets import *
-from ocempgui.widgets.Constants import *
-from ocempgui.events import Signals
-from ocempgui.widgets.components import ListItemCollection, TextListItem
-from ocempgui.object import BaseObject
 import global_variables
 import sys
 import string
@@ -12,195 +7,464 @@ import datetime
 import math
 import company
 import primitives
-import gui_extras
+import gui_components
 
 import random
 import time
 
 
 
-class commandbox(BaseObject):
+
+
+
+class gui():
     """
-    The command box is the right hand navigation bar. It is always in place.
+    This class holds all the top-level gui stuff, such as functions to distribute clicks and the commandbox buttons on the right side and such
     """
-    def __init__(self,renderer,manager,solar_system_object):
+    def __init__(self,command_surface, subcommand_surface, action_surface, solar_system_object):
         """
         Here the commandbox is started initialized. In addition all the other GUI elements is started up, to keep it at one place
         """
+        self.command_surface = command_surface
+        self.subcommand_surface = subcommand_surface
+        self.action_surface = action_surface
         
-        BaseObject.__init__(self)
+        self.action_rect = pygame.Rect(self.action_surface.get_offset()[0],self.action_surface.get_offset()[1], self.action_surface.get_size()[0], self.action_surface.get_size()[1])
+        self.subcommand_rect = pygame.Rect(self.subcommand_surface.get_offset()[0],self.subcommand_surface.get_offset()[1], self.subcommand_surface.get_size()[0], self.subcommand_surface.get_size()[1])
+        self.command_rect = pygame.Rect(self.command_surface.get_offset()[0],self.command_surface.get_offset()[1], self.command_surface.get_size()[0], self.command_surface.get_size()[1])
+
+        self.solar_system_object_link = solar_system_object
         
-        #Starting up all GUI components
+        
+        self.active_window = None
+        
         self.all_windows = {}
         
-        self.all_windows["infobox_window"] = infobox_window(solar_system_object,renderer,self)
-        self.all_windows["infobox_window"].manager = manager
-
-        self.all_windows["message_bar_window"] = message_bar(solar_system_object,renderer,self)
-        self.all_windows["message_bar_window"].manager = manager
-
-        self.all_windows["navigation_window"] = navigation_window(solar_system_object,renderer,self)
-        self.all_windows["navigation_window"].manager = manager
-
-        self.all_windows["overlay_window"] = overlay_window(solar_system_object,renderer,self)
-        self.all_windows["overlay_window"].manager = manager
-
-        self.all_windows["planet_jump_window"] = planet_jump_window(solar_system_object,renderer,self)
-        self.all_windows["planet_jump_window"].manager = manager
-
-        self.all_windows["company_window"] = company_window(solar_system_object,renderer,self)
-        self.all_windows["company_window"].manager = manager
         
-        self.all_windows["base_window"] = base_window(solar_system_object,renderer,self)
-        self.all_windows["base_window"].manager = manager
+        self.all_windows["Company menu"] = company_window(solar_system_object, action_surface)
+        self.all_windows["Trade menu"] = trade_window(solar_system_object, action_surface)
+        self.all_windows["Base overview"] = base_window(solar_system_object, action_surface)
+        self.all_windows["Map overlays"] = overlay_window(solar_system_object, action_surface)
+        self.all_windows["Planet shortcuts"] = planet_jump_window(solar_system_object, action_surface)
+        self.all_windows["Navigation"] = navigation_window(solar_system_object, action_surface)
+        self.all_windows["File menu"] = file_window(solar_system_object, action_surface)
+        self.all_windows["Technology"] = tech_window(solar_system_object, action_surface)
         
-        self.all_windows["tech_window"] = tech_window(solar_system_object,renderer,self)
-        self.all_windows["tech_window"].manager = manager
+        self.all_windows["base_population_info"] = base_population_info(solar_system_object, action_surface)
+        self.all_windows["base_list_of_companies"] = base_list_of_companies(solar_system_object, action_surface)
+        self.all_windows["base_list_of_firms"] = base_list_of_firms(solar_system_object, action_surface)
+        self.all_windows["base_and_firm_market_window"] = base_and_firm_market_window(solar_system_object, action_surface)
+        self.all_windows["base_build_menu"] = base_build_menu(solar_system_object, action_surface)
+        self.all_windows["company_ownership_info"] = company_ownership_info(solar_system_object, action_surface)
+        self.all_windows["company_financial_info"] = company_financial_info(solar_system_object, action_surface)
+        self.all_windows["company_list_of_firms"] = company_list_of_firms(solar_system_object, action_surface)
+        self.all_windows["firm_trade_partners_info"] = firm_trade_partners_info(solar_system_object, action_surface)
+        self.all_windows["firm_process_info"] = firm_process_info(solar_system_object, action_surface)
+        self.all_windows["firm_process_info"] = firm_process_info(solar_system_object, action_surface)
+        self.all_windows["construct_base_menu"] = construct_base_menu(solar_system_object, action_surface)
         
-        self.all_windows["trade_window"] = trade_window(solar_system_object,renderer,self)
-        self.all_windows["trade_window"].manager = manager
-
-        self.all_windows["file_window"] = file_window(solar_system_object,renderer,self)
-        self.all_windows["file_window"].manager = manager
-
-        #Non command-box windows
-        #base-related
-        
-        #base-related
-        self.all_windows["left_side_base_navigation"] = left_side_base_navigation(solar_system_object,renderer,self)
-        self.all_windows["left_side_base_navigation"].manager = manager
-        
-        self.all_windows["base_population_info"] = base_population_info(solar_system_object,renderer,self)
-        self.all_windows["base_population_info"].manager = manager
-
-        self.all_windows["base_and_firm_market_window"] = base_and_firm_market_window(solar_system_object,renderer,self)
-        self.all_windows["base_and_firm_market_window"].manager = manager
-        
-        self.all_windows["base_list_of_companies"] = base_list_of_companies(solar_system_object,renderer,self)
-        self.all_windows["base_list_of_companies"].manager = manager
-
-        self.all_windows["base_list_of_firms"] = base_list_of_firms(solar_system_object,renderer,self)
-        self.all_windows["base_list_of_firms"].manager = manager
-        
-        self.all_windows["company_list_of_firms"] = company_list_of_firms(solar_system_object,renderer,self)
-        self.all_windows["company_list_of_firms"].manager = manager
-
-        self.all_windows["base_build_menu"] = base_build_menu(solar_system_object,renderer,self)
-        self.all_windows["base_build_menu"].manager = manager
-        
-        
-        
-        #company-related
-        self.all_windows["left_side_company_navigation"] = left_side_company_navigation(solar_system_object,renderer,self)
-        self.all_windows["left_side_company_navigation"].manager = manager
-        
-        
-        self.all_windows["company_ownership_info"] = company_ownership_info(solar_system_object,renderer,self)
-        self.all_windows["company_ownership_info"].manager = manager
-
-        
-        self.all_windows["company_financial_info"] = company_financial_info(solar_system_object,renderer,self)
-        self.all_windows["company_financial_info"].manager = manager
-        
-        #firm-related
-        self.all_windows["left_side_firm_navigation"] = left_side_firm_navigation(solar_system_object,renderer,self)
-        self.all_windows["left_side_firm_navigation"].manager = manager
-
-        
-        #see base_and_firm_market_window
-#        self.all_windows["firm_bids_info"] = firm_bids_info(solar_system_object,renderer,self)
-#        self.all_windows["firm_bids_info"].manager = manager
-
-
-        self.all_windows["firm_trade_partners_info"] = firm_trade_partners_info(solar_system_object,renderer,self)
-        self.all_windows["firm_trade_partners_info"].manager = manager
-
-
-        self.all_windows["firm_process_info"] = firm_process_info(solar_system_object,renderer,self)
-        self.all_windows["firm_process_info"].manager = manager
         
         self.create_commandbox()
-        self.renderer = renderer
+        self.create_subcommandbox()
         
         
+    
+    def receive_click(self,event):
+        """
+        Function that distributes clicks where necessary
+        """
+        #first check if the click was in the command box area
+        
+        if self.command_rect.collidepoint(event.pos) == 1:
+            for button in self.command_buttons.values():
+                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], event.pos[1])) == 1:
+                    button.activate(None)
+                    return 
+
+        if self.subcommand_rect.collidepoint(event.pos) == 1:
+            for button in self.subcommand_buttons.values():
+                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], event.pos[1] - self.command_rect[3])) == 1:
+                    button.activate(None)
+                    return 
+
+
+        elif self.action_rect.collidepoint(event.pos) == 1:
+            if self.active_window is not None:
+                if self.active_window.rect.collidepoint(event.pos) == 1:
+                    return_value = self.active_window.receive_click(event)
+                    if return_value is not None:
+                        if return_value == "clear":
+                            self.clear_screen()
+                        elif return_value == "new base":
+                            self.solar_system_object_link.display_mode = "planetary"
+                            self.solar_system_object_link.build_base_mode = True
+                            self.clear_screen()
+                            text = global_variables.standard_font.render("Choose position of new base:",True,(150,150,150))
+                            self.action_surface.blit(text, (global_variables.window_size[0] / 2 - text.get_width()/2, 400))
+                            self.active_window = self.all_windows["construct_base_menu"]
+                            pygame.display.flip()
+                        else:
+                            print "should zoom to " + str(return_value)
+                    return
+
+        self.click_in_action_window(event)
+
 
         
-    def message_bar_toggle_callback(self):
-        self.manager.emit("message_bar_toggle",self.button_message_bar.active)
 
-    def navigation_toggle_callback(self):
-        self.manager.emit("navigation_toggle",self.button_navigate.active)
+    def clear_screen(self):
+        """
+        Function that takes care of clearing screen, by drawing whatever planet or solar system or base window that is supposed
+        to be on it, thus overwrite what gui-box might be there
+        """
+        self.active_window = None
+        sol = self.solar_system_object_link
+#        print "clearing screen"
+        if sol.display_mode == "solar_system":
+            self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
+        elif sol.display_mode == "planetary":
+            self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))                        
+        elif sol.display_mode == "base":
+            self.going_to_base_mode_event(sol.current_planet.current_base)
+        elif sol.display_mode == "firm":
+            self.going_to_firm_window_event(sol.firm_selected)
+        elif sol.display_mode == "company":
+            self.going_to_company_window_event(sol.company_selected)
+        elif sol.display_mode in ["techtree"]:
+            pass
+        else:
+            print "error. The mode: " + sol.display_mode +" is unknown"
+        
+        self.create_subcommandbox()
+        pygame.display.flip()
 
-    def overlay_toggle_callback(self):
-        self.manager.emit("overlay_toggle",self.button_overlay.active)
-
-    def planet_jump_toggle_callback(self):
-        self.manager.emit("planet_jump_toggle",self.button_planet_jump.active)
-
-    def company_toggle_callback(self):
-        self.manager.emit("company_toggle",self.button_company.active)
-
-    def base_toggle_callback(self):
-        self.manager.emit("base_toggle",self.button_base.active)
-
-    def tech_toggle_callback(self):
-        self.manager.emit("tech_toggle",self.button_tech.active)
 
 
-    def trade_toggle_callback(self):
-        self.manager.emit("trade_toggle",self.button_trade.active)
+    def zoom_in(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "solar_system":
+            sol.solar_system_zoom = sol.solar_system_zoom * 2
+            surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
+            if surface == "planetary_mode":
+                sol.solar_system_zoom = sol.solar_system_zoom / 2
+                sol.display_mode = "planetary"
+                sol.current_planet.load_for_drawing()
+                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        elif sol.display_mode == "planetary":
+            if sol.current_planet.projection_scaling < 720:
+                sol.current_planet.projection_scaling = sol.current_planet.projection_scaling * 2
+                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)                        
+            else:
+                if sol.current_planet.current_base is not None: #if a base is selected on this planet, we'll zoom in on it
+                    sol.display_mode = "base"
+                    self.going_to_base_mode_event(sol.current_planet.current_base)
+                    return
+                else:
+                    return
+        elif sol.display_mode in ["base","firm","company"]:
+            return
+        elif sol.display_mode in ["techtree"]:
+            surface = sol.technology_tree.zoom("in")
+        else:
+            print "error. The mode: " + sol.display_mode +" is unknown"
+            return
 
-    def file_toggle_callback(self):
-        self.manager.emit("file_toggle",self.button_file.active)
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+    
+        
+    def zoom_out(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "solar_system":
+            if sol.solar_system_zoom >= 2:
+                sol.solar_system_zoom = sol.solar_system_zoom / 2
+                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
+            else:
+                return
+        
+        elif sol.display_mode == "planetary":
+            if sol.current_planet.projection_scaling >= 90:
+                sol.current_planet.projection_scaling = sol.current_planet.projection_scaling / 2
+                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+            else:
+                sol.current_planet.unload_from_drawing()
+                sol.display_mode = "solar_system" 
+                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=datetime.date(2102,1,22),center_object=sol.current_planet.planet_name)
+        elif sol.display_mode in ["firm","company","base"]:
+            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+            sol.display_mode = "planetary"
+            self.create_subcommandbox()
+        elif sol.display_mode in ["techtree"]:
+            surface = sol.technology_tree.zoom("out")
+            
+        else:
+            print "error. The mode: " + sol.display_mode +" is unknown"
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+                
+
+    
+    def click_in_action_window(self,event):
+        sol = self.solar_system_object_link
+        position = event.pos
+        button = event.button
+        click_spot = pygame.Rect(position[0]-2,position[1]-2,4,4)
+        if sol.display_mode == "solar_system":
+            collision_test_result = click_spot.collidedict(sol.areas_of_interest)
+            if collision_test_result != None:
+                sol.current_planet = sol.planets[collision_test_result[1]]
+                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
+                if surface == "planetary_mode":
+                    manager.emit("going_to_planetary_mode_event",sol.current_planet)
+                    sol.solar_system_zoom = 200000000 / sol.current_planet.planet_diameter_km  
+                    sol.display_mode = "planetary"
+                    sol.current_planet.load_for_drawing()
+                    surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        
+        
+        elif sol.display_mode == "planetary":
+        
+            if sol.build_base_mode: #if we are in the special build base mode, there should be a base creation instead.
+                sphere_coordinates = sol.current_planet.check_base_position(position)
+                
+                if isinstance(sphere_coordinates, tuple): #if the selection was correctly verified by check_base_position we send it back to the GUI for further processing
+                    sol.build_base_mode = False
+                    self.all_windows["construct_base_menu"].new_base_ask_for_name(sphere_coordinates)
+                return
+            
+            else: #if we are not in build_base_mode we work as normally
+                areas_of_interest = sol.current_planet.areas_of_interest[(sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination,sol.current_planet.projection_scaling)]
+                collision_test_result = click_spot.collidedict(areas_of_interest)
+                if collision_test_result != None:
+                    current_base = sol.current_planet.bases[collision_test_result[1]]
+                    #print "current_base " + str(current_base)
+                    sol.current_planet.current_base = current_base
+                    if button == 1:
+                        surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+                    if button == 3:
+                        self.going_to_base_mode_event(current_base)
+                        
+                        return
+                else:
+                    return
+
+            self.action_surface.blit(surface,(0,0))
+            pygame.display.flip()
+
+        
+        elif sol.display_mode in ["techtree"]:
+            surface = sol.technology_tree.receive_click(position,button)
+            self.action_surface.blit(surface,(0,0))
+            pygame.display.flip()
+        
+        elif sol.display_mode in ["company","firm","base"]:
+            pass            
+        else:
+            print "error. The mode: " + sol.display_mode +" is unknown"                
+
+            
+            
+            
+    
+    def go_left(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "planetary":
+            sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination - 30
+            if sol.current_planet.eastern_inclination <= -180:
+                sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination + 360
+            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        elif sol.display_mode == "techtree":
+            surface = sol.technology_tree.move("left")
+        else:
+            return
+        
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+        
+    def go_right(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "planetary":
+            sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination + 30
+            if sol.current_planet.eastern_inclination > 180:
+                sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination - 360
+            
+            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        elif sol.display_mode == "techtree":
+            surface = sol.technology_tree.move("right")
+        else:
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+        
+    def go_down(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "planetary":
+            if sol.current_planet.northern_inclination > -90:
+                sol.current_planet.northern_inclination = sol.current_planet.northern_inclination - 30
+                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+            else:
+                return
+        elif sol.display_mode == "techtree":
+            surface = sol.technology_tree.move("down")
+        else:
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
 
 
+    
+    def go_up(self,event):
+        self.clear_screen()
+        sol = self.solar_system_object_link
+        if sol.display_mode == "planetary":
+            if sol.current_planet.northern_inclination < 90:
+                sol.current_planet.northern_inclination = sol.current_planet.northern_inclination + 30
+                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+            else:
+                return
+        elif sol.display_mode == "techtree":
+            surface = sol.technology_tree.move("up")
+        else:
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+
+        
+    
+
+#            print "error. The mode: " + sol.display_mode +" does not accept a/z input"
+
+
+        
+
+
+    def going_to_company_window_event(self,company_selected):
+        sol = self.solar_system_object_link
+#        company_selected = event.data
+#        mode_before_change = sol.display_mode
+        sol.display_mode = "company"
+        surface = company_selected.draw_company_window()
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+    def going_to_firm_window_event(self,firm_selected):
+        sol = self.solar_system_object_link
+        sol.display_mode = "firm"
+        surface = firm_selected.draw_firm_window()
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+        
+    def going_to_base_mode_event(self,base_selected):
+        sol = self.solar_system_object_link
+#        mode_before_change = sol.display_mode
+        sol.current_planet.current_base = base_selected
+        sol.current_planet = base_selected.home_planet
+        sol.display_mode = "base"
+        surface = base_selected.draw_base_window()
+        self.create_subcommandbox()
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+#
+    def commandbox_button_activate(self,label, function_parameter):
+        """
+        Function that decides what to do if a commandbox button is pressed
+        """
+        if label == "Technology":
+            if self.solar_system_object_link.display_mode == "techtree":
+#                print "mode is: " + str(self.all_windows["Technology"].display_mode_before)
+                self.solar_system_object_link.display_mode = self.all_windows["Technology"].display_mode_before
+                self.clear_screen()
+                return
+            else:
+#                print "setting display mode before to: " + str(self.solar_system_object_link.display_mode)
+                self.all_windows["Technology"].display_mode_before = self.solar_system_object_link.display_mode
+                
+            
+        
+        self.clear_screen()
+        self.active_window = self.all_windows[label]
+        self.all_windows[function_parameter].create()
+        
     
     def create_commandbox(self):    
         """
         Returns the right-side menu command box
         """
-        self.table = Table(3,1) 
-        self.table.depth = 1
-        self.table.minsize = (0,global_variables.window_size[1])
-
-        menu_frame = VFrame()
-        menu_frame.align = ALIGN_LEFT
-        self.button_message_bar = ToggleButton("#Messages")
-        self.button_navigate = ToggleButton("#Navigation")
-        self.button_overlay = ToggleButton("#Map overlays")
-        self.button_planet_jump = ToggleButton("#Planet shortcuts")
-        self.button_company = ToggleButton("#Company menu")
-        self.button_base = ToggleButton("#Base overview")
-        self.button_tech = ToggleButton("T#echnology")
-        self.button_trade = ToggleButton("#Trade menu")
-        self.button_file = ToggleButton("#File menu")
-        min_width = 20+max(self.button_message_bar.size[0],self.button_navigate.size[0],self.button_company.size[0],self.button_base.size[0],self.button_tech.size[0],self.button_trade.size[0],self.button_file.size[0])
-        min_height = self.button_navigate.size[1]
-        self.button_message_bar.set_minimum_size(min_width,min_height)
-        self.button_navigate.set_minimum_size(min_width,min_height)
-        self.button_overlay.set_minimum_size(min_width,min_height)
-        self.button_planet_jump.set_minimum_size(min_width,min_height)
-        self.button_company.set_minimum_size(min_width,min_height)
-        self.button_base.set_minimum_size(min_width,min_height)
-        self.button_tech.set_minimum_size(min_width,min_height)
-        self.button_trade.set_minimum_size(min_width,min_height)
-        self.button_file.set_minimum_size(min_width,min_height)
-
-        self.table.topleft = (global_variables.window_size[0]-min_width,0)
         
-        global_variables.action_window_size = (global_variables.window_size[0]-min_width,global_variables.window_size[1])
+        pygame.draw.rect(self.command_surface, (150,150,150), pygame.Rect(0,self.command_rect[1],self.command_rect[2],self.command_rect[3]))
         
-        menu_frame.add_child(self.button_message_bar,self.button_navigate,self.button_overlay,self.button_planet_jump,self.button_company,self.button_base,self.button_tech,self.button_trade,self.button_file)
-        self.table.add_child(1,0,menu_frame)
-        self.button_message_bar.connect_signal(Constants.SIG_CLICKED,self.message_bar_toggle_callback)
-        self.button_navigate.connect_signal(Constants.SIG_CLICKED,self.navigation_toggle_callback)
-        self.button_overlay.connect_signal(Constants.SIG_CLICKED,self.overlay_toggle_callback)
-        self.button_planet_jump.connect_signal(Constants.SIG_CLICKED,self.planet_jump_toggle_callback)
-        self.button_company.connect_signal(Constants.SIG_CLICKED,self.company_toggle_callback)
-        self.button_base.connect_signal(Constants.SIG_CLICKED,self.base_toggle_callback)
-        self.button_tech.connect_signal(Constants.SIG_CLICKED,self.tech_toggle_callback)
-        self.button_trade.connect_signal(Constants.SIG_CLICKED,self.trade_toggle_callback)
-        self.button_file.connect_signal(Constants.SIG_CLICKED,self.file_toggle_callback)
+        labels = ["Navigation","Map overlays","Planet shortcuts","Company menu","Base overview","Technology","Trade menu","File menu"]
+        self.command_buttons = {}
+        for i, label in enumerate(labels):
+            self.command_buttons[label] = gui_components.button(label, 
+                                                                self.command_surface,
+                                                                self.commandbox_button_activate, 
+                                                                function_parameter = label, 
+                                                                fixed_size = (self.command_rect[2]-20,35), topleft = (10, i * 40 + 10))
+
+    
+    
+    def subcommandbox_button_activate(self, nicelabel, label):
+        self.all_windows[label].create()
+        self.active_window = self.all_windows[label]
+
+    def create_subcommandbox(self):    
+        """
+        Returns the right-side menu lower subcommand box
+        """
+        
+        self.subcommand_buttons = {}
+        pygame.draw.rect(self.subcommand_surface, (150,150,150), pygame.Rect(0,0,self.subcommand_rect[2],self.subcommand_rect[3]))
+
+        if self.solar_system_object_link.display_mode == "base":
+            self.buttonlinks = ["base_population_info","base_list_of_companies","base_list_of_firms","base_and_firm_market_window","base_build_menu"]
+            self.buttonnicenames = ["Population","Companies","Firms","Market","Build"]
+        elif self.solar_system_object_link.display_mode == "firm":
+            self.buttonlinks = ["firm_process_info","base_and_firm_market_window","firm_trade_partners_info"]
+            self.buttonnicenames = ["Production","Market","Trade partners"]
+        elif self.solar_system_object_link.display_mode == "company":
+            self.buttonlinks = ["company_ownership_info","company_finances_info","company_list_of_firms"]
+            self.buttonnicenames = ["Ownership info","Financial info","Owned firms"]
+
+        else:
+            
+            pygame.display.flip()
+            return
+        
+        self.subcommand_buttons = {}
+        for i, label in enumerate(self.buttonlinks):
+            self.subcommand_buttons[label] = gui_components.button(self.buttonnicenames[i], self.subcommand_surface,
+                                                                self.subcommandbox_button_activate, function_parameter = label, 
+                                                                fixed_size = (self.subcommand_surface.get_width()-20,35), 
+                                                                topleft = (10, i * 40 + 10))
+        
+        pygame.display.flip()
         
 
 
@@ -208,21 +472,12 @@ class commandbox(BaseObject):
 
 
 
-class infobox_window(BaseObject):
+class infobox_window():
     """
     The infobox window. Always visible and shows time and location - ie "solarsystem, centered on earth",
     "Frankfurt" etc. It also shows internet-browser style backward and forward buttons.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["update_infobox"] = []
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object,commandbox):
         self.solar_system_object_link = solar_system_object
         self.size = (400,40)
         self.topleft = (global_variables.window_size[0]/2 - self.size[0]/2,0)
@@ -449,7 +704,7 @@ class infobox_window(BaseObject):
 
 
 
-class message_bar(Window):
+class message_bar():
     """
     Class that receives messages for the player and prints them.
     It will show the message depending on the type. Types are:
@@ -460,9 +715,9 @@ class message_bar(Window):
     
     """
     def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["message_bar_toggle"] = []
-        self._signals["update_infobox"] = []
+#        Window.__init__(self)
+#        self._signals["message_bar_toggle"] = []
+#        self._signals["update_infobox"] = []
 #        self._signals["print_message"] = []
         self.renderer = renderer
         self.solar_system_object_link = solar_system_object
@@ -564,246 +819,172 @@ class message_bar(Window):
 
 
 
-class navigation_window(Window):
+class navigation_window():
     """
     The navigation window. Is controlled by a togglebutton in the commandbox. When visible it can be used for zooming and rotating.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["navigation_toggle"] = []
-        self.renderer = renderer
-
-    def zoom_in_callback(self):
-        self.manager.emit("zoom_in",None)
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(500,50,190,170)
+        self.action_surface = action_surface
+        
+        
+        
+    def zoom_in(self,label,function_parameter):
+        return "zoom_in"
     
-    def zoom_out_callback(self):
-        self.manager.emit("zoom_out",None)
+    def zoom_out(self,label,function_parameter):
+        return "zoom_out"
 
-    def rotate_west_callback(self):
-        self.manager.emit("rotate_west",None)
+    def rotate_west(self,label,function_parameter):
+        return "go_west"
 
-    def rotate_east_callback(self):
-        self.manager.emit("rotate_east",None)
+    def rotate_east(self,label,function_parameter):
+        return "go_east"
 
-    def rotate_south_callback(self):
-        self.manager.emit("rotate_south",None)
+    def rotate_south(self,label,function_parameter):
+        return "go_south"
 
-    def rotate_north_callback(self):
-        self.manager.emit("rotate_north",None)
+    def rotate_north(self,label,function_parameter):
+        return "go_north"
     
-    def create_navigation_window(self,renderer):
+    
+    def receive_click(self,event):
+        if pygame.Rect(self.rect[0] + 70, self.rect[1] + 10, 50, 30).collidepoint(event.pos) == 1:
+            return self.button_north.activate(event.pos)
+        if pygame.Rect(self.rect[0] + 20, self.rect[1] + 40, 50, 30).collidepoint(event.pos) == 1:
+            return self.button_west.activate(event.pos)
+        if pygame.Rect(self.rect[0] + 70, self.rect[1] + 70, 50, 30).collidepoint(event.pos) == 1:
+            return self.button_south.activate(event.pos)
+        if pygame.Rect(self.rect[0] + 120, self.rect[1] + 40, 50, 30).collidepoint(event.pos) == 1:
+            return self.button_east.activate(event.pos)
+
+
+        if pygame.Rect(self.rect[0] + 10, self.rect[1] + 120, 80, 30).collidepoint(event.pos) == 1:
+            return self.button_zoom_in.activate(event.pos)
+        if pygame.Rect(self.rect[0] + 100, self.rect[1] + 120, 80, 30).collidepoint(event.pos) == 1:
+            return self.button_zoom_out.activate(event.pos)
+
+    
+    
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
+        The creation function.  
         """
-        table2 = Table(1,2)
-        frame1 = VFrame(Label("Zooming"))
-        self.button_zoom_in = Button("Zoom #in")
-        self.button_zoom_out = Button("Zoom #out")
-        min_width = max(self.button_zoom_in.size[0],self.button_zoom_out.size[0])
-        self.button_zoom_in.set_minimum_size(min_width,self.button_zoom_in.size[1])
-        self.button_zoom_out.set_minimum_size(min_width,self.button_zoom_out.size[1])
-        self.button_zoom_in.connect_signal(Constants.SIG_CLICKED,self.zoom_in_callback)
-        self.button_zoom_out.connect_signal(Constants.SIG_CLICKED,self.zoom_out_callback)
 
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
-        frame1.add_child(self.button_zoom_in)
-        frame1.add_child(self.button_zoom_out)
-        
-        frame2 = VFrame(Label("Navigating"))
-        navigation_table = Table(3,3)
-        self.button_west = Button("#West")
-        self.button_east = Button("#East")
-        self.button_north = Button("#North")
-        self.button_south = Button("#South")
-        navigation_table.add_child(1,0,self.button_west)
-        navigation_table.add_child(1,2,self.button_east)
-        navigation_table.add_child(0,1,self.button_north)
-        navigation_table.add_child(2,1,self.button_south)
-        self.button_west.connect_signal(Constants.SIG_CLICKED,self.rotate_west_callback)
-        self.button_east.connect_signal(Constants.SIG_CLICKED,self.rotate_east_callback)
-        self.button_north.connect_signal(Constants.SIG_CLICKED,self.rotate_north_callback)
-        self.button_south.connect_signal(Constants.SIG_CLICKED,self.rotate_south_callback)
-        frame2.add_child(navigation_table)
-        table2.add_child(0,0,frame1)
-        table2.add_child(0,1,frame2)
-        
-        
-        self.window = Window()
-        self.window.topleft = (50,150)
-        self.window.set_child(table2)
-        
-        if self.solar_system_object_link.display_mode != "planetary":
-            self.button_west.sensitive = False
-            self.button_east.sensitive = False
-            self.button_north.sensitive = False
-            self.button_south.sensitive = False
-        renderer.add_widget(self.window)
-        
-    def notify(self,event):
-        if event.signal == "going_to_planetary_mode_event":
-            try: self.window
-            except:
-                pass
-            else:
-                self.button_west.sensitive = True
-                self.button_east.sensitive = True
-                self.button_north.sensitive = True
-                self.button_south.sensitive = True
-                #self.button_overlay.sensitive = True
-                #print "state is " + str(self.button_overlay.state)
-                #print STATE_TYPES[0]
-                #if self.button_overlay.state == 2:
-                    #self.button_overlay.activate()
-                
-                #print "state is " + str(self.button_overlay.state)
+        self.button_north = gui_components.button("N", self.action_surface, self.rotate_north, topleft = (self.rect[0] + 70, self.rect[1] + 10),fixed_size = (50,30))
+        self.button_west = gui_components.button("W", self.action_surface, self.rotate_west, topleft = (self.rect[0] + 20, self.rect[1] + 40),fixed_size = (50,30))
+        self.button_south = gui_components.button("S", self.action_surface, self.rotate_south, topleft = (self.rect[0] + 70, self.rect[1] + 70),fixed_size = (50,30))
+        self.button_east = gui_components.button("E", self.action_surface, self.rotate_east, topleft = (self.rect[0] + 120, self.rect[1] + 40),fixed_size = (50,30))
 
-        if event.signal == "going_to_solar_system_mode_event":
-            try: self.window
-            except:
-                pass
-            else:
-                self.button_west.sensitive = False
-                self.button_east.sensitive = False
-                self.button_north.sensitive = False
-                self.button_south.sensitive = False
-                #self.button_overlay.set_active(False)
-                #self.button_overlay.sensitive = False
-        if event.signal == "navigation_toggle":
-            if not event.data:
-                self.create_navigation_window(self.renderer)
-                self.window.set_focus()
-            else:
-                #self.window.depth = -1
-                self.window.destroy()
-                del self.window
+        self.button_zoom_in = gui_components.button("Zoom in", self.action_surface, self.zoom_in, topleft = (self.rect[0] + 10, self.rect[1] + 120),fixed_size = (80,30))
+        self.button_zoom_out = gui_components.button("Zoom out", self.action_surface, self.zoom_out, topleft = (self.rect[0] + 100, self.rect[1] + 120),fixed_size = (80,30))        
 
 
 
-class overlay_window(Window):
+class overlay_window():
     """
     The overlay control window. Can be toggled from commandbox. When visible it can be used to control which visual overlays
     that can be seen in planet mode (topographical maps, resource maps etc)
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["overlay_toggle"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        #self.create_overlay_window(renderer)
+        self.rect = pygame.Rect(500,50,200,250)
+        self.action_surface = action_surface
         
-    def overlay_set_callback(self,button_name):
-        self.manager.emit("display_overlay",button_name)
-        #print "emitted display overlay with " + str(button_name)
+    def overlay_set(self,type_of_overlay, function_parameter):
+        sol = self.solar_system_object_link
+        sol.current_planet.planet_display_mode = type_of_overlay
+        surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+#    def (self,button_name,function_parameter):
+#        print "emitted display overlay with " + str(button_name)
 
 
-    def notify(self,event):
-        if event.signal == "overlay_toggle":
-            #print "heard planet_jump_toggle for " + str(self.window) + " - the signal was: " + str(event.data)
-            if event.data:
-                try: self.window
-                except:
-                    pass
-                else:
-                    self.window.destroy()
-                    del self.window
-            else:
-                self.create_overlay_window(self.renderer)
-                self.window.set_focus()
+    def receive_click(self,event):
+        self.radiobuttons.activate(event.pos)
 
-        if event.signal == "going_to_solar_system_mode_event":
-            try: self.window
-            except:
-                pass
-            else:
-                self.overlay_buttons["visible light"].set_active(True)
+
         
-    def create_overlay_window(self,renderer):
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
+        The creation function. Doesn't return anything. 
         """
+        
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+        
+        labels = ["visible light","trade network","topographical"] + self.solar_system_object_link.mineral_resources
 
-        overlay_frame = VFrame()
-        overlay_frame.set_align(ALIGN_LEFT)
-        self.overlay_buttons = {}
-        buttons = ["visible light","trade network","topographical"] + self.solar_system_object_link.mineral_resources
-        overlay_group = None
-        button_size = []
-        for i in range(0,len(buttons)):
-            self.overlay_buttons[buttons[i]] = RadioButton(string.capitalize(buttons[i]),overlay_group)
-            self.overlay_buttons[buttons[i]].connect_signal(Constants.SIG_TOGGLED,self.overlay_set_callback,buttons[i])
-            overlay_frame.add_child(self.overlay_buttons[buttons[i]])
-            if i == 0:
-                overlay_group = self.overlay_buttons[buttons[i]]
-                self.overlay_buttons[buttons[i]].overlay_group = self.overlay_buttons[buttons[i]]
-        self.window = Window()
-        self.window.set_child(overlay_frame)
-        #self.window.depth = -1
-        self.window.topleft = (global_variables.window_size[0]-300,150)
-        #if self.solar_system_object_link.display_mode != "planetary":
-            #self.window.sensitive = False
-        renderer.add_widget(self.window)
+        self.radiobuttons = gui_components.radiobuttons(labels, self.action_surface, self.overlay_set, function_parameter = None, topleft = (self.rect[0] + 10 , self.rect[1] + 10), selected = None)
+        
+        
 
 
 
-class planet_jump_window(Window):
+class planet_jump_window():
     """
     The planet jump window. Can be toggled from commandbox. When visible it can be used as shortcut to planet view
     for the different planets
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["planet_jump_toggle"] = []
-        self.renderer = renderer
-        #self.create_planet_jump_window(renderer)
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(500,50,100,250)
+        self.action_surface = action_surface
         
-    def planet_jump_callback(self,button_name):
-        self.manager.emit("center_on",button_name)
-        #print "emitted center_on with " + str(button_name)
+        
+        
+    def planet_jump(self,planet_name,function_parameter):
+        print planet_name
+        planet = self.solar_system_object_link.planets[planet_name] 
+        self.solar_system_object_link.current_planet = planet
+        print planet
+        planet.load_for_drawing()
+        self.solar_system_object_link.display_mode = "planetary"
+        surface = planet.draw_entire_planet(planet.eastern_inclination,planet.northern_inclination,planet.projection_scaling)
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+            
+    
 
     
-    def notify(self,event):
-        if event.signal == "planet_jump_toggle":
-            #print "heard planet_jump_toggle for " + str(self.window) + " - the signal was: " + str(event.data)
-            if event.data:
-                try: self.window
-                except:
-                    pass
-                else:
-                    self.window.destroy()
-                    del self.window
+    def receive_click(self,event):
+        offset = event.pos[1] - self.rect[1]
+        index = (offset - 5) // 30
+        if 0 <= index < len(self.button_labels):
+            selection = self.buttons[self.button_labels[index]].activate(event.pos)
+            if selection in self.solar_system_object_link.planets.keys():
+                return self.solar_system_object_link.planets[selection]
             else:
-                self.create_planet_jump_window(self.renderer)
-                self.window.set_focus()
-        
+                if self.solar_system_object_link.message_printing["debugging"]:
+                    print_dict = {"text":"DEBUGGING: The planet jump function asked to go to a non-recognised planet","type":"debugging"}
+                    self.solar_system_object_link.messages.append(print_dict)
 
-    def create_planet_jump_window(self,renderer):
+
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
+        The creation function.  
         """
-
-        planet_jump_frame = VFrame()
-        self.planet_jump_buttons = {}
-        buttons = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
-        button_sizes = []
-        button_size = []
-        for i in range(0,len(buttons)):
-            self.planet_jump_buttons[buttons[i]] = Button(string.capitalize(buttons[i]))
-            self.planet_jump_buttons[buttons[i]].connect_signal(Constants.SIG_CLICKED,self.planet_jump_callback,buttons[i])
-            button_sizes.append(self.planet_jump_buttons[buttons[i]].width)
-            
-        for i in range(0,len(buttons)):
-            self.planet_jump_buttons[buttons[i]].set_minimum_size(max(button_sizes),self.planet_jump_buttons[buttons[i]].height)
-            planet_jump_frame.add_child(self.planet_jump_buttons[buttons[i]])
-            
-        self.window = Window()
-        #self.window.depth = -1
-        self.window.topleft = (global_variables.window_size[0]-300,global_variables.window_size[1]-300)
-        self.window.set_child(planet_jump_frame)
-        renderer.add_widget(self.window)
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
+        self.button_labels = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
+
+        self.buttons = {}
+        for i, button_label in enumerate(self.button_labels):
+            self.buttons[button_label] = gui_components.button(button_label, self.action_surface, self.planet_jump, topleft = (self.rect[0] + 5, self.rect[1] + 5 + i * 30),fixed_size = (self.rect[2] - 10, 25))
+            
 
 
 
@@ -812,77 +993,42 @@ class planet_jump_window(Window):
 
 
 
-class tech_window(BaseObject):
+class tech_window():
     """
     Class for the tech tree. Most of the actual algorithms are in techtree.py - this is just a shell for holding
     the notify system in the same structure as other GUI elements
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["tech_toggle"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object, action_surface):
         self.solar_system_object_link = solar_system_object
-        self.commandbox_link = commandbox
+        self.action_surface = action_surface
+        self.display_mode_before = "planetary"
         
 
-    def notify(self,event):
-        if event.signal == "tech_toggle":
-            if not event.data:
-                self.manager.emit("going_to_techtree_mode_event",None)
-            else:
-                self.exit()
-                
-                
-    
-    def exit(self):
-        if len(self.commandbox_link.all_windows["infobox_window"].history) >= 1:
-            self.commandbox_link.all_windows["infobox_window"].backbutton_callback()
-        else:
-            #this is ugly, but it is a good protection against hypothetical situations were the history is empty
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: The history was empty when asking to exit the technology tree","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-            self.solar_system_object_link.current_planet.projection_scaling = 45
-            self.solar_system_object_link.display_mode = "planetary"
-            self.manager.emit("zoom_out",None)
+    def create(self):
+        sol = self.solar_system_object_link
+        sol.display_mode = "techtree"
+        surface = sol.technology_tree.plot_total_tree(sol.technology_tree.vertex_dict,sol.technology_tree.zoomlevel,center = sol.technology_tree.center)
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
 
 
-
-
-
-class base_window(Window):
-    def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["base_toggle"] = []
-        self.renderer = renderer
+class base_window():
+    """
+    This window shows an overview of all bases with options for fast jumping.
+    """
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.list_size = (700,500)
-        self.topleft = (50,50)
-        self.commandbox_link = commandbox
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
 
 
-    def jump_to_base_callback(self,data):
-        base_selected = None
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
-                if base_instance.name == self.window.selected_name:
-                    base_selected = base_instance
-                    
-        if base_selected is None:
-            raise Exception("The base sought after (" + str(self.window.selected_name) + ") was not found in the base list of the solar_system_object_link")
 
-        self.solar_system_object_link.current_planet.current_base = base_selected
-        self.exit()
-        self.commandbox_link.button_base.active = False
-        self.manager.emit("going_to_base_mode_event",base_selected)
-
-
-    def create_base_window(self):
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
+        The creation function. ' 
         """
+        
         base_data = {}
         for planet_instance in self.solar_system_object_link.planets.values():
             for base_instance in planet_instance.bases.values():
@@ -898,18 +1044,26 @@ class base_window(Window):
                 
         column_order = ["rownames","Location","Population","For sale"]
         
-        self.window = gui_extras.fast_list(self.renderer)
-        self.window.receive_data(base_data,column_order = column_order)
-        self.window.topleft = self.topleft
-        self.window.list_size = self.list_size
-        self.window.create_fast_list()
-        self.window.render_title()
-        
-        self.link_button = Button("Jump to base")
-        self.link_button.topleft = (self.topleft[0] + self.list_size[0]/2 - self.link_button.size[0]/2,  self.topleft[1] + self.list_size[1]+50)
-        self.link_button.connect_signal(Constants.SIG_CLICKED,self.jump_to_base_callback,None)
-        self.renderer.add_widget(self.link_button)
+        self.fast_list = gui_components.fast_list(self.action_surface, base_data, self.rect, column_order)
 
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+            base_selected = None
+            for planet_instance in self.solar_system_object_link.planets.values():
+                for base_instance in planet_instance.bases.values():
+                    if base_instance.name == self.fast_list.selected_name:
+                        base_selected = base_instance
+                        
+            if base_selected is None:
+                raise Exception("The base sought after (" + str(self.fast_list.selected_name) + ") was not found in the base list of the solar_system_object_link")
+    
+            self.solar_system_object_link.current_planet.current_base = base_selected
+            self.solar_system_object_link.display_mode = "base"
+            return "clear"
+
+            
+            
 
 
     def notify(self,event):
@@ -933,23 +1087,22 @@ class base_window(Window):
 
 
 
-class trade_window(Window):
+class trade_window():
     """
     This windows shows an overview of all assets (bases and firms) and tech that is for sale, ie. all non-location specific offers.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        Window.__init__(self)
-        self._signals["trade_toggle"] = []
-        self.renderer = renderer
-        self.commandbox_link = commandbox
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.list_size = (700,500)
-        self.topleft = (50,50)
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
 
-    def create_trade_window(self):
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
+        The creation function. Doesn't return anything.
         """
+
+        
         asset_and_tech_data = {}
         for planet_instance in self.solar_system_object_link.planets.values():
             for base_instance in planet_instance.bases.values():
@@ -961,6 +1114,7 @@ class trade_window(Window):
                 
         for company_instance in self.solar_system_object_link.companies.values():
             pass #FIXME add firms for sale here, whenever that is implemented
+        
         for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
             if len(technology["for_sale_by"]) > 0:
                 prices = technology["for_sale_by"].values()
@@ -977,31 +1131,52 @@ class trade_window(Window):
                 asset_and_tech_data[technology["technology_name"]] = data_here
         
         column_order = ["rownames","Type","Best price","For sale by"]
-        
-        self.window = gui_extras.fast_list(self.renderer)
-        self.window.receive_data(asset_and_tech_data,column_order = column_order)
-        self.window.topleft = self.topleft
-        self.window.list_size = self.list_size
-        self.window.create_fast_list()
-        self.window.render_title()
+        self.fast_list = gui_components.fast_list(self.action_surface, asset_and_tech_data, rect = self.rect, column_order = column_order)
 
-        self.link_button = Button("Bid")
-        self.link_button.topleft = (self.topleft[0] + self.list_size[0]/2 - self.link_button.size[0]/2,  self.topleft[1] + self.list_size[1]+50)
-        self.link_button.connect_signal(Constants.SIG_CLICKED,self.chose_seller)
-        self.renderer.add_widget(self.link_button)
-#        self.renderer.add_widget(self.link_button)
-
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+            if self.fast_list.selected_name is not None:
+                bid_on = self.fast_list.selected_name
+                for_sale_by = self.fast_list.original_tabular_data[bid_on]["for_sale_by_link"]
+                sale_object = self.fast_list.original_tabular_data[bid_on]["object"]
+                type = self.fast_list.original_tabular_data[bid_on]["Type"]
+                price = self.fast_list.original_tabular_data[bid_on]["Best price"]
+                
+                if type == "technology":
+                    current_player = self.solar_system_object_link.current_player.known_technologies
+                    check_result = self.solar_system_object_link.technology_tree.check_technology_bid(current_player,sale_object)
+                    
+                    if check_result != "ok":
+                        print_dict = {"text":"Can not bid for " + sale_object["technology_name"] + " because it is " + check_result,"type":"general gameplay info"}
+                        self.solar_system_object_link.messages.append(print_dict)
+                        return None
+                
+                if len(for_sale_by) > 1:
+                    if type != "technology":
+                        raise Exception("A bid was made for a type: " + str(type) + " asset, with more than one seller. This should not be possible") 
+                    sellers_data = {}
+                    for seller in sale_object["for_sale_by"]:
+                        price = sale_object["for_sale_by"][seller]
+                        sellers_data[seller.name] = {"Price":price,"seller_link":seller}
+                    
+                    column_order = ["rownames","Price"]
+                    
+                    self.fast_list = gui_components.fast_list(self.surface,sellers_data,self.rect,column_order)
+            
+    #                self.perform_bid(sale_object, None, type, None)
+            
 
     def chose_seller(self):
         """
         Function that allows players to choose between more than one seller
         """
-        if self.window.selected_name is not None:
-            bid_on = self.window.selected_name
-            for_sale_by = self.window.original_tabular_data[bid_on]["for_sale_by_link"]
-            sale_object = self.window.original_tabular_data[bid_on]["object"]
-            type = self.window.original_tabular_data[bid_on]["Type"]
-            price = self.window.original_tabular_data[bid_on]["Best price"]
+        if self.fast_list.selected_name is not None:
+            bid_on = self.fast_list.selected_name
+            for_sale_by = self.fast_list.original_tabular_data[bid_on]["for_sale_by_link"]
+            sale_object = self.fast_list.original_tabular_data[bid_on]["object"]
+            type = self.fast_list.original_tabular_data[bid_on]["Type"]
+            price = self.fast_list.original_tabular_data[bid_on]["Best price"]
             
             if type == "technology":
                 current_player = self.solar_system_object_link.current_player.known_technologies
@@ -1023,7 +1198,7 @@ class trade_window(Window):
                 
                 column_order = ["rownames","Price"]
                 
-                self.window = gui_extras.fast_list(self.renderer)
+                self.window = gui_components.fast_list(self.renderer)
                 self.window.receive_data(sellers_data,column_order = column_order)
                 self.window.topleft = self.topleft
                 self.window.list_size = (self.list_size[0], self.list_size[1] / 2)
@@ -1091,69 +1266,24 @@ class trade_window(Window):
             else:
                 self.exit()
     
-    def exit(self, reset_commandbox_button = False):
-        try: self.window
-        except: pass
-        else:
-            self.window.exit()
-            del self.window
-
-        try: self.link_button
-        except: pass
-        else:
-            self.link_button.destroy()
-            del self.link_button
-            
-        if reset_commandbox_button:
-            try:    self.commandbox_link.button_trade
-            except: pass
-            else:
-                if self.commandbox_link.button_trade.active:
-                    self.commandbox_link.button_trade.active = False
 
 
-
-
-
-
-
-
-class company_window(BaseObject):
+class company_window():
     """
     The company overview window. Can be toggled from commandbox. Shows all companies in the solarsystem, along with some info
     about them. Can be used as shortcut to the company of interest.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["company_toggle"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.list_size = (700,500)
-        self.topleft = (50,50)
-        self.commandbox_link = commandbox
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
  
-        
-        
-    def jump_to_company_callback(self,data):
-        company_selected = None
-        for company in self.solar_system_object_link.companies.values():
-            if company.name == self.window.selected_name:
-                company_selected = company
-        if company_selected is None:
-            for company in self.solar_system_object_link.companies.values():
-                print company.name
-            raise Exception("The company sought after (" + str(self.window.selected_name) + ") was not found in the companies list of the solar_system_object_link")
-        #print "DEBUGGING: emitted going to company_window_event with " + str(company_selected) + " of name " + str(company_selected.name)
-        self.solar_system_object_link.company_selected = company_selected
-        self.exit()
-        self.commandbox_link.button_company.active = False
-        self.manager.emit("going_to_company_window_event",company_selected)
-        
-
-    def create_company_window(self):
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
+        The creation function. 
         """
+        
         company_data = {}
         for company_name in self.solar_system_object_link.companies:
             company_instance = self.solar_system_object_link.companies[company_name]
@@ -1170,39 +1300,24 @@ class company_window(BaseObject):
         
         column_order = ["rownames","capital","owned firms","home cities"]
         
-        self.window = gui_extras.fast_list(self.renderer)
-        self.window.receive_data(company_data,column_order = column_order)
-        self.window.topleft = self.topleft
-        self.window.list_size = self.list_size
-        self.window.create_fast_list()
-        self.window.render_title()
-        
-        self.link_button = Button("Jump to company")
-        self.link_button.topleft = (self.topleft[0] + self.list_size[0]/2 - self.link_button.size[0]/2,  self.topleft[1] + self.list_size[1]+50)
-        self.link_button.connect_signal(Constants.SIG_CLICKED,self.jump_to_company_callback,None)
-        self.renderer.add_widget(self.link_button)
+        self.fast_list = gui_components.fast_list(self.action_surface, company_data, rect = self.rect, column_order = column_order)
 
                 
 
-    def notify(self,event):
-        if event.signal == "company_toggle":
-            if not event.data:
-                self.create_company_window()
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+
+            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+                selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
+                self.solar_system_object_link.display_mode = "company"
+                self.solar_system_object_link.company_selected = selected_company
+                return "clear"
+
             else:
-                self.exit()
-    
-    def exit(self):
-        try: self.window
-        except: pass
-        else:
-            self.window.exit()
-            del self.window
-
-        try: self.link_button
-        except: pass
-        else:
-            self.link_button.destroy()
-            del self.link_button
+                print_dict = {"text":"DEBUGGING:  " + str(self.fast_list.selected_name) + " was not found in company database","type":"debugging"}
+                self.solar_system_object_link.messages.append(print_dict)
+                
 
 
 
@@ -1214,327 +1329,256 @@ class company_window(BaseObject):
 
 
 
-class file_window(BaseObject):
+class file_window():
     """
     The file window. Can be toggled from commandbox. Quitting, saving, loading, settings and all the usual stuff you'd
     expect to find such a place.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["file_toggle"] = []
-        self.renderer = renderer
-        self.commandbox_link = commandbox
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.topleft = (150,350)
+        self.rect = pygame.Rect(50,50,400,500)
+        self.action_surface = action_surface
+        self.text_receiver = None 
+        self.distribute_click_to_subwindow = None
+        
+        
+        self.button_structure = {
+                           "File menu":{
+                                   "Save game":self.select_save_name,
+                                   "Load game":self.select_game_to_load,
+                                   "New game":self.new_game,
+                                   "Game settings":"Game settings",
+                                   "Automation settings":self.automation_settings,
+                                   "Message settings":self.message_settings,
+                                   "Quit game":"Quit game"},
+                           "Quit game":{
+                                        "Ok":self.quit,
+                                        "Cancel":"File menu",
+                                        "Save first":self.select_save_name
+                                    },
+                           "Game settings":{
+                                        "Game speed":self.game_speed_settings,
+                                        "Difficulty":"File menu",
+                                        "Catastrophes":"Catastrophe window"
+                                            },
+                           "Catastrophe window":{
+                                                 "Global warming":self.raise_waters,
+                                                 "Global cooling":self.lower_waters,
+                                                 "Meteor strike":"Catastrophe window",
+                                                 "Nuclear war":self.nuclear_war,
+                                                 "Lunar explosion":self.nuclear_war,
+                                                 "Skynet uprising":"Catastrophe window"
+                                                 }
+                           
+                           }
 
-        
-        
-    def create_file_window(self,renderer):
+
+
+
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
+        The creation function.  
         """
-        self.exit()
-        
-        self.window = VFrame(Label("Settings"))
-        self.window.topleft = self.topleft
-        
-        button_names= ["#Save game","#Load game","#New game","Catastrophes","#Game settings","#Automation settings","#Message settings","#Quit game"]
-        button_functions = [self.select_save_name_callback,self.select_game_to_load_callback,self.new_game_callback,self.catastrophe_window,self.game_settings_callback,self.automation_settings_callback,self.message_settings,self.quit_callback]
-        
-        list_of_children = []
-        max_width = 0
-        for i, button_name in enumerate(button_names):
-            temp_button = Button(button_name)
-            temp_button.connect_signal(SIG_CLICKED,button_functions[i])
-            max_width = max(max_width,temp_button.width)
-            list_of_children.append(temp_button)
-        
-        for button in list_of_children:
-            button.set_minimum_size(max_width,button.size[1])
-        
-        self.window.set_children(list_of_children)
+        self.button_instances_now = {}
+        self.button_list_now = []
+        self.distribute_click_to_subwindow = None
+        self.position = "File menu"
+        self.draw()
 
-        self.renderer.add_widget(self.window)
+    def draw(self):
+        self.button_instances_now = {}
+        pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+        
+        self.button_list_now = self.button_structure[self.position].keys()
+        self.button_list_now.sort()
+        
+        for i, button_name in enumerate(self.button_list_now):
+            if isinstance(self.button_structure[self.position][button_name], str): # has a submenu
+                self.button_instances_now[button_name] = gui_components.button(button_name,
+                                                    self.action_surface,
+                                                    self.go_to_submenu,
+                                                    function_parameter = self.button_structure[self.position][button_name],
+                                                    fixed_size = (self.rect[2] - 20, 35),
+                                                    topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1])
+                                                    )
+            else: # has a subfunction
+                self.button_instances_now[button_name] = gui_components.button(button_name,
+                                                    self.action_surface,
+                                                    self.button_structure[self.position][button_name],
+                                                    function_parameter = None,
+                                                    fixed_size = (self.rect[2] - 20, 35),
+                                                    topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1])
+                                                    )
+            
+            
+        pygame.display.flip()
 
 
-
-    def notify(self,event):
-        if event.signal == "file_toggle":
-            if not event.data:
-                self.create_file_window(self.renderer)
-                self.window.set_focus(True)
-            else:
-                self.exit()
-                
-
-    def exit(self, reset_commandbox_button = False):
+    def go_to_submenu(self, label, function_parameter):
         """
-        Function that clears up the window. If reset_commandbox_button is True, it will also set the status of the commandbox button to
-        unpressed.
+        Function that accepts activations from buttons that leads to submenus
         """
-        try:    self.window._manager
-        except: pass
+        self.position = function_parameter
+        self.draw()
+
+    
+    def receive_click(self,event):
+        if self.distribute_click_to_subwindow is None:
+            if isinstance(event.pos[1],int):
+                index = (event.pos[1] - self.rect[1] - 10) / 40
+                if index >= 0 and index < len(self.button_list_now):
+                    button_pressed = self.button_list_now[index]
+                    if button_pressed != "Empty space":
+                        self.button_instances_now[button_pressed].activate(event.pos)
         else:
-            self.window.destroy()
-        try:    self.window
-        except: pass
-        else:   del self.window
-        
-        try:    self.load_button
-        except: pass
-        else:
-            self.load_button.destroy()
-            del self.load_button
-        
-        try:    self.load_window
-        except: pass
-        else:
-            self.load_window.exit()
-            del self.load_window
-            
-        try:    self.save_box
-        except: pass
-        else:
-            self.save_box.destroy()
-            del self.save_box
-        
-        if reset_commandbox_button:
-#            print "Commandbox button is " + str(self.commandbox_link.button_file.active)
-            try:    self.commandbox_link.button_file
-            except: pass
-            else:
-                if self.commandbox_link.button_file.active:
-                    self.commandbox_link.button_file.active = False
+            self.distribute_click_to_subwindow.receive_click(event)
+
+
+
+    def quit(self,label,function_parameter):
+        sys.exit(0)
+
+
+    
             
 
-    def select_save_name_callback(self,give_warning = False):
-        self.exit()
+    def select_save_name(self,label, function_parameter):
+        """
+        Prompts the player to input the name of the savegame file
+        """
         
-        self.save_box = VFrame(Label("Name of savegame"))
+        pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+        description = global_variables.standard_font.render("Enter savegame name:",True,(0,0,0))
+        self.action_surface.blit(description, (10 + self.rect[0], 10 + self.rect[1]))
         
-        entry_box = Entry()
-        entry_box.minsize = (300,24)
-        entry_box.activate()
-        
-        
-        ok_button = Button("Ok")
-        ok_button.connect_signal(SIG_CLICKED,self.effectuate_save_callback)
-        
-        cancel_button = Button("Cancel")
-        cancel_button.connect_signal(SIG_CLICKED,self.exit,True)
-        
-        button_frame = HFrame()
-        button_frame.set_children([ok_button,cancel_button])
-        
-        if give_warning:
-            warning_label = Label("Max " + str(global_variables.max_letters_in_company_names) + " characters, only letters, underscores and numbers")
-            self.save_box.set_children([entry_box,button_frame,warning_label])
-        
-        else:
-            self.save_box.set_children([entry_box,button_frame])
-        
-        self.save_box.topleft = (global_variables.window_size[0] / 2 - self.save_box.size[0] / 2, 100) 
-        
-        self.renderer.add_widget(self.save_box)
-        
-        
-        
-#        
+        self.button_list_now = ["Empty space","Name box","Ok"]
+        self.button_instances_now = {}
+        self.button_instances_now["Name box"] = gui_components.entry(self.action_surface, 
+                             topleft = (10 + self.rect[0], 10 + 40 + self.rect[1]), 
+                             width = self.rect[2] - 20, 
+                             max_letters = global_variables.max_letters_in_company_names)
 
-    def effectuate_save_callback(self):
-        save_game_name = self.save_box.children[0].text
-        all_ok = True
-        if len(save_game_name) > global_variables.max_letters_in_company_names:
-            all_ok = False
+        self.text_receiver = self.button_instances_now["Name box"]
+        self.button_instances_now["Name box"].active = True 
         
-        for i in range(0,len(save_game_name)):
-            letter = save_game_name[i]
-            if not (letter.isalnum() or letter.isalpha() or letter == "_"):
-                all_ok = False
-                
-        if all_ok:
-            
-            
-            self.solar_system_object_link.save_solar_system(os.path.join("savegames",save_game_name))
+        self.button_instances_now["Ok"] = gui_components.button(
+                                    "Ok",
+                                    self.action_surface,
+                                    self.effectuate_save,
+                                    function_parameter = None,
+                                    fixed_size = (self.rect[2] - 20, 35),
+                                    topleft = (10 + self.rect[0], 80 + 10 + self.rect[1])
+                                    )
+        pygame.display.flip() 
         
-            self.exit(True)
-            
-        else:
-            self.exit()
-            self.select_save_name_callback(give_warning=True)
+        
+    def effectuate_save(self,label,function_parameter):
+        save_game_name = self.button_instances_now["Name box"].text
+        self.solar_system_object_link.save_solar_system(os.path.join("savegames",save_game_name))
+        self.create()
         
 
-    def select_game_to_load_callback(self):
-        self.exit()
-        
-        self.load_window = gui_extras.fast_list(self.renderer)
-        
-        self.load_window.receive_data(os.listdir("savegames"))
-        self.load_window.topleft = (global_variables.window_size[0] / 2 - self.load_window.list_size[0] / 2, 100) 
-        self.load_window.create_fast_list()
+    def select_game_to_load(self, label, function_parameter):
+        load_window = gui_components.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
+        self.distribute_click_to_subwindow = load_window                                            
 
-        self.load_button = Button("Load")
-        self.load_button.connect_signal(SIG_CLICKED,self.effectuate_load_callback)
-        self.load_button.topleft = (global_variables.window_size[0] / 2 - self.load_button.size[0] / 2, self.load_window.topleft[1] + self.load_window.list_size[1] + 50)
-        self.renderer.add_widget(self.load_button)
-
-    def effectuate_load_callback(self):
-        load_file_name = self.load_window.selected
+    def effectuate_load(self):
+        load_file_name = self.distribute_click_to_subwindow.text
         if load_file_name is not None:
-            self.exit(reset_commandbox_button = True)
             self.solar_system_object_link.load_solar_system(os.path.join("savegames",load_file_name))
     
         
 
-    def new_game_callback(self):
-        self.manager.emit("new_game",None)
-
-    def game_settings_callback(self):
-        """
-        The window that is shown when asking for game_settings.
-        First destroys the previous file window
-        """
-        self.exit()
-        
-        self.window = VFrame(Label("Game settings"))
-        self.window.topleft = self.topleft
-        
-        button_names= ["#Game speed","#Difficulty","#Catastrophes"]
-        button_functions = [self.time_delay_dialog,self.exit,self.catastrophe_window]
-        
-        list_of_children = []
-        max_width = 0
-        for i, button_name in enumerate(button_names):
-            temp_button = Button(button_name)
-            temp_button.connect_signal(SIG_CLICKED,button_functions[i])
-            max_width = max(max_width,temp_button.width)
-            list_of_children.append(temp_button)
-        
-        for button in list_of_children:
-            button.set_minimum_size(max_width,button.size[1])
-        
-        self.window.set_children(list_of_children)
-
-        self.renderer.add_widget(self.window)
+    def new_game(self, label, function_parameter):
+        print "should start new game"
 
 
 
 
 
 
-    def automation_settings_callback(self):
+
+    def automation_settings(self,label,function_parameter):
         """
         The window that is shown when asking for automation_settings.
         First destroys the previous file window
         """
-        self.exit()
+        
+        
+        
         if self.solar_system_object_link.current_player is None:
             if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Game is in simulation mode so no changes can be made","type":"debugging"}
                 self.solar_system_object_link.messages.append(print_dict)
         else:
+            pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+            
+            self.button_instances_now = {}
+            self.button_list_now = []
+
             button_names = self.solar_system_object_link.current_player.automation_dict.keys()
-            self.window = VFrame(Label("Game settings"))
-            self.window.topleft = self.topleft
-            
-            button_functions = [self.change_automation]
-            
-            list_of_children = []
-            max_width = 0
+
             for i, button_name in enumerate(button_names):
-                temp_button = ToggleButton(button_name)
-                if self.solar_system_object_link.current_player.automation_dict[button_name]:
-                    temp_button.active = True
-                temp_button.connect_signal(SIG_TOGGLED,self.change_automation,button_name)
-                max_width = max(max_width,temp_button.width)
-                list_of_children.append(temp_button)
+                self.button_list_now.append(button_name)
+                
+                self.button_instances_now[button_name] = gui_components.togglebutton(button_name,
+                                                          self.action_surface,
+                                                          self.change_automation,
+                                                          function_parameter = button_name,
+                                                          fixed_size = (self.rect[2] - 20, 35),
+                                                          topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1]),
+                                                          pressed = self.solar_system_object_link.current_player.automation_dict[button_name]
+                                                    )
             
-            for button in list_of_children:
-                button.set_minimum_size(max_width,button.size[1])
             
-            decision_variables_button = Button("Decision variables")
-            decision_variables_button.connect_signal(SIG_CLICKED,self.decision_variables_callback)
+            self.button_list_now.append("Decision variables")
+            self.button_instances_now["Decision variables"] = gui_components.button(
+                                                                           "Decision variables",
+                   self.action_surface,
+                   self.decision_variables,
+                   function_parameter = None,
+                   fixed_size = (self.rect[2] - 20, 35),
+                   topleft = (10 + self.rect[0], (i + 1) * 40 + 10 + self.rect[1]),
+                   )
             
-            self.window.set_children(list_of_children + [Label(""), decision_variables_button])
-    
-    
-    
-            self.renderer.add_widget(self.window)
+            
+            
 
-
-    def change_automation(self,automation_type):
+    def change_automation(self,label,function_parameter):
         """
         Function that will effectuate the change of automation status
         """
         if self.solar_system_object_link.current_player is None:
             raise Exception("No player selected")
-        if automation_type not in self.solar_system_object_link.current_player.automation_dict.keys():
-            raise Exception("The automation_type " + str(automation_type) + " was not found in the automation_dict")
-        previous_setting = self.solar_system_object_link.current_player.automation_dict[automation_type]
-        self.solar_system_object_link.current_player.automation_dict[automation_type] = not previous_setting
+        if function_parameter not in self.solar_system_object_link.current_player.automation_dict.keys():
+            raise Exception("The automation_type " + str(function_parameter) + " was not found in the automation_dict")
+        previous_setting = self.solar_system_object_link.current_player.automation_dict[function_parameter]
+        self.solar_system_object_link.current_player.automation_dict[function_parameter] = not previous_setting
 
-        print_dict = {"text":"For " + self.solar_system_object_link.current_player.name + " the " + str(automation_type) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general company info"}
+        print_dict = {"text":"For " + self.solar_system_object_link.current_player.name + " the " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general company info"}
         self.solar_system_object_link.messages.append(print_dict)
-        self.manager.emit("update_infobox", None)
+#        self.manager.emit("update_infobox", None)
         
         
 
-    def decision_variables_callback(self):
+    def decision_variables(self,label,function_parameter):
         """
         The window that is shown when asking for decision_variables.
-        First destroys the previous file window
         """
-        self.exit()
+
         if self.solar_system_object_link.current_player is None:
             if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Game is in simulation mode so no changes can be made","type":"debugging"}
                 self.solar_system_object_link.messages.append(print_dict)
         else:
-            button_names = self.solar_system_object_link.current_player.company_database.keys()
+            pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+            decision_variables_window = gui_components.fast_list(self.action_surface, 
+                                                                 self.solar_system_object_link.current_player.company_database.keys(),
+                                                                 rect = self.rect)
+
+            self.distribute_click_to_subwindow = decision_variables_window                                            
+
             
-            list_of_children = []
-            max_width = 0
-            for i, button_name in enumerate(button_names):
-                if isinstance(self.solar_system_object_link.current_player.company_database[button_names[i]], int):
-                    temp_label = Label(button_name)
-                    max_width = max(max_width,temp_label.width)
-                    list_of_children.append(temp_label)
-
-            self.window = Table(len(list_of_children)/2+2,4)
-            self.window.set_column_align(0,ALIGN_LEFT)
-            self.window.set_column_align(2,ALIGN_LEFT)
-            self.window.topleft = (50,50)
-
-
-            for i, label in enumerate(list_of_children):
-                
-                label.set_minimum_size(max_width,label.size[1])
-                if i > len(list_of_children)/2:
-                    column = 2
-                    row = i - len(list_of_children)/2 - 1 
-                else:
-                    column = 0
-                    row = i
-                self.window.add_child(row, 0 + column,label)
-                value = self.solar_system_object_link.current_player.company_database[label.text]
-                entry_box = Entry(text=str(value))
-                self.window.add_child(row, 1 + column,entry_box)
-                
-            cancel_button = Button("Cancel")
-            cancel_button.connect_signal(SIG_CLICKED,self.exit,True)
-            
-            ok_button = Button("Ok")
-            ok_button.connect_signal(SIG_CLICKED,self.check_and_save_decision_variables)
-            
-            self.window.add_child(len(list_of_children)/2+1,3,cancel_button)
-            self.window.add_child(len(list_of_children)/2+1,2,ok_button)
-#            hframe.set_children([ok_button,cancel_button]) 
-
-#            self.window = VFrame(Label("Automation settings"))
-             
-#            self.window.set_children([table,hframe])
-    
-            self.renderer.add_widget(self.window)
         
 
 
@@ -1589,60 +1633,52 @@ class file_window(BaseObject):
             
 
 
-    def message_settings(self):
+    def message_settings(self, label, function_parameter):
         """
         Function that decides what messages should be shown
         """
-        self.exit()
+        pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+
         button_names = self.solar_system_object_link.message_printing.keys()
-        self.window = VFrame(Label("Message settings"))
-        self.window.topleft = self.topleft
-        
-        button_functions = [self.change_message_setting]
-        
-        list_of_children = []
-        max_width = 0
+
+        self.button_instances_now = {}
+        self.button_list_now = []
+
         for i, button_name in enumerate(button_names):
-            temp_button = ToggleButton(button_name)
-            if self.solar_system_object_link.message_printing[button_name]:
-                temp_button.active = True
-            temp_button.connect_signal(SIG_TOGGLED,self.change_message_setting,button_name)
-            max_width = max(max_width,temp_button.width)
-            list_of_children.append(temp_button)
-        
-        for button in list_of_children:
-            button.set_minimum_size(max_width,button.size[1])
-        
-        ok_button = Button("Ok")
-        ok_button.connect_signal(SIG_CLICKED,self.exit,True)
-        
-        self.window.set_children(list_of_children + [Label(""), ok_button])
+            self.button_list_now.append(button_name)
+            
+            self.button_instances_now[button_name] = gui_components.togglebutton(button_name,
+                                                      self.action_surface,
+                                                      self.change_message_setting,
+                                                      function_parameter = button_name,
+                                                      fixed_size = (self.rect[2] - 20, 35),
+                                                      topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1]),
+                                                      pressed = self.solar_system_object_link.message_printing[button_name]
+                                                )
 
-        self.renderer.add_widget(self.window)
 
-    def change_message_setting(self, message_type):                        
+    def change_message_setting(self, label, function_parameter):                        
         """
         Function that will effectuate the change of message settings
         """
-        if message_type not in self.solar_system_object_link.message_printing.keys():
-            raise Exception("The message type " + str(message_type) + " was not found in the message_printing dict")
-        previous_setting = self.solar_system_object_link.message_printing[message_type]
-        self.solar_system_object_link.message_printing[message_type] = not previous_setting
+        if function_parameter not in self.solar_system_object_link.message_printing.keys():
+            raise Exception("The message type " + str(function_parameter) + " was not found in the message_printing dict")
+        previous_setting = self.solar_system_object_link.message_printing[function_parameter]
+        self.solar_system_object_link.message_printing[function_parameter] = not previous_setting
 
-        print_dict = {"text":"The show-settings for " + str(message_type) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general gameplay info"}
+        print_dict = {"text":"The show-settings for " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general gameplay info"}
         self.solar_system_object_link.messages.append(print_dict)
-        self.manager.emit("update_infobox", None)
+#        self.manager.emit("update_infobox", None)
                         
     
-    def quit_callback(self):
+    def quit(self):
         self.renderer.add_widget(self.quit_dialog())
         
 
     
 
-#    def game_settings_dialog(self):
         
-    def time_delay_dialog(self):
+    def game_speed_settings(self, label, function_parameter):
         """
         The window that is shown when asking for time delay settings
         Time delay settings is defined as a value between 0 and 100 with 100 being the fastest.
@@ -1655,95 +1691,98 @@ class file_window(BaseObject):
         In any case it means that the lowest value of step_delay_time_range equals time delays settings of 100 (max speed) and the highest
         value of step_delay_time_range equals time delay settings of 0 (slowest speed)
         """
+        pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
+
         delay_range = (10,500)
-        
-        #seemingly complicated, but basically it just converts the old step_delay time to game speed (0-100) 
-        old_game_speed = int(100 - ((float(self.solar_system_object_link.step_delay_time - delay_range[0]) / float(delay_range[1] - delay_range[0]) ) * 100))
-        
-        
-        #print old_game_speed
-        
-        dialog = DialogWindow ("Time Settings")
-        label = Label("Slow...                                           ...Fast")
-        hscrollbar = HScrollBar (300, 3300)
-        hscrollbar.set_step(30)
-        hscrollbar.value = old_game_speed * 30
 
-        def execute():
-            game_speed = hscrollbar.value / 30
-            #seemingly complicated, but basically it just converts the game speed (0-100) to the specified delay range
-            self.solar_system_object_link.step_delay_time = int( ((100 - game_speed) / 100) * (delay_range[1] - delay_range[0]) + delay_range[0]) 
-            dialog.destroy()
-        
-        #vscrollbar.connect_signal(SIG_VALCHANGED, self.scrolling)
-        ok_button = Button("#Ok")
-        ok_button.connect_signal(SIG_CLICKED,execute)
-        cancel_button = Button("#Cancel")
-        cancel_button.connect_signal(SIG_CLICKED,dialog.destroy)
-        
-        
-        
-        frame1 = VFrame()
-        frame2 = HFrame()
-        frame2.set_children([ok_button,cancel_button])
-        frame1.set_children([label,hscrollbar,frame2])
-        dialog.set_child(frame1)
+        old_game_speed = self.solar_system_object_link.step_delay_time
 
-        dialog.topleft = (200, 200)
-        self.renderer.add_widget(dialog)
+        button_names = self.solar_system_object_link.message_printing.keys()
+        
+        
+        fastest = global_variables.standard_font.render("Fastest",True,(0,0,0))
+        self.action_surface.blit(fastest, (self.rect[0] + 50, self.rect[1] + 40))
 
-    def catastrophe_window(self):
-        """
-        The window that is shown when asking for catastrophes
-        """
-        self.exit()
+        slowest = global_variables.standard_font.render("Slowest",True,(0,0,0))
+        self.action_surface.blit(slowest, (self.rect[0] + 50, self.rect[1] + self.rect[3]-  50))
         
-        self.window = VFrame(Label("Catastrophe settings"))
-        self.window.topleft = self.topleft
         
-        button_names = ["Global warming","Global cooling","Meteor strike","Nuclear war","Lunar explosion","Skynet uprising"]
-        button_functions = [self.raise_waters,self.lower_waters,self.exit,self.nuclear_war,self.exit,self.exit]
+        def execute(label, function_parameter):
+            game_speed = self.distribute_click_to_subwindow.position / 30
+            self.solar_system_object_link.step_delay_time = self.distribute_click_to_subwindow.position
         
-        list_of_children = []
-        max_width = 0
-        for i, button_name in enumerate(button_names):
-            temp_button = Button(button_name)
-            temp_button.connect_signal(SIG_CLICKED,button_functions[i])
-            max_width = max(max_width,temp_button.width)
-            list_of_children.append(temp_button)
-        
-        for button in list_of_children:
-            button.set_minimum_size(max_width,button.size[1])
-        
-        ok_button = Button("Ok")
-        ok_button.connect_signal(SIG_CLICKED,self.exit,True)
-        
-        self.window.set_children(list_of_children + [Label(""), ok_button])
+        self.distribute_click_to_subwindow = gui_components.vscrollbar (self.action_surface,
+                                                execute,
+                                                topleft = (self.rect[0] + 10, self.rect[1] + 30),
+                                                length_of_bar_in_pixel = self.rect[3] - 60,
+                                                range_of_values = delay_range,
+                                                start_position = old_game_speed
+                                                )
 
-        self.renderer.add_widget(self.window)
+#    def catastrophe_window(self, label, function_parameter):
+#        """
+#        The window that is shown when asking for catastrophes
+#        """
+#        
+#        button_names = ["Global warming","Global cooling","Meteor strike","Nuclear war","Lunar explosion","Skynet uprising"]
+#        button_functions = [self.raise_waters,self.lower_waters,self.exit,self.nuclear_war,self.exit,self.exit]
+#        
+#        for i, button_name in enumerate(button_names):
+#            temp_button = Button(button_name)
+#            temp_button.connect_signal(SIG_CLICKED,button_functions[i])
+#            max_width = max(max_width,temp_button.width)
+#            list_of_children.append(temp_button)
+#        
+#        for button in list_of_children:
+#            button.set_minimum_size(max_width,button.size[1])
+#        
+#        ok_button = Button("Ok")
+#        ok_button.connect_signal(SIG_CLICKED,self.exit,True)
+#        
+#        self.window.set_children(list_of_children + [Label(""), ok_button])
+#
+#        self.renderer.add_widget(self.window)
 
-    def raise_waters(self):
+    def raise_waters(self,label,function_parameter):
         """
         Function to raise waters
         """
+        sol = self.solar_system_object_link
+
+        if sol.display_mode == "planetary":
+            sol.current_planet.change_water_level(sol.current_planet.water_level + 0.5)
+            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        else:
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+
+    def lower_waters(self,label,function_parameter):
+        sol = self.solar_system_object_link
+
+        if sol.display_mode == "planetary":
+            sol.current_planet.change_water_level(sol.current_planet.water_level - 0.5)                        
+            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        else:
+            return
+        self.action_surface.blit(surface,(0,0))
+        pygame.display.flip()
+
+
+    def nuclear_war(self,label,function_parameter):
+        sol = self.solar_system_object_link
+        if sol.display_mode == "planetary":
+            earth = sol.planets["earth"]
+            base_names_chosen = ["stockholm","glasgow","bremen","rotterdam","stuttgart","genoa"]
+            bases_chosen = {}
+            for base_name_chosen in base_names_chosen:
+                bases_chosen[base_name_chosen] = earth.bases[base_name_chosen]
+            earth.explode(56,10,bases_chosen,self.action_surface)
+        else:
+            return
+
         
-        self.manager.emit("raise_waters",None)
-        self.manager.emit("update_infobox",None)
-        
-    def lower_waters(self):
-        """
-        Function to lower waters
-        """
-        self.manager.emit("lower_waters",None)
-        self.manager.emit("update_infobox",None)
-
-    def nuclear_war(self):
-        """
-        Function to lower waters
-        """
-        self.manager.emit("start nuclear war",None)
-
-
 
     def quit_dialog(self):
         """
@@ -1782,444 +1821,177 @@ class file_window(BaseObject):
 
 
 
-        
-
-
-
-
-class left_side_base_navigation(BaseObject):
-    """
-    The buttons on the left side which are only seen when in base mode. They are used to navigate between the subviews available
-    for each base.
-    """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.topleft_pos = (0,0)
-        self.area_size = (global_variables.window_size[0]*0.2 , global_variables.window_size[1])
-        self.button_size = (130, 50)
-        self.buttonlinks = ["base_population","base_list_of_companies","base_list_of_firms","market","base_build_menu"]
-        self.buttonnicenames = ["Population","Companies","Firms","Market","Build"]
-        self.basewindow_selected = None
-        
-    def notify(self,event):
-        if event.signal == "going_to_base_mode_event":
-            self.create_left_side_base_navigation()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-        if event.signal == "going_to_firm_window_event":
-            if isinstance(event.data,company.base):
-                print "DEBUGGING: keeping the lefthandbasebecause we are going to another base"
-            else:
-                self.exit()
-
-        
-        
-    def base_window_type_set_callback(self,button_name):
-        self.basewindow_selected = button_name
-        self.manager.emit("change_base_window_type",self.basewindow_selected)
-        #print "emitted " + str(button_name)
-
-    def exit(self):
-        try: self.frames
-        except: pass
-        else:
-            iteration_list = self.frames.keys()
-            for frame_name in iteration_list:
-                self.frames[frame_name].destroy()
-                del self.frames[frame_name]
-            del self.frames
-        try: self.buttons
-        except: pass
-        else:
-            iteration_list = self.buttons.keys()
-            for button_name in iteration_list:
-                del self.buttons[button_name]
-             
-
-    def create_left_side_base_navigation(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-
-        try: self.frames
-        except:
-            self.buttons = {}
-            self.frames = {}
-            base_navigation_group = None
-            vertical_slice = self.area_size[1] / len(self.buttonlinks)
-            for i in range(0,len(self.buttonlinks)):
-                y_pos = int( (i + 0.5) * vertical_slice ) - (self.button_size[1] / 2)
-                x_pos = (self.area_size[0] / 2 ) - (self.button_size[0] / 2)
-                
-                self.frames[self.buttonlinks[i]] = VFrame()
-                self.frames[self.buttonlinks[i]].topleft = (x_pos,y_pos)
-                self.buttons[self.buttonlinks[i]] = RadioButton(self.buttonnicenames[i],base_navigation_group)
-                self.buttons[self.buttonlinks[i]].connect_signal(Constants.SIG_TOGGLED,self.base_window_type_set_callback,self.buttonlinks[i])
-                self.buttons[self.buttonlinks[i]].minsize = self.button_size
-                self.frames[self.buttonlinks[i]].add_child(self.buttons[self.buttonlinks[i]])
-                self.renderer.add_widget(self.frames[self.buttonlinks[i]])
-                if i == 0:
-                    base_navigation_group = self.buttons[self.buttonlinks[i]]
-                    self.buttons[self.buttonlinks[i]].base_navigation_group = self.buttons[self.buttonlinks[i]]
-            if self.basewindow_selected is not None:
-                self.buttons[self.basewindow_selected].set_active(True)
-                self.manager.emit("change_base_window_type",self.basewindow_selected)
-            #print "DEBGGING: emitted: " + str(self.basewindow_selected)
-        else: 
-            print "DEBUGGING: warning a create_left_side_base_navigation call was made when frames already existed"
-            
-
-
-
-
-class base_population_info(BaseObject):
+class base_population_info():
     """
     Subview of the base view. Shows miscellanous information about a base, such as stock, trade routes and population.
     """
 
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.list_size = (650,450)
-        self.topleft = (200, 100)
-
-
-
-     
-    def exit(self):
-        try: self.window
-        except: pass
-        else: 
-            self.window.exit()
-            del self.window
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
         
-    
-    def notify(self,event):
-        if event.signal == "change_base_window_type":
-            if event.data == "base_population":
-                self.create_base_population_info()
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-        
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
 
-
-    def create_base_population_info(self):
+    def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
+        The creation function.  
         """
-        try: self.window
-        except:
-            base_selected = self.solar_system_object_link.current_planet.current_base
-            if base_selected is not None:
+        base_selected = self.solar_system_object_link.current_planet.current_base
+        if base_selected is not None:
+            base_population_dict= {}
+            base_population_dict["Owner"] = {"info":base_selected.owner.name}
+            base_population_dict["GDP per capita"] = {"info":base_selected.gdp_per_capita_in_dollars}
+            base_population_dict["Position: east"] = {"info":str(base_selected.position_coordinate[0])}
+            base_population_dict["Position: north"] = {"info":str(base_selected.position_coordinate[1])}
+            base_population_dict["Population"] = {"info":base_selected.population}
+            base_population_dict["Bitternes"] = {"info":base_selected.bitternes_of_base}
+            base_population_dict["Wages"] = {"info":base_selected.wages}
+            
+            for resource in base_selected.mining_opportunities:
+                 base_population_dict["Mining: " + resource] = {"info":base_selected.mining_opportunities[resource]["sum_of_resources"]}
+            
+            for resource in base_selected.stock_dict:
+                 base_population_dict["Stock: " + resource] = {"info":base_selected.stock_dict[resource]}
 
-                #print dir(base_selected)
-                #print base_selected.accounting
-                #print base_selected.input_output_dict
-                #print base_selected.mining_opportunities
-                #print base_selected.stock_dict
-                #print base_selected.trade_routes
-                base_population_dict= {}
-                
-                base_population_dict["Owner"] = {"info":base_selected.owner.name}
-                base_population_dict["GDP per capita"] = {"info":base_selected.gdp_per_capita_in_dollars}
-                base_population_dict["Position: east"] = {"info":str(base_selected.position_coordinate[0])}
-                base_population_dict["Position: north"] = {"info":str(base_selected.position_coordinate[1])}
-                base_population_dict["Population"] = {"info":base_selected.population}
-                base_population_dict["Bitternes"] = {"info":base_selected.bitternes_of_base}
-                base_population_dict["Wages"] = {"info":base_selected.wages}
-                
-                for resource in base_selected.mining_opportunities:
-                     base_population_dict["Mining: " + resource] = {"info":base_selected.mining_opportunities[resource]["sum_of_resources"]}
-                
-                for resource in base_selected.stock_dict:
-                     base_population_dict["Stock: " + resource] = {"info":base_selected.stock_dict[resource]}
+            for resource in base_selected.input_output_dict["input"]:
+                 base_population_dict["Input: " + resource] = {"info":base_selected.input_output_dict["input"][resource]}
 
-                for resource in base_selected.input_output_dict["input"]:
-                     base_population_dict["Input: " + resource] = {"info":base_selected.input_output_dict["input"][resource]}
+            
+            base_population_dict["Trade routes, number of"] = {"info":str(len(base_selected.trade_routes))}
+            if 0 < len(base_selected.trade_routes) < 4:
+                list_value = str(base_selected.trade_routes.keys())
+                list_value = list_value.rstrip("]")
+                list_value = list_value.lstrip("[")
+                base_population_dict["Trade routes"] = {"info":list_value}
+            
 
-                
-                base_population_dict["Trade routes, number of"] = {"info":str(len(base_selected.trade_routes))}
-                if 0 < len(base_selected.trade_routes) < 4:
-                    list_value = str(base_selected.trade_routes.keys())
-                    list_value = list_value.rstrip("]")
-                    list_value = list_value.lstrip("[")
-                    base_population_dict["Trade routes"] = {"info":list_value}
-                
-
-                
-                self.window = gui_extras.fast_list(self.renderer)
-                self.window.receive_data(base_population_dict,column_order = ["rownames","info"],sort_by="rownames")
-                self.window.topleft = self.topleft
-                self.window.list_size = self.list_size
-                self.window.create_fast_list()
-                self.window.render_title()
-    #        
-            else:
-                print "DEBUGGING: Base selected was None"
+            self.fast_list = gui_components.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
         else:
-            print "DEBUGGING: tried to paint a base_population_info, but this already existed"
+            print "DEBUGGING: Base selected was None"
 
 
 
 
 
-class base_list_of_companies(BaseObject):
+class base_list_of_companies():
     """
     Subview of the base view. Shows a list of all companies operating in the base. Shortcut button to zoom in on one of these companies.
     """
 
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.topleft = (250,100)
-        self.list_size = (600,400)
-        self.frame_size = 40
-
-
-
-#    def change_selection_callback(self):
-#        try: self.window
-#        except:
-#            print "DEBUGGING: the change_selection_callback was made when the self.window did not exist"
-#            print dir(self)
-#        else:
-#            if self.window.selection in self.solar_system_object_link.companies.keys():
-#                selected_company = self.solar_system_object_link.companies[self.window.selection]
-#                self.solar_system_object_link.company_selected = selected_company
-#            else:
-#                print self.solar_system_object_link.companies.keys()
-#                print "self.window.selection: " + str(self.window.selection)
-#                raise Exception("Did not find the selected company in the list of companies")
-        
-            #self.manager.emit("focus_on_company",selected_company)
-        
-    
-    def go_to_company_window_event_callback(self):
-        company_selected = None
-        for company in self.solar_system_object_link.companies.values():
-            if company.name == self.window.selected_name:
-                company_selected = company
-        if company_selected is None:
-            for company in self.solar_system_object_link.companies.values():
-                print company.name
-            raise Exception("The company sought after (" + str(self.window.selected_name) + ") was not found in the companies list of the solar_system_object_link")
-        print "DEBUGGING: emitted going to company_window_event with " + str(company_selected) + " of name " + str(company_selected.name)
-        self.solar_system_object_link.company_selected = company_selected
-        self.manager.emit("going_to_company_window_event",company_selected)
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
         
 
-    def create_base_list_of_companies_window(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+            
+            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+                selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
+                self.solar_system_object_link.display_mode = "company"
+                self.solar_system_object_link.company_selected = selected_company
+                return "clear"
 
-        try: self.window
-        except:
-            company_data = {}
-            for company_instance in self.solar_system_object_link.companies.values():
-                if self.solar_system_object_link.current_planet.current_base.name in company_instance.home_cities.keys():
-                    company_data[company_instance.name] = {}
-                    company_data[company_instance.name]["capital"] = company_instance.capital
-                    
-                    owned_firms_here = 0
-                    for firm_instance in company_instance.owned_firms.values():
-                        if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
-                             owned_firms_here = owned_firms_here + 1
-                             
-                    company_data[company_instance.name]["local firms"] = owned_firms_here
-            
-            
-            
-            
-            
-            
-            self.window = gui_extras.fast_list(self.renderer)
-            self.window.receive_data(company_data)
-            
-            
-            self.window.topleft = self.topleft
-            self.window.list_size = self.list_size
-            self.window.create_fast_list()
-            self.window.render_title()
-            
-            self.go_to_company_window_button = Button("Company page")
-            self.go_to_company_window_button.connect_signal(Constants.SIG_CLICKED,self.go_to_company_window_event_callback)
-            self.go_to_company_window_button_frame = VFrame()
-            self.go_to_company_window_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.go_to_company_window_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-            self.go_to_company_window_button_frame.add_child(self.go_to_company_window_button)
-            self.renderer.add_widget(self.go_to_company_window_button_frame)
-        else: print "DEBUGGING: warning a create_base_list_of_companies_window call was made when self.windows already existed"
-        
-        
-    def exit(self):
-        try: self.window
-        except: pass
-        else: 
-            self.window.exit()
-            del self.window
-        try: self.go_to_company_window_button_frame
-        except: pass#print "DEBUGGING: Did not find self.go_to_company_window_button" 
-        else:
-            self.go_to_company_window_button_frame.destroy()
-            del self.go_to_company_window_button_frame
-            del self.go_to_company_window_button
-        
-    
-    def notify(self,event):
-        if event.signal == "change_base_window_type":
-            if event.data == "base_list_of_companies":
-                self.create_base_list_of_companies_window()
             else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
+                print_dict = {"text":"DEBUGGING:  " + str(self.fast_list.selected_name) + " was not found in company database","type":"debugging"}
+                self.solar_system_object_link.messages.append(print_dict)
+                
+
+
+    def create(self):
+        """
+        The creation function.  
+        """
+
+        company_data = {}
+        for company_instance in self.solar_system_object_link.companies.values():
+            if self.solar_system_object_link.current_planet.current_base.name in company_instance.home_cities.keys():
+                company_data[company_instance.name] = {}
+                company_data[company_instance.name]["capital"] = company_instance.capital
+                
+                owned_firms_here = 0
+                for firm_instance in company_instance.owned_firms.values():
+                    if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+                         owned_firms_here = owned_firms_here + 1
+                         
+                company_data[company_instance.name]["local firms"] = owned_firms_here
         
+            
+        self.fast_list = gui_components.fast_list(self.action_surface, company_data, rect = self.rect)
+            
 
 
-class base_list_of_firms(BaseObject):
+class base_list_of_firms():
     """
     Subview of the base view. Shows a list of all firms operating in the base. Shortcut button to zoom in on one of these firms.
     """
 
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.topleft = (250,100)
-        self.list_size = (600,400)
-        self.frame_size = 40
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
 
         
     
-    def go_to_firm_window_event_callback(self):
-        firm_selected = None
+
+        
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        list_of_firms_in_base = []
         for company_instance in self.solar_system_object_link.companies.values():
-            for firm in company_instance.owned_firms.values():
-                if firm.name == self.window.selected_name:
-                    firm_selected = firm
-        if firm_selected is None:
-            print "POSSIBLE DEBUGGING: - the firm asked for was of None type"
-        else:
-            #print "DEBUGGING: the class is: " + str(firm.__class__)
-            if isinstance(firm,company.base):
-                self.manager.emit("going_to_base_mode_event",firm_selected)
-            else:
-                self.manager.emit("going_to_firm_window_event",firm_selected)
-
-        
-
-    def create_base_list_of_firms_window(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        try: self.window
-        except:
-            list_of_firms_in_base = []
-            for company_instance in self.solar_system_object_link.companies.values():
-                for firm_instance in company_instance.owned_firms.values():
-                    if not isinstance(firm_instance, company.merchant):
-                        if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
-                            list_of_firms_in_base.append(firm_instance)
-                    else:
-                        if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
-                            list_of_firms_in_base.append(firm_instance)
-    #        print list_of_firms_in_base
-            firm_data = {}
-            for firm_instance in list_of_firms_in_base:
-                firm_data[firm_instance.name] = {}
-                try: firm_instance.last_profit
-                except: 
-                    firm_data[firm_instance.name]["last profit"] = "NA"
-                else: 
-                    firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
-                
-                firm_data[firm_instance.name]["owner"] = firm_instance.owner.name
-                
-                stock_amount = 0
-                for stock_item in firm_instance.stock_dict.values():
-                    stock_amount = stock_amount + stock_item
-                firm_data[firm_instance.name]["stock size"] = stock_amount
+            for firm_instance in company_instance.owned_firms.values():
+                if not isinstance(firm_instance, company.merchant):
+                    if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+                        list_of_firms_in_base.append(firm_instance)
+                else:
+                    if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
+                        list_of_firms_in_base.append(firm_instance)
+#        print list_of_firms_in_base
+        firm_data = {}
+        self.links = {}
+        for firm_instance in list_of_firms_in_base:
+            firm_data[firm_instance.name] = {}
+            try: firm_instance.last_profit
+            except: 
+                firm_data[firm_instance.name]["last profit"] = "NA"
+            else: 
+                firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
             
-            self.window = gui_extras.fast_list(self.renderer)
-            self.window.topleft = self.topleft
-            self.window.list_size = self.list_size
+            firm_data[firm_instance.name]["owner"] = firm_instance.owner.name
+            self.links[firm_instance.name] = firm_instance
             
-            self.window.receive_data(firm_data) 
-            
-            self.window.create_fast_list()
-            self.window.render_title()
-            self.go_to_firm_window_button = Button("Firm page")
-            self.go_to_firm_window_button.connect_signal(Constants.SIG_CLICKED,self.go_to_firm_window_event_callback)
-            self.go_to_firm_window_button_frame = VFrame()
-            self.go_to_firm_window_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.go_to_firm_window_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-            self.go_to_firm_window_button_frame.add_child(self.go_to_firm_window_button)
-            self.renderer.add_widget(self.go_to_firm_window_button_frame)
-        else: print "DEBUGGING: warning a base_list_of_firms call was made when self.windows already existed"
-
+            stock_amount = 0
+            for stock_item in firm_instance.stock_dict.values():
+                stock_amount = stock_amount + stock_item
+            firm_data[firm_instance.name]["stock size"] = stock_amount
         
-        
-    def exit(self):
-        try: self.window
-        except: pass
-        else: 
-            self.window.exit()
-            del self.window
-        try: self.go_to_firm_window_button_frame
-        except: pass 
-        else:
-            self.go_to_firm_window_button_frame.destroy()
-            del self.go_to_firm_window_button_frame
-            del self.go_to_firm_window_button
+        self.fast_list = gui_components.fast_list(self.action_surface, 
+                                                  firm_data, 
+                                                  rect = self.rect,
+                                                  column_order = ["rownames","owner","stock size","last profit"]
+                                                  )
         
     
-    def notify(self,event):
-        if event.signal == "change_base_window_type":
-            if event.data == "base_list_of_firms":
-                self.create_base_list_of_firms_window()
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-        
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+            firm_selected = self.links[self.fast_list.selected_name]
+            self.solar_system_object_link.display_mode = "firm"
+            self.solar_system_object_link.firm_selected = firm_selected
+            return "clear"
 
 
 
-class base_and_firm_market_window(BaseObject):
+
+class base_and_firm_market_window():
     """
     Subview of the base view and also of the firm view. Shows information about the market in the base. For a chosen resource this can be either
     a history of what transactions has been made, or an overview of the bids currently in effect.
@@ -2227,23 +1999,16 @@ class base_and_firm_market_window(BaseObject):
     This is also the interface where manual bids can be made
     """
 
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["change_firm_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self._signals[SIG_CLICKED] = []
-        self.renderer = renderer
-        self.renderer.get_managers()[0].add_object(self, 5)
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
+
         self.resource_selected = self.solar_system_object_link.trade_resources.keys()[0]
         self.graph_size = (400,400)
-        self.topleft_everything = (300, 50)
+        self.graph_topleft = (200,100)
+
         self.frame_size = 40
         self.blank_area_in_middle_height = 30 #the middle area in the market bid mode
         self.graph_selected = "history"
@@ -2252,36 +2017,34 @@ class base_and_firm_market_window(BaseObject):
         self.bidding_mode = False #if click on the map should result in bidding
 
 
-    def trade_resource_set_callback(self,button_name):
-        self.resource_selected = button_name
-        self.update_data()
+    def trade_resource_set_callback(self,label,function_parameter):
+        self.resource_selected = label
+        self.update_data(None, None)
 
-    def graph_mode_callback(self,button_name):
-        self.graph_selected = button_name
-        self.update_data()    
+    def graph_mode_callback(self,label,function_parameter):
+        self.graph_selected = label
+        self.update_data(None, None)    
 
 
-    def market_selection_callback(self,base_selected_for_merchant):
-        self.base_selected_for_merchant = base_selected_for_merchant
-        self.update_data()
+    def market_selection_callback(self,label,function_parameter):
+        self.base_selected_for_merchant = label
+        self.update_data(None, None)
         
-    def place_bid_callback(self):
+    def place_bid_callback(self,label,function_parameter):
         self.bidding_mode = self.bid_button.active
 
     
-    def create_base_and_firm_market_window(self,renderer):
+    def create(self):
         """
         The creation function. Doesn't return anything, but saves and renders using the self.renderer. 
         """
 
-        try: self.resource_selection_frame
-        except: pass
-        else:   self.exit()
-
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
         #first making a list of the resources that should be displayed
-        self.resource_selection_frame = VFrame(Label("Select resource"))
-        self.resource_selection_frame.set_align(ALIGN_LEFT)
         if self.solar_system_object_link.display_mode == "base":
             resource_button_names = self.solar_system_object_link.trade_resources.keys()
         elif self.solar_system_object_link.display_mode == "firm":
@@ -2299,103 +2062,94 @@ class base_and_firm_market_window(BaseObject):
         if self.resource_selected not in resource_button_names:
             self.resource_selected = resource_button_names[0]
         #for each resource to be displayed we make a radio button
-        market_resource_group = None
-        button_size = []
-        self.resource_buttons = {}
-        for i, button in enumerate(resource_button_names):
-            self.resource_buttons[button] = RadioButton(string.capitalize(button),market_resource_group)
-            self.resource_buttons[button].connect_signal(Constants.SIG_TOGGLED,self.trade_resource_set_callback,button)
-            self.resource_selection_frame.add_child(self.resource_buttons[button])
-            if i == 0:
-                market_resource_group = self.resource_buttons[button]
-                self.resource_buttons[button].market_resource_group = self.resource_buttons[button]
-        self.resource_buttons[self.resource_selected].set_active("True")
-        self.resource_selection_frame.topleft = self.topleft_everything
-        self.renderer.add_widget(self.resource_selection_frame)
 
-        #Ready a box that selects which of the two graph types we are looking at
-        self.graph_selection_frame = VFrame(Label("Select graph"))
-        self.graph_selection_frame.set_align(ALIGN_LEFT)
-        graph_button_names = ["history","market bids"]
-        market_graph_type_group = None
-        button_size = []
-        self.graph_buttons = {}
-        for i, button in enumerate(graph_button_names):
-            self.graph_buttons[button] = RadioButton(string.capitalize(button),market_graph_type_group)
-            self.graph_buttons[button].connect_signal(Constants.SIG_TOGGLED,self.graph_mode_callback,button)
-            self.graph_selection_frame.add_child(self.graph_buttons[button])
-            if i == 0:
-                market_graph_type_group = self.graph_buttons[button]
-                self.graph_buttons[button].market_graph_type_group = self.graph_buttons[button]
-        self.graph_buttons[self.graph_selected].set_active(True)
-        self.graph_selection_frame.topleft = (self.topleft_everything[0],self.topleft_everything[1]+ self.resource_selection_frame.size[1] + 15)
-        self.graph_selection_frame.set_minimum_size(self.resource_selection_frame.size[0],1)
-        self.renderer.add_widget(self.graph_selection_frame)
+        
+#        print "self.resource_selected: " + str(self.resource_selected)
+        self.resource_buttons = gui_components.radiobuttons(
+                                                        resource_button_names, 
+                                                        self.action_surface, 
+                                                        function = self.trade_resource_set_callback, 
+                                                        function_parameter = None, 
+                                                        topleft = (self.rect[0] + 10 , self.rect[1] + 10), 
+                                                        selected = self.resource_selected)
+        
+        
+        self.graph_buttons = gui_components.radiobuttons(
+                                                        ["history","market bids"], 
+                                                        self.action_surface, 
+                                                        function = self.graph_mode_callback, 
+                                                        function_parameter = None, 
+                                                        topleft = (self.rect[0] + 10 , self.rect[1] + 40 + self.resource_buttons.rect[3]),
+                                                        selected = self.graph_selected)
+
+        
         
         #in case it is a merchant selected we have to also pick the markets looked upon.
         if self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
-                self.market_selection_frame = VFrame(Label("Select market"))
-                self.market_selection_frame.set_align(ALIGN_LEFT)
-                
-                from_location_button = RadioButton("From: " + firm_selected.from_location.name, None)
-                to_location_button = RadioButton("To: " + firm_selected.to_location.name, from_location_button)
-                from_location_button.active = True
-                from_location_button.connect_signal(Constants.SIG_TOGGLED,self.market_selection_callback,firm_selected.from_location)
-                to_location_button.connect_signal(Constants.SIG_TOGGLED,self.market_selection_callback,firm_selected.to_location)
-                self.market_selection_frame.topleft = (self.topleft_everything[0],self.graph_selection_frame.topleft[1]+ self.graph_selection_frame.size[1] + 15)
-                self.market_selection_frame.set_minimum_size(self.resource_selection_frame.size[0],1)
-                self.market_selection_frame.set_children([from_location_button,to_location_button])
+#                self.market_selection_frame = VFrame(Label("Select market"))
+#                self.market_selection_frame.set_align(ALIGN_LEFT)
+                self.market_selection_buttons = gui_components.radiobuttons(
+                                                        ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
+                                                        self.action_surface, 
+                                                        function = self.market_selection_callback, 
+                                                        function_parameter = None, 
+                                                        topleft = (self.rect[0] + 10 , self.graph_buttons.rect[1] + self.graph_buttons.rect[3] + 40),
+                                                        selected = self.graph_selected)
+
                 self.base_selected_for_merchant = firm_selected.from_location
-                self.renderer.add_widget(self.market_selection_frame)
+
                 
             else:
-                try:    self.base_selected_for_merchant
-                except: pass
-                else:
-                    del self.base_selected_for_merchant
+                self.market_selection_buttons = None
+                
         elif self.solar_system_object_link.display_mode == "base":
+            self.market_selection_buttons = None
             firm_selected = self.solar_system_object_link.current_planet.current_base 
         else:
             raise Exception("Unknown display_mode: " + str(global_variabes.display_mode))
                     
         #Add an update button that allows for updates to be done
-        self.update_button = Button("#Update")
-        self.update_button.connect_signal(Constants.SIG_CLICKED,self.update_data)
-        self.update_button.set_minimum_size(self.resource_selection_frame.size[0],1)
-        try:    self.market_selection_frame.size
-        except: self.update_button.topleft = (self.topleft_everything[0],self.graph_selection_frame.topleft[1]+ self.graph_selection_frame.size[1] + 15)
-        else:   self.update_button.topleft = (self.topleft_everything[0],self.market_selection_frame.topleft[1]+ self.market_selection_frame.size[1] + 15)   
-        self.renderer.add_widget(self.update_button)
+        try:    self.market_selection_buttons.rect
+        except: update_button_topleft = (self.rect[0] + 10, self.graph_buttons.rect[1]+ self.graph_buttons.rect[3] + 20)
+        else:   update_button_topleft = (self.rect[0] + 10, self.market_selection_buttons.rect[1]+ self.market_selection_buttons.rect[3] + 20)   
+
+        
+        self.update_button = gui_components.button("Update",
+                                                   self.action_surface,
+                                                   function = self.update_data,
+                                                   function_parameter = None, 
+                                                   topleft = update_button_topleft, 
+                                                   fixed_size = None)
+        
+
+
         
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
         
         if firm_selected.name in self.solar_system_object_link.current_player.owned_firms.keys():
-            self.bid_button = ToggleButton("Make market bid")
-            self.bid_button.connect_signal(Constants.SIG_TOGGLED,self.place_bid_callback)
-            self.bid_button.set_minimum_size(self.resource_selection_frame.size[0],1)
-            self.bid_button.topleft = (self.topleft_everything[0],self.update_button.topleft[1]+ self.update_button.size[1] + 15)
-            self.renderer.add_widget(self.bid_button)
-            self.bidding_mode = self.bid_button.active
+            self.bid_button = gui_components.button("Make market bid",
+                                           self.action_surface,
+                                           function = self.place_bid_callback,
+                                           function_parameter = None, 
+                                           topleft = (self.rect[0] + 10, self.update_button[1] + self.update_button[3] +20), 
+                                           fixed_size = None)
+
+            
+            self.bidding_mode = True
         else:
+            self.bid_button = None
             self.bidding_mode = False
             
-        self.update_data()
+        self.update_data(None, None)
             
         
-    def update_data(self):
+    def update_data(self, label, function_parameter):
         """
         Function to update the data in the market analysis window. Its most important function is that it calls the relevant
         analysis function (market bids or market history) depending on the self.graph_selected variable.
         """
-        #can not exist without the selection frames
-        try:    self.resource_selection_frame
-        except: 
-            create_base_and_firm_market_window(self.renderer)
-            print "DEBUGGING: update_data() was called without create_base_and_firm_market_window" 
-        else:
-            pass
         
         self.highlighted_transactions = []
         if self.graph_selected == "market bids":
@@ -2412,17 +2166,9 @@ class base_and_firm_market_window(BaseObject):
             print self.update_data_market_bids()
             raise Exception("The surface returned in the market window was not recognised")
 
-        try: self.graph_surface_label
-        except: 
-            self.graph_surface_label = ImageLabel(surface)
-            self.graph_frame = VFrame(Label("Market overview"))
-            self.graph_frame.topleft = (self.topleft_everything[0] + 150,self.topleft_everything[1])
-            self.graph_frame.add_child(self.graph_surface_label)
-            self.renderer.add_widget(self.graph_frame)
-        else:
-            #print "remember to change labels. Right now it is " + str(self.graph_frame.label)
-            self.graph_surface_label.set_picture(surface)
-            self.renderer.update()
+
+        self.action_surface.blit(surface, self.graph_topleft)
+        pygame.display.flip()
 
 
     def update_data_market_bids(self):
@@ -2449,7 +2195,7 @@ class base_and_firm_market_window(BaseObject):
 
             #painting the basic market_analysis surface
             market_analysis_surface = pygame.Surface(self.graph_size)
-            market_analysis_surface.fill((234,228,223))
+            market_analysis_surface.fill((212,212,212))
             pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_size[1]*0.5+7),(self.graph_size[1],self.graph_size[1]*0.5+7),3)
             pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_size[1]*0.5-7),(self.graph_size[1],self.graph_size[1]*0.5-7),3)
             
@@ -2546,12 +2292,12 @@ class base_and_firm_market_window(BaseObject):
                     max_width_of_selection_area = 10
                     top_border_length = min((y_position_here - y_position_before)/2,max_width_of_selection_area)
                     bottom_border_length = min((y_position_next - y_position_here)/2,max_width_of_selection_area)
-                    top_border = y_position_here - top_border_length + self.topleft_everything[1] + 21 #the 21 is empirical. I think it is the frame height
+                    top_border = y_position_here - top_border_length + self.rect[1] + 21 #the 21 is empirical. I think it is the frame height
                     height = top_border_length + bottom_border_length
                     if height == 0: height = 1
-                    left_border = self.topleft_everything[0] + 150 + 7 #the seven is empirical (i think it is the frame)
+                    left_border = self.rect[0] + 150 + 7 #the seven is empirical (i think it is the frame)
                     width = x_length
-                    #debugging_info = "exact y_pos: " + str(y_position_here + self.topleft_everything[1] + 21) + " top border: +" + str(top_border_length) + " bottom border: -" + str(bottom_border_length) 
+                    #debugging_info = "exact y_pos: " + str(y_position_here + self.rect[1] + 21) + " top border: +" + str(top_border_length) + " bottom border: -" + str(bottom_border_length) 
                     self.positional_database["non_bidding_mode"][(left_border,top_border,width,height)] = {"linkto":provider[i],"text":provider[i].name + ": " + "%.5g" % prices[i],"figure":((0,y_position_here),(x_length,y_position_here))}
                 
                 
@@ -2590,9 +2336,9 @@ class base_and_firm_market_window(BaseObject):
 
     def update_data_history(self):
         history_surface = pygame.Surface(self.graph_size)
-        history_surface.fill((234,228,223))
+        history_surface.fill((212,212,212))
         resource = self.resource_selected
-        
+        #print "HERE: self.resource_selected: " + str(self.resource_selected)
         #determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
         if self.solar_system_object_link.display_mode == "base":
             market = self.solar_system_object_link.current_planet.current_base.market
@@ -2649,8 +2395,8 @@ class base_and_firm_market_window(BaseObject):
                 pygame.draw.circle(history_surface,(0,0,0),(x_position,y_position),dot_size)
                 
                 
-                left_border = x_position + self.topleft_everything[0] + 150 - dot_size + 7 
-                top_border = y_position + self.topleft_everything[1] + 21 - dot_size #the 21 is empirical. I think it is the frame height
+                left_border = x_position + self.rect[0] + 150 - dot_size + 7 
+                top_border = y_position + self.rect[1] + 21 - dot_size #the 21 is empirical. I think it is the frame height
                 if seller[i] is not None and buyer[i] is not None: #can happen with the empty startup transactions
                     self.positional_database["non_bidding_mode"][(left_border,top_border,2*dot_size,2*dot_size)] = {"linkto":seller[i],"text":str(seller[i].name) + " to " + str(buyer[i].name) + ": 10^" + str(dot_size) + "units","figure":((dot_size),(x_position,y_position)),"debug":left_border- dot_size}
 
@@ -2678,7 +2424,7 @@ class base_and_firm_market_window(BaseObject):
         
         self.exit()
         self.bid_window = Table(6,3)
-        self.bid_window.topleft = (self.topleft_everything[0] + 100, self.topleft_everything[1] + 100)
+        self.bid_window.topleft = (self.rect[0] + 100, self.rect[1] + 100)
         
         #row 0: price
         self.bid_window.add_child(0, 0, Label("Price"))
@@ -2871,166 +2617,128 @@ class base_and_firm_market_window(BaseObject):
 
                     
 
-    def exit(self):
-        try: self.resource_selection_frame
-        except: pass
-        else:
-            self.resource_selection_frame.destroy()
-            del self.resource_selection_frame
-            del self.resource_buttons
-        try: self.graph_selection_frame
-        except: pass
-        else:
-            self.graph_selection_frame.destroy()
-            del self.graph_selection_frame
-            del self.graph_buttons
-        
-        try: self.graph_frame
-        except:
-            pass
-        else:
-            self.graph_frame.destroy()
-            del self.graph_frame
-            del self.graph_surface_label
-        
-        try:    self.market_selection_frame
-        except:
-            pass
-        else:
-            self.market_selection_frame.destroy()
-            del self.market_selection_frame
-        
-        try:    self.update_button
-        except:
-            pass
-        else:
-            self.update_button.destroy()
-            del self.update_button
-        
-        try: self.bid_button
-        except: pass
-        else: 
-            try:    self.bid_button._manager
-            except: pass
-            else:
-                self.bid_button.destroy()
-            del self.bid_button
-            
-        try:    self.bid_window
-        except: pass
-        else:
-            self.bid_window.destroy()
-            del self.bid_window
 
         
-    def react_to_click(self,position):
+    def receive_click(self,event):
         """
         Function that will take the position of a mouse click and check if any market-window variables (either history or market bids)
         are present at that position. If so, it will highlight these with further info on first click and provide a link on second click
         """ 
+        #print "self.resource_selected: " + str(self.resource_selected)
+        position = event.pos
         
-        if self.bidding_mode: #if the graphs accept bids we start the bidding sections up
-            if self.graph_selected == "market bids":
-                top_of_plot = self.topleft_everything[1] + self.frame_size  + 21
-                self.blank_area_in_middle_height
-                y_position =  position[1] - top_of_plot
-                if y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 + self.blank_area_in_middle_height/2:
-                    y_position = y_position - self.blank_area_in_middle_height #more than half - correct and move on
-                elif y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 - self.blank_area_in_middle_height/2:
-                    return None #Hit half - don't continue
-                height_of_plot = self.graph_size[1] - 2 * self.frame_size - self.blank_area_in_middle_height 
-                y_relative_position = 1.0 - (y_position / float(height_of_plot))
-            else:
-                y_relative_position =  ((self.graph_size[1] - self.frame_size) - (position[1] - self.topleft_everything[1] - 21)) / float(self.graph_size[1] - self.frame_size)
-
-            x_relative_position =  (position[0] - self.topleft_everything[0] - 150) / float(self.graph_size[0])
-            if 0 < x_relative_position < 1:
-                if 0 < y_relative_position < 1:
-                    if "price" in self.positional_database["bidding_mode"].keys():
-                        min_price = self.positional_database["bidding_mode"]["price"][0]
-                        max_price = self.positional_database["bidding_mode"]["price"][1]
-                        price = y_relative_position * (max_price - min_price) + min_price
-                        if price < 0:
-                            print "Changed price from " + str(price) + " to 0"
-                            price = 0
-                            
-                        price = str(price)
-                    else:
-                        price = ""
-                        
-                    if "quantity" in self.positional_database["bidding_mode"].keys():
-                        max_qt = self.positional_database["bidding_mode"]["quantity"][1]
-                        try:    math.log10(max_qt)
-                        except: 
-                            print "DEBUGGING: no good selection of log10 max_qt"
-                            quantity = ""
-                        else:
-                            quantity = str(int(10 ** (math.log10(max_qt) * x_relative_position)))  
-                    else:
-                        quantity = ""
-                
-#                    print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
-                    self.make_manual_bid(price,quantity)
-                        
-                        
-            
-                
+        graph_rect = pygame.Rect(self.graph_topleft[0], self.graph_topleft[1], self.graph_size[0], self.graph_size[1])
         
-        else:  #if the graphs do not accept bids we only display some information
-            click_spot = pygame.Rect(position[0]-1,position[1]-1,2,2)
-            click_spot_result = click_spot.collidedict(self.positional_database["non_bidding_mode"])
-            if click_spot_result is not None:
-                try: self.graph_surface_label
-                except: pass
+        if graph_rect.collidepoint(event.pos) == 1:
+            print "in graph"
+            if self.bidding_mode: #if the graphs accept bids we start the bidding sections up
+                if self.graph_selected == "market bids":
+                    top_of_plot = self.rect[1] + self.frame_size  + 21
+                    self.blank_area_in_middle_height
+                    y_position =  position[1] - top_of_plot
+                    if y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 + self.blank_area_in_middle_height/2:
+                        y_position = y_position - self.blank_area_in_middle_height #more than half - correct and move on
+                    elif y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 - self.blank_area_in_middle_height/2:
+                        return None #Hit half - don't continue
+                    height_of_plot = self.graph_size[1] - 2 * self.frame_size - self.blank_area_in_middle_height 
+                    y_relative_position = 1.0 - (y_position / float(height_of_plot))
                 else:
-                    if click_spot_result[1] in self.highlighted_transactions:
-                        if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
-                            self.manager.emit("going_to_firm_window_event",click_spot_result[1]["linkto"])
-                    else:
-                        self.highlighted_transactions.append(click_spot_result[1])
-                        surface = self.graph_surface_label.picture
-                        
-                        text_size = global_variables.standard_font.size(click_spot_result[1]["text"]) 
-                        text = global_variables.standard_font.render(click_spot_result[1]["text"],True,(0,0,0))
-                        
-                        text_position = (click_spot_result[1]["figure"][1][0]-text_size[0],click_spot_result[1]["figure"][1][1])
-                        
-                        if text_position[0] < self.frame_size:
-                            text_position = (self.frame_size,text_position[1])
-                            #print "corrected text position a little" 
-                        
-                        surface.blit(text,text_position)
-                        
-                        if self.graph_selected == "market bids":
-                            pygame.draw.line(surface,(100,100,255),click_spot_result[1]["figure"][0],click_spot_result[1]["figure"][1])
-                        elif self.graph_selected == "history":
-                            pygame.draw.circle(surface,(100,100,255),click_spot_result[1]["figure"][1],click_spot_result[1]["figure"][0])
-                            #print click_spot_result[1]["debug"]
-                        else:
-                            raise Exception("Unknown graph type " + self.graph_selected)
+                    y_relative_position =  ((self.graph_size[1] - self.frame_size) - (position[1] - self.rect[1] - 21)) / float(self.graph_size[1] - self.frame_size)
     
-                        self.graph_surface_label.set_picture(surface)
-                        self.renderer.update()
-
-
-    def notify(self,event):
-        if event.signal == 5:
+                x_relative_position =  (position[0] - self.rect[0] - 150) / float(self.graph_size[0])
+                if 0 < x_relative_position < 1:
+                    if 0 < y_relative_position < 1:
+                        if "price" in self.positional_database["bidding_mode"].keys():
+                            min_price = self.positional_database["bidding_mode"]["price"][0]
+                            max_price = self.positional_database["bidding_mode"]["price"][1]
+                            price = y_relative_position * (max_price - min_price) + min_price
+                            if price < 0:
+                                print "Changed price from " + str(price) + " to 0"
+                                price = 0
+                                
+                            price = str(price)
+                        else:
+                            price = ""
+                            
+                        if "quantity" in self.positional_database["bidding_mode"].keys():
+                            max_qt = self.positional_database["bidding_mode"]["quantity"][1]
+                            try:    math.log10(max_qt)
+                            except: 
+                                print "DEBUGGING: no good selection of log10 max_qt"
+                                quantity = ""
+                            else:
+                                quantity = str(int(10 ** (math.log10(max_qt) * x_relative_position)))  
+                        else:
+                            quantity = ""
+                    
+    #                    print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
+                        self.make_manual_bid(price,quantity)
+                            
+        else: #if the click is elsewhere
             
-            try: self.graph_frame
-            except: pass
-            else:
-                self.react_to_click(event.data.pos)
-        if event.signal in ["change_base_window_type","change_firm_window_type"]:
-            if event.data == "market":
-                self.create_base_and_firm_market_window(self.renderer)
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
+            #self.resource_buttons.activate((event.pos[0] - self.resource_buttons.rect[0], event.pos[1] - self.resource_buttons.rect[1])
+            
+            
+            if self.update_button.rect.collidepoint(event.pos) == 1:
+                self.update_button.activate(event.pos)
+            if self.resource_buttons.rect.collidepoint(event.pos) == 1:
+                self.resource_buttons.activate(event.pos)
+            if self.graph_buttons.rect.collidepoint(event.pos) == 1:
+                self.graph_buttons.activate(event.pos)
+            if "activate" in dir(self.market_selection_buttons):
+                if self.market_selection_buttons.rect.collidepoint(event.pos) == 1:
+                    self.market_selection_buttons.activate(event.pos)
+            if "activate" in dir(self.bid_button):
+                if self.bid_button.rect.collidepoint(event.pos) == 1:
+                    self.bid_button.activate(event.pos)
+
+            
+                                
+            
+            
+            
+            
+                    
+            
+            else:  #if the graphs do not accept bids we only display some information
+                click_spot = pygame.Rect(position[0]-1,position[1]-1,2,2)
+                click_spot_result = click_spot.collidedict(self.positional_database["non_bidding_mode"])
+                if click_spot_result is not None:
+                    try: self.graph_surface_label
+                    except: pass
+                    else:
+                        if click_spot_result[1] in self.highlighted_transactions:
+                            if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
+                                self.manager.emit("going_to_firm_window_event",click_spot_result[1]["linkto"])
+                        else:
+                            self.highlighted_transactions.append(click_spot_result[1])
+                            surface = self.graph_surface_label.picture
+                            
+                            text_size = global_variables.standard_font.size(click_spot_result[1]["text"]) 
+                            text = global_variables.standard_font.render(click_spot_result[1]["text"],True,(0,0,0))
+                            
+                            text_position = (click_spot_result[1]["figure"][1][0]-text_size[0],click_spot_result[1]["figure"][1][1])
+                            
+                            if text_position[0] < self.frame_size:
+                                text_position = (self.frame_size,text_position[1])
+                                #print "corrected text position a little" 
+                            
+                            surface.blit(text,text_position)
+                            
+                            if self.graph_selected == "market bids":
+                                pygame.draw.line(surface,(100,100,255),click_spot_result[1]["figure"][0],click_spot_result[1]["figure"][1])
+                            elif self.graph_selected == "history":
+                                pygame.draw.circle(surface,(100,100,255),click_spot_result[1]["figure"][1],click_spot_result[1]["figure"][0])
+                                #print click_spot_result[1]["debug"]
+                            else:
+                                raise Exception("Unknown graph type " + self.graph_selected)
+        
+                            self.graph_surface_label.set_picture(surface)
+                            self.renderer.update()
 
 
 
-class base_build_menu(BaseObject):
+class base_build_menu():
     """
     Subview of the base view. Shows all options regarding building firms and other bases from the current base.
     
@@ -3043,187 +2751,873 @@ class base_build_menu(BaseObject):
     
     """
 
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.topleft = (250,100)
-        self.list_size = (600,400)
-        self.frame_size = 40
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
         
-#        self.size_requested = 1 #variable for the selection of commodity firm size - reset at each new round
+        self.menu_position = "root"
+        self.selections = {}
+        self.text_receiver = None
 
-    def create_base_build_menu_window(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
 
-        try: self.window
-        except:
-            buildoption_data = {}
-            for technology_name in self.solar_system_object_link.current_player.known_technologies:
-                if technology_name != "common knowledge":
-                    technology = self.solar_system_object_link.current_player.known_technologies[technology_name]
+#    def exit(self, label, function_parameter):
+#        return "clear"
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        self.menu_position = "root"
+        self.selections = {}
+        
+
+        buildoption_data = {}
+        for technology_name in self.solar_system_object_link.current_player.known_technologies:
+            if technology_name != "common knowledge":
+                technology = self.solar_system_object_link.current_player.known_technologies[technology_name]
+            
+                buildoption_data[technology_name] = {}
                 
-                    buildoption_data[technology_name] = {}
-                    
-                    
-                    #nicefying input output
-                    nice_input_output_line = ""
-                    for put in ["input","output"]:
-                        if put == "output":
-                            nice_input_output_line = nice_input_output_line + "-> "
-                        for resource in technology["input_output_dict"][put].keys():
-                            value = technology["input_output_dict"][put][resource]
-                            nice_input_output_line = nice_input_output_line + resource + ": " + str(value) + " "
-                            
-                    buildoption_data[technology_name]["input and output"] = str(nice_input_output_line)
-                    
+                
+                #nicefying input output
+                nice_input_output_line = ""
+                for put in ["input","output"]:
+                    if put == "output":
+                        nice_input_output_line = nice_input_output_line + "-> "
+                    for resource in technology["input_output_dict"][put].keys():
+                        value = technology["input_output_dict"][put][resource]
+                        nice_input_output_line = nice_input_output_line + resource + ": " + str(value) + " "
+                        
+                buildoption_data[technology_name]["input and output"] = str(nice_input_output_line)
+                
+    
+
+        buildoption_data["research"] = {}
+        buildoption_data["research"]["input and output"] = "labor: 1 -> research points"
+
+        buildoption_data["merchant"] = {}
+        buildoption_data["merchant"]["input and output"] = "transport: 1 -> movement of goods"
+
+        buildoption_data["new base"] = {}
+        buildoption_data["new base"]["input and output"] = "population: 100 steel: 100 labor: 100 -> new base"
         
+        self.fast_list = gui_components.fast_list(self.action_surface, buildoption_data, rect = self.rect)
 
-            buildoption_data["research"] = {}
-            buildoption_data["research"]["input and output"] = "labor: 1 -> research points"
 
-            buildoption_data["merchant"] = {}
-            buildoption_data["merchant"]["input and output"] = "transport: 1 -> movement of goods"
-
-            buildoption_data["new base"] = {}
-            buildoption_data["new base"]["input and output"] = "population: 100 steel: 100 labor: 100 -> new base"
+    def receive_click(self,event):
+        
+        if event.button == 1:
+            if self.menu_position == "pick name":
+                if self.ok_button.rect.collidepoint(event.pos) == 1:
+                    self.ok_button.activate(event)
+                    return "clear"
+            elif self.menu_position == "commodity size":
+                if self.slider.rect.collidepoint(event.pos) == 1:
+                    self.slider.activate(event.pos)
+                if self.ok_button.rect.collidepoint(event.pos) == 1:
+                    return self.ok_button.activate(event.pos)
             
-            self.window = gui_extras.fast_list(self.renderer)
-            self.window.receive_data(buildoption_data)
-            
-            
-            self.window.topleft = self.topleft
-            self.window.list_size = self.list_size
-            self.window.create_fast_list()
-            self.window.render_title()
-            
-            self.select_this_button = Button("Select")
-            self.select_this_button.connect_signal(Constants.SIG_CLICKED,self.select_button_callback)
-            self.select_this_button_frame = VFrame()
-            self.select_this_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.select_this_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-            self.select_this_button_frame.add_child(self.select_this_button)
-            self.renderer.add_widget(self.select_this_button_frame)
-        else: print "DEBUGGING: warning a create_base_list_of_companies_window call was made when self.windows already existed"
-
-
-
-    def select_button_callback(self):
-        """
-        distributes the select button click to either a size selection, base destination or merchant destination prompt
-        """
-        try: self.window.selected_name
-        except: print "DEBUGGING: select something first"
-        else:
-            #resetting variables, to avoid using old data
-            try:    self.size_requested #variable for the selection of commodity firm size - reset at each new round
-            except: pass
-            else:   del self.size_requested
-            
-            #Being over-cautious with the naming asking box. In case it should somehow linger around, it should be removed now
-            try:    self.entry_box 
-            except: pass
-            else:   
-                try:    self.entry_box._manager
-                except: pass
-                else:   
-                    self.entry_box.destroy()
-                    print "DEBUGGING: self.entry_box was lingering around, but was caught and destroyed in the try loop"
-                del self.entry_box
-
-            if self.window.selected_name == "merchant":
-                self.merchant_pick_destination()
-            elif self.window.selected_name == "new base":
-                self.new_base_pick_location()
+            elif self.menu_position == "commodity name":
+                if self.ok_button.rect.collidepoint(event.pos) == 1:
+                    self.ok_button.activate(event.pos)
+                    return "clear"
+                    
+                
             else:
-                self.commodity_size_selection()
+                self.fast_list.receive_click(event)
+        
+        
+        if event.button == 3:
+            self.fast_list.receive_click(event)
+            if self.menu_position == "root":
+                if self.fast_list.selected_name is not None:
+                    if self.fast_list.selected_name == "merchant":
+                        self.merchant_pick_destination()
+                    elif self.fast_list.selected_name == "new base":
+                        return "new base"
+                    else:
+                        self.commodity_size_selection(self.fast_list.selected_name)
+            
+            elif self.menu_position == "pick destination":
+                if self.fast_list.selected_name is not None:
+                    self.merchant_pick_resource(self.fast_list.selected_name)
+            
+            elif self.menu_position == "pick resource":
+                if self.fast_list.selected_name is not None:
+                    self.merchant_pick_name(self.fast_list.selected_name)
+                    
+                
 
 
 
 
-    def new_base_pick_location(self):
+
+  
+    def merchant_pick_destination(self):
         """
-        Function that initiates the process that allows the player to pick location of a new base
+        Function to ask what destination the merchant should trade with
         """
-#            #clear up everything to make space
-#            self.exit()
+        self.menu_position = "pick destination"
+        destination_data = {}
+        location = self.solar_system_object_link.current_planet.current_base
+        for destination_name in location.trade_routes:
+            destination = location.trade_routes[destination_name]
+            
+            destination_data[destination_name] = {}
+            destination_data[destination_name]["distance"] = destination["distance"]
+            destination_data[destination_name]["type"] = destination["transport_type"]
+
+        self.fast_list = gui_components.fast_list(self.action_surface, destination_data, rect = self.rect)
+
+            
+            
         
-        self.manager.emit("center_on",self.solar_system_object_link.current_planet.name)
-
-        self.base_build_frame = VFrame()
-        base_build_label = Label("Choose position of new base")
-        self.base_build_frame.set_children([base_build_label])
-        self.base_build_frame.topleft = (global_variables.window_size[0]/2 - self.base_build_frame.size[0]/2, 100) 
-        self.renderer.add_widget(self.base_build_frame)
-        
-        self.solar_system_object_link.build_base_mode = True
+    def merchant_pick_resource(self, destination_name):
+        """
+        Function to ask what resource the merchant should trade in
+        """
+        self.menu_position = "pick resource"
         
 
+        from_location = self.solar_system_object_link.current_planet.current_base
+        trade_route_selected = from_location.trade_routes[destination_name]
+    
+        #prepare direct links to the other endpoint location
+        for endpoint in trade_route_selected["endpoint_links"]:
+            if endpoint != from_location:
+                to_location = endpoint
+        
+        #prepare resource data
+        resource_data = {}
+        for resource in self.solar_system_object_link.trade_resources.keys():
+            if self.solar_system_object_link.trade_resources[resource]["transportable"]:
+                resource_data[resource] = {}
+                
+                quantity_offered_here = 0
+                prices = []
+                for sell_offer in from_location.market["sell_offers"][resource]:
+                    quantity_offered_here = quantity_offered_here + sell_offer["quantity"]
+                    prices.append(sell_offer["price"])
+                if len(prices) == 0:
+                    cheapest_sell_price = None
+                else:
+                    cheapest_sell_price = min(prices)
+                    
+                if len(to_location.market["buy_offers"][resource]) > 0:
+                    best_buy_price = to_location.market["buy_offers"][resource][0]["price"]
+                else:
+                    best_buy_price = None
+                
+                resource_data[resource]["Qt on market here"] = quantity_offered_here
+                resource_data[resource]["Best sell price"] = cheapest_sell_price
+                resource_data[resource]["Best buy price"] = best_buy_price
+            
+        self.fast_list = gui_components.fast_list(self.action_surface, resource_data, rect = self.rect)    
+        
+        
+        
+        
+        
+        from_location = self.solar_system_object_link.current_planet.current_base
+        trade_route_selected = from_location.trade_routes[destination_name]
+        for endpoint in trade_route_selected["endpoint_links"]:
+            if endpoint != from_location:
+                to_location = endpoint
+        self.selections = {"to_location":to_location,"from_location":from_location,"trade_route_selected":trade_route_selected}
+
+
+    def merchant_pick_name(self,resource,give_length_warning=False):
+        """
+        Function to get the name of the merchant
+        give_length_warning         If true, this will specify the max text size as part of the title.
+        """
+        self.menu_position = "pick name"
+        
+        self.selections["resource"] = resource
+
+
+        #check that this does not already exist
+        exists = False
+        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+            if isinstance(firm_instance, company.merchant):
+                if firm_instance.from_location == self.selections["from_location"]:
+                    if firm_instance.to_location == self.selections["to_location"]:
+                        if firm_instance.resource == resource:
+                            exists = True
+        if exists:
+            print_dict = {"text":"A merchant from " + str(self.selections["from_location"].name) + " to " + str(self.selections["to_location"].name) + " trading " + str(resource) + " does already exist","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+
+            
+        else:
+            
+            pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+            pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+            pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+            pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+
+            text = global_variables.standard_font.render("Choose name for merchant:",True,(0,0,0))
+            self.action_surface.blit(text, (self.rect[0] + 10, self.rect[1] + 10))
+
+        
+        
+            if give_length_warning:
+                warning = global_variables.standard_font.render("Name must be unique",True,(0,0,0))
+                self.action_surface.blit(warning, (self.rect[0] + 10, self.rect[1] + 50))
+                
+                
+            self.text_receiver = gui_components.entry(self.action_surface, 
+                                 topleft = (self.rect[0] + 10, self.rect[1] + 90), 
+                                 width = self.rect[3] - 20, 
+                                 max_letters = global_variables.max_letters_in_company_names)
+            self.text_receiver.active = True
+    
+            self.ok_button = gui_components.button("ok", 
+                                                    self.action_surface,
+                                                    self.merchant_build, 
+                                                    function_parameter = None, 
+                                                    fixed_size = (100,35), 
+                                                    topleft = (self.rect[0] + 10, self.rect[1] + 150)
+                                                    )
+            
+
+        
+        
+        
+        
+    def merchant_build(self,label,function_parameter):
+        """
+        Function to build the merchant
+        """ 
+        for test in ["to_location","from_location","trade_route_selected","resource"]:
+            if test not in self.selections.keys():
+                raise Exception("The " + test + " was not properly selected")
+        
+        resource = self.selections["resource"]
+        
+        
+        name = self.text_receiver.text
+
+        #test if name is unique
+        unique = True
+        for company_instance in self.solar_system_object_link.companies.values():
+            if name in company_instance.owned_firms.keys():
+                unique = False
+        
+        if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
+            owner = self.solar_system_object_link.current_player
+            input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
+            distance = self.selections["trade_route_selected"]["distance"]
+            transport_type = self.selections["trade_route_selected"]["transport_type"]
+            new_merchant_firm = company.merchant(self.solar_system_object_link,
+                                                 self.selections["from_location"],
+                                                 self.selections["to_location"],
+                                                 input_output_dict,
+                                                 owner,
+                                                 name,
+                                                 transport_type,
+                                                 distance,
+                                                 self.selections["resource"])
+            owner.owned_firms[name] = new_merchant_firm
+            print_dict = {"text":"Built a merchant named " + str(name) + " between " + str(self.selections["from_location"].name) + " and " + str(self.selections["to_location"].name) + " trading in " + str(self.selections["resource"]),"type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            self.selections = {}
+            self.menu_position = "root"
+        else:
+            print_dict = {"text":"the selected name " + str(name) + " was too long. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            self.merchant_pick_name(self.selections["resource"],give_length_warning=True)
+
+
+    
+    def commodity_size_selection(self, company_type):
+        """
+        This function creates a dialog asking the size of the firm to be built
+        The range of the size is from "1" where the it is just the input_output_dict
+        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule is not implemented for AI - also note that it is more like 101% of the sum at present)
+         
+        """
+        self.menu_position = "commodity size"
+        
+        if company_type in ["new base","merchant"]:
+            raise Exception("This should have been distributed correctly already at the select_button_callback step")
+        elif company_type == "research":
+            technology = {}
+            technology["input_output_dict"] = {}
+            technology["input_output_dict"]["input"] = {"labor":1}
+            technology["input_output_dict"]["output"] = {"research:":1}
+            technology["technology_name"] = "research"
+        else:
+            technology = self.solar_system_object_link.current_player.known_technologies[company_type]
+        
+        input_size = 0
+        
+        
+        #calculate the range allowed
+        for input in technology["input_output_dict"]["input"].values():
+            input_size = input_size + input
+        if input_size < 2: 
+            input_size = 2
+        if self.solar_system_object_link.current_planet.current_base is None:
+            raise Exception("very weird - there was no base selected")
+        population = self.solar_system_object_link.current_planet.current_base.population
+        max_size = int(population * 0.1 / float(input_size))
+        
+        
+        #check if the current_player already owns a company of that technology in the current base
+        existing_firm = None
+        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+            if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+                if firm_instance.technology_name == company_type:
+                    existing_firm = firm_instance
+                    break
+        
+        
+        #clean up the act
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+
+        text = global_variables.standard_font.render("Choose size of firm:",True,(0,0,0))
+        self.action_surface.blit(text, (self.rect[0] + 90, self.rect[1] + 10))
+
+        
+        
+        if existing_firm is None:
+            existing_firm_text = "No existing firms of this type owned here"
+            start_value = 1
+        else:
+            existing_firm_text = "An existing size " + str(existing_firm.size) + " firm of this type already owned here. Choose size change?"
+            start_value = existing_firm.size
+  
+        existing_firm_rendered_text = global_variables.standard_font_small.render(existing_firm_text,True,(0,0,0))
+        self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 130, self.rect[1] + 50))
+        
+        fastest = global_variables.standard_font.render("Smallest",True,(0,0,0))
+        self.action_surface.blit(fastest, (self.rect[0] + 40, self.rect[1] + 40))
+
+        slowest = global_variables.standard_font.render("Largest",True,(0,0,0))
+        self.action_surface.blit(slowest, (self.rect[0] + 40, self.rect[1] + self.rect[3]-  50))
+        
+        
+        def execute(label, technology):
+            """
+            This function is activated on scrollbar value change on the size selection box, and updates the input_output_dict
+            """
+
+            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
+            pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
+            
+            size_info = global_variables.standard_font_small.render("size: " + str(self.slider.position),True,(0,0,0))
+            self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 70))
+            lineno = 0
+            for put in ["input","output"]:
+                lineno = lineno + 1
+                direction_info = global_variables.standard_font_small.render(put+":",True,(0,0,0))
+                self.action_surface.blit(direction_info, (self.rect[0] + 130, self.rect[1] + 70 + lineno * 20))
+#                print technology.keys()
+                for resource in technology["input_output_dict"][put].keys():
+                    lineno = lineno + 1
+                    value = technology["input_output_dict"][put][resource]
+                    value = value * self.slider.position
+#                    nice_input_output_line = nice_input_output_line +  + "\n"
+                    value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
+                    self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 70 + lineno * 20))
+
+
+
+            
+            
+            self.ok_button = gui_components.button("ok", 
+                                        self.action_surface,
+                                        self.commodity_ask_for_name, 
+                                        function_parameter = existing_firm, 
+                                        fixed_size = (100,35), 
+                                        topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
+
+            
+            pygame.display.flip()
+        
+        self.slider = gui_components.vscrollbar (self.action_surface,
+                                                execute,
+                                                topleft = (self.rect[0] + 10, self.rect[1] + 30),
+                                                length_of_bar_in_pixel = self.rect[3] - 60,
+                                                range_of_values = (1,max_size),
+                                                start_position = start_value,
+                                                function_parameter = technology
+                                                )
+        execute(None,technology)
+        
+        self.selections = {"technology":technology} 
+      
+
+
+        
+    def commodity_ask_for_name(self,label,existing_firm,give_length_warning=False):
+        """
+        This command is called after the size selection box has been accepted
+        """
+        size_requested = self.slider.position
+        print "commodity_ask_for_name and existing_firm is " + str(existing_firm)
+        self.menu_position = "commodity name"
+        update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
+        pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
+
+        
+        if existing_firm is None:
+            self.text_receiver = gui_components.entry(self.action_surface, 
+                     topleft = (self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150), 
+                     width = 300, 
+                     max_letters = global_variables.max_letters_in_company_names)
+            self.text_receiver.active = True
+            self.ok_button = gui_components.button("ok", 
+                self.action_surface,
+                self.commodity_build_firm, 
+                function_parameter = None, 
+                fixed_size = (100,35), 
+                topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
+
+        else: #in cases where the firm already exists, we preserve the name
+             
+            
+            existing_info = global_variables.standard_font_small.render("Updating firm size",True,(0,0,0))
+            self.action_surface.blit(existing_info, (self.rect[0] + 130, self.rect[1] + 70))
+            pygame.display.flip()
+            print "commodity_ask_for_name knows that existing firm is not none but " + str(existing_firm)
+            self.commodity_build_firm(None, existing_firm)
+            return "clear"
+
+
+            
+#            self.commodity_build_firm(technology, self.size_requested, existing_name = existing_firm.name)
+            
+
+        
+
+
+
+    def commodity_build_firm(self,label,existing_firm):
+        """
+        The effectuating function for building commodity firms
+        """
+#        self.menu_position = "commodity build"
+        
+        if existing_firm is None:
+            name = self.text_receiver.text
+            
+            unique = True
+            for company_instance in self.solar_system_object_link.companies.values():
+                if name in company_instance.owned_firms.keys():
+                    unique = False
+        
+            if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
+                print_dict = {"text":"the selected name " + str(name) + " was too long and/or not unique. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+
+                self.commodity_ask_for_name(None,None,True)
+                return None
+            
+        else: #if existing name exists, we use that
+            name = existing_firm.name
+        
+        
+        
+        technology = self.selections["technology"]
+        location = self.solar_system_object_link.current_planet.current_base
+        owner = self.solar_system_object_link.current_player
+        size = self.slider.position
+        
+        owner.change_firm_size(location,size,technology["technology_name"], name)
+        if isinstance(name, str) or isinstance(name, unicode):
+            print_dict = {"text":"Built a firm named " + str(name) + " at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+
+        else:
+            print name
+            print name.__class__
+            raise Exception("The name used: " + str(name) + " was of class " + str(name.__class__) + " but should have been a string")
+        
 
 
 
 
-    def new_base_ask_for_name(self,sphere_coordinates,give_length_warning = False):
+class company_ownership_info():
+    """
+    Subview of the company view. Shows miscellanous information about a company, such as decision parameters, capital and number of firms.
+    """
+
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
+
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+
+
+        
+
+
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        company_selected = self.solar_system_object_link.company_selected
+        if company_selected is not None:
+            company_ownership_dict = {}
+            
+            for company_database_variable in company_selected.company_database:
+                company_database_variable_name_here = company_database_variable
+                if len(company_database_variable_name_here) > global_variables.max_letters_in_company_names:
+                    company_database_variable_name_here = company_database_variable_name_here[0:global_variables.max_letters_in_company_names]
+                company_ownership_dict["parameter: " + company_database_variable_name_here] = {"info":str(company_selected.company_database[company_database_variable])} 
+            
+            company_ownership_dict["capital"] = {"info":company_selected.capital}
+           
+            company_ownership_dict["home cities, number of"] = {"info":str(len(company_selected.home_cities))}
+            if 0 < len(company_selected.home_cities) < 4:
+                list_value = str(company_selected.home_cities.keys())
+                list_value = list_value.rstrip("]")
+                list_value = list_value.lstrip("[")
+                company_ownership_dict["home cities"] = {"info":list_value}
+
+            company_ownership_dict["last_firm_evaluation"] = {"info":str(company_selected.last_firm_evaluation)}
+            company_ownership_dict["last_market_evaluation"] = {"info":str(company_selected.last_market_evaluation)}
+            company_ownership_dict["last_demand_evaluation"] = {"info":str(company_selected.last_demand_evaluation)}
+            company_ownership_dict["last_supply_evaluation"] = {"info":str(company_selected.last_supply_evaluation)}
+
+            company_ownership_dict["research"] = {"info":str(company_selected.research)}    
+            
+            company_ownership_dict["firms owned, number of"] = {"info":str(len(company_selected.owned_firms))}
+
+            self.fast_list = gui_components.fast_list(self.action_surface, buildoption_data, rect = self.rect,column_order = ["rownames","info"])
+        else:
+            if self.solar_system_object_link.message_printing["debugging"]:
+                print_dict = {"text":"DEBUGGING: Company selected was None","type":"debugging"}
+                self.solar_system_object_link.messages.append(print_dict)
+
+
+
+
+
+
+
+
+class company_financial_info():
+    """
+    Subview of the company view. Shows a graph of the capital of the company as it has been over the past years. 
+    """
+
+
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+
+
+
+
+
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        
+        company_selected = self.solar_system_object_link.company_selected
+        company_accounting = company_selected.company_accounting
+        history_surface = pygame.Surface(self.graph_size)
+        history_surface.fill((234,228,223))
+        if len(company_selected.company_accounting) == 0:
+            no_history_label = global_variables.standard_font.render("No history for " + company_selected.name,True,(0,0,0))
+            history_surface.blit(no_history_label,(0,self.graph_size[1]*0.5-4))
+        else:
+            start_date = company_accounting[0]["date"]
+            end_date = company_accounting[len(company_accounting)-1]["date"]
+            relative_numeric_start_date = (start_date - self.solar_system_object_link.start_date).days
+            relative_numeric_end_date = (end_date - self.solar_system_object_link.start_date).days
+            xlim = (relative_numeric_start_date,relative_numeric_end_date)
+            dates = []
+            capital = []
+            for account_report in company_accounting:
+                dates.append((account_report["date"] - self.solar_system_object_link.start_date).days)
+                capital.append(account_report["capital"])
+            ylim = (0,max(capital))
+            if ylim[0] == ylim[1]:
+                ylim = (ylim[0]-1,ylim[1]+1)
+            if xlim[0] == xlim[1]:
+                xlim = (xlim[0]-1,xlim[1]+1)
+            
+            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link, unit = "capital")
+            history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim,solar_system_object_link = self.solar_system_object_link, unit="date")
+            
+            for i in range(1,len(capital)):
+                x1_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
+                y1_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x2_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
+                y2_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                pygame.draw.line(history_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
+        
+        
+        self.action_surface.blit(history_surface,(self.rect[0],self.rect[1]))
+
+
+
+
+    def receive_click(self,event):
+        print "Nothing should happen now"
+
+class company_list_of_firms():
+    """
+    Subview of the company view. Shows a list of all firms owned by the company. A shortcut button allows quick zoom to the firm page of these firms.
+    """
+
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
+
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        company_selected = self.solar_system_object_link.company_selected
+        if company_selected is None:
+            raise Exception("A list of firms was requested, but no company was selected")
+        
+        firm_data = {}
+        for firm_instance in company_selected.owned_firms.values():
+            firm_data[firm_instance.name] = {}
+            try: firm_instance.last_profit
+            except: 
+                firm_data[firm_instance.name]["last profit"] = "NA"
+            else: 
+                firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
+            
+            firm_data[firm_instance.name]["location"] = firm_instance.location.name
+            
+            stock_amount = 0
+            for stock_item in firm_instance.stock_dict.values():
+                stock_amount = stock_amount + stock_item
+            firm_data[firm_instance.name]["stock size"] = stock_amount
+        self.fast_list = gui_components.fast_list(self.action_surface, firm_data, rect = self.rect)
+
+
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+        if event.button == 3:
+            firm_selected = None
+            for firm in self.solar_system_object_link.company_selected.owned_firms.values():
+                if firm.name == self.fast_list.selected_name:
+                    firm_selected = firm
+            if firm_selected is None:
+                if self.solar_system_object_link.message_printing["debugging"]:
+                    print_dict = {"text":"POSSIBLE DEBUGGING: - the firm asked for was of None type","type":"debugging"}
+                    self.solar_system_object_link.messages.append(print_dict)
+    
+            else:
+                print "FIXME: Should go to firm window now"
+
+
+
+class firm_trade_partners_info():
+    """
+    Subview of the firm view. Shows a list of past trading transactions for the firm.
+    """
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
+
+
+    def create(self):
+        """
+        The creation function. Doesn't return anything, but saves self.window_transactions variable and renders using the self.renderer. 
+        """
+        
+        firm_selected = self.solar_system_object_link.firm_selected
+        if isinstance(firm_selected,company.merchant):
+            location_list = [firm_selected.from_location, firm_selected.to_location]
+            
+        else:
+            location_list = [firm_selected.location]
+
+        
+        transactions = {}
+        for k, location_instance in enumerate(location_list):
+            market = location_instance.market
+            for i, resource in enumerate(market["transactions"]):
+                for j, transaction in enumerate(market["transactions"][resource]):
+                    date = transaction["date"]
+                    if transaction["buyer"] is not None:
+                        buyer = transaction["buyer"].name
+                    else:
+                        buyer = None
+                    if transaction["seller"] is not None:
+                        seller = transaction["seller"].name
+                    else:
+                        seller = None
+                    price = transaction["price"]
+                    #print "The price is of class " + str(price.__class__)
+                    quantity = transaction["quantity"]
+                    if firm_selected.name in [buyer,seller]:
+                        transactions[i*j*k] =  {"date":date,"buyer":buyer,"seller":seller,"price":price,"quantity":quantity}
+
+        self.fast_list = gui_components.fast_list(
+                                                  self.action_surface, 
+                                                  transactions, 
+                                                  rect = self.rect,
+                                                  column_order = ["rownames","date","buyer","seller","price","quantity"])
+
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+
+        
+        
+
+class firm_process_info():
+    """
+    Subview of the firm view. Shows a list of the resources of interest for the firm. Both the stock and the production rate is shown.
+    """
+
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(50,50,700,500)
+        self.action_surface = action_surface
+        
+
+        
+    def receive_click(self,event):
+        self.fast_list.receive_click(event)
+            
+
+
+    def create(self):
+        """
+        The creation function.  
+        """
+        
+        firm_selected = self.solar_system_object_link.firm_selected
+        
+        
+        if firm_selected is not None:
+            
+            if isinstance(firm_selected, company.merchant):
+                process_and_stock_dict = {}
+                for direction_name in ["destination","origin"]:
+                    if direction_name == "destination":
+                        base = firm_selected.to_location
+                    else:
+                        base = firm_selected.from_location
+                    
+                    direction = "in " + base.name
+                    for resource in [firm_selected.resource, firm_selected.transport_type]:
+                         process_and_stock_dict[resource + " at " + direction_name] = {}
+                         process_and_stock_dict[resource + " at " + direction_name]["direction"] = direction
+                         if direction_name == "destination":
+                             process_and_stock_dict[resource + " at " + direction_name]["current stock"] = firm_selected.to_stock_dict[resource]
+                         else:
+                             process_and_stock_dict[resource + " at " + direction_name]["current stock"] = firm_selected.from_stock_dict[resource]
+                         process_and_stock_dict[resource + " at " + direction_name]["rate"] = "NA"
+                 
+            else:
+                process_and_stock_dict = {}
+                for direction in ["input","output"]:
+                    for resource in firm_selected.input_output_dict[direction]:
+                         process_and_stock_dict[resource] = {}
+                         process_and_stock_dict[resource]["direction"] = direction
+                         process_and_stock_dict[resource]["current stock"] = firm_selected.stock_dict[resource]
+                         process_and_stock_dict[resource]["rate"] = firm_selected.input_output_dict[direction][resource]
+        
+            self.fast_list = gui_components.fast_list(self.action_surface, process_and_stock_dict, rect = self.rect,column_order = ["rownames","direction","rate","current stock"])
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class construct_base_menu():
+    """
+    The functions in which new bases can be build
+    """
+    def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
+        self.rect = pygame.Rect(150,150,300,300)
+        self.action_surface = action_surface
+        self.text_receiver = None
+
+
+
+
+    def receive_click(self,event):
+        if self.ok_button.rect.collidepoint(event.pos) == 1:
+            return self.ok_button.activate(None)
+
+        if self.cancel_button.rect.collidepoint(event.pos) == 1:
+            return self.cancel_button.activate(None)
+
+
+
+    def exit(self, label, function_parameter):
+        return "clear"
+        
+            
+    def new_base_ask_for_name(self,sphere_coordinates, give_length_warning = False):
         """
         Function that prompts the user for a name of the new base
-        
         Optional argument give_length_warning includes a label that specifies max " + str(global_variables.max_letters_in_company_names) + " characters
         """
-#        self.position_requested = sphere_coordinates #saving position in case we need to retype the name
-#        self.manager.emit("center_on",self.solar_system_object_link.current_planet.current_base)
-        try:    self.base_build_frame
-        except: pass
-        else:
-            self.base_build_frame.destroy()
-            del self.base_build_frame
+        
+        pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
 
-        
-        self.manager.emit("going_to_base_mode_event",self.solar_system_object_link.current_planet.current_base)
-#        self.exit()
-        self.basewindow_selected = "base_build_menu"
-        self.exit()
-#        time.sleep(2)
-        
-        
-        self.dialog = VFrame(Label("Choose name for base"))
-        self.dialog.set_minimum_size(400,150)
-        self.dialog.topleft = (300, 250)
-        
-        top_label = Label("Base built on " + self.solar_system_object_link.current_planet.name + " at coordinates " + str(  ( int(sphere_coordinates[0]),int(sphere_coordinates[1]) )  ) )
-    
-        self.entry_box = Entry("")
-        self.entry_box.minsize = (300,24)
-
-        ok_button = Button("#Ok")
-        ok_button.connect_signal(SIG_CLICKED,self.new_base_build,sphere_coordinates)
-        cancel_button = Button("#Cancel")
-        cancel_button.connect_signal(SIG_CLICKED,self.dialog.destroy)
-        
+        description = global_variables.standard_font.render("Enter name for base at (" + str(round(sphere_coordinates[0]))+ "," + str(round(sphere_coordinates[1])) + "):",True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2 - 70))
         if give_length_warning:
-            warning_label = Label("Name must be unique and between 1 and " + str(global_variables.max_letters_in_company_names) + " characters")
-        
-        frame2 = HFrame()
-        frame2.set_children([ok_button,cancel_button])
-        
-        if give_length_warning:
-            self.dialog.set_children([top_label,self.entry_box,frame2,warning_label])
-        else:
-            self.dialog.set_children([top_label,self.entry_box,frame2])
-        
-        self.renderer.add_widget(self.dialog)
+            warning = global_variables.standard_font.render("Name must be unique",True,(0,0,0))
+            self.action_surface.blit(warning, (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2 - 30))
+            
+            
+        self.text_receiver = gui_components.entry(self.action_surface, 
+                             topleft = (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2), 
+                             width = 200, 
+                             max_letters = global_variables.max_letters_in_company_names)
+        self.text_receiver.active = True
 
+        self.ok_button = gui_components.button("ok", 
+                                                self.action_surface,
+                                                self.new_base_build, function_parameter = sphere_coordinates, 
+                                                fixed_size = (100,35), 
+                                                topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
+        
+        self.cancel_button = gui_components.button("cancel", 
+                                                self.action_surface,
+                                                self.exit, function_parameter = None, 
+                                                fixed_size = (100,35), 
+                                                topleft = (self.rect[0] + self.rect[2] - 220, self.rect[1] + self.rect[3] - 40))
 
-    def new_base_build(self,sphere_coordinates):
-        name = self.entry_box.text
+    def new_base_build(self,label,sphere_coordinates):
+        name = self.text_receiver.text
+        
         
         #test if name is unique
         unique = True
@@ -3266,1184 +3660,12 @@ class base_build_menu(BaseObject):
             self.solar_system_object_link.messages.append(print_dict)
 
             #clear up everything to make space
-            self.exit()
+            self.solar_system_object_link.display_mode = "planetary"
+            return "clear"
             
         else:
             print_dict = {"text":"the selected name " + str(name) + " was too long. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 
-            self.exit()
             self.new_base_ask_for_name(sphere_coordinates,give_length_warning=True)
-
-  
-    def merchant_pick_destination(self):
-        """
-        Function to ask what destination the merchant should trade with
-        """
-        #clear up everything to make space
-        self.exit()
-        
-            
-        destination_data = {}
-        location = self.solar_system_object_link.current_planet.current_base
-        for destination_name in location.trade_routes:
-            destination = location.trade_routes[destination_name]
-            
-            destination_data[destination_name] = {}
-            destination_data[destination_name]["distance"] = destination["distance"]
-            destination_data[destination_name]["type"] = destination["transport_type"]
-            
-        self.window = gui_extras.fast_list(self.renderer)
-        self.window.receive_data(destination_data)
-        
-        
-        self.window.topleft = self.topleft
-        self.window.list_size = self.list_size
-        self.window.create_fast_list()
-        self.window.render_title()
-        
-        self.select_this_button = Button("Select")
-        self.select_this_button.connect_signal(Constants.SIG_CLICKED,self.merchant_pick_resource)
-        self.select_this_button_frame = VFrame()
-        self.select_this_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.select_this_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-        self.select_this_button_frame.add_child(self.select_this_button)
-        self.renderer.add_widget(self.select_this_button_frame)
-        
-            
-        
-    def merchant_pick_resource(self):
-        """
-        Function to ask what resource the merchant should trade in
-        """
-        try: self.window.selected_name
-        except: 
-            print_dict = {"text":"Select something first","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-        else:
-            from_location = self.solar_system_object_link.current_planet.current_base
-            trade_route_selected_name = self.window.selected_name
-            trade_route_selected = from_location.trade_routes[trade_route_selected_name]
-            
-            #clear up everything to make space
-            del self.window.selected_name
-            self.exit()
-        
-            #prepare direct links to the other endpoint location
-            for endpoint in trade_route_selected["endpoint_links"]:
-                if endpoint != from_location:
-                    to_location = endpoint
-            
-            #prepare resource data
-            resource_data = {}
-            for resource in self.solar_system_object_link.trade_resources.keys():
-                if self.solar_system_object_link.trade_resources[resource]["transportable"]:
-                    resource_data[resource] = {}
-                    
-                    quantity_offered_here = 0
-                    prices = []
-                    for sell_offer in from_location.market["sell_offers"][resource]:
-                        quantity_offered_here = quantity_offered_here + sell_offer["quantity"]
-                        prices.append(sell_offer["price"])
-                    if len(prices) == 0:
-                        cheapest_sell_price = None
-                    else:
-                        cheapest_sell_price = min(prices)
-                        
-                    if len(to_location.market["buy_offers"][resource]) > 0:
-                        best_buy_price = to_location.market["buy_offers"][resource][0]["price"]
-                    else:
-                        best_buy_price = None
-                    
-                    resource_data[resource]["Qt on market here"] = quantity_offered_here
-                    resource_data[resource]["Best sell price"] = cheapest_sell_price
-                    resource_data[resource]["Best buy price"] = best_buy_price
-                
-                
-            self.window = gui_extras.fast_list(self.renderer)
-            self.window.receive_data(resource_data)
-            
-            
-            self.window.topleft = self.topleft
-            self.window.list_size = self.list_size
-            self.window.create_fast_list()
-            self.window.render_title()
-            
-            self.select_this_button = Button("Select")
-            self.select_this_button.connect_signal(Constants.SIG_CLICKED,self.merchant_pick_name,to_location,trade_route_selected)
-            self.select_this_button_frame = VFrame()
-            self.select_this_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.select_this_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-            self.select_this_button_frame.add_child(self.select_this_button)
-            self.renderer.add_widget(self.select_this_button_frame)
-
-
-
-    def merchant_pick_name(self,to_location,trade_route_selected,give_length_warning=False):
-        """
-        Function to get the name of the merchant
-        to_location                 The destination location as a base object
-        trade_route_selected        The trade route as given by the from_location (ie. current base selected)
-        Optionally:
-        give_length_warning         If true, this will specify the max text size as part of the title.
-        """
-        try: self.window.selected_name
-        except: 
-            print_dict = {"text":"the selected name " + str(name) + " was too long. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-        else:
-            resource = self.window.selected_name
-            from_location = self.solar_system_object_link.current_planet.current_base
-
-            #check that this does not already exist
-            from_location = self.solar_system_object_link.current_planet.current_base
-            exists = False
-            for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
-                if isinstance(firm_instance, company.merchant):
-                    if firm_instance.from_location == from_location:
-                        if firm_instance.to_location == to_location:
-                            if firm_instance.resource == resource:
-                                exists = True
-            if exists:
-                print_dict = {"text":"A merchant from " + str(from_location.name) + " to " + str(to_location.name) + " trading " + str(resource) + " does already exist","type":"general gameplay info"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-                
-            else:
-                #clear up everything to make space
-                del self.window.selected_name
-                self.exit()
-
-                self.dialog = VFrame(Label("Choose name for merchant"))
-                self.dialog.set_minimum_size(400,150)
-                self.dialog.topleft = (300, 250)
-                
-                top_label = Label(resource + " from " + from_location.name + " to " + to_location.name)
-            
-                self.entry_box = Entry("")
-                self.entry_box.minsize = (300,24)
-
-                ok_button = Button("#Ok")
-                ok_button.connect_signal(SIG_CLICKED,self.merchant_build,to_location,trade_route_selected,resource)
-                cancel_button = Button("#Cancel")
-                cancel_button.connect_signal(SIG_CLICKED,self.dialog.destroy)
-                
-                if give_length_warning:
-                    warning_label = Label("Name must be unique and between 1 and " + str(global_variables.max_letters_in_company_names) + " characters")
-                
-                frame2 = HFrame()
-                frame2.set_children([ok_button,cancel_button])
-                
-                if give_length_warning:
-                    self.dialog.set_children([top_label,self.entry_box,frame2,warning_label])
-                else:
-                    self.dialog.set_children([top_label,self.entry_box,frame2])
-                
-                self.renderer.add_widget(self.dialog)
-
-        
-        
-        
-        
-    def merchant_build(self,to_location,trade_route_selected,resource):
-        """
-        Function to build the merchant
-        """ 
-        name = self.entry_box.text
-
-        #test if name is unique
-        unique = True
-        for company_instance in self.solar_system_object_link.companies.values():
-            if name in company_instance.owned_firms.keys():
-                unique = False
-        
-        if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
-        
-            from_location = self.solar_system_object_link.current_planet.current_base
-            owner = self.solar_system_object_link.current_player
-            input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
-            distance = trade_route_selected["distance"]
-            transport_type = trade_route_selected["transport_type"]
-            new_merchant_firm = company.merchant(self.solar_system_object_link,from_location,to_location,input_output_dict,owner,name,transport_type,distance,resource)
-            owner.owned_firms[name] = new_merchant_firm
-            print_dict = {"text":"Built a merchant named " + str(name) + " between " + str(from_location.name) + " and " + str(to_location.name) + " trading in " + str(resource),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-            #clear up everything to make space
-            self.exit()
-            
-        else:
-            
-            print_dict = {"text":"the selected name " + str(name) + " was too long. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-            
-            self.window = gui_extras.fast_list(self.renderer) # has to make this temporarily to store selected name (it will be killed in the function call in two lines)
-            self.window.selected_name = resource #has to put it back here, because of the way the merchant_pick_name works
-            self.merchant_pick_name(to_location,trade_route_selected,give_length_warning=True)
-
-
-    
-    def commodity_size_selection(self):
-        """
-        This function creates a dialog asking the size of the firm to be built (unless it is a merchant, in which case it redirects to the select merchant destination box)
-        The range of the size is from "1" where the it is just the input_output_dict
-        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule is not implemented for AI - also note that it is more like 101% of the sum at present)
-         
-        """
-        try: self.window.selected_name
-        except: 
-            print_dict = {"text":"Select something first","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-        else:
-            if self.window.selected_name in ["new base","merchant"]:
-                raise Exception("This should have been distributed correctly already at the select_button_callback step")
-            elif self.window.selected_name == "research":
-                technology = {}
-                technology["input_output_dict"] = {}
-                technology["input_output_dict"]["input"] = {"labor":1}
-                technology["input_output_dict"]["output"] = {"research:":1}
-                technology["technology_name"] = "research"
-            else:
-                technology = self.solar_system_object_link.current_player.known_technologies[self.window.selected_name]
-            input_size = 0
-            
-            
-            #calculate the range allowed
-            for input in technology["input_output_dict"]["input"].values():
-                input_size = input_size + input
-            if input_size < 2: 
-                input_size = 2
-            if self.solar_system_object_link.current_planet.current_base is None:
-                raise Exception("very weird - there was no base selected")
-            population = self.solar_system_object_link.current_planet.current_base.population
-            max_size = int(population * 0.1 / float(input_size))
-            
-            
-            #check if the current_player already owns a company of that technology in the current base
-            existing_firm = None
-            for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
-                if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
-                    if firm_instance.technology_name == self.window.selected_name:
-                        existing_firm = firm_instance
-                        break
-            
-            
-            #clean up the act
-            self.exit()
-            
-            #create the dialog and scrollbar
-            self.dialog = VFrame(Label("Choose size of firm"))
-            self.dialog.align = ALIGN_LEFT
-            self.size_range = (1,max_size)
-            self.dialog.set_minimum_size(400,150)
-            self.dialog.topleft = (300, 250)
-            
-            if existing_firm is None:
-                top_label = Label("No existing firms of this type owned here")
-                start_value = 1
-            else:
-                top_label = Label("An existing size " + str(existing_firm.size) + " firm of this type already owned here")
-                start_value = ((existing_firm.size - self.size_range[0]) * 100 ) / self.size_range[1]
-                print "calculated start value: " + str(start_value) #fixme or just change start_value to 1 for all. (the idea was that the slider should be at the current level  
-            top_label.align = ALIGN_LEFT
-    
-            bottom_label = Label("")
-            bottom_label.multiline = True
-            bottom_label.align = ALIGN_LEFT
-          
-    
-            hscrollbar = HScrollBar (300, 3300)
-            hscrollbar.set_step(30)
-            hscrollbar.value = start_value
-            hscrollbar.connect_signal(SIG_VALCHANGED,self.commodity_update_size_selection,technology)
-    
-            ok_button = Button("#Ok")
-            ok_button.connect_signal(SIG_CLICKED,self.commodity_ask_for_name,technology,existing_firm)
-            cancel_button = Button("#Cancel")
-            cancel_button.connect_signal(SIG_CLICKED,self.dialog.destroy)
-
-            frame2 = HFrame()
-            frame2.set_children([ok_button,cancel_button])
-            self.dialog.set_children([top_label,hscrollbar,bottom_label,frame2])
-#            self.dialog.set_child(frame1)
-            self.commodity_update_size_selection(technology)
-            
-            self.renderer.add_widget(self.dialog)
-    
-
-
-    def commodity_update_size_selection(self,technology):
-        """
-        This function is activated on hscrollbar value change on the size selection box, and updates the input_output_dict
-        """
-        hscrollbar = self.dialog.children[1]
-        normalized_size_requested = int(hscrollbar.value / 30.0)
-        size_requested = int((normalized_size_requested * self.size_range[1]) / 100.0) + self.size_range[0]
-        label = self.dialog.children[2]
-        
-        nice_input_output_line = "size: " + str(size_requested) + "\n\n"
-        for put in ["input","output"]:
-            nice_input_output_line = nice_input_output_line + put + ":\n"
-            for resource in technology["input_output_dict"][put].keys():
-                value = technology["input_output_dict"][put][resource]
-                value = value * size_requested
-                nice_input_output_line = nice_input_output_line + resource + ": " + str(value) + "\n"
-            nice_input_output_line = nice_input_output_line + "\n"
-        label.set_text(nice_input_output_line)
-
-
-
-        
-    def commodity_ask_for_name(self,technology,existing_firm,give_length_warning=False):
-        """
-        This command is called after the size selection box has been accepted
-        """
-        try:    self.size_requested
-        except: #in this case (the usual case) we have to extract it from the scrollbar value, before destroying the scrollbar 
-            for child in self.dialog.children: #checking which of the children (this index might change because of top_label)
-                if isinstance(child, HScrollBar):
-                    hscrollbar = child
-            normalized_size_requested = int(hscrollbar.value / 30.0)
-            self.size_requested = int((normalized_size_requested * self.size_range[1]) / 100.0) + self.size_range[0]
-
-        else:   # in this case it is a re-run, probably from a non-accepted name, so we just use self.size_requested as it is
-            pass   
-            
-
-        self.exit() #here we destroy the scrollbar
-        
-        if existing_firm is None:
-            self.dialog = VFrame(Label("Choose name for firm"))
-            self.dialog.set_minimum_size(400,150)
-            self.dialog.topleft = (300, 250)
-            
-            
-            top_label = Label("Size " + str(self.size_requested) + " " + technology["technology_name"] + " firm built in " + self.solar_system_object_link.current_planet.current_base.name)
-        
-            self.entry_box = Entry("")
-            self.entry_box.activate()
-            self.entry_box.minsize = (300,24)
-    
-            ok_button = Button("#Ok")
-            ok_button.connect_signal(SIG_CLICKED,self.commodity_build_firm,technology,self.size_requested)
-            cancel_button = Button("#Cancel")
-            cancel_button.connect_signal(SIG_CLICKED,self.dialog.destroy)
-            
-            if give_length_warning:
-                warning_label = Label("Name must be unique and between 1 and " + str(global_variables.max_letters_in_company_names) +" characters")
-            
-            frame2 = HFrame()
-            frame2.set_children([ok_button,cancel_button])
-            
-            if give_length_warning:
-                self.dialog.set_children([top_label,self.entry_box,frame2,warning_label])
-            else:
-                self.dialog.set_children([top_label,self.entry_box,frame2])
-            
-            self.renderer.add_widget(self.dialog)
-
-        else: #in cases where the firm already exists, we preserve the name
-            self.commodity_build_firm(technology, self.size_requested, existing_name = existing_firm.name)
-            
-            print_dict = {"text":"The firm already exists. Assuming a size change is wanted.","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-        
-
-
-
-    def commodity_build_firm(self,technology,size,existing_name = None):
-        """
-        The effectuating function for building commodity firms
-        """
-        if existing_name is None:
-            name = self.entry_box.text
-            #test if name is unique
-            unique = True
-            for company_instance in self.solar_system_object_link.companies.values():
-                if name in company_instance.owned_firms.keys():
-                    unique = False
-        
-            if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
-                print_dict = {"text":"the selected name " + str(name) + " was too long and/or not unique. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-                self.commodity_ask_for_name(technology,None,True)
-                return None
-            
-        else: #if existing name exists, we use that
-            name = existing_name
-        
-        
-        
-        
-        location = self.solar_system_object_link.current_planet.current_base
-        owner = self.solar_system_object_link.current_player
-        
-        owner.change_firm_size(location,size,technology["technology_name"], name)
-        if isinstance(name, str) or isinstance(name, unicode):
-            print_dict = {"text":"Built a firm named " + str(name) + " at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-
-        else:
-            print name
-            print name.__class__
-            raise Exception("The name used: " + str(name) + " was of class " + str(name.__class__) + " but should have been a string")
-        
-        #clear up everything to make space
-        self.exit()
-            
-
-
-        
-    def exit(self):
-        try: self.window
-        except: pass
-        else: 
-            self.window.exit()
-            del self.window
-        try:    self.select_this_button_frame
-        except: pass
-        else:
-            self.select_this_button_frame.destroy()
-            del self.select_this_button_frame
-            del self.select_this_button
-
-        try: self.dialog._manager
-        except: pass 
-        else:
-            self.dialog.destroy()
-        try:    self.dialog
-        except: pass
-        else:   del self.dialog
-            
-            
-            
-        
-    
-    def notify(self,event):
-        if event.signal == "change_base_window_type":
-            if event.data == "base_build_menu":
-                self.create_base_build_menu_window()
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-            self.solar_system_object_link.build_base_mode = False
-            try:    self.base_build_frame
-            except: pass
-            else:
-                self.base_build_frame.destroy()
-                del self.base_build_frame
-        
-
-
-
-
-
-
-
-class left_side_company_navigation(BaseObject):
-    """
-    The buttons on the left side which are only seen when in company mode. They are used to navigate between the subviews available
-    for each company.
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.topleft_pos = (0,0)
-        self.area_size = (global_variables.window_size[0]*0.2 , global_variables.window_size[1])
-        self.button_size = (130, 50)
-        self.buttonlinks = ["company_ownership_info","company_finances_info","company_list_of_firms"]
-        
-        self.buttonnicenames = ["Ownership info","Financial info","Owned firms"]
-        self.companywindow_selected = None
-        
-        #self.number = 0
-        
-        
-    def notify(self,event):
-        if event.signal == "going_to_company_window_event":
-            self.create_left_side_company_navigation()
-            self.company_selected = event.data
-            
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_firm_window_event","going_to_base_mode_event","going_to_techtree_mode_event"]:
-            self.exit()
-            
-    def company_window_type_set_callback(self,button_name):
-        self.companywindow_selected = button_name
-        self.manager.emit("change_company_window_type",self.companywindow_selected)
-        
-
-    def exit(self):
-        
-        try: self.frames
-        except: pass
-        else:
-            iteration_list = self.frames.keys()
-            for frame_name in self.frames.keys():
-                self.frames[frame_name].destroy()
-                del self.frames[frame_name]
-            del self.frames
-        try: self.buttons
-        except: pass
-        else:
-            iteration_list = self.buttons.keys()
-            for button_name in iteration_list:
-                del self.buttons[button_name]
-             
-
-    def create_left_side_company_navigation(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        try: self.frames
-        except:
-            self.buttons = {}
-            self.frames = {}
-            company_buttons_group = None
-            vertical_slice = self.area_size[1] / len(self.buttonlinks)
-            for i in range(0,len(self.buttonlinks)):
-                y_pos = int( (i + 0.5) * vertical_slice ) - (self.button_size[1] / 2)
-                x_pos = (self.area_size[0] / 2 ) - (self.button_size[0] / 2)
-                self.frames[self.buttonlinks[i]] = VFrame()
-                self.frames[self.buttonlinks[i]].topleft = (x_pos,y_pos)
-                self.buttons[self.buttonlinks[i]] = RadioButton(self.buttonnicenames[i],company_buttons_group)
-                self.buttons[self.buttonlinks[i]].connect_signal(Constants.SIG_TOGGLED,self.company_window_type_set_callback,self.buttonlinks[i])
-                self.buttons[self.buttonlinks[i]].minsize = self.button_size
-                self.frames[self.buttonlinks[i]].add_child(self.buttons[self.buttonlinks[i]])
-                self.renderer.add_widget(self.frames[self.buttonlinks[i]])
-                if i == 0:
-                    company_buttons_group = self.buttons[self.buttonlinks[i]]
-                    self.buttons[self.buttonlinks[i]].company_buttons_group = self.buttons[self.buttonlinks[i]]
-            if self.companywindow_selected is not None:
-                self.buttons[self.companywindow_selected].set_active(True)
-                self.manager.emit("change_company_window_type",self.companywindow_selected)
-            
-        else: 
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: warning a create_left_side_company_navigation call was made when self.frames already existed"    ,"type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-
-
-
-
-class company_ownership_info(BaseObject):
-    """
-    Subview of the company view. Shows miscellanous information about a company, such as decision parameters, capital and number of firms.
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_company_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.list_size = (650,450)
-        self.topleft = (200, 100)
-
-        
-    def notify(self,event):
-        if event.signal == "change_company_window_type":
-            if event.data == "company_ownership_info":
-                self.create_company_ownership_info()
-            else:
-                self.exit()
-                #print "DEBUGGING: exiting from company_ownership_info because of in_company change"
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_base_mode_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-
-
-
-    def exit(self):
-        #print "DEBUGGING: Running exit signal for company_ownership_info"
-        try: self.window
-        except:
-            pass
-        else:
-            #print "DEBUGGING: Running kill signal for company_ownership_info"
-            self.window.exit()
-            del self.window
-            
-
-
-    def create_company_ownership_info(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        try: self.window
-        except:
-            company_selected = self.solar_system_object_link.company_selected
-            if company_selected is not None:
-                company_ownership_dict = {}
-                
-                for company_database_variable in company_selected.company_database:
-                    company_database_variable_name_here = company_database_variable
-                    if len(company_database_variable_name_here) > global_variables.max_letters_in_company_names:
-                        company_database_variable_name_here = company_database_variable_name_here[0:global_variables.max_letters_in_company_names]
-                    company_ownership_dict["parameter: " + company_database_variable_name_here] = {"info":str(company_selected.company_database[company_database_variable])} 
-                
-                company_ownership_dict["capital"] = {"info":company_selected.capital}
-               
-                company_ownership_dict["home cities, number of"] = {"info":str(len(company_selected.home_cities))}
-                if 0 < len(company_selected.home_cities) < 4:
-                    list_value = str(company_selected.home_cities.keys())
-                    list_value = list_value.rstrip("]")
-                    list_value = list_value.lstrip("[")
-                    company_ownership_dict["home cities"] = {"info":list_value}
-    
-                company_ownership_dict["last_firm_evaluation"] = {"info":str(company_selected.last_firm_evaluation)}
-                company_ownership_dict["last_market_evaluation"] = {"info":str(company_selected.last_market_evaluation)}
-                company_ownership_dict["last_demand_evaluation"] = {"info":str(company_selected.last_demand_evaluation)}
-                company_ownership_dict["last_supply_evaluation"] = {"info":str(company_selected.last_supply_evaluation)}
-
-                company_ownership_dict["research"] = {"info":str(company_selected.research)}    
-                
-                company_ownership_dict["firms owned, number of"] = {"info":str(len(company_selected.owned_firms))}
-
-                self.window = gui_extras.fast_list(self.renderer)
-                self.window.receive_data(company_ownership_dict,column_order = ["rownames","info"],sort_by="rownames")
-                self.window.topleft = self.topleft
-                self.window.list_size = self.list_size
-                self.window.create_fast_list()
-                self.window.render_title()
-    #        
-            else:
-                
-                if self.solar_system_object_link.message_printing["debugging"]:
-                    print_dict = {"text":"DEBUGGING: Company selected was None","type":"debugging"}
-                    self.solar_system_object_link.messages.append(print_dict)
-
-        else:
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: tried to paint a company_ownership_info, but this already existed","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-
-
-
-
-
-
-class company_financial_info(BaseObject):
-    """
-    Subview of the company view. Shows a graph of the capital of the company as it has been over the past years. 
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_company_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.graph_size = (400,400)
-        self.frame_size = 40
-        self.topleft_everything = (300, 50)
-
-        
-    def notify(self,event):
-        if event.signal == "change_company_window_type":
-            if event.data == "company_finances_info":
-                self.create_company_financial_info()
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_base_mode_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.exit()
-
-
-    def exit(self):
-        try: self.graph_frame
-        except:
-            pass#"DEBUGGING: did not find 3"
-        else:
-            self.graph_frame.destroy()
-            del self.graph_frame
-            del self.graph_surface_label
-
-
-    def create_company_financial_info(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        
-        company_selected = self.solar_system_object_link.company_selected
-        company_accounting = company_selected.company_accounting
-        history_surface = pygame.Surface(self.graph_size)
-        history_surface.fill((234,228,223))
-        if len(company_selected.company_accounting) == 0:
-            no_history_label = global_variables.standard_font.render("No history for " + company_selected.name,True,(0,0,0))
-            history_surface.blit(no_history_label,(0,self.graph_size[1]*0.5-4))
-        else:
-            start_date = company_accounting[0]["date"]
-            end_date = company_accounting[len(company_accounting)-1]["date"]
-            relative_numeric_start_date = (start_date - self.solar_system_object_link.start_date).days
-            relative_numeric_end_date = (end_date - self.solar_system_object_link.start_date).days
-            xlim = (relative_numeric_start_date,relative_numeric_end_date)
-            dates = []
-            capital = []
-            for account_report in company_accounting:
-                dates.append((account_report["date"] - self.solar_system_object_link.start_date).days)
-                capital.append(account_report["capital"])
-            ylim = (0,max(capital))
-            if ylim[0] == ylim[1]:
-                ylim = (ylim[0]-1,ylim[1]+1)
-            if xlim[0] == xlim[1]:
-                xlim = (xlim[0]-1,xlim[1]+1)
-            
-            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link, unit = "capital")
-            history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim,solar_system_object_link = self.solar_system_object_link, unit="date")
-            
-            for i in range(1,len(capital)):
-                x1_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
-                y1_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
-                x2_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
-                y2_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
-                pygame.draw.line(history_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
-        try: self.graph_surface_label
-        except: 
-            self.graph_surface_label = ImageLabel(history_surface)
-            self.graph_frame = VFrame(Label("Capital history"))
-            self.graph_frame.topleft = (self.topleft_everything[0] + 150,self.topleft_everything[1])
-            self.graph_frame.add_child(self.graph_surface_label)
-            self.renderer.add_widget(self.graph_frame)
-        else:
-            self.graph_surface_label.set_picture(history_surface)
-            self.renderer.update()
-
-
-
-
-
-class company_list_of_firms(BaseObject):
-    """
-    Subview of the company view. Shows a list of all firms owned by the company. A shortcut button allows quick zoom to the firm page of these firms.
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_base_window_type"] = []
-        self._signals["change_company_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        #self._signals["focus_on_company"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.list_size = (650,400)
-        self.topleft = (200,100)
-        self.frame_size = 40
-
-    def go_to_firm_window_event_callback(self):
-        
-        firm_selected = None
-        for firm in self.solar_system_object_link.company_selected.owned_firms.values():
-            if firm.name == self.window.selected_name:
-                firm_selected = firm
-        if firm_selected is None:
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"POSSIBLE DEBUGGING: - the firm asked for was of None type","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-        else:
-            if isinstance(firm,company.base):
-                self.manager.emit("going_to_base_mode_event",firm_selected)
-                #print "DEBUGGING: emitted going to base_mode_event with " + str(firm_selected) + " of name " + str(firm_selected.name)
-            else:
-                self.manager.emit("going_to_firm_window_event",firm_selected)
-                #print "DEBUGGING: emitted going to firm_window_event with " + str(firm_selected) + " of name " + str(firm_selected.name)
-        
-
-
-    def create_company_list_of_firms_window(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        company_selected = self.solar_system_object_link.company_selected
-        if company_selected is None:
-            raise Exception("A list of firms was requested, but no company was selected")
-        
-        firm_data = {}
-        for firm_instance in company_selected.owned_firms.values():
-            firm_data[firm_instance.name] = {}
-            try: firm_instance.last_profit
-            except: 
-                firm_data[firm_instance.name]["last profit"] = "NA"
-            else: 
-                firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
-            
-            firm_data[firm_instance.name]["location"] = firm_instance.location.name
-            
-            stock_amount = 0
-            for stock_item in firm_instance.stock_dict.values():
-                stock_amount = stock_amount + stock_item
-            firm_data[firm_instance.name]["stock size"] = stock_amount
-        self.window = gui_extras.fast_list(self.renderer)
-        self.window.topleft = self.topleft
-        self.window.list_size = self.list_size
-        
-        self.window.receive_data(firm_data) 
-        
-        self.window.create_fast_list()
-        self.window.render_title()
-        self.go_to_firm_window_button = Button("Firm page")
-        self.go_to_firm_window_button.connect_signal(Constants.SIG_CLICKED,self.go_to_firm_window_event_callback)
-        self.go_to_firm_window_button_frame = VFrame()
-        self.go_to_firm_window_button_frame.topleft = (self.window.topleft[0]+(self.list_size[0]/2)-self.go_to_firm_window_button.size[0]/2,self.window.topleft[1] + self.list_size[1]+50)
-        self.go_to_firm_window_button_frame.add_child(self.go_to_firm_window_button)
-        self.renderer.add_widget(self.go_to_firm_window_button_frame)
-
-
-
-
-        
-    def exit(self):
-        try: self.window 
-        except:
-            pass
-        else:
-            self.window.exit()
-            del self.window
-        try: self.go_to_firm_window_button_frame
-        except: pass#print "DEBUGGING: Did not find self.go_to_company_window_button" 
-        else:
-            self.go_to_firm_window_button_frame.destroy()
-            del self.go_to_firm_window_button_frame
-            del self.go_to_firm_window_button
-
-        
-        
-    def notify(self,event):
-        if event.signal == "change_company_window_type":
-            if event.data == "company_list_of_firms":
-                try: self.window
-                except:
-                    self.create_company_list_of_firms_window()
-            else:
-                self.exit()
-        #print "company_list_of_firms heard a " + str(event.signal) + " signal with data " + str(event.data)
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_base_mode_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            #print "DEBUGGING: in company_list_of_firms, the window should now close because it heard a competing mode_event"
-            self.exit()
-        
-        
-        
-    
-
-
-
-
-
-
-class left_side_firm_navigation(BaseObject):
-    """
-    The buttons on the left side which are only seen when in firm mode. They are used to navigate between the subviews available
-    for each firm.
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.topleft_pos = (0,0)
-        self.area_size = (global_variables.window_size[0]*0.2 , global_variables.window_size[1])
-        self.button_size = (130, 50)
-        self.buttonlinks = ["firm_process_info","market","firm_trade_partners_info"]
-        self.buttonnicenames = ["Production","Market","Trade partners"]
-        self.firmwindow_selected = None
-        
-        
-    def notify(self,event):
-        if event.signal == "going_to_firm_window_event":
-            self.solar_system_object_link.firm_selected = event.data
-            self.create_left_side_firm_navigation()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_base_mode_event","going_to_techtree_mode_event"]:
-            self.exit()
-            
-    def firm_window_type_set_callback(self,button_name):
-        self.firmwindow_selected = button_name
-        self.manager.emit("change_firm_window_type",self.firmwindow_selected)
-
-    def exit(self):
-        try: self.frames
-        except: pass
-        else:
-            iteration_list = self.frames.keys()
-            for frame_name in self.frames.keys():
-                self.frames[frame_name].destroy()
-                del self.frames[frame_name]
-            del self.frames
-        try: self.buttons
-        except: pass
-        else:
-            iteration_list = self.buttons.keys()
-            for button_name in iteration_list:
-                del self.buttons[button_name]
-             
-
-    def create_left_side_firm_navigation(self):
-        try: self.frames
-        except:
-            self.buttons = {}
-            self.frames = {}
-            firm_buttons_group = None
-            vertical_slice = self.area_size[1] / len(self.buttonlinks)
-            for i in range(0,len(self.buttonlinks)):
-                y_pos = int( (i + 0.5) * vertical_slice ) - (self.button_size[1] / 2)
-                x_pos = (self.area_size[0] / 2 ) - (self.button_size[0] / 2)
-                self.frames[self.buttonlinks[i]] = VFrame()
-                self.frames[self.buttonlinks[i]].topleft = (x_pos,y_pos)
-                self.buttons[self.buttonlinks[i]] = RadioButton(self.buttonnicenames[i],firm_buttons_group)
-                self.buttons[self.buttonlinks[i]].connect_signal(Constants.SIG_TOGGLED,self.firm_window_type_set_callback,self.buttonlinks[i])
-                self.buttons[self.buttonlinks[i]].minsize = self.button_size
-                self.frames[self.buttonlinks[i]].add_child(self.buttons[self.buttonlinks[i]])
-                self.renderer.add_widget(self.frames[self.buttonlinks[i]])
-                if i == 0:
-                    firm_buttons_group = self.buttons[self.buttonlinks[i]]
-                    self.buttons[self.buttonlinks[i]].firm_buttons_group = self.buttons[self.buttonlinks[i]]
-            if self.firmwindow_selected is not None:
-                self.buttons[self.firmwindow_selected].set_active(True)
-                self.manager.emit("change_firm_window_type",self.firmwindow_selected)
-            #print "DEBGGING: emitted: " + str(self.firmwindow_selected)
-        else: 
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: warning a create_left_side_firm_navigation call was made when self.frames already existed","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-            
-
-
-
-
-
-
-
-class firm_trade_partners_info(BaseObject):
-    """
-    Subview of the firm view. Shows a list of past trading transactions for the firm.
-    """
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_firm_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.list_size = (650,250)
-        self.topleft = (200, 100)
-        
-        
-    def notify(self,event):
-        if event.signal == "change_firm_window_type":
-            if event.data == "firm_trade_partners_info":
-                self.create_firm_transactions_info()
-                #print "DEBUGGING: Heard show firm_trade_partners_info"
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_base_mode_event","going_to_techtree_mode_event"]:
-            self.exit()
-            
-
-
-    def exit(self):
-        try: self.window_transactions
-        except: pass
-        else: 
-            self.window_transactions.exit()
-            del self.window_transactions
-
-            
-
-        
-
-
-    def create_firm_transactions_info(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window_transactions variable and renders using the self.renderer. 
-        """
-        
-        firm_selected = self.solar_system_object_link.firm_selected
-        if isinstance(firm_selected,company.merchant):
-            location_list = [firm_selected.from_location, firm_selected.to_location]
-            
-        else:
-            location_list = [firm_selected.location]
-
-        
-        transactions = {}
-        for k, location_instance in enumerate(location_list):
-            market = location_instance.market
-            for i, resource in enumerate(market["transactions"]):
-                for j, transaction in enumerate(market["transactions"][resource]):
-                    date = transaction["date"]
-                    if transaction["buyer"] is not None:
-                        buyer = transaction["buyer"].name
-                    else:
-                        buyer = None
-                    if transaction["seller"] is not None:
-                        seller = transaction["seller"].name
-                    else:
-                        seller = None
-                    price = transaction["price"]
-                    #print "The price is of class " + str(price.__class__)
-                    quantity = transaction["quantity"]
-                    if firm_selected.name in [buyer,seller]:
-                        transactions[i*j*k] =  {"date":date,"buyer":buyer,"seller":seller,"price":price,"quantity":quantity}
-
-
-                
-        self.window_transactions = gui_extras.fast_list(self.renderer)
-        self.window_transactions.receive_data(transactions,column_order = ["date","buyer","seller","price","quantity"],sort_by="date")
-        self.window_transactions.topleft = self.topleft
-        self.window_transactions.list_size = self.list_size
-        self.window_transactions.create_fast_list()
-        self.window_transactions.render_title()
-
-                
-
-        
-        
-
-class firm_process_info(BaseObject):
-    """
-    Subview of the firm view. Shows a list of the resources of interest for the firm. Both the stock and the production rate is shown.
-    """
-
-    def __init__(self,solar_system_object,renderer,commandbox):
-        BaseObject.__init__(self)
-        self._signals["going_to_planetary_mode_event"] = []
-        self._signals["going_to_solar_system_mode_event"] = []
-        self._signals["going_to_base_mode_event"] = []
-        self._signals["going_to_company_window_event"] = []
-        self._signals["going_to_firm_window_event"] = []
-        self._signals["change_firm_window_type"] = []
-        self._signals["going_to_techtree_mode_event"] = []
-        self.renderer = renderer
-        self.solar_system_object_link = solar_system_object
-        self.list_size = (650,150)
-        self.topleft = (200, 100)
-
-        
-    def notify(self,event):
-        if event.signal == "change_firm_window_type":
-            if event.data == "firm_process_info":
-                self.create_firm_process_info()
-            else:
-                self.exit()
-        if event.signal in ["going_to_solar_system_mode_event","going_to_planetary_mode_event","going_to_company_window_event","going_to_base_mode_event","going_to_techtree_mode_event"]:
-            self.exit()
-            
-
-
-    def exit(self):
-        try: self.window
-        except:
-            pass
-        else:
-            self.window.exit()
-            del self.window
-            
-
-
-    def create_firm_process_info(self):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renderes using the self.renderer. 
-        """
-        
-        try:    self.window
-        except:
-            firm_selected = self.solar_system_object_link.firm_selected
-            
-            
-            if firm_selected is not None:
-                
-                if isinstance(firm_selected, company.merchant):
-                    process_and_stock_dict = {}
-                    for direction_name in ["destination","origin"]:
-                        if direction_name == "destination":
-                            base = firm_selected.to_location
-                        else:
-                            base = firm_selected.from_location
-                        
-                        direction = "in " + base.name
-                        for resource in [firm_selected.resource, firm_selected.transport_type]:
-                             process_and_stock_dict[resource + " at " + direction_name] = {}
-                             process_and_stock_dict[resource + " at " + direction_name]["direction"] = direction
-                             if direction_name == "destination":
-                                 process_and_stock_dict[resource + " at " + direction_name]["current stock"] = firm_selected.to_stock_dict[resource]
-                             else:
-                                 process_and_stock_dict[resource + " at " + direction_name]["current stock"] = firm_selected.from_stock_dict[resource]
-                             process_and_stock_dict[resource + " at " + direction_name]["rate"] = "NA"
-                     
-                else:
-                    process_and_stock_dict = {}
-                    for direction in ["input","output"]:
-                        for resource in firm_selected.input_output_dict[direction]:
-                             process_and_stock_dict[resource] = {}
-                             process_and_stock_dict[resource]["direction"] = direction
-                             process_and_stock_dict[resource]["current stock"] = firm_selected.stock_dict[resource]
-                             process_and_stock_dict[resource]["rate"] = firm_selected.input_output_dict[direction][resource]
-            
-    
-                
-                self.window = gui_extras.fast_list(self.renderer)
-                self.window.receive_data(process_and_stock_dict,column_order = ["rownames","direction","rate","current stock"],sort_by="direction")
-                self.window.topleft = self.topleft
-                self.window.list_size = self.list_size
-                self.window.create_fast_list()
-                self.window.render_title()
-            
-        else:
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: Tried to make a firm_process_info when it already existed","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
