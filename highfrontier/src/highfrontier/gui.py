@@ -449,7 +449,7 @@ class gui():
             self.buttonlinks = ["firm_process_info","base_and_firm_market_window","firm_trade_partners_info"]
             self.buttonnicenames = ["Production","Market","Trade partners"]
         elif self.solar_system_object_link.display_mode == "company":
-            self.buttonlinks = ["company_ownership_info","company_finances_info","company_list_of_firms"]
+            self.buttonlinks = ["company_ownership_info","company_financial_info","company_list_of_firms"]
             self.buttonnicenames = ["Ownership info","Financial info","Owned firms"]
 
         else:
@@ -3318,8 +3318,8 @@ class company_financial_info():
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
 
-
-
+        self.graph_size = (self.rect[2], self.rect[3])
+        self.frame_size = 80
 
 
 
@@ -3340,31 +3340,40 @@ class company_financial_info():
             end_date = company_accounting[len(company_accounting)-1]["date"]
             relative_numeric_start_date = (start_date - self.solar_system_object_link.start_date).days
             relative_numeric_end_date = (end_date - self.solar_system_object_link.start_date).days
-            xlim = (relative_numeric_start_date,relative_numeric_end_date)
+            
             dates = []
             capital = []
             for account_report in company_accounting:
                 dates.append((account_report["date"] - self.solar_system_object_link.start_date).days)
                 capital.append(account_report["capital"])
+                
+            xlim = (min(dates),max(dates))
             ylim = (0,max(capital))
             if ylim[0] == ylim[1]:
                 ylim = (ylim[0]-1,ylim[1]+1)
             if xlim[0] == xlim[1]:
                 xlim = (xlim[0]-1,xlim[1]+1)
             
-            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link, unit = "capital")
-            history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim,solar_system_object_link = self.solar_system_object_link, unit="date")
             
+#            print "ylim: " + str(ylim)
+#            print "xlim: " + str(xlim)
+#            print "An account_report: " + str(account_report)
+           
+            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
+            history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
+#            print "(self.graph_size[0]-self.frame_size*2): " + str((self.graph_size[0]-self.frame_size*2))
             for i in range(1,len(capital)):
                 x1_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
                 y1_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
                 x2_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
                 y2_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
+#                print "From (" + str(x1_position) + "," + str(y1_position) + ") to (" + str(x2_position) + "," +str(y2_position) + ") - the date was: " + str(dates[i]) + " and the capital was " + str(capital[i])
+                
                 pygame.draw.line(history_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
         
         
         self.action_surface.blit(history_surface,(self.rect[0],self.rect[1]))
-
+        pygame.display.flip()
 
 
 
