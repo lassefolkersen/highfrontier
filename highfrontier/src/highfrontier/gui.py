@@ -212,9 +212,11 @@ class gui():
         sol = self.solar_system_object_link
         position = event.pos
         button = event.button
-        click_spot = pygame.Rect(position[0]-2,position[1]-2,4,4)
+        click_spot = pygame.Rect(position[0]-3,position[1]-3,6,6)
         if sol.display_mode == "solar_system":
+            
             collision_test_result = click_spot.collidedict(sol.areas_of_interest)
+            
             if collision_test_result != None:
                 sol.current_planet = sol.planets[collision_test_result[1]]
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
@@ -224,7 +226,8 @@ class gui():
                     sol.display_mode = "planetary"
                     sol.current_planet.load_for_drawing()
                     surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-        
+                self.action_surface.blit(surface,(0,0))
+                pygame.display.flip()
         
         elif sol.display_mode == "planetary":
         
@@ -3294,7 +3297,7 @@ class company_ownership_info():
             
             company_ownership_dict["firms owned, number of"] = {"info":str(len(company_selected.owned_firms))}
 
-            self.fast_list = gui_components.fast_list(self.action_surface, buildoption_data, rect = self.rect,column_order = ["rownames","info"])
+            self.fast_list = gui_components.fast_list(self.action_surface, company_ownership_dict, rect = self.rect)
         else:
             if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Company selected was None","type":"debugging"}
@@ -3332,9 +3335,14 @@ class company_financial_info():
         company_accounting = company_selected.company_accounting
         history_surface = pygame.Surface(self.graph_size)
         history_surface.fill((234,228,223))
+        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+  
+        
         if len(company_selected.company_accounting) == 0:
             no_history_label = global_variables.standard_font.render("No history for " + company_selected.name,True,(0,0,0))
-            history_surface.blit(no_history_label,(0,self.graph_size[1]*0.5-4))
+            history_surface.blit(no_history_label,(20,20))
         else:
             start_date = company_accounting[0]["date"]
             end_date = company_accounting[len(company_accounting)-1]["date"]
@@ -3355,10 +3363,6 @@ class company_financial_info():
                 xlim = (xlim[0]-1,xlim[1]+1)
             
             
-#            print "ylim: " + str(ylim)
-#            print "xlim: " + str(xlim)
-#            print "An account_report: " + str(account_report)
-           
             history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
             history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
 #            print "(self.graph_size[0]-self.frame_size*2): " + str((self.graph_size[0]-self.frame_size*2))
