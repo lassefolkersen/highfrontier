@@ -217,6 +217,6 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 #    prof.close()
 #    temp_function(manager,renderer)
 
-start_loop(company_name = "Test2", company_capital = 1000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
+start_loop(company_name = "Test2", company_capital = 1000000, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
 
    
