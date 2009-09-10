@@ -64,14 +64,16 @@ class Tree():
 		self.stepsize = 60
 		
 	
-	def receive_click(self,position,click_type):
+	def receive_click(self,event):
 		"""
 		Function that handles everything that is done when the plot is clicked. Takes a the arguments:
 			position	which is the (x,y) position with (0,0) being the topleft corner of the plot.
 			click_type	which mousebutton is clicked (usually 1 is left and 3 is right)
 			
 		"""
-		click_spot = pygame.Rect(position[0],position[1],4,4)
+		position = event.pos
+		click_type = event.button
+		click_spot = pygame.Rect(position[0]-4,position[1]-4,8,8)
 		collision_test_result = click_spot.collidedict(self.click_map)
 
 		if collision_test_result is not None:
@@ -100,15 +102,18 @@ class Tree():
 					self.center = ( self.center[0]  - position[0] + global_variables.action_window_size[0]/2,   self.center[1] - (position[1] - global_variables.action_window_size[1]/2))
 			elif click_type == 3:	
 				self.center = ( self.center[0]  - position[0] + global_variables.action_window_size[0]/2,   self.center[1] - (position[1] - global_variables.action_window_size[1]/2))
-
+                    
+                
 				if collision_test_result[1] != "common knowledge":
-					print collision_test_result[1] + ":"
+					message_text = collision_test_result[1] + " - "
 					for put in ["input","output"]:
-						print put + ":"
+						message_text = message_text + put + ": "
 						for resource in self.vertex_dict[collision_test_result[1]]["input_output_dict"][put]:
-							print resource + ": " + str(self.vertex_dict[collision_test_result[1]]["input_output_dict"][put][resource])
-					print ""
-						
+							message_text = message_text + resource + ": " + str(self.vertex_dict[collision_test_result[1]]["input_output_dict"][put][resource]) + ", "
+
+					print_dict = {"text":message_text,"type":"general gameplay info"}
+					self.solar_system_object_link.messages.append(print_dict)
+
 			else:
 				print "DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. Do nothing"
 				
