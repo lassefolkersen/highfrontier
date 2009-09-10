@@ -318,7 +318,7 @@ class hscrollbar():
         self.step_size and self.length_of_bar_in_pixels.
         Returns a length-two tuple with the start and end in pixel measured from topleft
         """
-        if not unmovable:
+        if not self.unmovable:
             if self.range_seen is None:  
                 #the simple case with a square slider. First calculate the operating-space (ie. all except end-arrows and space for the actual slider
                 operational_length = self.length_of_bar_in_pixel - 3 * self.width
