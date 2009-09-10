@@ -53,7 +53,6 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     pygame.display.set_icon(icon) 
     
     #initializing the world - depends on if a previous game should be loaded
-#    manager = EventManager()
     if load_previous_game is not None:
         sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = False)
         sol.load_solar_system(load_previous_game)
@@ -100,13 +99,14 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
     
     #divide the surface in action and non-action
-    action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1])
-    subcommand_rect = pygame.Rect(global_variables.window_size[0] - 150,global_variables.window_size[1] - 400, 150, 400)
-    command_rect = pygame.Rect(global_variables.window_size[0] - 150, 0, 150, global_variables.window_size[1] - 400)
+    action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
+    right_side_rect = pygame.Rect(global_variables.window_size[0] - 150, 0, 150, global_variables.window_size[1])
+    message_rect = pygame.Rect(10,global_variables.window_size[1] - 100, global_variables.window_size[0] - 170, 100)
     
     action_surface = window.subsurface(action_rect)
-    subcommand_surface = window.subsurface(subcommand_rect)
-    command_surface = window.subsurface(command_rect)
+    right_side_surface = window.subsurface(right_side_rect)
+    message_surface = window.subsurface(message_rect)
+    
 
     
     #switch to determine planetary mode or solarsystem mode from beginning
@@ -123,7 +123,8 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     
     
     #Initialising the GUI
-    gui_instance = gui.gui(command_surface, subcommand_surface, action_surface, sol)
+    gui_instance = gui.gui(right_side_surface, message_surface, action_surface, sol)
+    
 
     
 
@@ -131,7 +132,6 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     #getting psyco if available
     try:
         import psyco
-        #print "initialising psyco"
         psyco.log()
         psyco.profile()
     except ImportError:
@@ -164,8 +164,6 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                         break
                         
                 
-#                if event.key == 113: #q
-#                    gui_instance.start_nuclear_war(event)
                 if event.key == 280: #pgup
                     gui_instance.zoom_in(event)
                 if event.key == 281: #pgdown
@@ -190,33 +188,38 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
         if i%sol.step_delay_time == 0:
             i = 0
             sol.current_date = datetime.timedelta(30)+sol.current_date
-#            manager.emit("update_infobox",None)
-            
-                #            
+            gui_instance.create_infobox()
+            gui_instance.all_windows["Messages"].create()
+      
             sol.evaluate_each_game_step()
            
             for company_instance in sol.companies.values():
                 company_instance.evaluate_self()
                 
 
-            
+            #in solar system the display needs updating all the time. However we need to protect whatever active window is shown:
             if sol.display_mode == "solar_system":
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-                action_surface.blit(surface,(0,0))
-                pygame.display.flip()
-            else:
-                pass
-                #because the others need not be updated continously.
+                if gui_instance.active_window is not None:
+                    left_rect = pygame.Rect(0,0,gui_instance.active_window.rect[0],global_variables.window_size[1])
+                    right_rect = pygame.Rect(gui_instance.active_window.rect[0] + gui_instance.active_window.rect[2],0,global_variables.window_size[0]-gui_instance.active_window.rect[0]-gui_instance.active_window.rect[2],global_variables.window_size[1])
+                    top_rect = pygame.Rect(0,0,global_variables.window_size[0],gui_instance.active_window.rect[1])
+                    bottom_rect = pygame.Rect(0,gui_instance.active_window.rect[1] + gui_instance.active_window.rect[3],global_variables.window_size[0],global_variables.window_size[1]-gui_instance.active_window.rect[3] - top_rect[3])
+                    for rect in [left_rect,right_rect,top_rect,bottom_rect]:
+                        action_surface.set_clip(rect)
+                        action_surface.blit(surface,(0,0))
+                    action_surface.set_clip(None)
+                else:
+                    action_surface.blit(surface,(0,0))
                 
-        
+            
+            pygame.display.flip()
 
 
-#    import hotshot
-#    prof = hotshot.Profile("hotshot_edi_stats")
-#    prof.runcall(temp_function,manager,renderer)
-#    prof.close()
-#    temp_function(manager,renderer)
 
-start_loop(company_name = "Test2", company_capital = 1000000, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
+
+
+
+start_loop(company_name = "YourCompanyNameHere", company_capital = 1000000, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
 
    

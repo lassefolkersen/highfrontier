@@ -21,17 +21,30 @@ class gui():
     """
     This class holds all the top-level gui stuff, such as functions to distribute clicks and the commandbox buttons on the right side and such
     """
-    def __init__(self,command_surface, subcommand_surface, action_surface, solar_system_object):
+    def __init__(self,right_side_surface, message_surface, action_surface, solar_system_object):
         """
         Here the commandbox is started initialized. In addition all the other GUI elements is started up, to keep it at one place
         """
-        self.command_surface = command_surface
-        self.subcommand_surface = subcommand_surface
-        self.action_surface = action_surface
         
-        self.action_rect = pygame.Rect(self.action_surface.get_offset()[0],self.action_surface.get_offset()[1], self.action_surface.get_size()[0], self.action_surface.get_size()[1])
-        self.subcommand_rect = pygame.Rect(self.subcommand_surface.get_offset()[0],self.subcommand_surface.get_offset()[1], self.subcommand_surface.get_size()[0], self.subcommand_surface.get_size()[1])
-        self.command_rect = pygame.Rect(self.command_surface.get_offset()[0],self.command_surface.get_offset()[1], self.command_surface.get_size()[0], self.command_surface.get_size()[1])
+        
+        # defining 
+        command_box_left = right_side_surface.get_offset()[0]
+        command_width = right_side_surface.get_size()[0]
+        infobox_top = 0
+        command_top = 70
+        subcommand_top = 470
+        
+        
+        self.action_rect = pygame.Rect(0,0, action_surface.get_size()[0], action_surface.get_size()[1])
+        self.infobox_rect = pygame.Rect(command_box_left, infobox_top, command_width, command_top)
+        self.command_rect =  pygame.Rect(command_box_left, command_top, command_width, subcommand_top-command_top)
+        self.subcommand_rect = pygame.Rect(command_box_left, subcommand_top, command_width, global_variables.window_size[1] -subcommand_top)
+
+        self.action_surface = action_surface
+        self.infobox_surface = right_side_surface.subsurface(pygame.Rect(0, infobox_top, command_width, command_top))
+        self.command_surface =  right_side_surface.subsurface(pygame.Rect(0, command_top, command_width, subcommand_top-command_top))
+        self.subcommand_surface = right_side_surface.subsurface(pygame.Rect(0, subcommand_top, command_width, global_variables.window_size[1] -subcommand_top))
+
 
         self.solar_system_object_link = solar_system_object
         
@@ -40,7 +53,7 @@ class gui():
         
         self.all_windows = {}
         
-        
+        self.all_windows["Messages"] = message_bar(solar_system_object, action_surface, message_surface)
         self.all_windows["Company menu"] = company_window(solar_system_object, action_surface)
         self.all_windows["Trade menu"] = trade_window(solar_system_object, action_surface)
         self.all_windows["Base overview"] = base_window(solar_system_object, action_surface)
@@ -63,9 +76,10 @@ class gui():
         self.all_windows["firm_process_info"] = firm_process_info(solar_system_object, action_surface)
         self.all_windows["construct_base_menu"] = construct_base_menu(solar_system_object, action_surface)
         
-        
+        self.create_infobox()
         self.create_commandbox()
         self.create_subcommandbox()
+
         
         
     
@@ -73,17 +87,17 @@ class gui():
         """
         Function that distributes clicks where necessary
         """
-        #first check if the click was in the command box area
-        
+
+        #Checking where the click is located
         if self.command_rect.collidepoint(event.pos) == 1:
             for button in self.command_buttons.values():
-                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], event.pos[1])) == 1:
+                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], event.pos[1] - self.command_rect[1])) == 1:
                     button.activate(None)
                     return 
 
         if self.subcommand_rect.collidepoint(event.pos) == 1:
             for button in self.subcommand_buttons.values():
-                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], event.pos[1] - self.command_rect[3])) == 1:
+                if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], event.pos[1] - self.subcommand_rect[1])) == 1:
                     button.activate(None)
                     return 
 
@@ -109,18 +123,26 @@ class gui():
 
         self.click_in_action_window(event)
 
+        
+        #updating the infobox in any case
+        self.create_infobox()
+        self.all_windows["Messages"].create()
+        pygame.display.flip()
+
 
         
 
     def clear_screen(self):
         """
         Function that takes care of clearing screen, by drawing whatever planet or solar system or base window that is supposed
-        to be on it, thus overwrite what gui-box might be there
+        to be on it, thus overwriting what gui-box might be there
         """
         self.active_window = None
         sol = self.solar_system_object_link
 #        print "clearing screen"
         if sol.display_mode == "solar_system":
+#            print "got clear screen sig"
+#            print self.active_window
             self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
         elif sol.display_mode == "planetary":
             self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))                        
@@ -260,7 +282,7 @@ class gui():
 
         
         elif sol.display_mode in ["techtree"]:
-            surface = sol.technology_tree.receive_click(position,button)
+            surface = sol.technology_tree.receive_click(event)
             self.action_surface.blit(surface,(0,0))
             pygame.display.flip()
         
@@ -394,18 +416,61 @@ class gui():
 
         
 #
+
+
+    def create_infobox(self):
+        self.infobox_surface.fill((150,150,150))
+        
+        # creating the date string
+        date_string = str(self.solar_system_object_link.current_date)
+        rendered_date_string = global_variables.standard_font.render(date_string,True,(0,0,0))
+        self.infobox_surface.blit(rendered_date_string, (10,10))
+
+        # creating the env string
+        if self.solar_system_object_link.display_mode == "solar_system":
+            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
+        elif self.solar_system_object_link.display_mode == "planetary":
+            if self.solar_system_object_link.current_planet.current_base == None:
+                env_string = self.solar_system_object_link.current_planet.planet_name
+            else:
+                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name 
+        elif self.solar_system_object_link.display_mode == "planetary":
+            env_string = self.solar_system_object_link.current_planet.current_base.name
+        elif self.solar_system_object_link.display_mode == "company":
+            env_string = self.solar_system_object_link.company_selected.name
+        elif self.solar_system_object_link.display_mode == "firm":
+            env_string = self.solar_system_object_link.firm_selected.name
+        elif self.solar_system_object_link.display_mode == "base":
+            env_string = self.solar_system_object_link.current_planet.current_base.name
+        elif self.solar_system_object_link.display_mode == "techtree":
+            env_string = "technology tree"
+        else:
+            env_string = ""
+            if self.solar_system_object_link.message_printing["debugging"]:
+                print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
+                self.solar_system_object_link.messages.append(print_dict)
+        rendered_env_string = global_variables.standard_font.render(env_string,True,(0,0,0))
+        self.infobox_surface.blit(rendered_env_string, (10,30))
+
+        
+        #creating the capital string
+        if self.solar_system_object_link.current_player is not None:
+            capital_string = str(int(self.solar_system_object_link.current_player.capital))
+            rendered_capital_string = global_variables.standard_font.render(capital_string,True,(0,0,0))
+            self.infobox_surface.blit(rendered_capital_string, (10,50))
+        
+        
+    
     def commandbox_button_activate(self,label, function_parameter):
         """
         Function that decides what to do if a commandbox button is pressed
         """
         if label == "Technology":
             if self.solar_system_object_link.display_mode == "techtree":
-#                print "mode is: " + str(self.all_windows["Technology"].display_mode_before)
                 self.solar_system_object_link.display_mode = self.all_windows["Technology"].display_mode_before
                 self.clear_screen()
                 return
             else:
-#                print "setting display mode before to: " + str(self.solar_system_object_link.display_mode)
                 self.all_windows["Technology"].display_mode_before = self.solar_system_object_link.display_mode
                 
             
@@ -417,10 +482,10 @@ class gui():
     
     def create_commandbox(self):    
         """
-        Returns the right-side menu command box
+        Creates the right-side menu command box
         """
-        
-        pygame.draw.rect(self.command_surface, (150,150,150), pygame.Rect(0,self.command_rect[1],self.command_rect[2],self.command_rect[3]))
+        self.command_surface.fill((150,150,150))
+#        pygame.draw.rect(self.command_surface, (150,150,150), self.command_rect)
         
         labels = ["Navigation","Map overlays","Planet shortcuts","Company menu","Base overview","Technology","Trade menu","File menu"]
         self.command_buttons = {}
@@ -439,11 +504,11 @@ class gui():
 
     def create_subcommandbox(self):    
         """
-        Returns the right-side menu lower subcommand box
+        Creates the right-side menu lower subcommand box
         """
-        
+        self.subcommand_surface.fill((150,150,150))
         self.subcommand_buttons = {}
-        pygame.draw.rect(self.subcommand_surface, (150,150,150), pygame.Rect(0,0,self.subcommand_rect[2],self.subcommand_rect[3]))
+#        pygame.draw.rect(self.subcommand_surface, (150,150,150), self.subcommand_rect)
 
         if self.solar_system_object_link.display_mode == "base":
             self.buttonlinks = ["base_population_info","base_list_of_companies","base_list_of_firms","base_and_firm_market_window","base_build_menu"]
@@ -519,13 +584,8 @@ class infobox_window():
         
         if len(self.history) > 0:
             self.has_been_history.append(self.current_event)
-#            print "NEEDTOKNOW: Appended a signal to self.has_been_history " + str(self.current_event.signal) + " with data " + str(self.current_event.data)
 
             signal_to_emit = self.history.pop()
-#            print "backward. Emitting " + str(signal_to_emit.signal) + " with data " + str(signal_to_emit.data)
-#            print "The backward history is: " 
-#            for i, entry in enumerate(self.history):
-#                print str(i) + ": signal: " + str(entry.signal) + " - data: " + str(entry.data)
             self.protect_has_been_history = True
             if signal_to_emit.signal == "going_to_solar_system_mode_event":
                 #print "going to solar system mode"
@@ -715,57 +775,43 @@ class message_bar():
     company_generation
     and more
     
-    
+    The message bar is visible at all times in the bottom of the screen.
     """
-    def __init__(self,solar_system_object,renderer,commandbox):
-#        Window.__init__(self)
-#        self._signals["message_bar_toggle"] = []
-#        self._signals["update_infobox"] = []
-#        self._signals["print_message"] = []
-        self.renderer = renderer
+    def __init__(self,solar_system_object,action_surface,message_surface):
         self.solar_system_object_link = solar_system_object
-        self.list_size = (global_variables.window_size[0]-170,110)
-        self.topleft = (20,global_variables.window_size[1]-110)
+        self.action_surface = action_surface
+        self.message_surface = message_surface
+
         self.messages = []
-        self.max_print_length = 8 #how many lines of text to print in standard viewing of the window
+        self.max_print_length = 6 #how many lines of text to print in standard viewing of the window
         self.max_save_length = 500 #how many lines of text to save in memory
         self.max_string_length = 140#how many letters is maximally allowed to be printed in the message window
         
+        self.create()
         
-    def create_message_bar_window(self,renderer):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
-        """
+        
 
-        print_frame = VFrame()
-        print_frame.set_minimum_size(self.list_size[0],self.list_size[1])
-        print_frame.set_align(ALIGN_LEFT)
 
-        self.window = Window()
-        self.window.set_child(print_frame)
-        self.window.topleft = self.topleft
-        renderer.add_widget(self.window)
-        self.update_text_field()
-
-    def update_text_field(self):
+    def create(self):
         """
         Function that will update the text field
         """
-        
+        self.message_surface.fill((212,212,212))
+        pygame.draw.line(self.message_surface, (255,255,255), (0, 0), (self.message_surface.get_size()[0],0),2)        
+        pygame.draw.line(self.message_surface, (255,255,255), (0, 0), (0,self.message_surface.get_size()[1]),2)
+
         
         #first trim the message list down to the number indicated to be max
         if len(self.messages) > self.max_save_length:
             surplus = len(self.messages) - self.max_save_length
             del self.messages[0:surplus]
 
-        
-        print_frame = self.window.child
-        print_frame.lock()
+
         messages = []
         
         range_here = range(0,len(self.solar_system_object_link.messages))
         range_here.reverse()
-#        print range_here
+
         for i in range_here:
             message = self.solar_system_object_link.messages[i]
             if self.solar_system_object_link.message_printing[message["type"]]:
@@ -774,49 +820,22 @@ class message_bar():
                 break
         messages.reverse()
         
-        message_string = ""
+
+        i = 0
         for message in messages:
             if self.solar_system_object_link.message_printing[message["type"]]:
                 if len(message["text"]) > self.max_string_length:
                     message_text = message["text"][0:self.max_string_length]
-#                    print "Shortened a length " + str(len(message["text"])) + " text"
                 else:
                     message_text = message["text"]
-                message_string = message_string + message_text + "\n" 
-        message_string = message_string.rstrip("\n")    
-        
-        message_label = Label(message_string)
-        message_label.set_align(ALIGN_LEFT)
-        message_label.multiline = True
-        
-        print_frame.set_children([message_label])
-#        self.print_frame.set_align(ALIGN_LEFT)
-        print_frame.update()
-        print_frame.unlock()
+                rendered_message_string = global_variables.standard_font_small.render(message_text,True,(0,0,0))
+                self.message_surface.blit(rendered_message_string, (10,10 + i * 15))
+                i = i + 1
 
         
-        
 
-    def notify(self,event):
-        if event.signal == "message_bar_toggle":
-            if event.data:
-                try: self.window
-                except:
-                    pass
-                else:
-                    self.window.destroy()
-                    del self.window
-#                    del self.print_frame
-            else:
-                self.create_message_bar_window(self.renderer)
-                self.window.set_focus()
-        if event.signal == "update_infobox":
-            try:    self.window
-            except: pass
-            else:
-                self.update_text_field()
-            
         
+      
 
 
 
@@ -1005,6 +1024,7 @@ class tech_window():
         self.solar_system_object_link = solar_system_object
         self.action_surface = action_surface
         self.display_mode_before = "planetary"
+        self.rect = pygame.Rect(0,0,0,0)
         
 
     def create(self):
@@ -1013,6 +1033,11 @@ class tech_window():
         surface = sol.technology_tree.plot_total_tree(sol.technology_tree.vertex_dict,sol.technology_tree.zoomlevel,center = sol.technology_tree.center)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
+        
+    def receive_click(self,event):
+        if self.solar_system_object_link.message_printing["debugging"]:
+            print_dict = {"text":"DEBUGGING: tech window received a direct click. This should not be possible","type":"debugging"}
+            self.solar_system_object_link.messages.append(print_dict)
 
 
 class base_window():
@@ -1674,8 +1699,6 @@ class file_window():
 #        self.manager.emit("update_infobox", None)
                         
     
-    def quit(self):
-        self.renderer.add_widget(self.quit_dialog())
         
 
     
@@ -2009,8 +2032,8 @@ class base_and_firm_market_window():
         
 
         self.resource_selected = self.solar_system_object_link.trade_resources.keys()[0]
-        self.graph_size = (400,400)
-        self.graph_topleft = (200,100)
+        self.graph_rect = pygame.Rect(200,100,400,400)
+
 
         self.frame_size = 40
         self.blank_area_in_middle_height = 30 #the middle area in the market bid mode
@@ -2032,9 +2055,9 @@ class base_and_firm_market_window():
     def market_selection_callback(self,label,function_parameter):
         self.base_selected_for_merchant = label
         self.update_data(None, None)
-        
-    def place_bid_callback(self,label,function_parameter):
-        self.bidding_mode = self.bid_button.active
+#        
+#    def place_bid_callback(self,label,function_parameter):
+#        self.bidding_mode = self.bid_button.activate(None)
 
     
     def create(self):
@@ -2064,10 +2087,8 @@ class base_and_firm_market_window():
 
         if self.resource_selected not in resource_button_names:
             self.resource_selected = resource_button_names[0]
-        #for each resource to be displayed we make a radio button
 
-        
-#        print "self.resource_selected: " + str(self.resource_selected)
+        #for each resource to be displayed we make a radio button
         self.resource_buttons = gui_components.radiobuttons(
                                                         resource_button_names, 
                                                         self.action_surface, 
@@ -2091,8 +2112,6 @@ class base_and_firm_market_window():
         if self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
-#                self.market_selection_frame = VFrame(Label("Select market"))
-#                self.market_selection_frame.set_align(ALIGN_LEFT)
                 self.market_selection_buttons = gui_components.radiobuttons(
                                                         ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
                                                         self.action_surface, 
@@ -2130,13 +2149,12 @@ class base_and_firm_market_window():
 
         
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
-        
         if firm_selected.name in self.solar_system_object_link.current_player.owned_firms.keys():
             self.bid_button = gui_components.button("Make market bid",
                                            self.action_surface,
-                                           function = self.place_bid_callback,
+                                           function = self.make_manual_bid,
                                            function_parameter = None, 
-                                           topleft = (self.rect[0] + 10, self.update_button[1] + self.update_button[3] +20), 
+                                           topleft = (self.rect[0] + 10, self.update_button.rect[1] + self.update_button.rect[3] +20), 
                                            fixed_size = None)
 
             
@@ -2168,9 +2186,8 @@ class base_and_firm_market_window():
             print self.update_data_history()
             print self.update_data_market_bids()
             raise Exception("The surface returned in the market window was not recognised")
-
-
-        self.action_surface.blit(surface, self.graph_topleft)
+        
+        self.action_surface.blit(surface, (self.graph_rect[0],self.graph_rect[1]))
         pygame.display.flip()
 
 
@@ -2197,10 +2214,10 @@ class base_and_firm_market_window():
                 raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
 
             #painting the basic market_analysis surface
-            market_analysis_surface = pygame.Surface(self.graph_size)
+            market_analysis_surface = pygame.Surface((self.graph_rect[2],self.graph_rect[3]))
             market_analysis_surface.fill((212,212,212))
-            pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_size[1]*0.5+7),(self.graph_size[1],self.graph_size[1]*0.5+7),3)
-            pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_size[1]*0.5-7),(self.graph_size[1],self.graph_size[1]*0.5-7),3)
+            pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_rect[3]*0.5+7),(self.graph_rect[3],self.graph_rect[3]*0.5+7),3)
+            pygame.draw.line(market_analysis_surface,(50,50,50),(0,self.graph_rect[3]*0.5-7),(self.graph_rect[3],self.graph_rect[3]*0.5-7),3)
             
             #making lists of quantitites, prices and providers
             quantities = []
@@ -2221,7 +2238,7 @@ class base_and_firm_market_window():
             
             if len(prices)==0:
                 market_price_label = global_variables.standard_font.render("No " + resource + " on market",True,(0,0,0))
-                market_analysis_surface.blit(market_price_label,(0,self.graph_size[1]*0.5-4))
+                market_analysis_surface.blit(market_price_label,(0,self.graph_rect[3]*0.5-4))
             else:
                 #calculating max price and market price. Adding these as labels if relevant.
                 max_price = max(prices)
@@ -2236,15 +2253,15 @@ class base_and_firm_market_window():
                 elif len(market["sell_offers"][resource]) == 0:
                     market_price = market["buy_offers"][resource][0]["price"]
                     market_price_description = "Only buy offers. Highest is: " + "%.5g" % market["buy_offers"][resource][0]["price"]
-                    market_analysis_surface.blit(buy,(0,self.graph_size[1]-15))
+                    market_analysis_surface.blit(buy,(0,self.graph_rect[3]-15))
 
                 else:
                     market_price_description = "Highest buy offer: " + "%.5g" % market["buy_offers"][resource][0]["price"] + ". Lowest sell offer: " + "%.5g" % market["sell_offers"][resource][0]["price"] 
                     market_price = (market["sell_offers"][resource][0]["price"] + market["buy_offers"][resource][0]["price"]) * 0.5
                     market_analysis_surface.blit(sell,(0,0))
-                    market_analysis_surface.blit(buy,(0,self.graph_size[1]-15))
+                    market_analysis_surface.blit(buy,(0,self.graph_rect[3]-15))
                 market_price_label = global_variables.standard_font.render(market_price_description,True,(0,0,0))
-                market_analysis_surface.blit(market_price_label,(self.graph_size[0]/100,self.graph_size[1]*0.5-4))
+                market_analysis_surface.blit(market_price_label,(self.graph_rect[2]/100,self.graph_rect[3]*0.5-4))
                 
                 if market_analysis_surface is None:
                     raise Exception("After plotting the mean price on the market_analysis_surface it suddenly became None")
@@ -2273,19 +2290,19 @@ class base_and_firm_market_window():
                 #required to be higher
                 for i in range(0,len(prices)):
                     
-                    plotting_area_height = self.graph_size[1] - self.frame_size * 2 - self.blank_area_in_middle_height
+                    plotting_area_height = self.graph_rect[3] - self.frame_size * 2 - self.blank_area_in_middle_height
                     y_position_before = y_position_here
                     if i == 0:
-                        y_position_here = (self.graph_size[1] - self.frame_size) - (((prices[i] - ylim[0]) / ( ylim[1] - ylim[0])) * plotting_area_height )
+                        y_position_here = (self.graph_rect[3] - self.frame_size) - (((prices[i] - ylim[0]) / ( ylim[1] - ylim[0])) * plotting_area_height )
                     else:
                         y_position_here = y_position_next
                     
                     if i == len(prices)-1:
-                        y_position_next = self.graph_size[1] - self.frame_size
+                        y_position_next = self.graph_rect[3] - self.frame_size
                     else:
-                        y_position_next = (self.graph_size[1] - self.frame_size) - (((prices[i+1] - ylim[0]) / ( ylim[1] - ylim[0])) * plotting_area_height )
+                        y_position_next = (self.graph_rect[3] - self.frame_size) - (((prices[i+1] - ylim[0]) / ( ylim[1] - ylim[0])) * plotting_area_height )
                     
-                    x_length = int((self.graph_size[1]) * math.log10(quantities[i]) / math.log10(xlim[1]) ) 
+                    x_length = int((self.graph_rect[3]) * math.log10(quantities[i]) / math.log10(xlim[1]) ) 
                     
                     if ((prices[i] - ylim[0]) / ( ylim[1] - ylim[0])) > 0.5: #ie if this is a sell offer
                         y_position_here = y_position_here - self.blank_area_in_middle_height
@@ -2306,27 +2323,27 @@ class base_and_firm_market_window():
                 
                 #making x-axis scale
                 x_axis_vertical_position_percent_of_frame = 0.9 # in percent of lower frame where 1 is at top of frame
-                x_axis_vertical_position = self.graph_size[1]-int(self.frame_size*x_axis_vertical_position_percent_of_frame)
-                pygame.draw.line(market_analysis_surface,(0,0,0),(0,x_axis_vertical_position),(self.graph_size[0],x_axis_vertical_position),3)
-                pygame.draw.line(market_analysis_surface,(0,0,0),(0,self.graph_size[1] - x_axis_vertical_position),(self.graph_size[0],self.graph_size[1] - x_axis_vertical_position),3)
-                pygame.draw.line(market_analysis_surface,(0,0,0),(0,x_axis_vertical_position),(0,self.graph_size[1] - x_axis_vertical_position),3)
-                pygame.draw.line(market_analysis_surface,(0,0,0),(self.graph_size[0],x_axis_vertical_position),(self.graph_size[0],self.graph_size[1] - x_axis_vertical_position),3)
+                x_axis_vertical_position = self.graph_rect[3]-int(self.frame_size*x_axis_vertical_position_percent_of_frame)
+                pygame.draw.line(market_analysis_surface,(0,0,0),(0,x_axis_vertical_position),(self.graph_rect[2],x_axis_vertical_position),3)
+                pygame.draw.line(market_analysis_surface,(0,0,0),(0,self.graph_rect[3] - x_axis_vertical_position),(self.graph_rect[2],self.graph_rect[3] - x_axis_vertical_position),3)
+                pygame.draw.line(market_analysis_surface,(0,0,0),(0,x_axis_vertical_position),(0,self.graph_rect[3] - x_axis_vertical_position),3)
+                pygame.draw.line(market_analysis_surface,(0,0,0),(self.graph_rect[2],x_axis_vertical_position),(self.graph_rect[2],self.graph_rect[3] - x_axis_vertical_position),3)
                 max_x_axis_mark = 10 ** math.floor(math.log10(max_quantity)) #the value of the maximal x-axis mark. If eg. max_quantity is 1021, the max_x_axis_mark is 10^4
                 if (max_quantity / max_x_axis_mark) < 6: # because then there is no room for the "units" marker
                     max_x_axis_mark = max_x_axis_mark / 10
-                max_x_axis_mark_pos = int((self.graph_size[1]) * math.log10(max_x_axis_mark) / math.log10(xlim[1]) )
-                mark_height = self.graph_size[1] / 50
+                max_x_axis_mark_pos = int((self.graph_rect[3]) * math.log10(max_x_axis_mark) / math.log10(xlim[1]) )
+                mark_height = self.graph_rect[3] / 50
                 for i in range(0,10): #iterating "downwards" so to speak, because the x_mark_line will give the lineage of 10fold lower marks
                     x_mark_here = int(max_x_axis_mark / (10**i))
                     if x_mark_here < 10: #we stop the show at 10
                         break
-                    x_pos_here = int((self.graph_size[1]) * math.log10(x_mark_here) / math.log10(xlim[1]) )
+                    x_pos_here = int((self.graph_rect[3]) * math.log10(x_mark_here) / math.log10(xlim[1]) )
                     pygame.draw.line(market_analysis_surface,(0,0,0),(x_pos_here,x_axis_vertical_position + mark_height/2),(x_pos_here,x_axis_vertical_position - mark_height/2))
                     x_mark_label_text = "10^"+str(int(math.log10(x_mark_here)))
                     if i == 0:
                         x_mark_label_text = x_mark_label_text + " units"  
                     x_mark_label = global_variables.standard_font.render(x_mark_label_text,True,(0,0,0))
-                    market_analysis_surface.blit(x_mark_label,(x_pos_here-self.graph_size[0]/100,x_axis_vertical_position + (mark_height)))
+                    market_analysis_surface.blit(x_mark_label,(x_pos_here-self.graph_rect[2]/100,x_axis_vertical_position + (mark_height)))
                     if market_analysis_surface is None:
                         raise Exception("At the end of the market_analysis_surface section, the surface had become None")
                 
@@ -2338,7 +2355,7 @@ class base_and_firm_market_window():
 
 
     def update_data_history(self):
-        history_surface = pygame.Surface(self.graph_size)
+        history_surface = pygame.Surface((self.graph_rect[2],self.graph_rect[3]))
         history_surface.fill((212,212,212))
         resource = self.resource_selected
         #print "HERE: self.resource_selected: " + str(self.resource_selected)
@@ -2356,7 +2373,7 @@ class base_and_firm_market_window():
 
         if len(market["transactions"][resource])==0:
             no_history_label = global_variables.standard_font.render("No " + resource + " sold on market",True,(0,0,0))
-            history_surface.blit(no_history_label,(0,self.graph_size[1]*0.5-4))
+            history_surface.blit(no_history_label,(0,self.graph_rect[3]*0.5-4))
         else:
             start_date = market["transactions"][resource][0]["date"]
             end_date = market["transactions"][resource][-1]["date"]
@@ -2388,8 +2405,8 @@ class base_and_firm_market_window():
             self.positional_database["bidding_mode"]["price"] = ylim
             
             for i in range(0,len(price)):
-                x_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
-                y_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (price[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x_position = int(self.frame_size + ((self.graph_rect[2]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
+                y_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (price[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
                 try: dot_size = int(math.log10(quantity[i]))
                 except:
                     print "DEBUGGING WARNING: quantity in a depicted transaction was " + str(quantity[i]) + " and this made the log function crash. You should probably look into the market functions and investigate why some bids are 0 or negative"
@@ -2410,7 +2427,9 @@ class base_and_firm_market_window():
 
 
 
-    def make_manual_bid(self,price,quantity):
+
+
+    def make_manual_bid(self,label,function_parameter):
         """
         Function that will effectuate the bid, depending on the resource chosen
         """
@@ -2424,12 +2443,31 @@ class base_and_firm_market_window():
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
 
         
+        bid_surface = pygame.Surface((self.graph_rect[2],self.graph_rect[3]))
+        bid_surface.fill((212,212,212))
         
-        self.exit()
-        self.bid_window = Table(6,3)
-        self.bid_window.topleft = (self.rect[0] + 100, self.rect[1] + 100)
         
-        #row 0: price
+
+        price_bar = gui_components.hscrollbar(bid_surface, 
+                                  function, 
+                                  topleft, 
+                                  length_of_bar_in_pixel, 
+                                  range_of_values, 
+                                  range_seen = None, 
+                                  start_position = 0, 
+                                  function_parameter=None)
+        
+
+        price_bar = gui_components.hscrollbar(bid_surface, 
+                                  function, 
+                                  topleft, 
+                                  length_of_bar_in_pixel, 
+                                  range_of_values, 
+                                  range_seen = None, 
+                                  start_position = 0, 
+                                  function_parameter=None)
+
+        
         self.bid_window.add_child(0, 0, Label("Price"))
         self.bid_window.add_child(0, 1, Entry(price))
         self.bid_window.add_child(0, 2, Label("Capital: " + str(firm_selected.owner.capital)))
@@ -2627,28 +2665,28 @@ class base_and_firm_market_window():
         Function that will take the position of a mouse click and check if any market-window variables (either history or market bids)
         are present at that position. If so, it will highlight these with further info on first click and provide a link on second click
         """ 
-        #print "self.resource_selected: " + str(self.resource_selected)
-        position = event.pos
+        #transposing position to take the main window rect into account
+        position = (event.pos[0] - self.rect[0], event.pos[1] - self.rect[1]) 
         
-        graph_rect = pygame.Rect(self.graph_topleft[0], self.graph_topleft[1], self.graph_size[0], self.graph_size[1])
+#        graph_rect = pygame.Rect(self.graph_topleft[0], self.graph_topleft[1], self.graph_rect[2], self.graph_rect[3])
         
-        if graph_rect.collidepoint(event.pos) == 1:
+        if self.graph_rect.collidepoint(event.pos) == 1:
             print "in graph"
             if self.bidding_mode: #if the graphs accept bids we start the bidding sections up
                 if self.graph_selected == "market bids":
                     top_of_plot = self.rect[1] + self.frame_size  + 21
                     self.blank_area_in_middle_height
                     y_position =  position[1] - top_of_plot
-                    if y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 + self.blank_area_in_middle_height/2:
+                    if y_position > (self.graph_rect[3] - 2 * self.frame_size) / 2 + self.blank_area_in_middle_height/2:
                         y_position = y_position - self.blank_area_in_middle_height #more than half - correct and move on
-                    elif y_position > (self.graph_size[1] - 2 * self.frame_size) / 2 - self.blank_area_in_middle_height/2:
+                    elif y_position > (self.graph_rect[3] - 2 * self.frame_size) / 2 - self.blank_area_in_middle_height/2:
                         return None #Hit half - don't continue
-                    height_of_plot = self.graph_size[1] - 2 * self.frame_size - self.blank_area_in_middle_height 
+                    height_of_plot = self.graph_rect[3] - 2 * self.frame_size - self.blank_area_in_middle_height 
                     y_relative_position = 1.0 - (y_position / float(height_of_plot))
                 else:
-                    y_relative_position =  ((self.graph_size[1] - self.frame_size) - (position[1] - self.rect[1] - 21)) / float(self.graph_size[1] - self.frame_size)
+                    y_relative_position =  ((self.graph_rect[3] - self.frame_size) - (position[1] - self.rect[1] - 21)) / float(self.graph_rect[3] - self.frame_size)
     
-                x_relative_position =  (position[0] - self.rect[0] - 150) / float(self.graph_size[0])
+                x_relative_position =  (position[0] - self.rect[0] - 150) / float(self.graph_rect[2])
                 if 0 < x_relative_position < 1:
                     if 0 < y_relative_position < 1:
                         if "price" in self.positional_database["bidding_mode"].keys():
@@ -2694,10 +2732,6 @@ class base_and_firm_market_window():
             if "activate" in dir(self.bid_button):
                 if self.bid_button.rect.collidepoint(event.pos) == 1:
                     self.bid_button.activate(event.pos)
-
-            
-                                
-            
             
             
             
@@ -3365,12 +3399,12 @@ class company_financial_info():
             
             history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
             history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
-#            print "(self.graph_size[0]-self.frame_size*2): " + str((self.graph_size[0]-self.frame_size*2))
+#            print "(self.graph_rect[2]-self.frame_size*2): " + str((self.graph_rect[2]-self.frame_size*2))
             for i in range(1,len(capital)):
-                x1_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
-                y1_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
-                x2_position = int(self.frame_size + ((self.graph_size[0]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
-                y2_position = int(self.graph_size[1] - (self.frame_size + ( (self.graph_size[1]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x1_position = int(self.frame_size + ((self.graph_rect[2]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
+                y1_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x2_position = int(self.frame_size + ((self.graph_rect[2]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
+                y2_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
 #                print "From (" + str(x1_position) + "," + str(y1_position) + ") to (" + str(x2_position) + "," +str(y2_position) + ") - the date was: " + str(dates[i]) + " and the capital was " + str(capital[i])
                 
                 pygame.draw.line(history_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
