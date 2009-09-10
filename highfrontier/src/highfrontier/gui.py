@@ -2432,7 +2432,7 @@ class base_and_firm_market_window():
 
 
 
-    def make_manual_bid(self,label,function_parameter):
+    def make_manual_bid(self,initial_price = None,initial_quantity = None):
         """
         Function that will give the player the option to place a manual bid.
         First pre-selected parameters for resource-choice, initial choice and range of price, intial choice and range of quantity
@@ -2441,7 +2441,12 @@ class base_and_firm_market_window():
         
         self.graph_selected = "place bid mode"
         
-        
+        print "initial_quantity: " + str(initial_quantity)
+#        print initial_quantity
+#        print initial_quantity.__class__
+#        print "quantity_range: " + str(quantity_range)
+        print "initial_price: " + str(initial_price)
+#        print "price_range: " + str(price_range)
         #
         resource = self.resource_selected
         
@@ -2452,7 +2457,9 @@ class base_and_firm_market_window():
         else:
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
         
+        
 
+        
         #seller or buyer
         if isinstance(firm_selected, company.merchant): 
             if self.base_selected_for_merchant == firm_selected.from_location:
@@ -2469,18 +2476,57 @@ class base_and_firm_market_window():
         
         
         if direction == "sell": #in this case we are mostly interested in the stock
+            #sell quantity
             if isinstance(firm_selected, company.merchant):
                 if self.base_selected_for_merchant == firm_selected.from_location:
-                    initial_quantity = firm_selected.from_stock_dict[resource]
+                    quantity_max = firm_selected.from_stock_dict[resource]
                 elif self.base_selected_for_merchant == firm_selected.to_location:
-                    initial_quantity = firm_selected.to_stock_dict[resource]
+                    quantity_max = firm_selected.to_stock_dict[resource]
                 else:
                     raise Exception("The self.base_selected_for_merchant " + str(self.base_selected_for_merchant.name) + " was neither in the from or the to_location of " + str(firm_selected.name))
             else:
-                initial_quantity = firm_selected.stock_dict[resource]
+                quantity_max = firm_selected.stock_dict[resource]
                 
-            quantity_range = (0,initial_quantity)
+
+        else:
+            #buy quantity
+            if isinstance(firm_selected, company.merchant):
+                print "NEED TO SET quantity range for a merchant. Defaulting to 100"
+                quantity_max = 100
+            else:
+                print dir(firm_selected)
+                print firm_selected.input_output_dict
+                quantity_max = firm_selected.input_output_dict["input"][resource] * 10
+
+
+        quantity_range = (0,quantity_max)
+        if initial_quantity is None:
+            initial_quantity = quantity_max
+        
+        #price setting
+        if isinstance(firm_selected, company.merchant):
+            market = self.base_selected_for_merchant.market
+        else:
+            market = firm_selected.location.market
             
+        if len(market["buy_offers"][resource]) > 0:
+            max_price = market["buy_offers"][resource][0]
+        else:
+            max_price = 10
+        for transaction in market["transactions"][resource]:
+            max_price = max(max_price, transaction["price"])
+        print "max_price: " + str(max_price)
+            
+        price_range = (0,int(max_price * 2))
+        if initial_price is None:
+            initial_price = max_price
+                
+        
+        print "initial_quantity: " + str(initial_quantity)
+        print "quantity_range: " + str(quantity_range)
+        print "initial_price: " + str(initial_price)
+        print "price_range: " + str(price_range)
+        
 #        else: # in the buy case we are mostly intereted in input rate for the firm
 #            if isinstance(firm_selected, company.merchant):
 #                if self.base_selected_for_merchant == firm_selected.from_location:
@@ -2520,19 +2566,20 @@ class base_and_firm_market_window():
                                   price_execute, 
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-20, 
-                                  (1,1000), 
-                                  range_seen = 10, 
-                                  start_position = 10, 
+                                  price_range, 
+                                  start_position = int(initial_price), 
                                   function_parameter=None)
 
 
 
         #row 2 set the quantity
+        height_to_draw = height_to_draw + 60
+        
         quantity_text = global_variables.standard_font.render("Set the quantity:",True,(0,0,0))
         self.action_surface.blit(quantity_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
         
 
-        height_to_draw = height_to_draw + 50
+        
         def quantity_execute(label, function_parameter):
             print "quantity"
             print label
@@ -2543,9 +2590,8 @@ class base_and_firm_market_window():
                                   quantity_execute, 
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-10, 
-                                  (1,1000), 
-                                  range_seen = 10, 
-                                  start_position = 10, 
+                                  quantity_range, 
+                                  start_position = initial_quantity, 
                                   function_parameter=None)
 
 
@@ -2567,7 +2613,7 @@ class base_and_firm_market_window():
                                    self.action_surface, 
                                    direction_execute,
                                    function_parameter = None, 
-                                   topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw), 
+                                   topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                    selected = None)
         
         
@@ -2591,14 +2637,14 @@ class base_and_firm_market_window():
                            self.action_surface, 
                            direction_execute,
                            function_parameter = None, 
-                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw), 
+                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                            selected = None)
         else:
                         self.location_buttons = gui_components.radiobuttons([firm_selected.location.name],
                            self.action_surface, 
                            direction_execute,
                            function_parameter = None, 
-                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw), 
+                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                            selected = None)
 #            from_button = RadioButton(firm_selected.from_location.name, None)
 #            to_button = RadioButton(firm_selected.to_location.name, from_button)
@@ -2814,21 +2860,20 @@ class base_and_firm_market_window():
                                 if price < 0:
                                     print "Changed price from " + str(price) + " to 0"
                                     price = 0
-                                    
-                                price = str(price)
+
                             else:
-                                price = ""
+                                price = None
                                 
                             if "quantity" in self.positional_database["bidding_mode"].keys():
                                 max_qt = self.positional_database["bidding_mode"]["quantity"][1]
                                 try:    math.log10(max_qt)
                                 except: 
                                     print "DEBUGGING: no good selection of log10 max_qt"
-                                    quantity = ""
+                                    quantity = None
                                 else:
-                                    quantity = str(int(10 ** (math.log10(max_qt) * x_relative_position)))  
+                                    quantity = int(10 ** (math.log10(max_qt) * x_relative_position))  
                             else:
-                                quantity = ""
+                                quantity = None
                         
                             print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
                             self.make_manual_bid(price,quantity)
