@@ -20,9 +20,9 @@ max_letters_in_company_names = 32
 
 courier_font = pygame.font.SysFont("monospace", 11, bold=False, italic=False) #some fonts
 courier_font_bold = pygame.font.SysFont("monospace", 11, bold=True, italic=False) #some fonts
-standard_font = pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"), 13, bold=False, italic=False) #some fonts
-standard_font_small= pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"),10)
-standard_font_small_bold = pygame.font.Font(os.path.join("fonts","FreeSansBold.ttf"),10)
+standard_font = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"), 13, bold=False, italic=False) #some fonts
+standard_font_small= pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
+standard_font_small_bold = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
 standard_font_small_bold.set_bold(True)
 max_stepback_history_size = 10 # how many steps back we can use the "back" key
 #receive_text_object = None # Should be None, but is used within game to direct text
