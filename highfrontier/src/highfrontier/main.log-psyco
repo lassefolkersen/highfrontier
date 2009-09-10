@@ -1,220 +1,511 @@
-14:22:10.26  Logging started, 09/10/09                  %%%%%%%%%%%%%%%%%%%%
-14:22:10.26  ActivePassiveProfiler: starting                           %%%%%
-14:22:10.32   ______
+16:33:38.07  Logging started, 09/10/09                  %%%%%%%%%%%%%%%%%%%%
+16:33:38.07  ActivePassiveProfiler: starting                           %%%%%
+16:33:38.18   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-14:22:10.61   ______
+16:33:38.40   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-14:22:10.78   ______
+16:33:38.58   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-14:22:10.94   ______
+16:33:38.79   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-14:22:11.15   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-14:22:11.39   ______
-        #1   |99.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:11.56   ______
-        #1   |99.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:11.86   ______
-        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:12.07   ______
-        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:12.37   ______
+16:33:39.02   ______
+        #1   |99.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:39.21   ______
+        #1   |98.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:39.41   ______
+        #1   |98.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:39.66   ______
         #1   |98.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:12.59   ______
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:39.93   ______
         #1   |98.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:12.79   ______
-        #1   |98.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.04   ______
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:40.13   ______
         #1   |98.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.22   ______
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:40.94   ______
         #1   |98.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.3 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.47   ______
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.1 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:41.27   ______
+        #1   |98.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.2 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:41.60   ______
         #1   |98.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.2 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:41.83   ______
+        #1   |98.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.2 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:42.15   ______
+        #1   |98.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #3   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #4   | 0.3 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:42.47   ______
+        #1   |98.4 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.3 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.62   ______
-        #1   |98.6 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:42.80   ______
+        #1   |98.4 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.4 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.79   ______
-        #1   |98.5 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:43.11   ______
+        #1   |98.3 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.4 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:13.98   ______
-        #1   |98.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.5 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:14.23   ______
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:43.41   ______
         #1   |98.3 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.5 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.2 %|  walk                      ...\python\lib\os.py:223
-14:22:14.44   ______
-        #1   |97.6 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:43.72   ______
+        #1   |98.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.5 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:44.29   ______
+        #1   |98.0 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.6 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.3 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:14.59   ______
-        #1   |97.5 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #7   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:44.52   ______
+        #1   |98.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #7   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:44.71   ______
+        #1   |97.9 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.7 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.3 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:14.86   ______
-        #1   |97.3 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #7   | 0.1 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:44.96   ______
+        #1   |97.7 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.8 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.3 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:15.04   ______
-        #1   |96.5 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 0.2 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #8   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:45.19   ______
+        #1   |97.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #4   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #5   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 0.2 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 0.1 %|  isdir                     ...hon\lib\ntpath.py:267
+        #8   | 0.1 %|  isabs                     ...hon\lib\ntpath.py:51
+16:33:45.43   ______
+        #1   |96.4 %|  active_start              ...psyco\profiler.py:273
         #2   | 0.9 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.5 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:15.20   ______
-        #1   |96.3 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.4 %|  receive_data              ...gui_components.py:794
+        #4   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #5   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #6   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.2 %|  create                    ...ghfrontier\gui.py:2881
+        #8   | 0.2 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.2 %|  update_fast_list          ...gui_components.py:726
+16:33:45.66   ______
+        #1   |96.2 %|  active_start              ...psyco\profiler.py:273
         #2   | 1.0 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.5 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:15.40   ______
-        #1   |95.1 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.4 %|  receive_data              ...gui_components.py:794
+        #4   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #5   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #6   | 0.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.2 %|  update_fast_list          ...gui_components.py:726
+16:33:45.85   ______
+        #1   |95.6 %|  active_start              ...psyco\profiler.py:273
         #2   | 1.1 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:15.67   ______
-        #1   |94.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.3 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:15.84   ______
-        #1   |94.6 %|  active_start              ...psyco\profiler.py:273
+        #3   | 0.4 %|  receive_data              ...gui_components.py:794
+        #4   | 0.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+16:33:46.10   ______
+        #1   |95.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.4 %|  receive_data              ...gui_components.py:794
+        #4   | 0.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+16:33:46.41   ______
+        #1   |95.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.4 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+16:33:46.63   ______
+        #1   |94.9 %|  active_start              ...psyco\profiler.py:273
         #2   | 1.5 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:16.09   ______
+        #3   | 0.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+16:33:46.90   ______
         #1   |94.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.7 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:16.34   ______
+        #2   | 1.6 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+16:33:47.05   ______
         #1   |94.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.9 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:16.51   ______
-        #1   |93.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.1 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:16.70   ______
-        #1   |93.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.3 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:16.94   ______
-        #1   |93.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.6 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:17.11   ______
+        #2   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+        #7   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #8   | 0.3 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.2 %|  create                    ...ghfrontier\gui.py:2881
+        #10  | 0.2 %|  draw                      ...gui_components.py:172
+16:33:47.22   ______
         #1   |92.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.9 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:17.29   ______
-        #1   |92.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.2 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:17.53   ______
-        #1   |92.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.5 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:17.72   ______
-        #1   |91.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.9 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 1.0 %|  <module>                  ...hfrontier\main.py:7
-        #4   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:17.97   ______
-        #1   |91.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.2 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 1.0 %|  <module>                  ...hfrontier\main.py:7
-        #4   | 0.9 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:18.01  tag function: technology.Tree.get_research_project            %
-14:22:18.15   ______
+        #2   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+        #7   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #8   | 0.3 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.2 %|  commodity_build_firm      ...ghfrontier\gui.py:3315
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:2881
+16:33:47.46   ______
+        #1   |92.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.8 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.4 %|  receive_data              ...gui_components.py:794
+        #5   | 0.3 %|  walk                      ...\python\lib\os.py:223
+        #6   | 0.3 %|  update_fast_list          ...gui_components.py:726
+        #7   | 0.3 %|  join                      ...hon\lib\ntpath.py:59
+        #8   | 0.3 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.2 %|  commodity_build_firm      ...ghfrontier\gui.py:3315
+        #10  | 0.2 %|  load                      ...\PIL\ImageFile.py:115
+16:33:47.69   ______
+        #1   |90.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 1.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 0.8 %|  draw                      ...gui_components.py:499
+        #5   | 0.5 %|  __init__                  ...gui_components.py:475
+        #6   | 0.5 %|  create_subcommandbox      ...ghfrontier\gui.py:505
+        #7   | 0.4 %|  receive_data              ...gui_components.py:794
+        #8   | 0.3 %|  load                      ...\PIL\ImageFile.py:115
+        #9   | 0.3 %|  tostring                  ...ages\PIL\Image.py:503
+        #10  | 0.3 %|  walk                      ...\python\lib\os.py:223
+16:33:47.88   ______
+        #1   |69.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.1 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.9 %|  evaluate_self             ...ontier\company.py:354
+16:33:48.02   ______
+        #1   |69.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.1 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.9 %|  evaluate_self             ...ontier\company.py:354
+16:33:48.33   ______
+        #1   |68.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.0 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.8 %|  evaluate_self             ...ontier\company.py:354
+16:33:48.60   ______
         #1   |65.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.7 %|  evaluate_self             ...ontier\company.py:354
-        #3   | 5.2 %|  pick_research_01          ...rket_decisions.py:60
-        #4   | 5.1 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 2.6 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.3 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:18.45   ______
-        #1   |65.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.7 %|  evaluate_self             ...ontier\company.py:354
-        #3   | 5.5 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 5.2 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.6 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.3 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:18.76   ______
-        #1   |64.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.7 %|  evaluate_self             ...ontier\company.py:354
-        #3   | 6.0 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 5.2 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.6 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.3 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:19.00   ______
-        #1   |64.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.6 %|  evaluate_self             ...ontier\company.py:354
-        #3   | 6.4 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 5.1 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.6 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.4 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:19.19   ______
-        #1   |63.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.8 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 6.6 %|  evaluate_self             ...ontier\company.py:354
-        #4   | 5.1 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.5 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.4 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:19.48   ______
-        #1   |63.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.4 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 6.5 %|  evaluate_self             ...ontier\company.py:354
-        #4   | 5.0 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.5 %|  pick_research             ...ontier\company.py:265
-        #6   | 1.7 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.8 %|  dumpcharges               ...s\psyco\logger.py:62
-        #9   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:19.76   ______
-        #1   |62.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.0 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 6.4 %|  evaluate_self             ...ontier\company.py:354
-        #4   | 5.0 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.5 %|  pick_research             ...ontier\company.py:265
-        #6   | 2.0 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #8   | 0.9 %|  dumpcharges               ...s\psyco\logger.py:62
-        #9   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:20.04   ______
-        #1   |61.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.7 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 6.3 %|  evaluate_self             ...ontier\company.py:354
-        #4   | 4.9 %|  pick_research_01          ...rket_decisions.py:60
-        #5   | 2.4 %|  pick_research             ...ontier\company.py:265
-        #6   | 2.4 %|  <module>                  ...hfrontier\main.py:7
-        #7   | 1.1 %|  dumpcharges               ...s\psyco\logger.py:62
-        #8   | 1.0 %|  choice                    ...hon\lib\random.py:246
-        #9   | 0.6 %|  update_data_history       ...ghfrontier\gui.py:2359
-14:22:20.53  tag function: __main__.start_loop                             %
-14:22:20.53   ______
-        #1   |54.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.7 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.6 %|  evaluate_self             ...ontier\company.py:354
+        #4   | 4.5 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 3.0 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.5 %|  pick_research             ...ontier\company.py:265
+        #7   | 1.1 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.0 %|  create                    ...ghfrontier\gui.py:1970
+16:33:48.83   ______
+        #1   |65.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.6 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.5 %|  evaluate_self             ...ontier\company.py:354
+        #4   | 5.0 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 3.0 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.5 %|  pick_research             ...ontier\company.py:265
+        #7   | 1.0 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.0 %|  create                    ...ghfrontier\gui.py:1970
+16:33:49.07   ______
+        #1   |64.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.6 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.6 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 5.5 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 3.0 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.5 %|  pick_research             ...ontier\company.py:265
+        #7   | 1.0 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 1.0 %|  create                    ...ghfrontier\gui.py:1970
+16:33:49.38   ______
+        #1   |57.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  get_research_project      ...ier\technology.py:163
+        #3   | 5.3 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 4.9 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.7 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.9 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.6 %|  walk                      ...\python\lib\os.py:223
+        #8   | 1.3 %|  pick_research             ...ontier\company.py:265
+        #9   | 1.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
+16:33:49.66   ______
+        #1   |56.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.8 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.9 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.6 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.9 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.6 %|  walk                      ...\python\lib\os.py:223
+        #8   | 1.3 %|  pick_research             ...ontier\company.py:265
+        #9   | 1.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
+16:33:49.88   ______
+        #1   |56.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.5 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.8 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.8 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.6 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.9 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.6 %|  walk                      ...\python\lib\os.py:223
+        #8   | 1.3 %|  pick_research             ...ontier\company.py:265
+        #9   | 1.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 1.3 %|  <module>                  ...hfrontier\main.py:7
+16:33:50.15   ______
+        #1   |55.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.1 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.7 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.7 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.6 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.8 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.6 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.6 %|  walk                      ...\python\lib\os.py:223
+        #9   | 1.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 1.3 %|  pick_research             ...ontier\company.py:265
+16:33:50.41   ______
+        #1   |55.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.7 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.6 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.8 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.6 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 1.5 %|  walk                      ...\python\lib\os.py:223
+        #10  | 1.3 %|  pick_research             ...ontier\company.py:265
+16:33:50.68   ______
+        #1   |54.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.6 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 2.5 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.8 %|  join                      ...hon\lib\ntpath.py:59
+        #7   | 1.8 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 1.6 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 1.5 %|  walk                      ...\python\lib\os.py:223
+        #10  | 1.3 %|  pick_research             ...ontier\company.py:265
+16:33:52.71  tag function: __main__.start_loop                             %
+16:33:52.71   ______
+        #1   |47.3 %|  active_start              ...psyco\profiler.py:273
         #2   | 6.7 %|  buildfncache              ...psyco\profiler.py:66
-14:22:24.19   ______
-        #1   |54.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.7 %|  buildfncache              ...psyco\profiler.py:66
-14:22:24.19  memory usage: 85+ kb                                          %
-14:22:24.19  program exit, 09/10/09                     %%%%%%%%%%%%%%%%%%%%
+        #3   | 4.8 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.0 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.2 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 2.2 %|  pick_research_01          ...rket_decisions.py:60
+        #8   | 1.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 1.6 %|  join                      ...hon\lib\ntpath.py:59
+        #10  | 1.3 %|  walk                      ...\python\lib\os.py:223
+16:33:55.54   ______
+        #1   |44.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.4 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 3.8 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.0 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 2.1 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #8   | 2.1 %|  pick_research_01          ...rket_decisions.py:60
+        #9   | 1.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 1.5 %|  join                      ...hon\lib\ntpath.py:59
+16:34:02.25   ______
+        #1   |44.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.5 %|  get_research_project      ...ier\technology.py:163
+        #4   | 3.8 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.0 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 2.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 2.1 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 2.1 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.5 %|  join                      ...hon\lib\ntpath.py:59
+16:34:02.71  unsupported free or cell vars in make_manual_bid            % %
+16:34:02.71   ______
+        #1   |44.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.5 %|  get_research_project      ...ier\technology.py:163
+        #4   | 3.8 %|  evaluate_self             ...ontier\company.py:354
+        #5   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 2.9 %|  <module>                  ...hfrontier\main.py:7
+        #7   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 2.1 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 2.1 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.5 %|  join                      ...hon\lib\ntpath.py:59
+16:34:03.29   ______
+        #1   |41.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.0 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.3 %|  get_research_project      ...ier\technology.py:163
+        #4   | 3.6 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 3.6 %|  evaluate_self             ...ontier\company.py:354
+        #6   | 3.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 2.9 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.0 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:03.63   ______
+        #1   |41.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.3 %|  get_research_project      ...ier\technology.py:163
+        #4   | 3.6 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 3.6 %|  evaluate_self             ...ontier\company.py:354
+        #6   | 3.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 2.9 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.0 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:04.50   ______
+        #1   |41.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.2 %|  get_research_project      ...ier\technology.py:163
+        #4   | 4.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #5   | 3.6 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.5 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.9 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.0 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:05.07   ______
+        #1   |41.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 4.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 4.2 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.6 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.5 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.8 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.0 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:06.13   ______
+        #1   |40.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 5.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 4.2 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.6 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.5 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.8 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.9 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:07.63   ______
+        #1   |40.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  buildfncache              ...psyco\profiler.py:66
+        #3   | 5.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 4.2 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.5 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.8 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.9 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.4 %|  draw                      ...gui_components.py:348
+16:34:08.04   ______
+        #1   |40.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 5.7 %|  buildfncache              ...psyco\profiler.py:66
+        #4   | 4.1 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.4 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.8 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 1.9 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #9   | 1.9 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 1.8 %|  do_profile                ...psyco\profiler.py:314
+16:34:11.15   ______
+        #1   |39.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 5.7 %|  buildfncache              ...psyco\profiler.py:66
+        #4   | 4.1 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.4 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.7 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.1 %|  do_profile                ...psyco\profiler.py:314
+        #9   | 1.9 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #10  | 1.8 %|  pick_research_01          ...rket_decisions.py:60
+16:34:12.50   ______
+        #1   |39.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 5.6 %|  buildfncache              ...psyco\profiler.py:66
+        #4   | 4.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 3.3 %|  evaluate_self             ...ontier\company.py:354
+        #7   | 2.7 %|  <module>                  ...hfrontier\main.py:7
+        #8   | 2.5 %|  do_profile                ...psyco\profiler.py:314
+        #9   | 1.9 %|  update_data_history       ...ghfrontier\gui.py:2360
+        #10  | 1.8 %|  pick_research_01          ...rket_decisions.py:60
+16:34:12.50  memory usage: 941+ kb                                         %
+16:34:12.50  program exit, 09/10/09                     %%%%%%%%%%%%%%%%%%%%
