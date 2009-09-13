@@ -139,10 +139,7 @@ class gui():
         """
         self.active_window = None
         sol = self.solar_system_object_link
-#        print "clearing screen"
         if sol.display_mode == "solar_system":
-#            print "got clear screen sig"
-#            print self.active_window
             self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
         elif sol.display_mode == "planetary":
             self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))                        
@@ -2053,14 +2050,11 @@ class base_and_firm_market_window():
 
 
     def market_selection_callback(self,label,function_parameter):
-        self.base_selected_for_merchant = label
+        self.base_selected_for_merchant = function_parameter[label]
         self.update_data(None, None)
 #        
     def place_bid_callback(self,label,function_parameter):
         self.bidding_mode = label
-#        print "label: " + str(label)
-#        print function_parameter
-#        self.bidding_mode = self.bid_button.activate(None)
 
     
     def create(self):
@@ -2119,9 +2113,9 @@ class base_and_firm_market_window():
                                                         ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
                                                         self.action_surface, 
                                                         function = self.market_selection_callback, 
-                                                        function_parameter = None, 
+                                                        function_parameter = {"From: " + firm_selected.from_location.name:firm_selected.from_location,"To: " + firm_selected.to_location.name:firm_selected.to_location}, 
                                                         topleft = (self.rect[0] + 10 , self.graph_buttons.rect[1] + self.graph_buttons.rect[3] + 40),
-                                                        selected = self.graph_selected)
+                                                        selected = "From: " + firm_selected.from_location.name)
 
                 self.base_selected_for_merchant = firm_selected.from_location
 
@@ -2241,7 +2235,7 @@ class base_and_firm_market_window():
             
             if len(prices)==0:
                 market_price_label = global_variables.standard_font.render("No " + resource + " on market",True,(0,0,0))
-                market_analysis_surface.blit(market_price_label,(0,self.graph_rect[3]*0.5-4))
+                market_analysis_surface.blit(market_price_label,(0,self.graph_rect[3]*0.5-5))
             else:
                 #calculating max price and market price. Adding these as labels if relevant.
                 max_price = max(prices)
@@ -2315,13 +2309,13 @@ class base_and_firm_market_window():
                     max_width_of_selection_area = 10
                     top_border_length = min((y_position_here - y_position_before)/2,max_width_of_selection_area)
                     bottom_border_length = min((y_position_next - y_position_here)/2,max_width_of_selection_area)
-                    top_border = y_position_here - top_border_length + self.rect[1] + 21 #the 21 is empirical. I think it is the frame height
+                    top_border = y_position_here - top_border_length + self.graph_rect[1]
                     height = top_border_length + bottom_border_length
                     if height == 0: height = 1
-                    left_border = self.rect[0] + 150 + 7 #the seven is empirical (i think it is the frame)
+                    left_border = self.graph_rect[0]
                     width = x_length
                     #debugging_info = "exact y_pos: " + str(y_position_here + self.rect[1] + 21) + " top border: +" + str(top_border_length) + " bottom border: -" + str(bottom_border_length) 
-                    self.positional_database["non_bidding_mode"][(left_border,top_border,width,height)] = {"linkto":provider[i],"text":provider[i].name + ": " + "%.5g" % prices[i],"figure":((0,y_position_here),(x_length,y_position_here))}
+                    self.positional_database["non_bidding_mode"][(left_border,top_border,width,height)] = {"linkto":provider[i],"text":provider[i].name + ": " + "%.5g" % prices[i],"figure":((left_border,y_position_here + self.graph_rect[1]),(left_border + width,y_position_here + self.graph_rect[1]))}
                 
                 
                 #making x-axis scale
@@ -2361,7 +2355,7 @@ class base_and_firm_market_window():
         history_surface = pygame.Surface((self.graph_rect[2],self.graph_rect[3]))
         history_surface.fill((212,212,212))
         resource = self.resource_selected
-        #print "HERE: self.resource_selected: " + str(self.resource_selected)
+
         #determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
         if self.solar_system_object_link.display_mode == "base":
             market = self.solar_system_object_link.current_planet.current_base.market
@@ -2418,10 +2412,10 @@ class base_and_firm_market_window():
                 pygame.draw.circle(history_surface,(0,0,0),(x_position,y_position),dot_size)
                 
                 
-                left_border = x_position + self.rect[0] + 150 - dot_size + 7 
-                top_border = y_position + self.rect[1] + 21 - dot_size #the 21 is empirical. I think it is the frame height
+                left_border = x_position + self.graph_rect[0] - dot_size
+                top_border = y_position + self.graph_rect[1] - dot_size 
                 if seller[i] is not None and buyer[i] is not None: #can happen with the empty startup transactions
-                    self.positional_database["non_bidding_mode"][(left_border,top_border,2*dot_size,2*dot_size)] = {"linkto":seller[i],"text":str(seller[i].name) + " to " + str(buyer[i].name) + ": 10^" + str(dot_size) + "units","figure":((dot_size),(x_position,y_position)),"debug":left_border- dot_size}
+                    self.positional_database["non_bidding_mode"][(left_border,top_border,2*dot_size,2*dot_size)] = {"linkto":seller[i],"text":str(seller[i].name) + " to " + str(buyer[i].name) + ": 10^" + str(dot_size) + "units","figure":((dot_size),(x_position + self.graph_rect[0],y_position + self.graph_rect[1])),"debug":left_border- dot_size}
 
             if len(price) != len(quantity) or len(price) != len(dates):
                 raise Exception("DEBUGGING WARNING: There is a problem with unequal length in the markethistoryplotter")
@@ -2440,13 +2434,9 @@ class base_and_firm_market_window():
         """
         
         self.graph_selected = "place bid mode"
-        
+        print "at start of function"
         print "initial_quantity: " + str(initial_quantity)
-#        print initial_quantity
-#        print initial_quantity.__class__
-#        print "quantity_range: " + str(quantity_range)
         print "initial_price: " + str(initial_price)
-#        print "price_range: " + str(price_range)
         #
         resource = self.resource_selected
         
@@ -2502,7 +2492,9 @@ class base_and_firm_market_window():
         quantity_range = (0,quantity_max)
         if initial_quantity is None:
             initial_quantity = quantity_max
-        
+        else:
+            initial_quantity = min(quantity_range[1], initial_quantity)
+            
         #price setting
         if isinstance(firm_selected, company.merchant):
             market = self.base_selected_for_merchant.market
@@ -2510,7 +2502,7 @@ class base_and_firm_market_window():
             market = firm_selected.location.market
             
         if len(market["buy_offers"][resource]) > 0:
-            max_price = market["buy_offers"][resource][0]
+            max_price = market["buy_offers"][resource][0]["price"]
         else:
             max_price = 10
         for transaction in market["transactions"][resource]:
@@ -2527,23 +2519,6 @@ class base_and_firm_market_window():
         print "initial_price: " + str(initial_price)
         print "price_range: " + str(price_range)
         
-#        else: # in the buy case we are mostly intereted in input rate for the firm
-#            if isinstance(firm_selected, company.merchant):
-#                if self.base_selected_for_merchant == firm_selected.from_location:
-#                    initial_quantity = firm_selected.from_stock_dict[resource]
-#                elif self.base_selected_for_merchant == firm_selected.to_location:
-#                    initial_quantity = firm_selected.to_stock_dict[resource]
-#                else:
-#                    raise Exception("The self.base_selected_for_merchant " + str(self.base_selected_for_merchant.name) + " was neither in the from or the to_location of " + str(firm_selected.name))
-#            else:
-#                initial_quantity = firm_selected.stock_dict[resource]
-#                
-#                quantity_range = (0,initial_quantity)
-#        
-        
-
-
-
         
         pygame.draw.rect(self.action_surface,(212,212,212),self.graph_rect)
         height_to_draw = 10
@@ -2551,15 +2526,19 @@ class base_and_firm_market_window():
         
         
         #row 1 set the price
-        price_text = global_variables.standard_font.render("Set the price:",True,(0,0,0))
-        self.action_surface.blit(price_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
+        fixed_price_text = global_variables.standard_font.render("Set the price:",True,(0,0,0))
+        self.action_surface.blit(fixed_price_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
+        price_rect = pygame.Rect(self.graph_rect[0] + fixed_price_text.get_width(), self.graph_rect[1] + height_to_draw,self.graph_rect[2] - fixed_price_text.get_width(),fixed_price_text.get_height())
+        variable_price_text = global_variables.standard_font.render(str(int(initial_price)),True,(0,0,0))
+        self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
         
         
-        def price_execute(label, function_parameter):
-            print "price"
-            print label
-            print function_parameter
-            print self.quantity_bar.position            
+        def price_execute(label, price_rect):
+            pygame.draw.rect(self.action_surface,(212,212,212),price_rect)
+            variable_price_text = global_variables.standard_font.render(str(self.price_bar.position),True,(0,0,0))
+            self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
+            pygame.display.update(price_rect)
+            
 
 
         self.price_bar = gui_components.hscrollbar(self.action_surface, 
@@ -2568,23 +2547,26 @@ class base_and_firm_market_window():
                                   self.graph_rect[2]-20, 
                                   price_range, 
                                   start_position = int(initial_price), 
-                                  function_parameter=None)
+                                  function_parameter=price_rect)
 
 
 
         #row 2 set the quantity
         height_to_draw = height_to_draw + 60
         
-        quantity_text = global_variables.standard_font.render("Set the quantity:",True,(0,0,0))
-        self.action_surface.blit(quantity_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
+        fixed_quantity_text = global_variables.standard_font.render("Set the quantity:",True,(0,0,0))
+        self.action_surface.blit(fixed_quantity_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
+        quantity_rect = pygame.Rect(self.graph_rect[0] + fixed_quantity_text.get_width(), self.graph_rect[1] + height_to_draw,self.graph_rect[2] - fixed_quantity_text.get_width(),fixed_quantity_text.get_height())
+        variable_quantity_text = global_variables.standard_font.render(str(initial_quantity),True,(0,0,0))
+        self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
         
 
         
-        def quantity_execute(label, function_parameter):
-            print "quantity"
-            print label
-            print function_parameter
-            print self.quantity_bar.position
+        def quantity_execute(label, quantity_rect):
+            pygame.draw.rect(self.action_surface,(212,212,212),quantity_rect)
+            variable_quantity_text = global_variables.standard_font.render(str(self.quantity_bar.position),True,(0,0,0))
+            self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
+            pygame.display.update(quantity_rect)
 
         self.quantity_bar = gui_components.hscrollbar(self.action_surface, 
                                   quantity_execute, 
@@ -2592,7 +2574,7 @@ class base_and_firm_market_window():
                                   self.graph_rect[2]-10, 
                                   quantity_range, 
                                   start_position = initial_quantity, 
-                                  function_parameter=None)
+                                  function_parameter=quantity_rect)
 
 
         
@@ -2614,192 +2596,151 @@ class base_and_firm_market_window():
                                    direction_execute,
                                    function_parameter = None, 
                                    topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
-                                   selected = None)
+                                   selected = direction)
         
         
 
 
         
         #row 4: show location
-        height_to_draw = height_to_draw + 50
-        
-        location_text = global_variables.standard_font.render("Set the location:",True,(0,0,0))
-        self.action_surface.blit(location_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
-
-        
-        def location_execute(label, function_parameter):
-                print "location"
-                print label
-                print function_parameter
-
-        if isinstance(firm_selected, company.merchant): 
-            self.location_buttons = gui_components.radiobuttons([firm_selected.from_location.name,firm_selected.to_location.name],
-                           self.action_surface, 
-                           direction_execute,
-                           function_parameter = None, 
-                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
-                           selected = None)
-        else:
-                        self.location_buttons = gui_components.radiobuttons([firm_selected.location.name],
-                           self.action_surface, 
-                           direction_execute,
-                           function_parameter = None, 
-                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
-                           selected = None)
-#            from_button = RadioButton(firm_selected.from_location.name, None)
-#            to_button = RadioButton(firm_selected.to_location.name, from_button)
-#            if self.base_selected_for_merchant == firm_selected.from_location:
-#                from_button.active = True 
-#            else:
-#                to_button.active = True
-#            self.bid_window.add_child(3, 1, from_button)
-#            self.bid_window.add_child(3, 2, to_button)
-        
-            
-        
-#        #row 4: show which resource was chosen
-#        self.bid_window.add_child(4, 0, Label("Resource"))
+#        height_to_draw = height_to_draw + 50
+#        
+#        location_text = global_variables.standard_font.render("Set the location:",True,(0,0,0))
+#        self.action_surface.blit(location_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
+#
+#        
+#        def location_execute(label, function_parameter):
+#                print "location"
+#                print label
+#                print function_parameter
+#
 #        if isinstance(firm_selected, company.merchant): 
-#            resource_button = RadioButton(firm_selected.resource, None)
-#            transport_button = RadioButton(firm_selected.transport_type, resource_button)
-#            if resource == firm_selected.resource:
-#                resource_button.active = True
-#            else:
-#                transport_button.active = True
-#            self.bid_window.add_child(4, 1, resource_button)
-#            self.bid_window.add_child(4, 2, transport_button)
-#            
+#            self.location_buttons = gui_components.radiobuttons([firm_selected.from_location.name,firm_selected.to_location.name],
+#                           self.action_surface, 
+#                           direction_execute,
+#                           function_parameter = None, 
+#                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
+#                           selected = None)
 #        else:
-#            self.bid_window.add_child(4, 1, Label(resource))
+#                        self.location_buttons = gui_components.radiobuttons([firm_selected.location.name],
+#                           self.action_surface, 
+#                           direction_execute,
+#                           function_parameter = None, 
+#                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
+#                           selected = None)
         
         #effectuate buttons
         self.ok_button = gui_components.button("ok", 
                                                 self.action_surface,
                                                 self.effectuate_market_bid, 
-                                                function_parameter = None, 
+                                                function_parameter = market, 
                                                 fixed_size = (100,35), 
                                                 topleft = (self.graph_rect[0] + self.graph_rect[2] - 110, self.graph_rect[1] + self.graph_rect[3] - 40)
                                                 )
 
 
-        #row 5: effectuate buttons
-#        ok_button = Button("Ok")
-#        ok_button.connect_signal(SIG_CLICKED,self.effectuate_market_bid)
-#        self.bid_window.add_child(5, 0, ok_button)
-#
-#        cancel_button = Button("Cancel")
-#        def cancel_here():
-#            self.exit()
-#            self.create_base_and_firm_market_window(self.renderer)
-#        cancel_button.connect_signal(SIG_CLICKED,cancel_here)
-#        self.bid_window.add_child(5, 1, cancel_button)
-#        self.renderer.add_widget(self.bid_window)        
         
 
 
-    def effectuate_market_bid(self, label, function_parameter):
+    def effectuate_market_bid(self, label, market):
         """
         Function that will check if the given numbers are ok, and if so effectuate the market bid
         """
         
-        all_ok = True
+#        all_ok = True
         if self.solar_system_object_link.display_mode == "base":
             firm_selected = self.solar_system_object_link.current_planet.current_base
         elif self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
         else:
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
-        price = self.bid_window.grid[(0,1)].text
-        quantity = self.bid_window.grid[(1,1)].text
+        price = self.price_bar.position
+        quantity = self.quantity_bar.position
         
         #determining direction
-        if self.bid_window.grid[(2,1)].active:
-            direction = "buy"
-        elif self.bid_window.grid[(2,2)].active:
-            direction = "sell"
-        else:
-            all_ok = False
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: no direction was selected","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-                self.manager.emit("update_infobox", None)
+        direction = self.direction_buttons.selected
 
         
         #determining market
-        if isinstance(firm_selected, company.merchant): 
-            if self.bid_window.grid[(3,1)].active:
-                market = firm_selected.from_location.market
-            elif self.bid_window.grid[(3,2)].active:
-                market = firm_selected.to_location.market
-            else:
-                all_ok = False
-                if self.solar_system_object_link.message_printing["debugging"]:
-                    print_dict = {"text":"DEBUGGING: no market was selected","type":"debugging"}
-                    self.solar_system_object_link.messages.append(print_dict)
-                    self.manager.emit("update_infobox", None)
-        else:
-            market = firm_selected.location.market
+#        if isinstance(firm_selected, company.merchant): 
+#            if self.bid_window.grid[(3,1)].active:
+#                market = firm_selected.from_location.market
+#            elif self.bid_window.grid[(3,2)].active:
+#                market = firm_selected.to_location.market
+#            else:
+#                all_ok = False
+#                if self.solar_system_object_link.message_printing["debugging"]:
+#                    print_dict = {"text":"DEBUGGING: no market was selected","type":"debugging"}
+#                    self.solar_system_object_link.messages.append(print_dict)
+#                    self.manager.emit("update_infobox", None)
+#        else:
+#            market = firm_selected.location.market
 
         
         #determining resource
-        if isinstance(firm_selected, company.merchant):
-            if self.bid_window.grid[(4,1)].active:
-                resource = firm_selected.resource
-            elif self.bid_window.grid[(4,2)].active:
-                resource = firm_selected.transport_type
-            else:
-                all_ok = False
-                if self.solar_system_object_link.message_printing["debugging"]:
-                    print_dict = {"text":"DEBUGGING: no resource was selected","type":"debugging"}
-                    self.solar_system_object_link.messages.append(print_dict)
-                    self.manager.emit("update_infobox", None)
-            
-        else:
-            resource = self.bid_window.grid[(4,1)].text
+        resource = self.resource_selected
+#        if isinstance(firm_selected, company.merchant):
+#            if self.bid_window.grid[(4,1)].active:
+#                resource = firm_selected.resource
+#            elif self.bid_window.grid[(4,2)].active:
+#                resource = firm_selected.transport_type
+#            else:
+#                all_ok = False
+#                if self.solar_system_object_link.message_printing["debugging"]:
+#                    print_dict = {"text":"DEBUGGING: no resource was selected","type":"debugging"}
+#                    self.solar_system_object_link.messages.append(print_dict)
+#                    self.manager.emit("update_infobox", None)
+#            
+#        else:
+#            resource = self.bid_window.grid[(4,1)].text
         
         
         
         
-        if direction not in ["sell","buy"]:
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"The direction " + str(direction) + " was not recognized. Must be sell or buy","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-                self.manager.emit("update_infobox", None)
-            all_ok = False
+#        if direction not in ["sell","buy"]:
+#            if self.solar_system_object_link.message_printing["debugging"]:
+#                print_dict = {"text":"The direction " + str(direction) + " was not recognized. Must be sell or buy","type":"debugging"}
+#                self.solar_system_object_link.messages.append(print_dict)
+#                self.manager.emit("update_infobox", None)
+#            all_ok = False
 
-        try:    float(price)
-        except:
-            print_dict = {"text":"The price " + str(price) + " could not be converted into a decimal number. Please use another.","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-            self.manager.emit("update_infobox", None)
-            all_ok = False
-        else:
-            pass
+#        try:    float(price)
+#        except:
+#            print_dict = {"text":"The price " + str(price) + " could not be converted into a decimal number. Please use another.","type":"general gameplay info"}
+#            self.solar_system_object_link.messages.append(print_dict)
+#            all_ok = False
+#        else:
+#            pass
         
-        
-        try:    int(quantity)
-        except:
-            print_dict = {"text":"The quantity " + str(quantity) + " could not be converted into an integer number. Please use another.","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-            self.manager.emit("update_infobox", None)
-            all_ok = False
-        else:
-            pass
-        
+#        
+#        try:    int(quantity)
+#        except:
+#            print_dict = {"text":"The quantity " + str(quantity) + " could not be converted into an integer number. Please use another.","type":"general gameplay info"}
+#            self.solar_system_object_link.messages.append(print_dict)
+#            self.manager.emit("update_infobox", None)
+#            all_ok = False
+#        else:
+#            pass
+#        
 #        if isinstance(firm_selected, company.merchant): #then we need to see see if it buys in the from location or to location
         
-        if all_ok:
-            self.exit()
-            if direction == "buy":
-                own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
-            elif direction == "sell":
-                own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
-            
-            firm_selected.make_market_bid(market,own_offer)
-            print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " units of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-            self.manager.emit("update_infobox", None)
-            self.create_base_and_firm_market_window(self.renderer)
+#        if all_ok:
+#            self.exit()
+        if direction == "buy":
+            own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
+        elif direction == "sell":
+            own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
+        else:
+            raise Exception("Unknown direction " + str(direction))
+        
+        firm_selected.make_market_bid(market,own_offer)
+        
+        print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " units of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
+        self.solar_system_object_link.messages.append(print_dict)
+        self.graph_selected = "market bids"
+        return "clear"
+#        self.manager.emit("update_infobox", None)
+#        self.create_base_and_firm_market_window(self.renderer)
 
 
                     
@@ -2816,17 +2757,15 @@ class base_and_firm_market_window():
         position = event.pos
         if self.graph_rect.collidepoint(position) == 1:
             if self.graph_selected == "place bid mode": #if we are in bidding mode
-                print "you have clicked in the graph when in place bid mode"
+                
                 if self.price_bar.rect.collidepoint(position) == 1:
                     self.price_bar.activate(position)
                 if self.quantity_bar.rect.collidepoint(position) == 1:
                     self.quantity_bar.activate(position)
                 if self.direction_buttons.rect.collidepoint(position) == 1:
                     self.direction_buttons.activate(position)
-                if self.location_buttons.rect.collidepoint(position) == 1:
-                    self.location_buttons.activate(position)
                 if self.ok_button.rect.collidepoint(position) == 1:
-                    self.ok_button.activate(position)
+                    return self.ok_button.activate(position)
 
 
             
@@ -2880,61 +2819,62 @@ class base_and_firm_market_window():
                                 
     
                 else:  #if the graphs do not accept bids we only display some information
-                    print "the graph does not accept bidding yet - onyl display some info"
-                    click_spot = pygame.Rect(position[0]-1,position[1]-1,2,2)
+                    click_spot = pygame.Rect(position[0]-1,position[1]-1 ,2,2)
                     click_spot_result = click_spot.collidedict(self.positional_database["non_bidding_mode"])
                     if click_spot_result is not None:
-                        try: self.graph_surface_label
-                        except: pass
-                        else:
-                            if click_spot_result[1] in self.highlighted_transactions:
-                                if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
-                                    self.manager.emit("going_to_firm_window_event",click_spot_result[1]["linkto"])
-                            else:
-                                self.highlighted_transactions.append(click_spot_result[1])
-                                surface = self.graph_surface_label.picture
-                                
-                                text_size = global_variables.standard_font.size(click_spot_result[1]["text"]) 
-                                text = global_variables.standard_font.render(click_spot_result[1]["text"],True,(0,0,0))
-                                
-                                text_position = (click_spot_result[1]["figure"][1][0]-text_size[0],click_spot_result[1]["figure"][1][1])
-                                
-                                if text_position[0] < self.frame_size:
-                                    text_position = (self.frame_size,text_position[1])
-                                    #print "corrected text position a little" 
-                                
-                                surface.blit(text,text_position)
-                                
-                                if self.graph_selected == "market bids":
-                                    pygame.draw.line(surface,(100,100,255),click_spot_result[1]["figure"][0],click_spot_result[1]["figure"][1])
-                                elif self.graph_selected == "history":
-                                    pygame.draw.circle(surface,(100,100,255),click_spot_result[1]["figure"][1],click_spot_result[1]["figure"][0])
-                                    #print click_spot_result[1]["debug"]
+                        if event.button == 3:
+                            if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
+                                linkto = click_spot_result[1]["linkto"]
+                                if isinstance(linkto, company.base):
+                                    self.solar_system_object_link.display_mode = "base"
+                                    self.solar_system_object_link.current_planet.current_base = linkto
+                                elif isinstance(linkto, company.firm) or isinstance(linkto, company.merchant) or isinstance(linkto, company.research):
+                                    self.solar_system_object_link.display_mode = "firm"
+                                    self.solar_system_object_link.firm_selected = linkto
                                 else:
-                                    raise Exception("Unknown graph type " + self.graph_selected)
-            
-                                self.graph_surface_label.set_picture(surface)
-                                self.renderer.update()
+                                    raise Exception("The class of " + linkto.name + " was " + linkto.__class__)
+                                return "clear"
+                        else:
+                            self.highlighted_transactions.append(click_spot_result[1])
+                            
+                            text_size = global_variables.standard_font_small.size(click_spot_result[1]["text"]) 
+                            text = global_variables.standard_font_small.render(click_spot_result[1]["text"],True,(0,0,0))
+                            
+                            text_position = (click_spot_result[1]["figure"][1][0]-text_size[0] / 2,click_spot_result[1]["figure"][1][1])
+                            
+                            if text_position[0] < self.graph_rect[0] + self.frame_size:
+                                text_position = (self.graph_rect[0] + self.frame_size, text_position[1])
+                            if text_position[0] + text_size[0] > self.graph_rect[0] + self.graph_rect[2]:
+                                text_position = (self.graph_rect[0] + self.graph_rect[2] - text_size[0], text_position[1])
+
+                            
+                            self.action_surface.blit(text,text_position)
+                            
+                            if self.graph_selected == "market bids":
+                                pygame.draw.line(self.action_surface,(100,100,255),click_spot_result[1]["figure"][0],click_spot_result[1]["figure"][1])
+                            elif self.graph_selected == "history":
+                                pygame.draw.circle(self.action_surface,(100,100,255),click_spot_result[1]["figure"][1],click_spot_result[1]["figure"][0])
+                            else:
+                                raise Exception("Unknown graph type " + self.graph_selected)
+        
+                            pygame.display.flip()
 
 
                             
-        else: #if the click is elsewhere
-            
-            #self.resource_buttons.activate((event.pos[0] - self.resource_buttons.rect[0], event.pos[1] - self.resource_buttons.rect[1])
-            
-            
-            if self.update_button.rect.collidepoint(event.pos) == 1:
-                self.update_button.activate(event.pos)
-            if self.resource_buttons.rect.collidepoint(event.pos) == 1:
-                self.resource_buttons.activate(event.pos)
-            if self.graph_buttons.rect.collidepoint(event.pos) == 1:
-                self.graph_buttons.activate(event.pos)
-            if "activate" in dir(self.market_selection_buttons):
-                if self.market_selection_buttons.rect.collidepoint(event.pos) == 1:
-                    self.market_selection_buttons.activate(event.pos)
-            if "activate" in dir(self.bid_button):
-                if self.bid_button.rect.collidepoint(event.pos) == 1:
-                    self.bid_button.activate(event.pos)
+        else: #if the click is elsewhere than the graph window
+            if self.graph_selected != "place bid mode":
+                if self.update_button.rect.collidepoint(event.pos) == 1:
+                    self.update_button.activate(event.pos)
+                if self.resource_buttons.rect.collidepoint(event.pos) == 1:
+                    self.resource_buttons.activate(event.pos)
+                if self.graph_buttons.rect.collidepoint(event.pos) == 1:
+                    self.graph_buttons.activate(event.pos)
+                if "activate" in dir(self.market_selection_buttons):
+                    if self.market_selection_buttons.rect.collidepoint(event.pos) == 1:
+                        self.market_selection_buttons.activate(event.pos)
+                if "activate" in dir(self.bid_button):
+                    if self.bid_button.rect.collidepoint(event.pos) == 1:
+                        self.bid_button.activate(event.pos)
             
             
             
