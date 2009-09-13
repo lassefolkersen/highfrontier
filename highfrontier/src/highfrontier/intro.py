@@ -3,12 +3,6 @@
 
 
 from pygame.locals import *
-from ocempgui.widgets import *
-from ocempgui.events import EventManager
-from ocempgui.object import BaseObject
-from ocempgui.widgets.Constants import *
-from ocempgui.events import Signals
-#import threading
 import pygame
 import solarsystem
 import planet
@@ -28,37 +22,28 @@ class Intro_gui():
     """
     
     def __init__(self):
-#        BaseObject.__init__(self)
         self.stepsize = 50
-        self.manager = EventManager()
         self.company_capital = None
         self.company_name = None
         self.save_game_to_load = None
         self.run_background_spin = True
-#        self.manager = manager
-        
+        self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 90,global_variables.window_size[1] / 3, 180,180)
+        self.text_receiver = None
         pygame.init()
-        
-        self.renderer = Renderer ()
-        self.renderer.title = "Intro"
         if global_variables.fullscreen:
-            window = pygame.display.set_mode(global_variables.window_size,FULLSCREEN) 
+            self.window = pygame.display.set_mode(global_variables.window_size,FULLSCREEN) 
         else:
-            window = pygame.display.set_mode(global_variables.window_size)
-        self.renderer.screen = pygame.display.get_surface()
+            self.window = pygame.display.set_mode(global_variables.window_size)
         icon = pygame.image.load(os.path.join("images","window_icon.png"))
         pygame.display.set_icon(icon) 
 
-        self.surface = pygame.Surface(global_variables.window_size)
-        self.mainscreen = ImageLabel(self.surface)
-        self.mainscreen.set_picture(self.surface)
-        self.renderer.add_widget(self.mainscreen)
         if global_variables.fullscreen:
             pygame.time.delay(1000)
 
         self.initialize_intro_sequence()
         
         self.intro_sequence()
+
         self.create_intro_gui()
         
 
@@ -75,8 +60,25 @@ class Intro_gui():
             for event in events: 
                 if event.type == QUIT: 
                     sys.exit(0)
+                if event.type == 5: #mouse down event
+                    self.receive_click(event)
 
-                self.renderer.distribute_events(*events)
+                if event.type == 2: #key down event
+                    if self.text_receiver is not None:
+                        self.text_receiver.receive_text(event)
+
+
+
+    def receive_click(self, event):
+        if self.gui_rect.collidepoint(event.pos) == 1:
+            for button in self.buttons.values():
+                if button.rect.collidepoint(event.pos) == 1:
+                    
+                    if isinstance(button, gui_components.fast_list):
+                        button.receive_click(event)
+                    else:
+                        button.activate(event)
+                
 
     def triplify_number(self,number):
         if len(str(number)) == 1:
@@ -237,9 +239,12 @@ class Intro_gui():
             if not skip_intro:
                 path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
                 surface = pygame.image.load(path)
-                self.mainscreen.set_picture(surface)
-                self.renderer.update()
+                self.window.blit(surface, (0,0))
+                pygame.display.flip()
+#                self.mainscreen.set_picture(surface)
+#                self.renderer.update()
                 pygame.time.delay(self.stepsize)
+
         
         
         
@@ -253,8 +258,20 @@ class Intro_gui():
         #Runing the simulation
         path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
         surface = pygame.image.load(path)
-        self.mainscreen.set_picture(surface)
-        self.renderer.update()
+        
+        
+        left_rect = pygame.Rect(0,0,self.gui_rect[0],global_variables.window_size[1])
+        right_rect = pygame.Rect(self.gui_rect[0] + self.gui_rect[2],0,global_variables.window_size[0]-self.gui_rect[0]-self.gui_rect[2],global_variables.window_size[1])
+        top_rect = pygame.Rect(0,0,global_variables.window_size[0],self.gui_rect[1])
+        bottom_rect = pygame.Rect(0,self.gui_rect[1] + self.gui_rect[3],global_variables.window_size[0],global_variables.window_size[1]-self.gui_rect[3] - top_rect[3])
+        for rect in [left_rect,right_rect,top_rect,bottom_rect]:
+            self.window.set_clip(rect)
+            self.window.blit(surface, (0,0))
+        self.window.set_clip(None)
+
+        
+        
+        pygame.display.flip()
         pygame.time.delay(self.stepsize)
         
                 
@@ -262,26 +279,26 @@ class Intro_gui():
             
 
 
-    def select_game_to_load_callback(self):
-        self.exit()
-        
-        self.load_window = gui_components.fast_list(self.renderer)
-        
-        self.load_window.receive_data(os.listdir("savegames"))
-        self.load_window.topleft = (global_variables.window_size[0] / 2 - self.load_window.list_size[0] / 2, 100) 
-        self.load_window.create_fast_list()
-
-        
-        ok_button = Button("Ok")
-        ok_button.connect_signal(SIG_CLICKED,self.effectuate_load_callback)
-        cancel_button = Button("Cancel")
-        cancel_button.connect_signal(SIG_CLICKED,self.create_intro_gui)
-
-        
-        self.load_button = HFrame()
-        self.load_button.set_children([ok_button,cancel_button])
-        self.load_button.topleft = (global_variables.window_size[0] / 2 - self.load_button.size[0] / 2, self.load_window.topleft[1] + self.load_window.list_size[1] + 50)
-        self.renderer.add_widget(self.load_button)
+#    def select_game_to_load_callback(self):
+#        self.exit()
+#        
+#        self.load_window = gui_components.fast_list(self.renderer)
+#        
+#        self.load_window.receive_data(os.listdir("savegames"))
+#        self.load_window.topleft = (global_variables.window_size[0] / 2 - self.load_window.list_size[0] / 2, 100) 
+#        self.load_window.create_fast_list()
+#
+#        
+#        ok_button = Button("Ok")
+#        ok_button.connect_signal(SIG_CLICKED,self.effectuate_load_callback)
+#        cancel_button = Button("Cancel")
+#        cancel_button.connect_signal(SIG_CLICKED,self.create_intro_gui)
+#
+#        
+#        self.load_button = HFrame()
+#        self.load_button.set_children([ok_button,cancel_button])
+#        self.load_button.topleft = (global_variables.window_size[0] / 2 - self.load_button.size[0] / 2, self.load_window.topleft[1] + self.load_window.list_size[1] + 50)
+#        self.renderer.add_widget(self.load_button)
 
     def effectuate_load_callback(self):
         load_file_name = self.load_window.selected
@@ -290,120 +307,116 @@ class Intro_gui():
             
             #self.solar_system_object_link.load_solar_system(load_file_name)
 
-    def load_callback(self):
-        file_window = gui.file_window(None,self.renderer,None)
-        file_window.select_game_to_load_callback()
+    def load_callback(self, label, function_parameter):
+        self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
+        pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
+        
+        
+#        file_window = gui.file_window(None, self.window)
+#        file_window.rect = 
+#        file_window.select_game_to_load(None, None)
+        
+        load_window = gui_components.fast_list(self.window, os.listdir("savegames"), rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
+
+        
+        self.buttons = {}
+        
+        self.buttons["load_window"] = load_window
+        self.buttons["ok"] = gui_components.button("ok", 
+                              self.window, 
+                              self.load_game, 
+                              function_parameter = load_window, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
+        self.buttons["cancel"] = gui_components.button("cancel", 
+                              self.window, 
+                              self.create_intro_gui, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
+    def load_game(self, label, load_window):
+        main.start_loop(load_previous_game = os.path.join("savegames",load_window.selected_name))
     
-    def game_settings_callback(self):
+    def game_settings_callback(self, label, function_parameter):
         pass
     
-    def quit_callback(self):
+    
+    def quit_callback(self, label, function_parameter):
         sys.exit(0)
 
     
-    def exit(self, stop_world_spinning = True):
-        """
-        Function that kills all the windows hanging around
-        """
-        if stop_world_spinning:
-            self.run_background_spin = False
-        try:    self.window
-        except: pass
-        else:   
-            self.window.destroy()
-            del self.window
-            
-        try:    self.load_button
-        except: pass
-        else:
-            self.load_button.destroy()
-            del self.load_button
-        
-        try:    self.load_window
-        except: pass
-        else:
-            self.load_window.exit()
-            del self.load_window
 
     
-    def create_intro_gui(self):
+    def create_intro_gui(self, label = None, function_parameter = None):
         """
         The GUI part of starting up the game
         """
+        #reset gui_rect in case it was altered
+        self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 90,global_variables.window_size[1] / 3, 180,180)
         
-        self.exit(stop_world_spinning = False)
+        pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
+
+        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]), (self.gui_rect[0] + self.gui_rect[2], self.gui_rect[1]),2)        
+        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]), (self.gui_rect[0], self.gui_rect[1] + self.gui_rect[3]),2)
+
         
+        button_names= ["New game","Load game","Game settings","Quit game"]
+        button_functions = [self.ask_company_name,self.load_callback,self.game_settings_callback,self.quit_callback]
         
+        self.buttons = {}
         
-        label = Label("The High Frontier")
-        
-        self.window = VFrame(label )
-        
-        button_names= ["#New game","#Load game","#Game settings","#Quit game"]
-        button_functions = [self.ask_company_name,self.select_game_to_load_callback,self.game_settings_callback,self.quit_callback]
-        
-        list_of_children = []
-        max_width = 0
         for i, button_name in enumerate(button_names):
-            temp_button = Button(button_name)
-            temp_button.connect_signal(SIG_CLICKED,button_functions[i])
-            max_width = max(max_width,temp_button.width)
-            list_of_children.append(temp_button)
+            self.buttons[button_name] = gui_components.button(button_name, 
+                                  self.window, 
+                                  button_functions[i], 
+                                  function_parameter = None, 
+                                  topleft = (self.gui_rect[0] + 25,self.gui_rect[1] + i * 35 + 25), 
+                                  fixed_size = (130,30))
+                                  
         
-        for button in list_of_children:
-            button.set_minimum_size(max_width,button.size[1])
-        
-        self.window.set_children(list_of_children)
-        
-        self.window.topleft = (global_variables.window_size[0] / 2 - self.window.size[0] /2, global_variables.window_size[1] / 2 - self.window.size[1] /2)
-        
-        self.renderer.add_widget(self.window)
         
     
 
-    def ask_company_name(self,give_warning = False):
-        self.exit()
+    def ask_company_name(self,label, function_parameter, give_warning = False):
         
-#        starting_year = datetime.date(2010,1,1)
+
+        pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         
-        self.window = VFrame(Label("Name of company"))
-        entry_box = Entry("")
-        entry_box.minsize = (300,24)
-        entry_box.activate()
+        title = global_variables.standard_font.render("Name of company:",True,(0,0,0))
+        self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
+
+        self.text_receiver = gui_components.entry(self.window, 
+                             (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
+                             self.gui_rect[2] - 20, 
+                             global_variables.max_letters_in_company_names)
         
-        ok_button = Button("ok")
-        cancel_button = Button("cancel")
-        
-        ok_button.connect_signal(SIG_CLICKED, self.ask_company_capital)
-        cancel_button.connect_signal(SIG_CLICKED, self.create_intro_gui)
-        
-        button_frame = HFrame()
-        button_frame.set_children([ok_button,cancel_button])
-        
+
+        self.buttons = {}
+        self.buttons["ok"] = gui_components.button("ok", 
+                              self.window, 
+                              self.ask_company_capital, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
+        self.buttons["cancel"] = gui_components.button("cancel", 
+                              self.window, 
+                              self.create_intro_gui, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
         if give_warning:
-            warning_label = Label("Name must be " + str(global_variables.max_letters_in_company_names) + " characters or less")
-            self.window.set_children([entry_box,button_frame,warning_label])
-        else:
-            
-            self.window.set_children([entry_box,button_frame])
-        
-        self.window.topleft = (global_variables.window_size[0] / 2 - self.window.size[0] /2, global_variables.window_size[1] / 2 - self.window.size[1] /2)
-        
-        self.renderer.add_widget(self.window)
-        
-        
+            warning_label = global_variables.standard_font_small.render("No double space, no blanks",True,(0,0,0))
+            self.window.blit(warning_label, (self.gui_rect[0] + 10, self.gui_rect[1] + 90))
+            pygame.display.flip()
         
         
     
-    def ask_company_capital(self,give_warning = False):
-        try:    self.window.children[0].text    
-        except: 
-            try:    self.company_name
-            except: raise Exception("Did not find an important component")
-            else:   company_name = self.company_name 
-        else:   company_name = self.window.children[0].text
-        
-        self.exit()
+    def ask_company_capital(self, label, function_parameter, give_warning = False):
+        company_name = self.text_receiver.text
         
         all_ok = True
         if not (0 < len(company_name) <= global_variables.max_letters_in_company_names):
@@ -413,47 +426,52 @@ class Intro_gui():
             all_ok = False
         
         if all_ok:
+            pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
+            
+            title = global_variables.standard_font.render("Starting capital:",True,(0,0,0))
+            self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
+    
+            self.text_receiver = gui_components.entry(self.window, 
+                                 (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
+                                 self.gui_rect[2] - 20, 
+                                 global_variables.max_letters_in_company_names,
+                                 starting_text = "10000000")
+            
+    
+            self.buttons = {}
+            self.buttons["ok"] = gui_components.button("ok", 
+                                  self.window, 
+                                  self.start_new_game, 
+                                  function_parameter = None, 
+                                  topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                                  fixed_size = None)
+    
+            self.buttons["cancel"] = gui_components.button("cancel", 
+                                  self.window, 
+                                  self.create_intro_gui, 
+                                  function_parameter = None, 
+                                  topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                                  fixed_size = None)
+
+            
+            
             self.company_name = company_name
-            self.window = VFrame(Label("Starting capital of company"))
-            entry_box = Entry("10000000")
-            entry_box.minsize = (300,24)
-            entry_box.activate()
-            
-            
-            ok_button = Button("ok")
-            cancel_button = Button("cancel")
-            
-            ok_button.connect_signal(SIG_CLICKED, self.start_new_game)
-            cancel_button.connect_signal(SIG_CLICKED, self.create_intro_gui)
-            
-            button_frame = HFrame()
-            button_frame.set_children([ok_button,cancel_button])
             
             if give_warning:
-                warning_label = Label("Starting capital must be an integer above zero")
-                self.window.set_children([entry_box,button_frame,warning_label])
-            else:
-                
-                self.window.set_children([entry_box,button_frame])
-            
-            self.window.topleft = (global_variables.window_size[0] / 2 - self.window.size[0] /2, global_variables.window_size[1] / 2 - self.window.size[1] /2)
-            
-            self.renderer.add_widget(self.window)
+                warning_label = global_variables.standard_font_small.render("Starting capital must be an",True,(0,0,0))
+                self.window.blit(warning_label, (self.gui_rect[0] + 10, self.gui_rect[1] + 90))
+                warning_label2 = global_variables.standard_font_small.render("integer above zero",True,(0,0,0))
+                self.window.blit(warning_label2, (self.gui_rect[0] + 10, self.gui_rect[1] + 100))
 
+                pygame.display.flip()
         else:
-            self.ask_company_name(give_warning=True)
+            self.ask_company_name(None, None, give_warning=True)
             
 
-    def start_new_game(self):
-        try:    self.window.children[0].text    
-        except: 
-            try:    self.company_capital
-            except: raise Exception("Did not find an important component")
-            else:   company_capital = self.company_capital 
-        else:   company_capital = self.window.children[0].text
+    def start_new_game(self, label, function_parameter):
+        company_capital = self.text_receiver.text
         
         
-        self.exit()
         all_ok = True
         try:    int(company_capital)
         except: all_ok = False
@@ -466,15 +484,12 @@ class Intro_gui():
         
         if all_ok:
             self.company_capital = int(company_capital)
-            #print "starting new game with " + str(self.company_name) + " and " + str(self.company_capital)
             main.start_loop(company_name = str(self.company_name), company_capital = self.company_capital, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
-
             
+
             
         else:
-            self.ask_company_capital(give_warning=True)
+            self.ask_company_capital(None, None, give_warning=True)
 
             
-#main.start_loop(company_name = "Player1", company_capital = 1000000, load_previous_game = None)
-
 intro_gui = Intro_gui()
