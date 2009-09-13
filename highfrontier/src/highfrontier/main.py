@@ -220,6 +220,6 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
 
 
-start_loop(company_name = "YourCompanyNameHere", company_capital = 1000000, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
+#start_loop(company_name = "YourCompanyNameHere", company_capital = 1000000, load_previous_game = None)#os.path.join("pickledmiscellanous","A_small_test_game"))
 
    
