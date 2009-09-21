@@ -33,8 +33,8 @@ market_decisions = market_decisions.market_decisions() #this is the class of mar
 # variables that are "gamespecific" ie. that should follow a savegame. These are loaded into the solar system instance on startup and are here merely as defaults.
 effectuate_growth_and_migration = False #if False all growth and migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
 start_date = datetime.date(time.localtime()[0],time.localtime()[1],time.localtime()[2])
-step_delay_time = 500 # how much delay (in miliseconds, I think) there should be before initiating the next iteration. This can be changed from the settings within the game
-technology_research_cost = 100000 #a variable specifying how much technology costs (in fact it is conversion factor for distance in the technology tree to research points) (100000 is pretty fast)
+step_delay_time = 60 # 10-500  - how much delay (in miliseconds, I think) there should be before initiating the next iteration. This can be changed from the settings within the game
+technology_research_cost = 1000 #a variable specifying how much technology costs (in fact it is conversion factor for distance in the technology tree to research points) (100000 is pretty fast)
 
 
 

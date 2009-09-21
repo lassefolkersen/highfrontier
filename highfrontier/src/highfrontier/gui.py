@@ -1046,6 +1046,7 @@ class base_window():
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
+        
 
 
 
@@ -1091,26 +1092,6 @@ class base_window():
             
 
 
-    def notify(self,event):
-        if event.signal == "base_toggle":
-            if not event.data:
-                self.create_base_window()
-            else:
-                self.exit()
-    
-    def exit(self):
-        try: self.window
-        except: pass
-        else:
-            self.window.exit()
-            del self.window
-        try: self.link_button
-        except: pass
-        else:
-            self.link_button.destroy()
-            del self.link_button
-
-
 
 class trade_window():
     """
@@ -1118,15 +1099,20 @@ class trade_window():
     """
     def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.rect = pygame.Rect(50,50,700,500)
+        self.rect = pygame.Rect(25,50,825,500)
         self.action_surface = action_surface
+        self.text_receiver = None
+        self.menu_position = "root"
+        self.selections = {}
         
 
     def create(self):
         """
         The creation function. Doesn't return anything.
         """
-
+        self.text_receiver = None
+        self.menu_position = "root"
+        self.selections = {}
         
         asset_and_tech_data = {}
         for planet_instance in self.solar_system_object_link.planets.values():
@@ -1137,14 +1123,14 @@ class trade_window():
 
                     asset_and_tech_data[base_instance.name] = data_here
                 
-        for company_instance in self.solar_system_object_link.companies.values():
-            pass #FIXME add firms for sale here, whenever that is implemented
+        #for company_instance in self.solar_system_object_link.companies.values():
+            #pass #FIXME add firms for sale here, whenever that is implemented
         
         for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
             if len(technology["for_sale_by"]) > 0:
                 prices = technology["for_sale_by"].values()
                 prices.sort()
-                best_price = prices[-1]
+                best_price = prices[0]
                 
                 if len(technology["for_sale_by"]) == 1:
                     for_sale_by = str(technology["for_sale_by"].keys()[0].name)
@@ -1152,144 +1138,228 @@ class trade_window():
                     for_sale_by = str(len(technology["for_sale_by"])) + " companies"
                 for_sale_by_link = technology["for_sale_by"].keys()
                 
-                data_here = {"Type":"technology","Best price":best_price,"For sale by":for_sale_by,"for_sale_by_link":for_sale_by_link,"object":technology}
-                asset_and_tech_data[technology["technology_name"]] = data_here
+                check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.solar_system_object_link.current_player.known_technologies,technology)
+                if check_result != "already known": #only include if we don't already know it
+                    if check_result is not "ok": #include it as a sales-piece if too advaned, but not possible to buy
+                        type = "advanced tech."
+                    else:
+                        type = "technology"
+                        
+                    data_here = {"Type":type,"Best price":best_price,"For sale by":for_sale_by,"for_sale_by_link":for_sale_by_link,"object":technology}
+                    asset_and_tech_data[technology["technology_name"]] = data_here
         
-        column_order = ["rownames","Type","Best price","For sale by"]
-        self.fast_list = gui_components.fast_list(self.action_surface, asset_and_tech_data, rect = self.rect, column_order = column_order)
+        if len(asset_and_tech_data) == 0:
+            pygame.draw.rect(self.action_surface, (224,218,213), self.rect)
+            pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+            pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+            pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+            
+            warning = global_variables.standard_font.render("Nothing is for sale on the tech and asset market.",True,(0,0,0))
+            self.action_surface.blit(warning, (self.rect[0] + self.rect[2] /2 - warning.get_width() / 2, self.rect[1] + self.rect[3] / 2 - warning.get_height() /2))
+
+
+        else:
+            
+            column_order = ["rownames","Type","Best price","For sale by"]
+            self.fast_list = gui_components.fast_list(self.action_surface, asset_and_tech_data, rect = self.rect, column_order = column_order)
 
     def receive_click(self,event):
-        self.fast_list.receive_click(event)
+        #if event.button == 1:
+        if self.menu_position == "root":
+            self.fast_list.receive_click(event)            
+        elif self.menu_position == "pick_seller":
+            self.fast_list.receive_click(event)            
+        elif self.menu_position == "base bidding":
+            if self.bid_button.rect.collidepoint(event.pos) == 1:
+                self.bid_button.activate(event)
+        else:
+            raise Exception("Unknown menu_position: " + str(self.menu_position))
+        
         if event.button == 3:
             if self.fast_list.selected_name is not None:
-                bid_on = self.fast_list.selected_name
-                for_sale_by = self.fast_list.original_tabular_data[bid_on]["for_sale_by_link"]
-                sale_object = self.fast_list.original_tabular_data[bid_on]["object"]
-                type = self.fast_list.original_tabular_data[bid_on]["Type"]
-                price = self.fast_list.original_tabular_data[bid_on]["Best price"]
-                
-                if type == "technology":
-                    current_player = self.solar_system_object_link.current_player.known_technologies
-                    check_result = self.solar_system_object_link.technology_tree.check_technology_bid(current_player,sale_object)
-                    
-                    if check_result != "ok":
-                        print_dict = {"text":"Can not bid for " + sale_object["technology_name"] + " because it is " + check_result,"type":"general gameplay info"}
-                        self.solar_system_object_link.messages.append(print_dict)
-                        return None
-                
-                if len(for_sale_by) > 1:
-                    if type != "technology":
-                        raise Exception("A bid was made for a type: " + str(type) + " asset, with more than one seller. This should not be possible") 
-                    sellers_data = {}
-                    for seller in sale_object["for_sale_by"]:
-                        price = sale_object["for_sale_by"][seller]
-                        sellers_data[seller.name] = {"Price":price,"seller_link":seller}
-                    
-                    column_order = ["rownames","Price"]
-                    
-                    self.fast_list = gui_components.fast_list(self.surface,sellers_data,self.rect,column_order)
-            
-    #                self.perform_bid(sale_object, None, type, None)
-            
+                if self.menu_position == "root":
+                    return self.process_bid(self.fast_list.selected_name)            
+                elif self.menu_position == "pick_seller":
+#                    print self.fast_list.selected_name
+                    return self.perform_bid(self.fast_list.selected_name)            
+                else:
+                    raise Exception("Unknown menu_position: " + str(self.menu_position))
 
-    def chose_seller(self):
+
+
+    def process_bid(self, bid_on):
         """
-        Function that allows players to choose between more than one seller
-        """
-        if self.fast_list.selected_name is not None:
-            bid_on = self.fast_list.selected_name
-            for_sale_by = self.fast_list.original_tabular_data[bid_on]["for_sale_by_link"]
-            sale_object = self.fast_list.original_tabular_data[bid_on]["object"]
-            type = self.fast_list.original_tabular_data[bid_on]["Type"]
-            price = self.fast_list.original_tabular_data[bid_on]["Best price"]
-            
-            if type == "technology":
-                current_player = self.solar_system_object_link.current_player.known_technologies
-                check_result = self.solar_system_object_link.technology_tree.check_technology_bid(current_player,sale_object)
-                
-                if check_result != "ok":
-                    print_dict = {"text":"Can not bid for " + sale_object["technology_name"] + " because it is " + check_result,"type":"general gameplay info"}
-                    self.solar_system_object_link.messages.append(print_dict)
-                    return None
-            
-            self.exit()
-            if len(for_sale_by) > 1:
-                if type != "technology":
-                    raise Exception("A bid was made for a type: " + str(type) + " asset, with more than one seller. This should not be possible") 
-                sellers_data = {}
-                for seller in sale_object["for_sale_by"]:
-                    price = sale_object["for_sale_by"][seller]
-                    sellers_data[seller.name] = {"Price":price,"seller_link":seller}
-                
-                column_order = ["rownames","Price"]
-                
-                self.window = gui_components.fast_list(self.renderer)
-                self.window.receive_data(sellers_data,column_order = column_order)
-                self.window.topleft = self.topleft
-                self.window.list_size = (self.list_size[0], self.list_size[1] / 2)
-                self.window.create_fast_list()
-                self.window.render_title()
+        Where clicks from the initial menu should be send. Bid_on is the name given in this first menu
         
-                self.link_button = Button("Bid")
-                self.link_button.topleft = (self.topleft[0] + self.list_size[0]/2 - self.link_button.size[0]/2,  self.topleft[1] + self.list_size[1]+50)
-                self.link_button.connect_signal(Constants.SIG_CLICKED,self.perform_bid, sale_object, None, type, None)
-                self.renderer.add_widget(self.link_button)
-#                self.perform_bid(sale_object, None, type, None)
-                
-            else:
-                
-                self.perform_bid(sale_object, for_sale_by[0],type, price)
+        """
+        self.selections["for_sale_by"] = self.fast_list.original_tabular_data[bid_on]["for_sale_by_link"]
+        self.selections["sale_object"] = self.fast_list.original_tabular_data[bid_on]["object"]
+        self.selections["type"] = self.fast_list.original_tabular_data[bid_on]["Type"]
+        self.selections["price"] = self.fast_list.original_tabular_data[bid_on]["Best price"]
+        self.selections["bid_on"] = bid_on
+        
+        if self.selections["type"] in ["technology","advanced tech."]:
+            current_player_tech = self.solar_system_object_link.current_player.known_technologies
+            check_result = self.solar_system_object_link.technology_tree.check_technology_bid(current_player_tech,self.selections["sale_object"] )
+            if check_result != "ok":
+                print_dict = {"text":"Can not bid for " + self.selections["bid_on"] + " because it is " + check_result,"type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+                return None
+
+        
+        if len(self.selections["for_sale_by"]) > 1:
+            if self.selections["type"] not in ["technology","advanced tech."]:
+                raise Exception("A bid was made for a type: " + str(self.selections["type"]) + " asset, with more than one seller. This should not be possible") 
+            self.menu_position = "pick_seller"
+            sellers_data = {}
+            for seller in self.selections["sale_object"]["for_sale_by"]:
+                price_here = self.selections["sale_object"]["for_sale_by"][seller]
+                sellers_data[seller.name] = {"Price":price_here,"seller_link":seller}
+    
+            column_order = ["rownames","Price"]
+            self.fast_list = gui_components.fast_list(self.action_surface,sellers_data,self.rect,column_order)
+    
+        else: #only one seller - just go for standard algorithm
+            return self.perform_bid(self.selections["for_sale_by"][0].name) #chose the only one
+        
 
                 
                         
-    def perform_bid(self, sale_object, seller, type, price):
+    def perform_bid(self, chosen_seller_name):
         """
         Function that allows the player to bid on an asset or technology
         """
-        if seller is None: #then it is because we don't know what was chosen in chose_seller and we'll extract that
-            bid_on = self.window.selected_name
-            seller = self.window.original_tabular_data[bid_on]["seller_link"]
-        if price is None: #then it is because we don't know what was chosen in chose_seller and we'll extract that
-            bid_on = self.window.selected_name
-            price = self.window.original_tabular_data[bid_on]["Price"]    
-        
-        self.exit(reset_commandbox_button = True)
-        
-
-        current_player = self.solar_system_object_link.current_player
-        if current_player.capital > price:
-            if type == "technology":
-                
-                
-                    self.solar_system_object_link.current_player.known_technologies[sale_object["technology_name"]] = sale_object
-                    current_player.capital = current_player.capital - price
-                    seller.capital = seller.capital + price
-                    print_dict = {"text":str(sale_object["technology_name"]) + " was bought for " + str(price) + " from " + str(seller.name),"type":"general gameplay info"}
-                    self.solar_system_object_link.messages.append(print_dict)
-                     
-                    
-            elif type == "base":
-                    print_dict = {"text":"base buying not implemented yet","type":"general gameplay info"}
-                    self.solar_system_object_link.messages.append(print_dict)
-    
-            else:
-                raise Exception("Unknown type: " + str(type) + " asked for in the asset sales GUI")
-    
-                
-        else:
-            print_dict = {"text":current_player.name + " has a capital of " + str(current_player.capital) + " and can't bid " + str(price),"type":"general gameplay info"}
+        if chosen_seller_name not in self.solar_system_object_link.companies.keys():
+            print_dict = {"text": str(chosen_seller_name) + " was not found - perhaps it was shut down recently.","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
+#            print "We had an instance of an unknown name: " + str(chosen_seller_name)
+        else:
+            chosen_seller = self.solar_system_object_link.companies[chosen_seller_name]
+            current_player = self.solar_system_object_link.current_player
             
+            
+            
+            
+            if self.selections["type"] == "base":
+                self.menu_position = "base bidding"
+                pygame.draw.rect(self.action_surface, (224,218,213), self.rect)
+                pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+                pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
+                pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
                 
-    
-    
-
-    def notify(self,event):
-        if event.signal == "trade_toggle":
-            if not event.data:
-                self.create_trade_window()
+                instruction = global_variables.standard_font.render("Enter bid for " + self.selections["bid_on"] + " (pop:" + str(self.selections["sale_object"].population) + ") with deadline " + str(self.selections["sale_object"].for_sale_deadline),True,(0,0,0))
+                self.action_surface.blit(instruction, (self.rect[0] + 10, self.rect[1] + 10))
+                
+                
+                # estimating a value of the base
+                potential_base = self.selections["sale_object"]
+                if potential_base.is_on_dry_land == "Yes":
+                    dry_term = 1
+                else:
+                    dry_term = 0.01
+                mining_values = []
+                for resource in potential_base.mining_opportunities:
+                    mining_opportunity = potential_base.mining_opportunities[resource]
+                    price_of_resource = []
+                    for trade_route in potential_base.trade_routes.values():
+                        if trade_route["endpoint_links"].index(potential_base) == 1:
+                            neighbour = trade_route["endpoint_links"][0]
+                        else:
+                            neighbour = trade_route["endpoint_links"][1]
+                        try: neighbour.market["buy_offers"][resource]
+                        except: 
+                            if self.solar_system_object_link.message_printing["debugging"]:
+                                print_dict = {"text":"DEBUGGING: When calculating bid, we did not find a market in neighbour " + str(neighbour.name),"type":"debugging"}
+                                self.solar_system_object_link.messages.append(print_dict)
+                        else:
+                            if len(neighbour.market["buy_offers"][resource]) > 0:
+                                price_of_resource.append(neighbour.market["buy_offers"][resource][0]["price"])
+                    if len(price_of_resource) > 0:
+                        mean_price_of_resource = sum(price_of_resource) / len(price_of_resource)
+                        value = mining_opportunity["sum_of_resources"] * mean_price_of_resource
+                        mining_values.append(value)
+                mining_value_term = sum(mining_values)
+                population_term = potential_base.population
+                company_term = current_player.company_database["buy_out_tendency"]
+                base_value = int(dry_term * mining_value_term * population_term * company_term * 0.00000001)
+                
+                #start the entry box
+                self.text_receiver = gui_components.entry(self.action_surface,
+                                     (self.rect[0] + 10, self.rect[1] + 40), 
+                                     300, 32, 
+                                     starting_text = str(base_value))
+                
+                
+                self.bid_button = gui_components.button(
+                                    "Bid",
+                                    self.action_surface,
+                                    self.effectuate_base_bid,
+                                    function_parameter = None,
+                                    topleft = (self.rect[0] + 10, self.rect[1] + 100)
+                                    )
+                return None
+                
+            
+            if current_player.capital > self.selections["price"]:
+                if self.selections["type"] in ["technology","advanced tech."]:
+                        self.solar_system_object_link.current_player.known_technologies[self.selections["bid_on"]] = self.selections["sale_object"] 
+                        current_player.capital = current_player.capital - self.selections["price"]
+                        chosen_seller.capital = chosen_seller.capital + self.selections["price"]
+                        print_dict = {"text":str(self.selections["bid_on"]) + " was bought for " + str(self.selections["price"]) + " from " + str(chosen_seller.name),"type":"general gameplay info"}
+                        self.solar_system_object_link.messages.append(print_dict)
+                         
+                        
+                elif self.selections["type"] == "base":
+                        print_dict = {"text":"base buying not implemented yet","type":"general gameplay info"}
+                        self.solar_system_object_link.messages.append(print_dict)
+        
+                else:
+                    raise Exception("Unknown type: " + str(self.selections["type"]) + " asked for in the asset sales GUI")
+        
+                    
             else:
-                self.exit()
+                print_dict = {"text":current_player.name + " has a capital of " + str(current_player.capital) + " and can't bid " + str(self.selections["price"]),"type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+        
+        return "clear"     
+    
+    
+    def effectuate_base_bid(self, label, function_parameters):
+        
+        price_string = self.text_receiver.text
+        try: int(price_string)
+        except:
+            print_dict = {"text":"The bid: " + str(price_string) + " was not a number","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            return None
+        else:
+            price = int(price_string)
+
+        if 3 * price > self.solar_system_object_link.current_player.capital: 
+            print_dict = {"text":"The bid: " + str(price_string) + " was too expensive - more than 3 times capital is required","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            return None
+#        else:
+#            print str(price) + " is ok within capital"
+
+        
+        if self.selections["sale_object"].for_sale_deadline is not None:
+            if self.selections["sale_object"].for_sale_deadline <= self.solar_system_object_link.current_date:
+                print_dict = {"text":"You are too late for the bidding deadline, which was " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+                return None
+#            else:
+#                print str(self.selections["sale_object"].for_sale_deadline) + " is ok within time-limit"        
+        else:
+            print_dict = {"text":"You are too late for the bidding deadline","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            return None
+
+            
+        self.selections["sale_object"].for_sale_bids[self.solar_system_object_link.current_player] = price
+        print_dict = {"text":"You have bid " + str(price) + " for " + str(self.selections["bid_on"]) + " - the auction will run till: " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
+        self.solar_system_object_link.messages.append(print_dict)
+        return "clear"
     
 
 
@@ -2906,8 +2976,6 @@ class base_build_menu():
         self.text_receiver = None
 
 
-#    def exit(self, label, function_parameter):
-#        return "clear"
 
     def create(self):
         """
@@ -3462,8 +3530,6 @@ class company_financial_info():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-
-        self.graph_size = (self.rect[2], self.rect[3])
         self.frame_size = 80
 
 
@@ -3475,16 +3541,19 @@ class company_financial_info():
         
         company_selected = self.solar_system_object_link.company_selected
         company_accounting = company_selected.company_accounting
-        history_surface = pygame.Surface(self.graph_size)
-        history_surface.fill((234,228,223))
-        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
-        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
-        pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
+
+        blank_surface = pygame.Surface((self.rect[2], self.rect[3]))
+        blank_surface.fill((150,150,150))
+#        pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
+        pygame.draw.line(blank_surface, (255,255,255), (0, 0), (self.rect[2], 0))
+        pygame.draw.line(blank_surface, (255,255,255), (0, 0), (0, self.rect[3]))
+        pygame.draw.line(blank_surface, (0,0,0), (self.rect[2], 0), (self.rect[2], self.rect[3]))
+        pygame.draw.line(blank_surface, (0,0,0), (0, self.rect[3]), (self.rect[2], self.rect[3]))
   
         
         if len(company_selected.company_accounting) == 0:
             no_history_label = global_variables.standard_font.render("No history for " + company_selected.name,True,(0,0,0))
-            history_surface.blit(no_history_label,(20,20))
+            blank_surface.blit(no_history_label,(20,20))
         else:
             start_date = company_accounting[0]["date"]
             end_date = company_accounting[len(company_accounting)-1]["date"]
@@ -3505,20 +3574,20 @@ class company_financial_info():
                 xlim = (xlim[0]-1,xlim[1]+1)
             
             
-            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
-            history_surface = primitives.make_linear_x_axis(history_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
+            blank_surface = primitives.make_linear_y_axis(blank_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
+            blank_surface = primitives.make_linear_x_axis(blank_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
 #            print "(self.graph_rect[2]-self.frame_size*2): " + str((self.graph_rect[2]-self.frame_size*2))
             for i in range(1,len(capital)):
-                x1_position = int(self.frame_size + ((self.graph_rect[2]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
-                y1_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
-                x2_position = int(self.frame_size + ((self.graph_rect[2]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
-                y2_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x1_position = int(self.frame_size + ((self.rect[2]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
+                y1_position = int(self.rect[3] - (self.frame_size + ( (self.rect[3]-self.frame_size*2) * (capital[i-1] - ylim[0]) / (ylim[1]-ylim[0]) )))
+                x2_position = int(self.frame_size + ((self.rect[2]-self.frame_size*2) * (dates[i] - xlim[0])) / (xlim[1]-xlim[0]))
+                y2_position = int(self.rect[3] - (self.frame_size + ( (self.rect[3]-self.frame_size*2) * (capital[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
 #                print "From (" + str(x1_position) + "," + str(y1_position) + ") to (" + str(x2_position) + "," +str(y2_position) + ") - the date was: " + str(dates[i]) + " and the capital was " + str(capital[i])
                 
-                pygame.draw.line(history_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
+                pygame.draw.line(blank_surface,(0,0,0),(x1_position,y1_position),(x2_position,y2_position))
         
         
-        self.action_surface.blit(history_surface,(self.rect[0],self.rect[1]))
+        self.action_surface.blit(blank_surface,(self.rect[0],self.rect[1]))
         pygame.display.flip()
 
 
@@ -3577,7 +3646,15 @@ class company_list_of_firms():
                     self.solar_system_object_link.messages.append(print_dict)
     
             else:
-                print "FIXME: Should go to firm window now"
+                if isinstance(firm_selected, company.base):
+                    self.solar_system_object_link.display_mode = "base"
+                    self.solar_system_object_link.current_planet.current_base = firm_selected
+                    
+                else:
+                    self.solar_system_object_link.display_mode = "firm"
+                    self.solar_system_object_link.firm_selected = firm_selected
+                return "clear"
+
 
 
 

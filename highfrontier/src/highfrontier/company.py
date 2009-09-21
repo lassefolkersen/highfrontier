@@ -342,11 +342,18 @@ class company:
 			self.owned_firms[firm_to_close].close_firm()
 			del self.owned_firms[firm_to_close]
 		if len(self.owned_firms) == 0:
+			
+			#ok - no firms left. Now we check if for any technologies that it owns and removes it self from them
+			for technology_name in self.solar_system_object_link.technology_tree.vertex_dict:
+				technology = self.solar_system_object_link.technology_tree.vertex_dict[technology_name]
+				if self in technology["for_sale_by"]:
+					del technology["for_sale_by"][self]
+			
+			#finally the deletion
 			self.solar_system_object_link.close_company(self.name)
 		else:
 			pass
-			
-
+		
 		
 
 
