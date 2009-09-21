@@ -58,6 +58,8 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
         sol.load_solar_system(load_previous_game)
     else:
         sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = True)
+
+
     
     #initialize current player company
     if company_name is not None:
@@ -140,9 +142,8 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
     
 
-    
-    
-
+    #FIXME this is just for speeding up stuff
+#    sol.current_player.target_technology = sol.technology_tree.vertex_dict["basic fossil fuel mining"]
     
     i = 0
     while True:    
@@ -155,6 +156,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                 sys.exit(0)
             if event.type == 5: #mouse down event
                 gui_instance.receive_click(event)
+                pygame.display.flip()
                 
                 
             if event.type == 2: #key down event
@@ -177,7 +179,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                 if event.key == 274: #down
                     gui_instance.go_down(event)
 
-
+                pygame.display.flip()
         
         
         pygame.time.delay(15)
@@ -190,7 +192,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
             sol.current_date = datetime.timedelta(30)+sol.current_date
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
-      
+            
             sol.evaluate_each_game_step()
            
             for company_instance in sol.companies.values():
@@ -220,6 +222,8 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
 
 
-start_loop(company_name = "YourCompanyNameHere", company_capital = 1000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
+#start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
+
+#start_loop(company_name = "YourCompanyNameHere", company_capital = 10000000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
 
    

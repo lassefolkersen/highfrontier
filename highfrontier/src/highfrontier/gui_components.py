@@ -624,7 +624,7 @@ class fast_list():
         #expanding rectangle to catch clicks on title
 #        self.rect = pygame.Rect(self.rect[0],self.rect[1] - self.text_height, self.rect[2], self.rect[3] + self.text_height)
 
-        self.lines_visible = int( math.floor( self.rect[3] / self.text_height) )
+        self.lines_visible = int( math.floor( self.rect[3] / self.text_height) - 1)
         
         
         
@@ -642,7 +642,6 @@ class fast_list():
         else:
             if self.title is not None:
                 if event.pos[1] < self.rect[1] + self.text_height:
-                    print "click in title"
                     for key in self.title["entry_span"].keys():
                         if key[0] < event.pos[0] and event.pos[0] < key[1]:
                             sort_by_this_column = self.title["entry_span"][key]
@@ -826,7 +825,7 @@ class fast_list():
                 else:
                     for column_name in column_order:
                         if column_name not in original_columns:
-                            raise Exception("Received a column_order entry that was not located in data columns")
+                            raise Exception("Received a column_order entry " + str(column_name) + " that was not located in the data columns: " + str(original_columns))
                 
                 
                 #determining the max number of letters in each column
