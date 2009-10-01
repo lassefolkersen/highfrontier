@@ -1,0 +1,10 @@
+
+Consider speed advantages to drawing water (and waste) on top of the sphereform instead of the planar form
+Fix the mining system, right not it does not consume anything to mine
+Make a climate model that "checks" a planet say every year and updates for example the temperature, and the loss of gases
+The distance calculation needs checking. Glasgow to Kisangini (middle of africa) has been observed to be closer than other european cities
+expand the implode_and_expand function so that it can be used, on already existing technology. This probably involves adding options for including input_output_dicts in the "common knowledge"
+It would be nice that the planet view automatically zoomed on a city after zooming out from this (actually this might be complicated)
+Realitify the variables - find out how large the fossil fuel consumption per capita is, how much energy is produced per fuel. Total energy consumption etc.
+Slight speed advantage can be gained by selectively updating the base_position and areas_of_interest dicts selectively when building a new base
+Think of the space stations problematics
