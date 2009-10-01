@@ -2077,9 +2077,12 @@ class base_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = self.links[self.fast_list.selected_name]
-            self.solar_system_object_link.display_mode = "firm"
-            self.solar_system_object_link.firm_selected = firm_selected
-            return "clear"
+            if isinstance(firm_selected, company.base): #in this case we are already in the base, so we do nothing.
+                return "clear"
+            else:
+                self.solar_system_object_link.display_mode = "firm"
+                self.solar_system_object_link.firm_selected = firm_selected
+                return "clear"
 
 
 
@@ -2131,7 +2134,10 @@ class base_and_firm_market_window():
         """
         The creation function. Doesn't return anything, but saves and renders using the self.renderer. 
         """
-
+        if self.graph_selected == "place bid mode":
+            self.graph_selected = "history"
+        
+        
         pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
         pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
@@ -2244,6 +2250,8 @@ class base_and_firm_market_window():
             surface = self.update_data_market_bids()
         elif self.graph_selected == "history":
             surface = self.update_data_history()
+        elif self.graph_selected == "place bid mode":
+            return None
         else:
             raise Exception("Unknown graph type " + self.graph_selected)
 
@@ -2504,10 +2512,6 @@ class base_and_firm_market_window():
         """
         
         self.graph_selected = "place bid mode"
-        print "at start of function"
-        print "initial_quantity: " + str(initial_quantity)
-        print "initial_price: " + str(initial_price)
-        #
         resource = self.resource_selected
         
         if self.solar_system_object_link.display_mode == "base":
@@ -2554,8 +2558,6 @@ class base_and_firm_market_window():
                 print "NEED TO SET quantity range for a merchant. Defaulting to 100"
                 quantity_max = 100
             else:
-                print dir(firm_selected)
-                print firm_selected.input_output_dict
                 quantity_max = firm_selected.input_output_dict["input"][resource] * 10
 
 
@@ -2577,17 +2579,16 @@ class base_and_firm_market_window():
             max_price = 10
         for transaction in market["transactions"][resource]:
             max_price = max(max_price, transaction["price"])
-        print "max_price: " + str(max_price)
             
         price_range = (0,int(max_price * 2))
         if initial_price is None:
             initial_price = max_price
                 
         
-        print "initial_quantity: " + str(initial_quantity)
-        print "quantity_range: " + str(quantity_range)
-        print "initial_price: " + str(initial_price)
-        print "price_range: " + str(price_range)
+#        print "initial_quantity: " + str(initial_quantity)
+#        print "quantity_range: " + str(quantity_range)
+#        print "initial_price: " + str(initial_price)
+#        print "price_range: " + str(price_range)
         
         
         pygame.draw.rect(self.action_surface,(212,212,212),self.graph_rect)
@@ -2609,7 +2610,6 @@ class base_and_firm_market_window():
             self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
             pygame.display.update(price_rect)
             
-
 
         self.price_bar = gui_components.hscrollbar(self.action_surface, 
                                   price_execute, 
@@ -2656,9 +2656,10 @@ class base_and_firm_market_window():
         self.action_surface.blit(direction_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
         
         def direction_execute(label, function_parameter):
-            print "direction"
-            print label
-            print function_parameter
+#            print "direction"
+#            print label
+#            print function_parameter
+            pass
             
         
         self.direction_buttons = gui_components.radiobuttons(["buy","sell"],
@@ -2669,36 +2670,8 @@ class base_and_firm_market_window():
                                    selected = direction)
         
         
+     
 
-
-        
-        #row 4: show location
-#        height_to_draw = height_to_draw + 50
-#        
-#        location_text = global_variables.standard_font.render("Set the location:",True,(0,0,0))
-#        self.action_surface.blit(location_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
-#
-#        
-#        def location_execute(label, function_parameter):
-#                print "location"
-#                print label
-#                print function_parameter
-#
-#        if isinstance(firm_selected, company.merchant): 
-#            self.location_buttons = gui_components.radiobuttons([firm_selected.from_location.name,firm_selected.to_location.name],
-#                           self.action_surface, 
-#                           direction_execute,
-#                           function_parameter = None, 
-#                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
-#                           selected = None)
-#        else:
-#                        self.location_buttons = gui_components.radiobuttons([firm_selected.location.name],
-#                           self.action_surface, 
-#                           direction_execute,
-#                           function_parameter = None, 
-#                           topleft = (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
-#                           selected = None)
-        
         #effectuate buttons
         self.ok_button = gui_components.button("ok", 
                                                 self.action_surface,
@@ -2729,88 +2702,34 @@ class base_and_firm_market_window():
         
         #determining direction
         direction = self.direction_buttons.selected
-
-        
-        #determining market
-#        if isinstance(firm_selected, company.merchant): 
-#            if self.bid_window.grid[(3,1)].active:
-#                market = firm_selected.from_location.market
-#            elif self.bid_window.grid[(3,2)].active:
-#                market = firm_selected.to_location.market
-#            else:
-#                all_ok = False
-#                if self.solar_system_object_link.message_printing["debugging"]:
-#                    print_dict = {"text":"DEBUGGING: no market was selected","type":"debugging"}
-#                    self.solar_system_object_link.messages.append(print_dict)
-#                    self.manager.emit("update_infobox", None)
-#        else:
-#            market = firm_selected.location.market
-
         
         #determining resource
         resource = self.resource_selected
-#        if isinstance(firm_selected, company.merchant):
-#            if self.bid_window.grid[(4,1)].active:
-#                resource = firm_selected.resource
-#            elif self.bid_window.grid[(4,2)].active:
-#                resource = firm_selected.transport_type
-#            else:
-#                all_ok = False
-#                if self.solar_system_object_link.message_printing["debugging"]:
-#                    print_dict = {"text":"DEBUGGING: no resource was selected","type":"debugging"}
-#                    self.solar_system_object_link.messages.append(print_dict)
-#                    self.manager.emit("update_infobox", None)
-#            
-#        else:
-#            resource = self.bid_window.grid[(4,1)].text
         
+        #determining unit
+        unit = self.solar_system_object_link.trade_resources[resource]["unit_of_measurment"]
         
-        
-        
-#        if direction not in ["sell","buy"]:
-#            if self.solar_system_object_link.message_printing["debugging"]:
-#                print_dict = {"text":"The direction " + str(direction) + " was not recognized. Must be sell or buy","type":"debugging"}
-#                self.solar_system_object_link.messages.append(print_dict)
-#                self.manager.emit("update_infobox", None)
-#            all_ok = False
-
-#        try:    float(price)
-#        except:
-#            print_dict = {"text":"The price " + str(price) + " could not be converted into a decimal number. Please use another.","type":"general gameplay info"}
-#            self.solar_system_object_link.messages.append(print_dict)
-#            all_ok = False
-#        else:
-#            pass
-        
-#        
-#        try:    int(quantity)
-#        except:
-#            print_dict = {"text":"The quantity " + str(quantity) + " could not be converted into an integer number. Please use another.","type":"general gameplay info"}
-#            self.solar_system_object_link.messages.append(print_dict)
-#            self.manager.emit("update_infobox", None)
-#            all_ok = False
-#        else:
-#            pass
-#        
-#        if isinstance(firm_selected, company.merchant): #then we need to see see if it buys in the from location or to location
-        
-#        if all_ok:
-#            self.exit()
         if direction == "buy":
+            if price * quantity > firm_selected.owner.capital:
+                print_dict = {"text":"Too low capital to bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+                return
             own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
         elif direction == "sell":
+            if quantity > firm_selected.stock_dict[resource]:
+                print_dict = {"text":firm_selected.name + " only has " + str(firm_selected.stock_dict[resource]) + " " + str(unit) + " and can't offer " + str(quantity) + " for sale","type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+                return
             own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
         else:
             raise Exception("Unknown direction " + str(direction))
         
         firm_selected.make_market_bid(market,own_offer)
         
-        print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " units of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
+        print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
         self.solar_system_object_link.messages.append(print_dict)
         self.graph_selected = "market bids"
         return "clear"
-#        self.manager.emit("update_infobox", None)
-#        self.create_base_and_firm_market_window(self.renderer)
 
 
                     
@@ -2981,6 +2900,7 @@ class base_build_menu():
         """
         The creation function.  
         """
+        self.text_receiver = None
         self.menu_position = "root"
         self.selections = {}
         

@@ -1625,7 +1625,7 @@ class base(firm):
 		if self.picture_file != None:
 			file_name_and_path = self.picture_file
 		else:
-			if os.access(os.path.join("images","base",self.home_planet.planet_name),1):
+			if os.access(os.path.join("images","base",self.home_planet.planet_name),os.R_OK):
 				planet_base_dir = os.path.join("images","base",self.home_planet.planet_name)
 			else:
 				planet_base_dir = os.path.join("images","base","other")

@@ -24,13 +24,9 @@ import random
 
 
 # sys.setdefaultencoding may be deleted by site.py, when using py2exe so bring it back: 
-
 reload(sys)
-print sys.getdefaultencoding()
 if hasattr(sys,"setdefaultencoding"):
     sys.setdefaultencoding("latin-1")
-    print "did it"
-print sys.getdefaultencoding()
 
 
 
@@ -230,7 +226,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
 
 
-#start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
+start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
 
 #start_loop(company_name = "YourCompanyNameHere", company_capital = 10000000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
 
