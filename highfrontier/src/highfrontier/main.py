@@ -23,6 +23,14 @@ import random
 
 
 
+# sys.setdefaultencoding may be deleted by site.py, when using py2exe so bring it back: 
+
+reload(sys)
+print sys.getdefaultencoding()
+if hasattr(sys,"setdefaultencoding"):
+    sys.setdefaultencoding("latin-1")
+    print "did it"
+print sys.getdefaultencoding()
 
 
 
