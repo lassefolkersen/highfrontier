@@ -1108,7 +1108,7 @@ class firm():
 				self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
 				self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"] 
 				if self.owner == self.solar_system_object_link.current_player or counterpart.owner == self.solar_system_object_link.current_player:
-					print_dict = {"text":self.name + " bought " + str(offer_of_interest["quantity"]) + " units of " + resource + " from " + counterpart.name + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
+					print_dict = {"text":str(self.name) + " bought " + str(offer_of_interest["quantity"]) + " units of " + str(resource) + " from " + str(counterpart.name) + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
 					self.solar_system_object_link.messages.append(print_dict)
 
 				

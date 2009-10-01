@@ -1,570 +1,1707 @@
-17:22:51.57  Logging started, 09/13/09                  %%%%%%%%%%%%%%%%%%%%
-17:22:51.57  ActivePassiveProfiler: starting                           %%%%%
-17:22:51.69   ______
+10:47:36.02  Logging started, 10/01/09                  %%%%%%%%%%%%%%%%%%%%
+10:47:36.02  ActivePassiveProfiler: starting                           %%%%%
+10:47:36.12   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-17:22:51.94   ______
+10:47:36.34   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-17:22:52.12   ______
+10:47:36.52   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-17:22:52.29   ______
+10:47:36.74   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-17:22:52.59   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-17:22:52.75   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-17:22:52.92   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-17:22:53.11   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-17:22:53.32   ______
-        #1   |99.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.1 %|  start_loop                ...hfrontier\main.py:36
-17:22:53.61   ______
-        #1   |99.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.1 %|  start_loop                ...hfrontier\main.py:36
-17:22:53.91   ______
-        #1   |99.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  start_loop                ...hfrontier\main.py:36
-17:22:54.07   ______
-        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  start_loop                ...hfrontier\main.py:36
-17:22:54.25   ______
-        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.2 %|  start_loop                ...hfrontier\main.py:36
-17:22:54.45   ______
-        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.3 %|  start_loop                ...hfrontier\main.py:36
-17:22:54.65   ______
-        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
-17:22:54.85   ______
-        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
-17:22:55.01   ______
-        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
-17:22:55.44   ______
-        #1   |99.3 %|  active_start              ...psyco\profiler.py:273
-17:22:55.64   ______
-        #1   |99.0 %|  active_start              ...psyco\profiler.py:273
-17:22:55.84   ______
-        #1   |98.9 %|  active_start              ...psyco\profiler.py:273
-17:22:56.05   ______
-        #1   |98.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.3 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.3 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 0.2 %|  join                      ...n25\lib\ntpath.py:59
-        #5   | 0.1 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
-        #7   | 0.1 %|  do_profile                ...psyco\profiler.py:314
-17:22:56.36   ______
-        #1   |98.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.4 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.3 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 0.2 %|  join                      ...n25\lib\ntpath.py:59
-        #5   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 0.2 %|  do_profile                ...psyco\profiler.py:314
-17:22:56.56   ______
-        #1   |97.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.5 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.3 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 0.3 %|  isdir                     ...n25\lib\ntpath.py:267
-        #5   | 0.3 %|  do_profile                ...psyco\profiler.py:314
-17:22:56.88   ______
+10:47:36.95   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+10:47:37.15   ______
+        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  get_research_project      ...ier\technology.py:163
+        #3   | 0.2 %|  evaluate_self             ...ontier\company.py:361
+10:47:37.34   ______
+        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  get_research_project      ...ier\technology.py:163
+        #3   | 0.2 %|  evaluate_self             ...ontier\company.py:361
+10:47:37.57   ______
+        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  get_research_project      ...ier\technology.py:163
+        #3   | 0.2 %|  evaluate_self             ...ontier\company.py:361
+10:47:37.76   ______
+        #1   |99.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.3 %|  get_research_project      ...ier\technology.py:163
+        #3   | 0.2 %|  evaluate_self             ...ontier\company.py:361
+10:47:37.93   ______
+        #1   |98.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  evaluate_self             ...ontier\company.py:361
+10:47:38.13   ______
+        #1   |98.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  evaluate_self             ...ontier\company.py:361
+10:47:38.32   ______
+        #1   |98.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  evaluate_self             ...ontier\company.py:361
+10:47:38.56   ______
+        #1   |98.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  evaluate_self             ...ontier\company.py:361
+10:47:38.74   ______
+        #1   |98.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 0.6 %|  evaluate_self             ...ontier\company.py:361
+10:47:38.95   ______
         #1   |97.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.6 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.4 %|  isdir                     ...n25\lib\ntpath.py:267
-        #4   | 0.3 %|  join                      ...n25\lib\ntpath.py:59
-        #5   | 0.3 %|  do_profile                ...psyco\profiler.py:314
-17:22:57.13   ______
-        #1   |96.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.8 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.5 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 0.4 %|  isdir                     ...n25\lib\ntpath.py:267
-        #5   | 0.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 0.3 %|  isabs                     ...n25\lib\ntpath.py:51
-        #7   | 0.3 %|  do_profile                ...psyco\profiler.py:314
-17:22:57.33   ______
-        #1   |96.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.0 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.6 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 0.6 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 0.4 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 0.3 %|  do_profile                ...psyco\profiler.py:314
-17:22:57.53   ______
-        #1   |95.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.0 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 0.6 %|  dumpcharges               ...s\psyco\logger.py:62
-        #4   | 0.6 %|  do_profile                ...psyco\profiler.py:314
-17:22:57.73   ______
-        #1   |93.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.6 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 1.3 %|  isdir                     ...n25\lib\ntpath.py:267
-        #4   | 1.2 %|  join                      ...n25\lib\ntpath.py:59
-        #5   | 0.9 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 0.7 %|  do_profile                ...psyco\profiler.py:314
-17:22:57.93   ______
-        #1   |92.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.6 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 1.3 %|  isdir                     ...n25\lib\ntpath.py:267
-        #4   | 1.2 %|  join                      ...n25\lib\ntpath.py:59
-        #5   | 1.1 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 0.9 %|  do_profile                ...psyco\profiler.py:314
-17:22:58.08   ______
-        #1   |90.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.3 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 1.6 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 1.5 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 1.5 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 1.1 %|  do_profile                ...psyco\profiler.py:314
-17:22:58.28   ______
-        #1   |88.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.5 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 2.5 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 2.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 1.4 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 1.1 %|  do_profile                ...psyco\profiler.py:314
-17:22:58.49   ______
-        #1   |86.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.6 %|  join                      ...n25\lib\ntpath.py:59
-        #3   | 2.9 %|  walk                      ...ython25\lib\os.py:223
-        #4   | 2.6 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 1.4 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 1.1 %|  do_profile                ...psyco\profiler.py:314
-17:22:58.89   ______
-        #1   |77.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.6 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 5.5 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.1 %|  isdir                     ...n25\lib\ntpath.py:267
-        #6   | 1.9 %|  do_profile                ...psyco\profiler.py:314
-17:22:59.09   ______
-        #1   |72.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.0 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 6.3 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 3.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.5 %|  do_profile                ...psyco\profiler.py:314
-17:22:59.29   ______
+        #2   | 1.1 %|  evaluate_self             ...ontier\company.py:361
+10:47:39.17   ______
+        #1   |97.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.1 %|  evaluate_self             ...ontier\company.py:361
+10:47:39.37   ______
+        #1   |97.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.1 %|  evaluate_self             ...ontier\company.py:361
+10:47:39.56   ______
+        #1   |97.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.1 %|  evaluate_self             ...ontier\company.py:361
+10:47:39.77   ______
+        #1   |93.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.3 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:40.10   ______
+        #1   |92.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.3 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:40.45   ______
+        #1   |92.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.4 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:40.71   ______
+        #1   |91.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:41.02   ______
+        #1   |91.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.4 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:41.26   ______
+        #1   |91.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 1.8 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 0.7 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.4 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+10:47:41.60   ______
+        #1   |87.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.7 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.2 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.5 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.1 %|  create                    ...ghfrontier\gui.py:792
+10:47:41.87   ______
+        #1   |87.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.7 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.3 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.5 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.1 %|  create                    ...ghfrontier\gui.py:792
+10:47:42.06   ______
+        #1   |87.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.7 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.4 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.5 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 0.1 %|  create                    ...ghfrontier\gui.py:792
+10:47:42.32   ______
+        #1   |86.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.7 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.5 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #6   | 0.6 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 0.1 %|  activate                  ...gui_components.py:494
+10:47:42.52   ______
+        #1   |84.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.5 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:42.79   ______
+        #1   |84.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 3.0 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:43.04   ______
+        #1   |84.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 3.1 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.7 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #9   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:43.38   ______
+        #1   |78.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 6.0 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 3.9 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.9 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #8   | 0.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:43.60   ______
+        #1   |78.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 6.0 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 3.9 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.9 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #9   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:43.84   ______
+        #1   |78.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 6.0 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 4.1 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.9 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #9   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:44.12   ______
+        #1   |78.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  evaluate_self             ...ontier\company.py:361
+        #3   | 6.0 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 4.2 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 0.9 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #7   | 0.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.3 %|  calculate_emigration      ...ontier\company.py:1457
+        #9   | 0.2 %|  get_research_project      ...ier\technology.py:163
+        #10  | 0.2 %|  create                    ...ghfrontier\gui.py:792
+10:47:44.20  tag function: company.company.evaluate_self                   %
+10:47:44.37   ______
+        #1   |74.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 4.5 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.0 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  make_market_bid           ...ontier\company.py:926
+        #7   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #8   | 0.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+        #10  | 0.3 %|  create                    ...ghfrontier\gui.py:792
+10:47:44.65   ______
+        #1   |73.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 4.6 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.1 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  make_market_bid           ...ontier\company.py:926
+        #7   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #8   | 0.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #9   | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+        #10  | 0.3 %|  create                    ...ghfrontier\gui.py:792
+10:47:44.92   ______
+        #1   |73.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 4.8 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.2 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  make_market_bid           ...ontier\company.py:926
+        #7   | 0.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #9   | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+        #10  | 0.3 %|  create                    ...ghfrontier\gui.py:792
+10:47:45.09   ______
+        #1   |73.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 4.9 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.2 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  make_market_bid           ...ontier\company.py:926
+        #7   | 0.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.6 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #9   | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+        #10  | 0.3 %|  create                    ...ghfrontier\gui.py:792
+10:47:45.27   ______
+        #1   |72.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #7   | 0.8 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #9   | 0.5 %|  create                    ...ghfrontier\gui.py:792
+        #10  | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+10:47:45.54   ______
+        #1   |72.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #3   | 5.5 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #9   | 0.5 %|  create                    ...ghfrontier\gui.py:792
+        #10  | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+10:47:45.82   ______
+        #1   |72.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.6 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 0.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #9   | 0.5 %|  create                    ...ghfrontier\gui.py:792
+        #10  | 0.4 %|  calculate_supply_reaction_03...rket_decisions.py:762
+10:47:46.09   ______
+        #1   |70.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.5 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 1.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.8 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.4 %|  __init__                  ...ontier\company.py:734
+10:47:46.35   ______
+        #1   |70.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.6 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.5 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 1.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.7 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.4 %|  __init__                  ...ontier\company.py:734
+10:47:46.63   ______
         #1   |70.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.0 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 6.8 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 3.4 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.7 %|  do_profile                ...psyco\profiler.py:314
-17:22:59.49   ______
-        #1   |68.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.8 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 6.6 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 4.6 %|  do_profile                ...psyco\profiler.py:314
-17:22:59.69   ______
+        #2   | 6.9 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #5   | 1.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 1.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.7 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.4 %|  __init__                  ...ontier\company.py:734
+10:47:46.88   ______
+        #1   |69.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #5   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #6   | 1.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #8   | 0.7 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.4 %|  activate                  ...gui_components.py:494
+10:47:47.09   ______
+        #1   |68.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #5   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #6   | 1.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.9 %|  create                    ...ghfrontier\gui.py:792
+        #8   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.5 %|  activate                  ...gui_components.py:494
+10:47:47.35   ______
+        #1   |68.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.4 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #5   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #6   | 1.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 0.9 %|  create                    ...ghfrontier\gui.py:792
+        #8   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.5 %|  activate                  ...gui_components.py:494
+10:47:47.62   ______
+        #1   |67.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.2 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #5   | 1.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #7   | 0.9 %|  create                    ...ghfrontier\gui.py:792
+        #8   | 0.8 %|  make_market_bid           ...ontier\company.py:926
+        #9   | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+        #10  | 0.5 %|  activate                  ...gui_components.py:494
+10:47:47.84  tag function: main.start_loop                                 %
+10:47:48.76   ______
         #1   |63.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.7 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 6.2 %|  join                      ...n25\lib\ntpath.py:59
-        #4   | 5.7 %|  do_profile                ...psyco\profiler.py:314
-17:22:59.77  tag function: os.walk                                         %
-17:22:59.78  tag function: ntpath.join                                     %
-17:23:00.05   ______
-        #1   |43.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.9 %|  isabs                     ...n25\lib\ntpath.py:51
-        #3   | 4.8 %|  dumpcharges               ...s\psyco\logger.py:62
-        #4   | 3.9 %|  do_profile                ...psyco\profiler.py:314
-17:23:00.05  unsupported generator at walk                               % %
-17:23:00.11  tag function: ntpath.isdir                                    %
-17:23:00.11  tag function: os.walk                                         %
-17:23:00.12  tag function: os.walk                                         %
-17:23:00.25   ______
-        #1   |27.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.7 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 4.4 %|  isabs                     ...n25\lib\ntpath.py:51
-        #4   | 4.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.9 %|  get_base_background       ...ontier\company.py:1609
-        #6   | 2.8 %|  do_profile                ...psyco\profiler.py:314
-17:23:00.50   ______
-        #1   |27.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.5 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 5.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #4   | 4.3 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 3.7 %|  do_profile                ...psyco\profiler.py:314
-17:23:00.66   ______
-        #1   |23.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.5 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 6.2 %|  dumpcharges               ...s\psyco\logger.py:62
-        #4   | 5.1 %|  do_profile                ...psyco\profiler.py:314
-17:23:00.86   ______
-        #1   |23.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 6.4 %|  walk                      ...ython25\lib\os.py:223
-        #4   | 5.0 %|  do_profile                ...psyco\profiler.py:314
-17:23:00.94  tag function: psyco.logger.dumpcharges                        %
-17:23:01.10   ______
-        #1   |20.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.4 %|  do_profile                ...psyco\profiler.py:314
-17:23:01.30  tag function: psyco.profiler.PassiveProfiler.do_profile       %
-17:23:01.30   ______
-        #1   |20.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.6 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 3.6 %|  load                      ...\PIL\ImageFile.py:115
-        #4   | 3.2 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 2.9 %|  get_base_background       ...ontier\company.py:1609
-        #6   | 2.0 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #7   | 1.8 %|  resize                    ...ages\PIL\Image.py:1250
-        #8   | 1.3 %|  Skip                      ...pegImagePlugin.py:46
-        #9   | 0.9 %|  S_IFMT                    ...hon25\lib\stat.py:29
-        #10  | 0.8 %|  APP                       ...pegImagePlugin.py:50
-17:23:01.30  tag function: psyco.logger.dumpcharges                        %
-17:23:01.46   ______
-        #1   |15.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  load                      ...\PIL\ImageFile.py:115
-        #3   | 4.2 %|  walk                      ...ython25\lib\os.py:223
-        #4   | 2.4 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 2.3 %|  resize                    ...ages\PIL\Image.py:1250
-        #6   | 2.2 %|  get_base_background       ...ontier\company.py:1609
-        #7   | 1.7 %|  do_profile                ...psyco\profiler.py:314
-17:23:01.66   ______
-        #1   |15.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  load                      ...\PIL\ImageFile.py:115
-        #3   | 4.2 %|  walk                      ...ython25\lib\os.py:223
-        #4   | 2.4 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 2.3 %|  resize                    ...ages\PIL\Image.py:1250
-        #6   | 2.2 %|  get_base_background       ...ontier\company.py:1609
-        #7   | 1.7 %|  do_profile                ...psyco\profiler.py:314
-17:23:01.86   ______
-        #1   |15.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  load                      ...\PIL\ImageFile.py:115
-        #3   | 4.2 %|  walk                      ...ython25\lib\os.py:223
-        #4   | 2.4 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 2.3 %|  resize                    ...ages\PIL\Image.py:1250
-        #6   | 2.2 %|  get_base_background       ...ontier\company.py:1609
-        #7   | 1.7 %|  do_profile                ...psyco\profiler.py:314
-17:23:01.98  tag function: Image.Image.tostring                            %
-17:23:01.98  tag function: string.join                                     %
-17:23:01.98  tag function: Image.Image.tostring                            %
-17:23:02.06   ______
-        #1   | 5.4 %|  draw                      ...gui_components.py:499
-        #2   | 4.0 %|  active_start              ...psyco\profiler.py:273
-        #3   | 2.2 %|  load                      ...\PIL\ImageFile.py:115
-        #4   | 1.1 %|  walk                      ...ython25\lib\os.py:223
-        #5   | 1.1 %|  __init__                  ...gui_components.py:475
-        #6   | 1.1 %|  create_infobox            ...ghfrontier\gui.py:421
-        #7   | 1.0 %|  create_subcommandbox      ...ghfrontier\gui.py:505
-        #8   | 1.0 %|  _new                      ...ages\PIL\Image.py:448
-        #9   | 0.6 %|  isabs                     ...n25\lib\ntpath.py:51
-        #10  | 0.6 %|  resize                    ...ages\PIL\Image.py:1250
-17:23:02.25   ______
-        #1   | 4.9 %|  draw                      ...gui_components.py:499
-        #2   | 3.6 %|  active_start              ...psyco\profiler.py:273
-        #3   | 3.5 %|  start_loop                ...hfrontier\main.py:36
-        #4   | 2.6 %|  receive_click             ...ghfrontier\gui.py:86
-        #5   | 2.0 %|  create_infobox            ...ghfrontier\gui.py:421
-        #6   | 1.9 %|  load                      ...\PIL\ImageFile.py:115
-        #7   | 1.6 %|  start_new_game            ...frontier\intro.py:471
-        #8   | 1.0 %|  create                    ...ghfrontier\gui.py:795
-        #9   | 1.0 %|  walk                      ...ython25\lib\os.py:223
-        #10  | 1.0 %|  __init__                  ...gui_components.py:475
-17:23:02.51   ______
-        #1   | 6.7 %|  start_loop                ...hfrontier\main.py:36
-        #2   | 4.6 %|  draw                      ...gui_components.py:499
-        #3   | 3.4 %|  active_start              ...psyco\profiler.py:273
-        #4   | 3.2 %|  start_new_game            ...frontier\intro.py:471
-        #5   | 2.4 %|  receive_click             ...ghfrontier\gui.py:86
-        #6   | 1.9 %|  create_infobox            ...ghfrontier\gui.py:421
-        #7   | 1.8 %|  load                      ...\PIL\ImageFile.py:115
-        #8   | 1.1 %|  activate                  ...gui_components.py:494
-        #9   | 1.0 %|  create                    ...ghfrontier\gui.py:795
-        #10  | 0.9 %|  walk                      ...ython25\lib\os.py:223
-17:23:03.74  tag function: main.start_loop                                 %
-17:23:03.74  tag function: psyco.profiler.buildfncache                     %
-17:23:03.74  tag function: main.start_loop                                 %
-17:23:03.74   ______
-        #1   | 2.8 %|  draw                      ...gui_components.py:499
-        #2   | 2.2 %|  receive_click             ...ghfrontier\gui.py:86
-        #3   | 2.1 %|  active_start              ...psyco\profiler.py:273
-        #4   | 2.0 %|  start_new_game            ...frontier\intro.py:471
-        #5   | 1.5 %|  tag                       ...psyco\profiler.py:109
-        #6   | 1.2 %|  create_infobox            ...ghfrontier\gui.py:421
-        #7   | 1.1 %|  load                      ...\PIL\ImageFile.py:115
-        #8   | 0.7 %|  activate                  ...gui_components.py:494
-        #9   | 0.6 %|  create                    ...ghfrontier\gui.py:795
-        #10  | 0.6 %|  walk                      ...ython25\lib\os.py:223
-17:23:03.80  tag function: gui_components.fast_list.receive_data           %
-17:23:05.26   ______
-        #1   | 6.8 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 6.2 %|  __init__                  ...gui_components.py:586
-        #3   | 3.6 %|  update_fast_list          ...gui_components.py:726
-        #4   | 2.3 %|  draw                      ...gui_components.py:172
-        #5   | 2.1 %|  create_fast_list          ...gui_components.py:609
-        #6   | 1.9 %|  draw                      ...gui_components.py:499
-        #7   | 1.5 %|  receive_click             ...ghfrontier\gui.py:86
-        #8   | 1.4 %|  active_start              ...psyco\profiler.py:273
-        #9   | 1.3 %|  start_new_game            ...frontier\intro.py:471
-        #10  | 1.0 %|  tag                       ...psyco\profiler.py:109
-17:23:05.34  unsupported free or cell vars in commodity_size_selection   % %
-17:23:06.78   ______
-        #1   | 6.1 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 5.6 %|  __init__                  ...gui_components.py:586
-        #3   | 4.7 %|  draw                      ...gui_components.py:172
-        #4   | 3.2 %|  update_fast_list          ...gui_components.py:726
-        #5   | 2.5 %|  __init__                  ...gui_components.py:69
-        #6   | 2.4 %|  draw                      ...gui_components.py:499
-        #7   | 2.2 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-        #8   | 1.9 %|  create_fast_list          ...gui_components.py:609
-        #9   | 1.4 %|  receive_click             ...ghfrontier\gui.py:86
-        #10  | 1.3 %|  execute                   ...ghfrontier\gui.py:3310
-17:23:07.61   ______
-        #1   | 6.1 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 5.6 %|  __init__                  ...gui_components.py:586
-        #3   | 4.6 %|  draw                      ...gui_components.py:172
-        #4   | 3.2 %|  update_fast_list          ...gui_components.py:726
-        #5   | 3.1 %|  draw                      ...gui_components.py:499
-        #6   | 2.4 %|  __init__                  ...gui_components.py:69
-        #7   | 2.2 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-        #8   | 1.9 %|  create_fast_list          ...gui_components.py:609
-        #9   | 1.4 %|  receive_click             ...ghfrontier\gui.py:86
-        #10  | 1.3 %|  execute                   ...ghfrontier\gui.py:3310
-17:23:08.48   ______
-        #1   | 6.1 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 5.6 %|  __init__                  ...gui_components.py:586
-        #3   | 4.6 %|  draw                      ...gui_components.py:172
-        #4   | 3.2 %|  update_fast_list          ...gui_components.py:726
-        #5   | 3.1 %|  draw                      ...gui_components.py:499
-        #6   | 2.4 %|  __init__                  ...gui_components.py:69
-        #7   | 2.2 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-        #8   | 1.9 %|  create_fast_list          ...gui_components.py:609
-        #9   | 1.4 %|  receive_click             ...ghfrontier\gui.py:86
-        #10  | 1.3 %|  execute                   ...ghfrontier\gui.py:3310
-17:23:08.71   ______
-        #1   | 5.4 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 5.0 %|  __init__                  ...gui_components.py:586
-        #3   | 4.1 %|  draw                      ...gui_components.py:172
-        #4   | 2.9 %|  update_fast_list          ...gui_components.py:726
-        #5   | 2.8 %|  draw                      ...gui_components.py:499
-        #6   | 2.2 %|  __init__                  ...gui_components.py:69
-        #7   | 2.0 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
+        #2   | 5.3 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 4.9 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #5   | 1.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.4 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #7   | 0.9 %|  create                    ...ghfrontier\gui.py:792
+        #8   | 0.7 %|  make_market_bid           ...ontier\company.py:926
+        #9   | 0.5 %|  __init__                  ...ontier\company.py:734
+        #10  | 0.5 %|  evaluate_each_game_step   ...er\solarsystem.py:110
+10:47:49.67   ______
+        #1   |62.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.2 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 4.9 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.7 %|  __init__                  ...ontier\company.py:734
+        #5   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 1.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 1.4 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #8   | 0.9 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.7 %|  make_market_bid           ...ontier\company.py:926
+        #10  | 0.5 %|  do_profile                ...psyco\profiler.py:314
+10:47:49.90   ______
+        #1   |62.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.2 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 4.8 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 1.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #5   | 1.7 %|  __init__                  ...ontier\company.py:734
+        #6   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 1.4 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #8   | 0.8 %|  create                    ...ghfrontier\gui.py:792
+        #9   | 0.7 %|  make_market_bid           ...ontier\company.py:926
+        #10  | 0.7 %|  do_profile                ...psyco\profiler.py:314
+10:47:50.04  tag function: technology.Backbone_Tree.calculate_technology_web%
+10:47:50.04  tag function: technology.Backbone_Tree.render_technology_web  %
+10:47:50.07   ______
+        #1   |49.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.1 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.8 %|  execute_stock_change      ...ontier\company.py:1198
+        #4   | 2.2 %|  plot_total_tree           ...ier\technology.py:372
+        #5   | 1.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.6 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 1.3 %|  __init__                  ...ontier\company.py:734
+        #8   | 1.1 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #9   | 0.9 %|  start_loop                ...hfrontier\main.py:36
+        #10  | 0.8 %|  do_profile                ...psyco\profiler.py:314
+10:47:50.07  tag function: technology.Tree.techtree_to_surface             %
+10:47:50.77   ______
+        #1   |43.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.6 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.5 %|  plot_total_tree           ...ier\technology.py:372
+        #4   | 3.4 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 1.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.4 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 1.3 %|  __init__                  ...ontier\company.py:734
+        #8   | 1.1 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 0.9 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #10  | 0.7 %|  do_profile                ...psyco\profiler.py:314
+10:47:51.18   ______
+        #1   |42.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.5 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.5 %|  plot_total_tree           ...ier\technology.py:372
+        #4   | 3.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 1.9 %|  __init__                  ...ontier\company.py:734
+        #6   | 1.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 1.5 %|  start_new_game            ...frontier\intro.py:471
+        #8   | 1.4 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 0.9 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #10  | 0.8 %|  do_profile                ...psyco\profiler.py:314
+10:47:51.76   ______
+        #1   |42.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.5 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.5 %|  plot_total_tree           ...ier\technology.py:372
+        #4   | 3.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 2.0 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.9 %|  __init__                  ...ontier\company.py:734
+        #7   | 1.5 %|  start_new_game            ...frontier\intro.py:471
+        #8   | 1.4 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 0.9 %|  calculate_demand_reaction ...ontier\company.py:1353
+        #10  | 0.9 %|  do_profile                ...psyco\profiler.py:314
+10:47:52.37   ______
+        #1   |42.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.5 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.5 %|  plot_total_tree           ...ier\technology.py:372
+        #4   | 3.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 2.3 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 1.9 %|  __init__                  ...ontier\company.py:734
+        #7   | 1.5 %|  start_new_game            ...frontier\intro.py:471
+        #8   | 1.4 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.2 %|  do_profile                ...psyco\profiler.py:314
+10:47:52.81   ______
+        #1   |41.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.5 %|  create_infobox            ...ghfrontier\gui.py:418
+        #3   | 3.4 %|  plot_total_tree           ...ier\technology.py:372
+        #4   | 3.3 %|  execute_stock_change      ...ontier\company.py:1198
+        #5   | 2.4 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 2.1 %|  __init__                  ...ontier\company.py:734
+        #7   | 1.5 %|  start_new_game            ...frontier\intro.py:471
+        #8   | 1.5 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:47:53.73   ______
+        #1   |40.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.7 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.3 %|  create_infobox            ...ghfrontier\gui.py:418
+        #4   | 3.3 %|  plot_total_tree           ...ier\technology.py:372
+        #5   | 3.1 %|  execute_stock_change      ...ontier\company.py:1198
+        #6   | 2.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 2.2 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:47:54.63   ______
+        #1   |39.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.4 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.3 %|  create_infobox            ...ghfrontier\gui.py:418
+        #4   | 3.2 %|  plot_total_tree           ...ier\technology.py:372
+        #5   | 3.0 %|  execute_stock_change      ...ontier\company.py:1198
+        #6   | 2.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #7   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.5 %|  do_profile                ...psyco\profiler.py:314
+10:47:54.99   ______
+        #1   |37.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.7 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.1 %|  create_infobox            ...ghfrontier\gui.py:418
+        #4   | 3.1 %|  plot_total_tree           ...ier\technology.py:372
+        #5   | 2.9 %|  execute_stock_change      ...ontier\company.py:1198
+        #6   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.5 %|  do_profile                ...psyco\profiler.py:314
+10:47:55.31   ______
+        #1   |36.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.5 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 3.0 %|  create_infobox            ...ghfrontier\gui.py:418
+10:47:56.09   ______
+        #1   |35.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.1 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 2.9 %|  create_infobox            ...ghfrontier\gui.py:418
+10:47:56.98   ______
+        #1   |34.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.1 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.5 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 2.9 %|  create_infobox            ...ghfrontier\gui.py:418
+10:47:57.12  tag function: gui_components.fast_list.receive_data           %
+10:47:58.07   ______
+        #1   |22.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 2.9 %|  update_fast_list          ...gui_components.py:725
+        #5   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 2.4 %|  __init__                  ...gui_components.py:586
+        #7   | 1.9 %|  create_fast_list          ...gui_components.py:609
+        #8   | 1.8 %|  create_infobox            ...ghfrontier\gui.py:418
+10:47:58.07  tag function: company.firm.__init__                           %
+10:47:58.39   ______
+        #1   |21.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 2.7 %|  update_fast_list          ...gui_components.py:725
+        #5   | 2.3 %|  __init__                  ...gui_components.py:586
+        #6   | 1.8 %|  create_fast_list          ...gui_components.py:609
+        #7   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #8   | 1.8 %|  create_infobox            ...ghfrontier\gui.py:418
+10:47:58.40  unsupported generator at walk                               % %
+10:47:58.45  tag function: os.walk                                         %
+10:47:58.45  tag function: ntpath.join                                     %
+10:47:58.60   ______
+        #1   |12.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 3.1 %|  walk                      ...\python\lib\os.py:223
+        #4   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 2.7 %|  isabs                     ...hon\lib\ntpath.py:51
+        #6   | 2.6 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #7   | 2.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #8   | 1.6 %|  update_fast_list          ...gui_components.py:725
+        #9   | 1.6 %|  draw                      ...gui_components.py:499
+        #10  | 1.4 %|  __init__                  ...gui_components.py:586
+10:47:59.23   ______
+        #1   |12.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 3.1 %|  walk                      ...\python\lib\os.py:223
+        #4   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #6   | 2.7 %|  isabs                     ...hon\lib\ntpath.py:51
+        #7   | 2.6 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #8   | 1.6 %|  update_fast_list          ...gui_components.py:725
+        #9   | 1.6 %|  draw                      ...gui_components.py:499
+        #10  | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:47:59.99   ______
+        #1   |12.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.2 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 3.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 3.1 %|  walk                      ...\python\lib\os.py:223
+        #5   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 2.6 %|  isabs                     ...hon\lib\ntpath.py:51
+        #7   | 2.5 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #8   | 1.6 %|  update_fast_list          ...gui_components.py:725
+        #9   | 1.6 %|  draw                      ...gui_components.py:499
+        #10  | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:00.27   ______
+        #1   |11.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.9 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 4.2 %|  update_fast_list          ...gui_components.py:725
+        #4   | 3.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #5   | 2.9 %|  walk                      ...\python\lib\os.py:223
+        #6   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.5 %|  isabs                     ...hon\lib\ntpath.py:51
+        #8   | 2.4 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #9   | 1.8 %|  draw                      ...gui_components.py:172
+        #10  | 1.7 %|  __init__                  ...gui_components.py:586
+10:48:00.89   ______
+        #1   |11.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.9 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 4.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #4   | 4.2 %|  update_fast_list          ...gui_components.py:725
+        #5   | 2.9 %|  walk                      ...\python\lib\os.py:223
+        #6   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.5 %|  isabs                     ...hon\lib\ntpath.py:51
+        #8   | 2.4 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #9   | 1.8 %|  draw                      ...gui_components.py:172
+        #10  | 1.7 %|  __init__                  ...gui_components.py:586
+10:48:01.24   ______
+        #1   |11.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 4.9 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 4.8 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 4.1 %|  update_fast_list          ...gui_components.py:725
+        #5   | 2.8 %|  walk                      ...\python\lib\os.py:223
+        #6   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.4 %|  isabs                     ...hon\lib\ntpath.py:51
+        #8   | 2.3 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #9   | 1.8 %|  draw                      ...gui_components.py:172
+        #10  | 1.7 %|  __init__                  ...gui_components.py:586
+10:48:01.92   ______
+        #1   |11.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 4.8 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 4.1 %|  update_fast_list          ...gui_components.py:725
+        #5   | 2.8 %|  walk                      ...\python\lib\os.py:223
+        #6   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.4 %|  isabs                     ...hon\lib\ntpath.py:51
+        #8   | 2.3 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #9   | 1.8 %|  draw                      ...gui_components.py:172
+        #10  | 1.7 %|  __init__                  ...gui_components.py:586
+10:48:02.24   ______
+        #1   |10.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 4.5 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 3.8 %|  update_fast_list          ...gui_components.py:725
+        #5   | 3.6 %|  draw                      ...gui_components.py:172
+        #6   | 2.7 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.6 %|  walk                      ...\python\lib\os.py:223
+        #8   | 2.5 %|  __init__                  ...gui_components.py:69
+        #9   | 2.3 %|  isabs                     ...hon\lib\ntpath.py:51
+        #10  | 2.2 %|  __init__                  ...gui_components.py:586
+10:48:02.96   ______
+        #1   |10.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.1 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 4.4 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 3.8 %|  update_fast_list          ...gui_components.py:725
+        #5   | 3.5 %|  draw                      ...gui_components.py:172
+        #6   | 2.7 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.6 %|  walk                      ...\python\lib\os.py:223
+        #8   | 2.5 %|  __init__                  ...gui_components.py:69
+        #9   | 2.2 %|  isabs                     ...hon\lib\ntpath.py:51
+        #10  | 2.2 %|  __init__                  ...gui_components.py:586
+10:48:03.18   ______
+        #1   | 8.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.8 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 6.2 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 5.8 %|  walk                      ...\python\lib\os.py:223
+        #5   | 4.1 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 3.2 %|  update_fast_list          ...gui_components.py:725
+        #7   | 3.0 %|  draw                      ...gui_components.py:172
+        #8   | 2.7 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.6 %|  do_profile                ...psyco\profiler.py:314
+        #10  | 2.1 %|  __init__                  ...gui_components.py:69
+10:48:03.42   ______
+        #1   | 8.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 7.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #3   | 6.0 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 5.6 %|  walk                      ...\python\lib\os.py:223
+        #5   | 3.9 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 3.1 %|  update_fast_list          ...gui_components.py:725
+        #7   | 3.0 %|  do_profile                ...psyco\profiler.py:314
+        #8   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.9 %|  draw                      ...gui_components.py:172
+        #10  | 2.2 %|  draw                      ...gui_components.py:499
+10:48:04.32   ______
+        #1   | 8.6 %|  dumpcharges               ...s\psyco\logger.py:62
+        #2   | 8.4 %|  active_start              ...psyco\profiler.py:273
+        #3   | 5.9 %|  isdir                     ...hon\lib\ntpath.py:267
+        #4   | 5.5 %|  walk                      ...\python\lib\os.py:223
+        #5   | 3.9 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 3.5 %|  do_profile                ...psyco\profiler.py:314
+        #7   | 3.0 %|  update_fast_list          ...gui_components.py:725
+        #8   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.8 %|  draw                      ...gui_components.py:172
+        #10  | 2.2 %|  draw                      ...gui_components.py:499
+10:48:04.32  tag function: psyco.logger.dumpcharges                        %
+10:48:05.24   ______
+        #1   | 8.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 5.3 %|  do_profile                ...psyco\profiler.py:314
+        #4   | 5.3 %|  walk                      ...\python\lib\os.py:223
+        #5   | 3.7 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 2.9 %|  update_fast_list          ...gui_components.py:725
+        #7   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 2.7 %|  draw                      ...gui_components.py:172
+        #9   | 2.1 %|  draw                      ...gui_components.py:499
+        #10  | 1.9 %|  __init__                  ...gui_components.py:69
+10:48:06.15   ______
+        #1   | 8.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 5.3 %|  do_profile                ...psyco\profiler.py:314
+        #4   | 5.3 %|  walk                      ...\python\lib\os.py:223
+        #5   | 3.7 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 2.9 %|  update_fast_list          ...gui_components.py:725
+        #7   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 2.7 %|  draw                      ...gui_components.py:172
+        #9   | 2.1 %|  draw                      ...gui_components.py:499
+        #10  | 1.9 %|  __init__                  ...gui_components.py:69
+10:48:06.73   ______
+        #1   | 8.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  isdir                     ...hon\lib\ntpath.py:267
+        #3   | 5.3 %|  do_profile                ...psyco\profiler.py:314
+        #4   | 5.3 %|  walk                      ...\python\lib\os.py:223
+        #5   | 3.7 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #6   | 2.9 %|  update_fast_list          ...gui_components.py:725
+        #7   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 2.7 %|  draw                      ...gui_components.py:172
+        #9   | 2.1 %|  draw                      ...gui_components.py:499
+        #10  | 1.9 %|  __init__                  ...gui_components.py:69
+10:48:07.12   ______
+        #1   | 7.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  do_profile                ...psyco\profiler.py:314
+        #3   | 5.6 %|  draw                      ...gui_components.py:172
+        #4   | 5.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 4.9 %|  walk                      ...\python\lib\os.py:223
+        #6   | 3.5 %|  update_fast_list          ...gui_components.py:725
+        #7   | 3.5 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #8   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.5 %|  create_fast_list          ...gui_components.py:609
+        #10  | 2.0 %|  draw                      ...gui_components.py:499
+10:48:08.04   ______
+        #1   | 7.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.7 %|  do_profile                ...psyco\profiler.py:314
+        #3   | 5.6 %|  draw                      ...gui_components.py:172
+        #4   | 5.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 4.9 %|  walk                      ...\python\lib\os.py:223
+        #6   | 3.5 %|  update_fast_list          ...gui_components.py:725
+        #7   | 3.5 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #8   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.5 %|  create_fast_list          ...gui_components.py:609
+        #10  | 2.0 %|  draw                      ...gui_components.py:499
+10:48:08.27   ______
+        #1   | 7.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.6 %|  do_profile                ...psyco\profiler.py:314
+        #3   | 5.6 %|  draw                      ...gui_components.py:172
+        #4   | 5.2 %|  isdir                     ...hon\lib\ntpath.py:267
+        #5   | 4.9 %|  walk                      ...\python\lib\os.py:223
+        #6   | 3.4 %|  update_fast_list          ...gui_components.py:725
+        #7   | 3.4 %|  S_ISDIR                   ...ython\lib\stat.py:45
+        #8   | 2.7 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.5 %|  create_fast_list          ...gui_components.py:609
+        #10  | 1.9 %|  draw                      ...gui_components.py:499
+10:48:09.07   ______
+        #1   | 6.7 %|  draw                      ...gui_components.py:499
+        #2   | 6.2 %|  do_profile                ...psyco\profiler.py:314
+        #3   | 6.1 %|  active_start              ...psyco\profiler.py:273
+        #4   | 4.6 %|  draw                      ...gui_components.py:172
+        #5   | 4.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 4.2 %|  __init__                  ...gui_components.py:475
+        #7   | 4.0 %|  walk                      ...\python\lib\os.py:223
+        #8   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.9 %|  _open                     ...pegImagePlugin.py:242
+        #10  | 2.8 %|  update_fast_list          ...gui_components.py:725
+10:48:09.48   ______
+        #1   | 6.7 %|  draw                      ...gui_components.py:499
+        #2   | 6.2 %|  do_profile                ...psyco\profiler.py:314
+        #3   | 6.1 %|  active_start              ...psyco\profiler.py:273
+        #4   | 4.6 %|  draw                      ...gui_components.py:172
+        #5   | 4.3 %|  isdir                     ...hon\lib\ntpath.py:267
+        #6   | 4.2 %|  __init__                  ...gui_components.py:475
+        #7   | 4.0 %|  walk                      ...\python\lib\os.py:223
+        #8   | 3.5 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 2.9 %|  _open                     ...pegImagePlugin.py:242
+        #10  | 2.8 %|  update_fast_list          ...gui_components.py:725
+10:48:09.60  tag function: gui_components.button.draw                      %
+10:48:09.68   ______
+        #1   | 7.0 %|  do_profile                ...psyco\profiler.py:314
+        #2   | 6.4 %|  __init__                  ...gui_components.py:475
+        #3   | 6.2 %|  i16                       ...pegImagePlugin.py:37
+        #4   | 5.1 %|  active_start              ...psyco\profiler.py:273
+        #5   | 3.9 %|  _open                     ...pegImagePlugin.py:242
+        #6   | 3.8 %|  draw                      ...gui_components.py:172
+        #7   | 3.6 %|  isdir                     ...hon\lib\ntpath.py:267
+        #8   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 3.3 %|  walk                      ...\python\lib\os.py:223
+        #10  | 2.3 %|  update_fast_list          ...gui_components.py:725
+10:48:10.20   ______
+        #1   | 8.0 %|  do_profile                ...psyco\profiler.py:314
+        #2   | 6.3 %|  __init__                  ...gui_components.py:475
+        #3   | 6.1 %|  i16                       ...pegImagePlugin.py:37
+        #4   | 5.0 %|  active_start              ...psyco\profiler.py:273
+        #5   | 3.9 %|  _open                     ...pegImagePlugin.py:242
+        #6   | 3.8 %|  draw                      ...gui_components.py:172
+        #7   | 3.5 %|  isdir                     ...hon\lib\ntpath.py:267
+        #8   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 3.3 %|  walk                      ...\python\lib\os.py:223
+        #10  | 2.3 %|  update_fast_list          ...gui_components.py:725
+10:48:10.27  tag function: psyco.profiler.PassiveProfiler.do_profile       %
+10:48:10.46   ______
+        #1   | 6.2 %|  __init__                  ...gui_components.py:475
+        #2   | 6.0 %|  i16                       ...pegImagePlugin.py:37
+        #3   | 4.9 %|  active_start              ...psyco\profiler.py:273
+        #4   | 3.8 %|  _open                     ...pegImagePlugin.py:242
+        #5   | 3.7 %|  draw                      ...gui_components.py:172
+        #6   | 3.5 %|  isdir                     ...hon\lib\ntpath.py:267
+        #7   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 3.2 %|  walk                      ...\python\lib\os.py:223
+        #9   | 2.3 %|  update_fast_list          ...gui_components.py:725
+        #10  | 2.3 %|  S_ISDIR                   ...ython\lib\stat.py:45
+10:48:10.65   ______
+        #1   | 6.2 %|  __init__                  ...gui_components.py:475
+        #2   | 6.0 %|  i16                       ...pegImagePlugin.py:37
+        #3   | 4.9 %|  active_start              ...psyco\profiler.py:273
+        #4   | 3.8 %|  _open                     ...pegImagePlugin.py:242
+        #5   | 3.7 %|  draw                      ...gui_components.py:172
+        #6   | 3.5 %|  isdir                     ...hon\lib\ntpath.py:267
+        #7   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #8   | 3.2 %|  walk                      ...\python\lib\os.py:223
+        #9   | 2.3 %|  update_fast_list          ...gui_components.py:725
+        #10  | 2.3 %|  S_ISDIR                   ...ython\lib\stat.py:45
+10:48:10.67  tag function: solarsystem.solarsystem.calculate_from_a_center %
+10:48:10.70  tag function: solarsystem.solarsystem.draw_small_object       %
+10:48:11.15   ______
+        #1   | 5.3 %|  get_planet_position       ...er\solarsystem.py:613
+        #2   | 4.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 2.5 %|  __init__                  ...gui_components.py:475
+        #4   | 2.5 %|  i16                       ...pegImagePlugin.py:37
+        #5   | 2.1 %|  start_loop                ...hfrontier\main.py:36
+        #6   | 2.0 %|  active_start              ...psyco\profiler.py:273
+        #7   | 1.6 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #8   | 1.5 %|  _open                     ...pegImagePlugin.py:242
+        #9   | 1.5 %|  draw                      ...gui_components.py:172
+        #10  | 1.4 %|  isdir                     ...hon\lib\ntpath.py:267
+10:48:11.35   ______
+        #1   | 7.8 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 5.4 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 3.6 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
+        #5   | 2.3 %|  __init__                  ...gui_components.py:475
+        #6   | 2.2 %|  i16                       ...pegImagePlugin.py:37
+        #7   | 2.2 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #8   | 1.8 %|  active_start              ...psyco\profiler.py:273
+        #9   | 1.4 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #10  | 1.4 %|  _open                     ...pegImagePlugin.py:242
+10:48:11.48  tag function: solarsystem.solarsystem.draw_solar_system       %
+10:48:11.68   ______
+        #1   | 5.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #2   | 4.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #3   | 3.7 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 2.9 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.1 %|  __init__                  ...gui_components.py:475
+        #6   | 2.1 %|  i16                       ...pegImagePlugin.py:37
+        #7   | 1.7 %|  active_start              ...psyco\profiler.py:273
+        #8   | 1.3 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #9   | 1.3 %|  _open                     ...pegImagePlugin.py:242
+        #10  | 1.3 %|  draw                      ...gui_components.py:172
+10:48:12.01   ______
+        #1   | 5.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #2   | 4.8 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #3   | 3.7 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 2.8 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.1 %|  __init__                  ...gui_components.py:475
+        #6   | 2.0 %|  i16                       ...pegImagePlugin.py:37
+        #7   | 1.7 %|  active_start              ...psyco\profiler.py:273
+        #8   | 1.3 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #9   | 1.3 %|  __init__                  ...ontier\company.py:1921
+        #10  | 1.3 %|  _open                     ...pegImagePlugin.py:242
+10:48:12.26   ______
+        #1   | 4.9 %|  get_planet_position       ...er\solarsystem.py:613
+        #2   | 4.7 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #3   | 4.6 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 2.7 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.3 %|  __init__                  ...ontier\company.py:1921
+        #6   | 2.0 %|  __init__                  ...gui_components.py:475
+        #7   | 2.0 %|  i16                       ...pegImagePlugin.py:37
+        #8   | 1.6 %|  active_start              ...psyco\profiler.py:273
+        #9   | 1.3 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #10  | 1.2 %|  _open                     ...pegImagePlugin.py:242
+10:48:12.43   ______
+        #1   | 4.9 %|  get_planet_position       ...er\solarsystem.py:613
+        #2   | 4.7 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #3   | 4.6 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 2.7 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.3 %|  __init__                  ...ontier\company.py:1921
+        #6   | 2.0 %|  __init__                  ...gui_components.py:475
+        #7   | 2.0 %|  i16                       ...pegImagePlugin.py:37
+        #8   | 1.6 %|  active_start              ...psyco\profiler.py:273
+        #9   | 1.3 %|  calculate_from_a_center   ...er\solarsystem.py:668
+        #10  | 1.2 %|  _open                     ...pegImagePlugin.py:242
+10:48:12.73   ______
+        #1   | 5.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.8 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.6 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.7 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.3 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 2.2 %|  __init__                  ...ontier\company.py:1921
+        #7   | 2.0 %|  __init__                  ...gui_components.py:475
         #8   | 1.9 %|  i16                       ...pegImagePlugin.py:37
-        #9   | 1.8 %|  decode                    ...codings\cp1252.py:14
-        #10  | 1.7 %|  create_fast_list          ...gui_components.py:609
-17:23:08.90   ______
-        #1   | 5.4 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 5.0 %|  __init__                  ...gui_components.py:586
-        #3   | 4.1 %|  draw                      ...gui_components.py:172
-        #4   | 2.9 %|  update_fast_list          ...gui_components.py:726
-        #5   | 2.8 %|  draw                      ...gui_components.py:499
-        #6   | 2.2 %|  __init__                  ...gui_components.py:69
-        #7   | 2.0 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
+        #9   | 1.6 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.2 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:13.26   ______
+        #1   | 5.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.8 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.6 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.7 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.3 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 2.2 %|  __init__                  ...ontier\company.py:1921
+        #7   | 2.0 %|  __init__                  ...gui_components.py:475
         #8   | 1.9 %|  i16                       ...pegImagePlugin.py:37
-        #9   | 1.8 %|  decode                    ...codings\cp1252.py:14
-        #10  | 1.7 %|  create_fast_list          ...gui_components.py:609
-17:23:09.04  tag function: gui_components.button.draw                      %
-17:23:10.89   ______
-        #1   | 4.7 %|  create                    ...ghfrontier\gui.py:2972
-        #2   | 4.3 %|  __init__                  ...gui_components.py:586
-        #3   | 3.7 %|  __init__                  ...gui_components.py:475
-        #4   | 3.6 %|  draw                      ...gui_components.py:172
-        #5   | 2.5 %|  update_fast_list          ...gui_components.py:726
-        #6   | 2.3 %|  start_loop                ...hfrontier\main.py:36
-        #7   | 1.9 %|  __init__                  ...gui_components.py:69
-        #8   | 1.7 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-        #9   | 1.7 %|  i16                       ...pegImagePlugin.py:37
-        #10  | 1.6 %|  decode                    ...codings\cp1252.py:14
-17:23:10.95  tag function: gui_components.vscrollbar.draw                  %
-17:23:12.71   ______
-        #1   | 6.0 %|  __init__                  ...gui_components.py:586
-        #2   | 4.2 %|  create_fast_list          ...gui_components.py:609
-        #3   | 4.1 %|  create                    ...ghfrontier\gui.py:2972
-        #4   | 3.2 %|  __init__                  ...gui_components.py:475
-        #5   | 3.1 %|  __init__                  ...gui_components.py:69
-        #6   | 2.8 %|  start_loop                ...hfrontier\main.py:36
-        #7   | 2.2 %|  update_fast_list          ...gui_components.py:726
-        #8   | 1.5 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-        #9   | 1.4 %|  i16                       ...pegImagePlugin.py:37
-        #10  | 1.4 %|  decode                    ...codings\cp1252.py:14
-17:23:12.92   ______
-        #1   | 5.6 %|  __init__                  ...gui_components.py:586
-        #2   | 4.3 %|  walk                      ...ython25\lib\os.py:223
-        #3   | 4.0 %|  create_fast_list          ...gui_components.py:609
-        #4   | 3.8 %|  create                    ...ghfrontier\gui.py:2972
-        #5   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #6   | 3.0 %|  __init__                  ...gui_components.py:475
-        #7   | 2.9 %|  __init__                  ...gui_components.py:69
-        #8   | 2.0 %|  update_fast_list          ...gui_components.py:726
-        #9   | 1.8 %|  join                      ...n25\lib\ntpath.py:59
-        #10  | 1.4 %|  commodity_size_selection  ...ghfrontier\gui.py:3239
-17:23:12.98  tag function: os.walk                                         %
-17:23:13.00  tag function: JpegImagePlugin.i16                             %
-17:23:13.00  tag function: JpegImagePlugin.JpegImageFile._open             %
-17:23:15.26   ______
-        #1   | 3.8 %|  __init__                  ...gui_components.py:586
-        #2   | 3.6 %|  start_loop                ...hfrontier\main.py:36
-        #3   | 3.6 %|  __init__                  ...gui_components.py:475
-        #4   | 2.7 %|  create_fast_list          ...gui_components.py:609
-        #5   | 2.6 %|  create                    ...ghfrontier\gui.py:2972
-        #6   | 2.2 %|  walk                      ...ython25\lib\os.py:223
-        #7   | 2.0 %|  __init__                  ...gui_components.py:69
-        #8   | 1.9 %|  Skip                      ...pegImagePlugin.py:46
-        #9   | 1.9 %|  _safe_read                ...\PIL\ImageFile.py:508
-        #10  | 1.4 %|  update_fast_list          ...gui_components.py:726
-17:23:15.63   ______
-        #1   | 4.6 %|  start_loop                ...hfrontier\main.py:36
-        #2   | 4.5 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #3   | 3.2 %|  __init__                  ...gui_components.py:586
-        #4   | 3.1 %|  __init__                  ...gui_components.py:475
-        #5   | 3.0 %|  update_radiobuttons       ...gui_components.py:456
-        #6   | 2.3 %|  create_fast_list          ...gui_components.py:609
-        #7   | 2.2 %|  create                    ...ghfrontier\gui.py:2972
-        #8   | 1.8 %|  walk                      ...ython25\lib\os.py:223
-        #9   | 1.7 %|  __init__                  ...gui_components.py:69
-        #10  | 1.6 %|  Skip                      ...pegImagePlugin.py:46
-17:23:17.02   ______
-        #1   | 4.6 %|  start_loop                ...hfrontier\main.py:36
-        #2   | 4.5 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #3   | 3.2 %|  __init__                  ...gui_components.py:586
-        #4   | 3.1 %|  __init__                  ...gui_components.py:475
-        #5   | 3.0 %|  update_radiobuttons       ...gui_components.py:456
-        #6   | 2.3 %|  create_fast_list          ...gui_components.py:609
-        #7   | 2.2 %|  create                    ...ghfrontier\gui.py:2972
-        #8   | 1.8 %|  walk                      ...ython25\lib\os.py:223
-        #9   | 1.7 %|  __init__                  ...gui_components.py:69
-        #10  | 1.6 %|  Skip                      ...pegImagePlugin.py:46
-17:23:18.21  unsupported free or cell vars in make_manual_bid            % %
-17:23:18.21   ______
-        #1   | 4.6 %|  start_loop                ...hfrontier\main.py:36
-        #2   | 4.5 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #3   | 3.2 %|  __init__                  ...gui_components.py:586
-        #4   | 3.1 %|  __init__                  ...gui_components.py:475
-        #5   | 3.0 %|  update_radiobuttons       ...gui_components.py:456
-        #6   | 2.3 %|  create_fast_list          ...gui_components.py:609
-        #7   | 2.2 %|  create                    ...ghfrontier\gui.py:2972
-        #8   | 1.8 %|  walk                      ...ython25\lib\os.py:223
-        #9   | 1.7 %|  __init__                  ...gui_components.py:69
-        #10  | 1.6 %|  Skip                      ...pegImagePlugin.py:46
-17:23:18.22  tag function: gui_components.hscrollbar.draw                  %
-17:23:23.17   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:30.68   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:38.18   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:45.69   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:47.37   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:49.70   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:50.41   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:50.94   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:52.49   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:53.22   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:55.11   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:55.46   ______
-        #1   | 5.0 %|  update_radiobuttons       ...gui_components.py:456
-        #2   | 4.1 %|  make_manual_bid           ...ghfrontier\gui.py:2435
-        #3   | 3.4 %|  __init__                  ...gui_components.py:244
-        #4   | 3.4 %|  start_loop                ...hfrontier\main.py:36
-        #5   | 3.4 %|  make_linear_y_axis        ...ier\primitives.py:68
-        #6   | 3.2 %|  draw                      ...gui_components.py:448
-        #7   | 3.2 %|  __init__                  ...gui_components.py:420
-        #8   | 2.8 %|  calculate_extent_of_slider...gui_components.py:315
-        #9   | 2.4 %|  __init__                  ...gui_components.py:586
-        #10  | 2.3 %|  __init__                  ...gui_components.py:475
-17:23:55.46  memory usage: 2421+ kb                                        %
-17:23:55.46  program exit, 09/13/09                     %%%%%%%%%%%%%%%%%%%%
+        #9   | 1.6 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.2 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:13.73   ______
+        #1   | 5.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.8 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.6 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.7 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.3 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 2.2 %|  __init__                  ...ontier\company.py:1921
+        #7   | 2.0 %|  __init__                  ...gui_components.py:475
+        #8   | 1.9 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.6 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.2 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:14.31   ______
+        #1   | 5.8 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.7 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.5 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 3.7 %|  __init__                  ...ontier\company.py:1921
+        #5   | 2.6 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #6   | 2.2 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 1.9 %|  __init__                  ...gui_components.py:475
+        #8   | 1.9 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.5 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.4 %|  start_new_game            ...frontier\intro.py:471
+10:48:14.70   ______
+        #1   | 6.4 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.3 %|  __init__                  ...ontier\company.py:1921
+        #3   | 4.6 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 4.3 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #6   | 2.2 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 1.9 %|  __init__                  ...gui_components.py:475
+        #8   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #10  | 1.5 %|  active_start              ...psyco\profiler.py:273
+10:48:15.07   ______
+        #1   | 6.4 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.3 %|  __init__                  ...ontier\company.py:1921
+        #3   | 4.6 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 4.3 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #6   | 2.2 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 1.9 %|  __init__                  ...gui_components.py:475
+        #8   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #10  | 1.5 %|  active_start              ...psyco\profiler.py:273
+10:48:15.48   ______
+        #1   | 6.4 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.3 %|  __init__                  ...ontier\company.py:1921
+        #3   | 4.6 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 4.3 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #6   | 2.2 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 1.9 %|  __init__                  ...gui_components.py:475
+        #8   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.8 %|  start_new_game            ...frontier\intro.py:471
+        #10  | 1.5 %|  active_start              ...psyco\profiler.py:273
+10:48:16.39   ______
+        #1   | 7.4 %|  __init__                  ...ontier\company.py:1921
+        #2   | 6.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.5 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 4.2 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #6   | 2.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 1.8 %|  __init__                  ...gui_components.py:475
+        #8   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #10  | 1.5 %|  active_start              ...psyco\profiler.py:273
+10:48:16.40  tag function: company.research.__init__                       %
+10:48:17.23   ______
+        #1   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.4 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.1 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.4 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 1.8 %|  __init__                  ...gui_components.py:475
+        #7   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #8   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.4 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:17.48   ______
+        #1   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.4 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.1 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.4 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 1.8 %|  __init__                  ...gui_components.py:475
+        #7   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #8   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.4 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:17.65   ______
+        #1   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 4.4 %|  get_planet_position       ...er\solarsystem.py:613
+        #3   | 4.1 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #4   | 2.4 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #5   | 2.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #6   | 1.8 %|  __init__                  ...gui_components.py:475
+        #7   | 1.8 %|  i16                       ...pegImagePlugin.py:37
+        #8   | 1.7 %|  start_new_game            ...frontier\intro.py:471
+        #9   | 1.4 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:17.90   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:18.07   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:18.24   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:18.51   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:18.70   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:18.87   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:19.12   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:19.37   ______
+        #1   | 7.5 %|  start_loop                ...hfrontier\main.py:36
+        #2   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #3   | 4.1 %|  get_planet_position       ...er\solarsystem.py:613
+        #4   | 3.9 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #5   | 2.5 %|  start_new_game            ...frontier\intro.py:471
+        #6   | 2.3 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #7   | 1.7 %|  __init__                  ...gui_components.py:475
+        #8   | 1.6 %|  i16                       ...pegImagePlugin.py:37
+        #9   | 1.3 %|  active_start              ...psyco\profiler.py:273
+        #10  | 1.1 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:19.49  tag function: JpegImagePlugin.JpegImageFile._open             %
+10:48:19.49  tag function: JpegImagePlugin.i16                             %
+10:48:19.59   ______
+        #1   | 7.7 %|  _open                     ...pegImagePlugin.py:242
+        #2   | 4.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.0 %|  draw_solar_system         ...er\solarsystem.py:807
+        #4   | 2.2 %|  get_planet_position       ...er\solarsystem.py:613
+        #5   | 2.1 %|  get_satellite_to_center_position...er\solarsystem.py:592
+        #6   | 1.3 %|  start_new_game            ...frontier\intro.py:471
+        #7   | 1.2 %|  get_areas_of_interest     ...er\solarsystem.py:627
+        #8   | 0.9 %|  __init__                  ...gui_components.py:475
+        #9   | 0.7 %|  active_start              ...psyco\profiler.py:273
+        #10  | 0.6 %|  calculate_from_a_center   ...er\solarsystem.py:668
+10:48:19.71  tag function: ntpath.split                                    %
+10:48:19.71  tag function: threading.Thread.__bootstrap_inner              %
+10:48:19.71  tag function: threading.Thread.__bootstrap                    %
+10:48:20.20   ______
+        #1   | 3.5 %|  _set_daemon               ...\lib\threading.py:415
+        #2   | 2.6 %|  _note                     ...\lib\threading.py:44
+10:48:20.51   ______
+        #1   | 6.0 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 4.6 %|  _get_handles              ...lib\subprocess.py:675
+        #3   | 4.5 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #4   | 4.4 %|  _make_inheritable         ...lib\subprocess.py:741
+        #5   | 4.3 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.2 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.8 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 2.1 %|  _note                     ...\lib\threading.py:44
+10:48:20.71   ______
+        #1   | 6.0 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 4.6 %|  _get_handles              ...lib\subprocess.py:675
+        #3   | 4.5 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #4   | 4.4 %|  _make_inheritable         ...lib\subprocess.py:741
+        #5   | 4.3 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.2 %|  start_loop                ...hfrontier\main.py:36
+        #7   | 2.8 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 2.1 %|  _note                     ...\lib\threading.py:44
+10:48:21.18   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:22.03   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:22.26   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:22.43   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:22.67   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:22.85   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:23.07   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:23.75   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:24.53   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:24.82   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:24.98   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:25.14   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:25.45   ______
+        #1   | 7.7 %|  __init__                  ...lib\subprocess.py:535
+        #2   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 4.4 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 3.4 %|  __init__                  ...\lib\threading.py:396
+        #5   | 3.2 %|  wait                      ...\lib\threading.py:207
+        #6   | 3.1 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 3.1 %|  psyco_thread_stub         ...psyco\profiler.py:358
+        #8   | 3.0 %|  poll                      ...lib\subprocess.py:844
+        #9   | 3.0 %|  _make_inheritable         ...lib\subprocess.py:741
+        #10  | 2.9 %|  currentThread             ...\lib\threading.py:733
+10:48:25.50  tag function: Image.isStringType                              %
+10:48:25.50  tag function: Image.open                                      %
+10:48:25.56  tag function: Image.Image.tostring                            %
+10:48:25.65  tag function: planet.planet.draw_image                        %
+10:48:25.68   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #4   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #5   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:25.87   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #4   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #5   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:26.12   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #4   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #5   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:26.29   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #4   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #5   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:26.71   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #4   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #5   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:26.92   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.3 %|  __init__                  ...ages\PIL\Image.py:439
+        #4   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #5   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #6   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #7   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:27.12   ______
+        #1   | 5.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.3 %|  __init__                  ...ages\PIL\Image.py:439
+        #4   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #5   | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+        #6   | 0.1 %|  load                      ...ages\PIL\Image.py:587
+        #7   | 0.1 %|  preinit                   ...ages\PIL\Image.py:280
+10:48:27.34   ______
+        #1   | 5.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 0.7 %|  _get_handles              ...lib\subprocess.py:675
+        #4   | 0.5 %|  _execute_child            ...lib\subprocess.py:764
+        #5   | 0.5 %|  psyco_start_new_thread    ...psyco\profiler.py:365
+        #6   | 0.5 %|  _make_inheritable         ...lib\subprocess.py:741
+        #7   | 0.3 %|  __init__                  ...ages\PIL\Image.py:439
+        #8   | 0.3 %|  __init__                  ...lib\subprocess.py:535
+        #9   | 0.1 %|  join                      ...hon\lib\string.py:306
+        #10  | 0.1 %|  load                      ...\PIL\ImageFile.py:115
+10:48:27.60   ______
+        #1   | 5.4 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 1.0 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 0.7 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 0.7 %|  load                      ...ages\PIL\Image.py:587
+        #6   | 0.5 %|  __init__                  ...\lib\threading.py:396
+10:48:27.75   ______
+        #1   | 5.2 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.1 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 1.3 %|  __init__                  ...\lib\threading.py:396
+10:48:27.96   ______
+        #1   | 5.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.1 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 1.3 %|  wait                      ...\lib\threading.py:207
+        #5   | 1.3 %|  __init__                  ...\lib\threading.py:396
+10:48:28.12   ______
+        #1   | 5.1 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 2.9 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.1 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 1.3 %|  wait                      ...\lib\threading.py:207
+        #5   | 1.3 %|  __init__                  ...\lib\threading.py:396
+10:48:28.39   ______
+        #1   | 4.7 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.0 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.5 %|  __init__                  ...lib\subprocess.py:535
+        #6   | 1.4 %|  psyco_start_new_thread    ...psyco\profiler.py:365
+        #7   | 1.4 %|  _make_inheritable         ...lib\subprocess.py:741
+        #8   | 1.2 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.2 %|  __init__                  ...\lib\threading.py:396
+10:48:28.54   ______
+        #1   | 4.7 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.0 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.5 %|  __init__                  ...lib\subprocess.py:535
+        #6   | 1.4 %|  psyco_start_new_thread    ...psyco\profiler.py:365
+        #7   | 1.4 %|  _make_inheritable         ...lib\subprocess.py:741
+        #8   | 1.2 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.2 %|  __init__                  ...\lib\threading.py:396
+10:48:28.75   ______
+        #1   | 4.7 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.0 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.5 %|  __init__                  ...lib\subprocess.py:535
+        #6   | 1.4 %|  psyco_start_new_thread    ...psyco\profiler.py:365
+        #7   | 1.4 %|  _make_inheritable         ...lib\subprocess.py:741
+        #8   | 1.2 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.2 %|  __init__                  ...\lib\threading.py:396
+10:48:28.95   ______
+        #1   | 4.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.9 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:29.15   ______
+        #1   | 4.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.9 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:29.39   ______
+        #1   | 4.6 %|  draw_solar_system         ...er\solarsystem.py:807
+        #2   | 3.3 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 2.9 %|  _execute_child            ...lib\subprocess.py:764
+        #4   | 2.1 %|  _get_handles              ...lib\subprocess.py:675
+        #5   | 1.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:29.87   ______
+        #1   | 6.7 %|  wait                      ...\lib\threading.py:207
+        #2   | 6.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 5.1 %|  __init__                  ...\lib\threading.py:396
+        #5   | 4.9 %|  _execute_child            ...lib\subprocess.py:764
+        #6   | 3.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 2.9 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 1.6 %|  _get_handles              ...lib\subprocess.py:675
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:30.12   ______
+        #1   | 6.7 %|  wait                      ...\lib\threading.py:207
+        #2   | 6.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 5.1 %|  __init__                  ...\lib\threading.py:396
+        #5   | 4.9 %|  _execute_child            ...lib\subprocess.py:764
+        #6   | 3.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 2.9 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 1.6 %|  _get_handles              ...lib\subprocess.py:675
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:30.32   ______
+        #1   | 6.7 %|  wait                      ...\lib\threading.py:207
+        #2   | 6.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 5.1 %|  __init__                  ...\lib\threading.py:396
+        #5   | 4.9 %|  _execute_child            ...lib\subprocess.py:764
+        #6   | 3.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 2.9 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 1.6 %|  _get_handles              ...lib\subprocess.py:675
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:30.48   ______
+        #1   | 6.7 %|  wait                      ...\lib\threading.py:207
+        #2   | 6.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 5.1 %|  __init__                  ...\lib\threading.py:396
+        #5   | 4.9 %|  _execute_child            ...lib\subprocess.py:764
+        #6   | 3.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 2.9 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 1.6 %|  _get_handles              ...lib\subprocess.py:675
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:30.76   ______
+        #1   | 6.7 %|  wait                      ...\lib\threading.py:207
+        #2   | 6.0 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 5.3 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 5.1 %|  __init__                  ...\lib\threading.py:396
+        #5   | 4.9 %|  _execute_child            ...lib\subprocess.py:764
+        #6   | 3.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #7   | 2.9 %|  _set_daemon               ...\lib\threading.py:415
+        #8   | 1.6 %|  _get_handles              ...lib\subprocess.py:675
+        #9   | 1.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:30.76  tag function: subprocess.Popen._get_handles                   %
+10:48:30.76  tag function: subprocess.Popen._make_inheritable              %
+10:48:31.07   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:31.31   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:31.51   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:31.71   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:31.92   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:32.17   ______
+        #1   | 5.9 %|  __init__                  ...\lib\threading.py:396
+        #2   | 5.9 %|  _execute_child            ...lib\subprocess.py:764
+        #3   | 5.8 %|  __init__                  ...lib\subprocess.py:535
+        #4   | 4.0 %|  _acquire_restore          ...\lib\threading.py:195
+        #5   | 3.7 %|  currentThread             ...\lib\threading.py:733
+        #6   | 3.5 %|  _get_handles              ...lib\subprocess.py:675
+        #7   | 2.9 %|  wait                      ...\lib\threading.py:207
+        #8   | 2.6 %|  start_loop                ...hfrontier\main.py:36
+        #9   | 1.5 %|  draw_solar_system         ...er\solarsystem.py:807
+        #10  | 1.3 %|  _set_daemon               ...\lib\threading.py:415
+10:48:32.17  tag function: subprocess.Popen._execute_child                 %
+10:48:32.23  tag function: threading.Thread.__init__                       %
+10:48:32.25  unsupported ** argument in call to Condition                % %
+10:48:33.06   ______
+        #1   | 7.4 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.9 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.9 %|  __init__                  ...\lib\threading.py:39
+        #4   | 3.7 %|  __init__                  ...lib\subprocess.py:535
+        #5   | 2.6 %|  _acquire_restore          ...\lib\threading.py:195
+        #6   | 2.4 %|  currentThread             ...\lib\threading.py:733
+        #7   | 2.3 %|  _get_handles              ...lib\subprocess.py:675
+        #8   | 1.9 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #10  | 1.0 %|  draw_solar_system         ...er\solarsystem.py:807
+10:48:33.45   ______
+        #1   | 7.4 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.9 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.9 %|  __init__                  ...\lib\threading.py:39
+        #4   | 3.7 %|  __init__                  ...lib\subprocess.py:535
+        #5   | 2.6 %|  _acquire_restore          ...\lib\threading.py:195
+        #6   | 2.4 %|  currentThread             ...\lib\threading.py:733
+        #7   | 2.3 %|  _get_handles              ...lib\subprocess.py:675
+        #8   | 1.9 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #10  | 1.0 %|  draw_solar_system         ...er\solarsystem.py:807
+10:48:33.65   ______
+        #1   | 7.4 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.9 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.9 %|  __init__                  ...\lib\threading.py:39
+        #4   | 3.7 %|  __init__                  ...lib\subprocess.py:535
+        #5   | 2.6 %|  _acquire_restore          ...\lib\threading.py:195
+        #6   | 2.4 %|  currentThread             ...\lib\threading.py:733
+        #7   | 2.3 %|  _get_handles              ...lib\subprocess.py:675
+        #8   | 1.9 %|  wait                      ...\lib\threading.py:207
+        #9   | 1.7 %|  start_loop                ...hfrontier\main.py:36
+        #10  | 1.0 %|  draw_solar_system         ...er\solarsystem.py:807
+10:48:33.65  tag function: psyco.profiler.PassiveProfiler.do_profile       %
+10:48:33.89   ______
+        #1   | 6.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.2 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.2 %|  __init__                  ...\lib\threading.py:39
+10:48:34.09   ______
+        #1   | 6.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.2 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.2 %|  __init__                  ...\lib\threading.py:39
+10:48:34.29   ______
+        #1   | 6.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.2 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.2 %|  __init__                  ...\lib\threading.py:39
+10:48:34.53   ______
+        #1   | 6.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 6.2 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 6.2 %|  __init__                  ...\lib\threading.py:39
+10:48:34.54  tag function: subprocess.Popen.__init__                       %
+10:48:34.54  unsupported ** argument in call to Condition                % %
+10:48:34.56  tag function: threading._Verbose.__init__                     %
+10:48:34.56  tag function: threading.currentThread                         %
+10:48:34.59  tag function: threading._Condition.wait                       %
+10:48:34.60  tag function: threading._Verbose._note                        %
+10:48:35.01   ______
+        #1   | 2.9 %|  Condition                 ...\lib\threading.py:153
+        #2   | 2.7 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 1.0 %|  _acquire_restore          ...\lib\threading.py:195
+10:48:35.31   ______
+        #1   | 2.9 %|  Condition                 ...\lib\threading.py:153
+        #2   | 2.7 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 1.0 %|  _acquire_restore          ...\lib\threading.py:195
+10:48:36.21  tag function: company.firm.__init__                           %
+10:48:36.21   ______
+        #1   | 2.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 2.4 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 0.9 %|  _acquire_restore          ...\lib\threading.py:195
+10:48:37.14   ______
+        #1   | 2.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 2.4 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 0.9 %|  _acquire_restore          ...\lib\threading.py:195
+10:48:37.90   ______
+        #1   | 2.6 %|  Condition                 ...\lib\threading.py:153
+        #2   | 2.4 %|  _is_owned                 ...\lib\threading.py:198
+        #3   | 0.9 %|  _acquire_restore          ...\lib\threading.py:195
+10:48:38.09  tag function: company.merchant.__init__                       %
+10:48:38.09  tag function: company.merchant.__init__                       %
+10:48:38.09  tag function: main.start_loop                                 %
+10:48:38.09  tag function: company.firm.__init__                           %
+10:48:38.14  tag function: company.firm.__init__                           %
+10:48:38.23   ______
+        #1   | 7.3 %|  write                     ...s\psyco\logger.py:22
+        #2   | 7.3 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.6 %|  tag                       ...psyco\profiler.py:109
+        #4   | 1.8 %|  charge_callback           ...psyco\profiler.py:336
+        #5   | 1.1 %|  Condition                 ...\lib\threading.py:153
+        #6   | 1.0 %|  _is_owned                 ...\lib\threading.py:198
+        #7   | 0.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:39.17   ______
+        #1   | 7.3 %|  write                     ...s\psyco\logger.py:22
+        #2   | 7.3 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.6 %|  tag                       ...psyco\profiler.py:109
+        #4   | 1.8 %|  charge_callback           ...psyco\profiler.py:336
+        #5   | 1.1 %|  Condition                 ...\lib\threading.py:153
+        #6   | 1.0 %|  _is_owned                 ...\lib\threading.py:198
+        #7   | 0.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:39.48   ______
+        #1   | 7.3 %|  write                     ...s\psyco\logger.py:22
+        #2   | 7.3 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.6 %|  tag                       ...psyco\profiler.py:109
+        #4   | 1.8 %|  charge_callback           ...psyco\profiler.py:336
+        #5   | 1.1 %|  Condition                 ...\lib\threading.py:153
+        #6   | 1.0 %|  _is_owned                 ...\lib\threading.py:198
+        #7   | 0.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:40.10   ______
+        #1   | 7.3 %|  write                     ...s\psyco\logger.py:22
+        #2   | 7.3 %|  __init__                  ...ontier\company.py:734
+        #3   | 3.6 %|  tag                       ...psyco\profiler.py:109
+        #4   | 1.8 %|  charge_callback           ...psyco\profiler.py:336
+        #5   | 1.1 %|  Condition                 ...\lib\threading.py:153
+        #6   | 1.0 %|  _is_owned                 ...\lib\threading.py:198
+        #7   | 0.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:41.06  tag function: company.firm.__init__                           %
+10:48:41.10   ______
+        #1   | 8.2 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 6.9 %|  __init__                  ...ontier\company.py:734
+        #3   | 5.2 %|  write                     ...s\psyco\logger.py:22
+        #4   | 4.1 %|  do_profile                ...psyco\profiler.py:314
+10:48:42.03  tag function: company.firm.__init__                           %
+10:48:42.03   ______
+        #1   | 7.7 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 4.9 %|  write                     ...s\psyco\logger.py:22
+        #3   | 3.8 %|  do_profile                ...psyco\profiler.py:314
+10:48:43.01   ______
+        #1   | 6.8 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 6.6 %|  __init__                  ...ontier\company.py:734
+        #3   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 4.3 %|  write                     ...s\psyco\logger.py:22
+        #5   | 3.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:43.95   ______
+        #1   | 6.8 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 6.6 %|  __init__                  ...ontier\company.py:734
+        #3   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 4.3 %|  write                     ...s\psyco\logger.py:22
+        #5   | 3.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:44.87   ______
+        #1   | 6.8 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 6.6 %|  __init__                  ...ontier\company.py:734
+        #3   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 4.3 %|  write                     ...s\psyco\logger.py:22
+        #5   | 3.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:45.89   ______
+        #1   | 6.8 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 6.6 %|  __init__                  ...ontier\company.py:734
+        #3   | 6.1 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 4.3 %|  write                     ...s\psyco\logger.py:22
+        #5   | 3.4 %|  do_profile                ...psyco\profiler.py:314
+10:48:46.03  tag function: gui_components.button.__init__                  %
+10:48:47.00   ______
+        #1   | 5.7 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 5.5 %|  __init__                  ...ontier\company.py:734
+        #3   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 3.6 %|  write                     ...s\psyco\logger.py:22
+        #5   | 2.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:47.64   ______
+        #1   | 5.7 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 5.5 %|  __init__                  ...ontier\company.py:734
+        #3   | 5.2 %|  start_loop                ...hfrontier\main.py:36
+        #4   | 3.6 %|  write                     ...s\psyco\logger.py:22
+        #5   | 2.9 %|  do_profile                ...psyco\profiler.py:314
+10:48:48.04  tag function: company.firm.__init__                           %
+10:48:48.06   ______
+        #1   | 5.2 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 4.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.3 %|  write                     ...s\psyco\logger.py:22
+        #4   | 2.6 %|  do_profile                ...psyco\profiler.py:314
+10:48:48.60   ______
+        #1   | 5.2 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 4.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.3 %|  write                     ...s\psyco\logger.py:22
+        #4   | 2.6 %|  do_profile                ...psyco\profiler.py:314
+10:48:49.04   ______
+        #1   | 5.2 %|  charge_callback           ...psyco\profiler.py:336
+        #2   | 4.7 %|  start_loop                ...hfrontier\main.py:36
+        #3   | 3.3 %|  write                     ...s\psyco\logger.py:22
+        #4   | 2.6 %|  do_profile                ...psyco\profiler.py:314
+10:48:49.14  memory usage: 11933+ kb                                       %
+10:48:49.14  program exit, 10/01/09                     %%%%%%%%%%%%%%%%%%%%
