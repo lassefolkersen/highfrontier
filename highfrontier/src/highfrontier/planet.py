@@ -111,7 +111,7 @@ class planet:
         
         
 
-        if os.access(data_file_name,1):
+        if os.access(data_file_name,os.R_OK):
             read_base_database = primitives.import_datasheet(data_file_name)
             base_database = {}
             
@@ -194,7 +194,7 @@ class planet:
         step_size = 1
         steps = 9
         
-        if os.access(os.path.join("pickledmiscellanous","distances"),1):
+        if os.access(os.path.join("pickledmiscellanous","distances"),os.R_OK):
             #print "Found distance_matrix. Loading..."
             file = open(os.path.join("pickledmiscellanous","distances"),"r")
             distance_data = cPickle.load(file)
@@ -291,7 +291,7 @@ class planet:
         for projection_scaling in (45,90,180,360):
             for northern_inclination in (-90,-60,-30,0,30,60,90):
                  file_name = "projection_" + str(northern_inclination) + "_NS_" + str(projection_scaling) + "_zoom"
-                 if os.access(os.path.join("pickledprojections",file_name),1):
+                 if os.access(os.path.join("pickledprojections",file_name),os.R_OK):
 #                     print file_name + " found."
                      pass
                  else:
@@ -319,7 +319,7 @@ class planet:
                 for northern_inclination in (-90,-60,-30,0,30,60,90):
                     pickle_file_name = str(self.planet_name) + "_" + str(projection_scaling) + "_zoom_" + str(northern_inclination) + "_NS_" + str(eastern_inclination) + "_EW.jpg"
                     pickle_file_name_and_path = os.path.join("pickledsurfaces",pickle_file_name)
-                    if os.access(pickle_file_name_and_path,1):
+                    if os.access(pickle_file_name_and_path,os.R_OK):
                         surface = pygame.image.load(pickle_file_name_and_path)
                     else:                                        
                         print str((eastern_inclination, northern_inclination, projection_scaling)) +" was not found - calculating"
@@ -343,7 +343,7 @@ class planet:
         #print "loading images from planet " + str(self.planet_name)
         try: self.image
         except AttributeError:
-            if os.access(self.surface_file_name,1):
+            if os.access(self.surface_file_name,os.R_OK):
                 self.image = Image.open(self.surface_file_name)
             else:
                 self.image = Image.open(os.path.join("images","planet","placeholder.jpg"))
@@ -408,7 +408,7 @@ class planet:
         except AttributeError:
             #test if a pre-calculated topo-file exists
             topo_file_name_and_path = os.path.join("images","planet","topo",str(self.planet_name + ".png"))
-            if os.access(topo_file_name_and_path,1):
+            if os.access(topo_file_name_and_path,os.R_OK):
                 self.topo_image = Image.open(topo_file_name_and_path)
                 #print "topo file does not exist for " + str(self.planet_name) + " - all ok"
             else:
@@ -855,7 +855,7 @@ class planet:
             startup_string = "proj +proj=ortho +ellps=sphere +lon_0=" + str(eastern_inclination) + " +lat_0=" + str(northern_inclination)
             try:    proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE, shell = True)
             except:
-                raise("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
+                raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
             else:
                 pass
             stdout_text = proj.communicate(communication_string)
@@ -972,8 +972,16 @@ class planet:
                     
             else:
                 print "Major error in plane_to_sphere_total - the coordinates given does not make sense"
+
+
+            
+            try:    proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE, shell = True)
+            except:
+                raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
+            else:
+                pass
         
-            proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+
             stdout_text = proj.communicate(communication_string)
             stdout_text = stdout_text[0].split("\n")
             #print "stdout_text: " + str(stdout_text)
@@ -1032,7 +1040,7 @@ class planet:
         try: self.resource_maps[resource_type]
         except:
             resource_file_name_and_path = os.path.join("images","planet","nonrenewable materials map",resource_type,str(self.planet_name + ".png"))
-            if os.access(resource_file_name_and_path,1):
+            if os.access(resource_file_name_and_path,os.R_OK):
                 resource_map_image = Image.open(resource_file_name_and_path)
                 #print "resource file " + str(resource_type) + " does exist for " + str(self.planet_name) + " - all ok"
             else:

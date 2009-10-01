@@ -118,7 +118,7 @@ class Intro_gui():
         all_ok = True
         for i in range(self.steps_system + self.steps_both + self.steps_planet):
             path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
-            if not os.access(path,1):
+            if not os.access(path,os.R_OK):
                 all_ok = False
                 
         
@@ -197,7 +197,7 @@ class Intro_gui():
         all_ok = True
         for i in range(self.steps_loop):
             path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
-            if not os.access(path,1):
+            if not os.access(path,os.R_OK):
                 all_ok = False
                 
         if not all_ok:

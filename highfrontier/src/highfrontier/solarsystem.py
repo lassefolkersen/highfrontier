@@ -50,7 +50,7 @@ class solarsystem:
     
             
             # importing the trade resource text and the mineral_resources
-            if os.access(os.path.join("data","economy","trade resources.txt"),1):
+            if os.access(os.path.join("data","economy","trade resources.txt"),os.R_OK):
                 data_file_name = os.path.join("data","economy","trade resources.txt")
                 trade_resources = primitives.import_datasheet(data_file_name)
                 mineral_resources = []

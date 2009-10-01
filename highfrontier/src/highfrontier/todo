@@ -1,2 +1,1 @@
-File "gui.pyc", line 2620, in make_manual_bid - this fails when bidding in bid-view and there are no previous bids.
 IN gui -- when building stuff it seems like the text-receiver is not turned off properly
