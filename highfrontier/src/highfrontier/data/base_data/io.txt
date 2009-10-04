@@ -1,6 +1,0 @@
-dataname	northern_loc	eastern_loc	population	country	GDP_per_capita_in_dollars
-datatype	float	float	int	string	float
-Vulcan	-26.32	-48.84	500009	denmark	6937.909
-Hel	-31.6	-60.69	500365	denmark	6606.27
-
-

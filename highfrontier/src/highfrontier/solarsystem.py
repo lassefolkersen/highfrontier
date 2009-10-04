@@ -38,6 +38,7 @@ class solarsystem:
             self.technology_research_cost = global_variables.technology_research_cost #a variable specifying how much technology costs (in fact it is conversion factor for distance in the technology tree to research points) (100000 is pretty fast)
             self.bitterness_of_world = (None,None) # how much bitterness there is in the world. First entry is lowest bitterness level
             self.build_base_mode = False #a variable that specifies if a click on the map translates into building a base
+            self.building_base = None #a link to the building base in build_base_mode - necessary for interplanetary builds
             self.messages = []
             self.message_printing = {"general gameplay info":True,
                                 "general company info":True,
@@ -326,10 +327,10 @@ class solarsystem:
             for base in planet.bases.values():
                 base_owner_name = base.original_country
                 base.owner = company_database[base_owner_name]
-                for resource in self.mineral_resources:
+                for resource in self.mineral_resources + ["food"]:
                     base.get_mining_opportunities(planet,resource,check_date = self.start_date)
                 
-                base.get_mining_opportunities(planet,"food",check_date = self.start_date)
+                
         
         
         
@@ -707,26 +708,19 @@ class solarsystem:
 
                 if draw:
                     for i in range(0,len(orbit)):
-                        if i == len(orbit)-1:
-                            pygame.draw.line(surface,(orbit_color),orbit[0],orbit[len(orbit)-1])
-                        elif i in [orbit_placement -1, orbit_placement +1]:
-                            pass
-                        elif i == orbit_placement:
+                        if i == orbit_placement:
                             x = self.window_size[0]/2 + relative_semi_major_axis * math.cos(orbital_position - math.pi) + hierarchy_dependent_transposition[0]
                             y = self.window_size[1]/2 + relative_semi_minor_axis * math.sin(orbital_position - math.pi) + hierarchy_dependent_transposition[1]
                             if 0 < x < self.window_size[0] and 0 < y < self.window_size[1]:
                                 self.draw_small_object(satellite_diameter,(x,y),object,surface)
                         else:
-                            try: pygame.draw.line(surface,orbit_color,orbit[i],orbit[i+1])
-                            except:
-                                print "orbit[i] " + str(orbit[i])
-                                print "orbit[i+1] " + str(orbit[i+1])
-                                print "orbit_color " + str(orbit_color)
-                                try:    surface.size
-                                except: pass
-                                else:   print "surface size " + str(surface.size)
-                                print orbit
-                                raise Exception("This bug has been observed before, on a backward press from Phobos")
+                            if -10000 < orbit[i][0] < 10000 and -10000 < orbit[i][1] < 10000: 
+                                if i == len(orbit)-1:
+                                    pygame.draw.line(surface,(orbit_color),orbit[0],orbit[len(orbit)-1])
+                                elif i in [orbit_placement -1, orbit_placement +1]:
+                                    pass
+                                else:
+                                    pygame.draw.line(surface,orbit_color,orbit[i],orbit[i+1])
     
                 
                 if not draw:
@@ -771,7 +765,7 @@ class solarsystem:
                 self.display_mode = "planetary"
                 self.go_to_planetary_mode = True
             else:
-                print str(object) + " should be drawn as a real planet, since it has a diameter of " +str(diameter)
+#                print str(object) + " should be drawn as a real planet, since it has a diameter of " +str(diameter)
                 
                 if 20 < diameter < 40:
                     projection_scaling_here = 45
@@ -782,7 +776,7 @@ class solarsystem:
                 else:
                     projection_scaling_here = 360
                     
-                print "projection_scaling_here: " + str(projection_scaling_here)
+                
                 custom_drawn_planet = self.planets[object].draw_image(0,90,projection_scaling_here,fast_rendering=True)
                 surface.blit(custom_drawn_planet,(position[0]-projection_scaling_here/2,position[1]-projection_scaling_here/2))
         else:

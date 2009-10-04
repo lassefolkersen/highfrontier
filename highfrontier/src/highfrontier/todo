@@ -7,4 +7,4 @@ expand the implode_and_expand function so that it can be used, on already existi
 It would be nice that the planet view automatically zoomed on a city after zooming out from this (actually this might be complicated)
 Realitify the variables - find out how large the fossil fuel consumption per capita is, how much energy is produced per fuel. Total energy consumption etc.
 Slight speed advantage can be gained by selectively updating the base_position and areas_of_interest dicts selectively when building a new base
-Think of the space stations problematics
+AI does not know about mining opportunities at present

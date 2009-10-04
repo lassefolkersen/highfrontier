@@ -98,7 +98,7 @@ class planet:
         if str("athmospheric_" + gas) in self.planet_data.keys():
             before = self.planet_data["athmospheric_" + gas]
             self.planet_data["athmospheric_" + gas] = self.planet_data["athmospheric_" + gas] + (ton / ton_per_pa_here)
-#            print "added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str(int(before)) + " to " + str(int(self.planet_data["athmospheric_" + gas])) 
+            print "added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str(int(before)) + " to " + str(int(self.planet_data["athmospheric_" + gas])) 
         else:
             print self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys())   
     
@@ -627,197 +627,7 @@ class planet:
         return new_image
         
     
-    
-#    
-#    def change_water_level_old(self,new_water_level):
-#        """
-#        Function to redraw the surface image for a planet, after the water level of that planet has been changed
-#        It checks if the surface image and topographical map has been loaded, and loads them if not
-#        It then computes the layout of the different topological levels and adds a suitable water color
-#        to the next water level (or removes it) in case direction is down.
-#        The function also checks if bases are getting flooded and removes them if necessary.
-#        """
-#        
-#        if new_water_level < 0:
-#            new_water_level = 0 #can't go below zero in water levels
-#        if self.planet_name == "earth":
-#            if new_water_level < 1:
-#                new_water_level = 1 #can't drain the original oceans of earth
-#
-#        #testing if self.image exists
-#        #print "new_water_level and self.water_level: " + str(new_water_level) + " and " + str(self.water_level)
-#        if new_water_level != self.water_level:
-#            self.load_for_drawing(force_reload = True)
-#
-#        #testing if self.topo exists
-#        try: self.topo_image
-#        except AttributeError:
-#            self.calculate_topography()
-#        
-#        topo_image = self.topo_image
-#        image = self.image
-#        
-#        if image.size != topo_image.size:
-#            if (image.size[0]/image.size[1]) != (topo_image.size[0]/topo_image.size[1]):
-#                raise Exception("Serious problem with different sizes of images in raise_the_waters")
-#            else:
-#                topo_image = topo_image.resize(image.size)
-#        
-#        
-#        topo_image_bw = ImageOps.grayscale(topo_image)
-#        topo_image_bw.mode = "L"
-#        
-#        
-#        # makes a dictionary with the topology level as key and a tuble of color-span for which this topology holds as the value
-#        colors_in_topo = topo_image_bw.getcolors()
-#        table_of_topology = {0:(0,0)} 
-#        i = 1
-#        for color in colors_in_topo:
-#            if color[0] > 5000:
-#                topology_color_range = (table_of_topology[i-1][1],color[1])
-#                table_of_topology[i] = topology_color_range  
-#                i = i + 1
-#        del table_of_topology[0]
-#        #print "the planet " + self.planet_name+ " has " + str(len(table_of_topology)) +" levels of topology"
-#        if new_water_level > len(table_of_topology):
-#            new_water_level = len(table_of_topology)
-#            print "The new_water_level of is deeper than the max water level of " + str(len(table_of_topology)) + " on the planet " + str(self.planet_name) + ", so it has been adjusted"
-#        
-#        #assign each table_of_topology entry a color from water_color
-#        color_table = {}
-#        for topology_level in table_of_topology:
-#            color_table[topology_level] = water_colors[int(10.0 * float(topology_level) / float(len(table_of_topology)))] 
-#        
-#        
-#        
-#        #calculating which layers should be filled with water. This is given as a list:
-#        list_of_layers_to_be_filled = {}
-#        for topology_level in table_of_topology:
-#            if topology_level <= new_water_level:
-#                list_of_layers_to_be_filled[topology_level] = "wet"
-#            elif topology_level - 0.5 == new_water_level:
-#                list_of_layers_to_be_filled[topology_level] = "half wet"
-#            else:
-#                list_of_layers_to_be_filled[topology_level] = "dry"
-#
-#        #The loop that modifies image to contain water 
-#        wet_areas = Image.new("1",topo_image.size)
-#        half_wet_areas = Image.new("1",topo_image.size)
-#        earth_oceans = Image.new("1",topo_image.size)
-#        for topology_level in list_of_layers_to_be_filled:
-#            if list_of_layers_to_be_filled[topology_level] == "dry":
-#                pass
-#            elif list_of_layers_to_be_filled[topology_level] == "wet":
-#                table_of_colors = []
-#                for i in range(256):    
-#                    if table_of_topology[topology_level][0] < i <= table_of_topology[topology_level][1]:
-#                        table_of_colors.append(256)
-#                    else:
-#                        table_of_colors.append(0)
-#                mask = topo_image_bw.point(table_of_colors)
-#                if (self.planet_name == "earth") and (topology_level == 1):
-#                    earth_oceans.paste(1,None,mask)
-#                if (self.planet_name != "earth") or (topology_level != 1): #don't fill the already drawn oceans on earth
-#                    wet_areas.paste(1,None,mask) #for use with base-status calculations
-#                    image.paste(color_table[topology_level],(0,0,self.image.size[0],self.image.size[1]),mask)
-#            elif list_of_layers_to_be_filled[topology_level] == "half wet":
-#                table_of_colors = []
-#                for i in range(256):    
-#                    if table_of_topology[topology_level][0] < i <= table_of_topology[topology_level][1]:
-#                        table_of_colors.append(128)
-#                    else:
-#                        table_of_colors.append(0)
-#                mask = topo_image_bw.point(table_of_colors)
-#                half_wet_areas.paste(1,None,mask) #for use with base-status calculations
-#                if self.planet_name != "earth" or topology_level != 1: #don't fill the already drawn oceans on earth
-#                    image.paste(color_table[topology_level],None,mask)
-#            else:
-#                print "dont recognise the order: " + str(list_of_layers_to_be_filled[topology_level]) 
-#                
-#        
-# 
-#
-#        #determine how much of the planet is now covered with water
-#        if len(half_wet_areas.getcolors()) > 1:
-#            #print "yes it is longer than 1"
-#            half_covered = float(half_wet_areas.getcolors()[1][0]) / float( half_wet_areas.getcolors()[0][0] + half_wet_areas.getcolors()[1][0])
-#        else:
-#            half_covered = 0.0
-#        if len(wet_areas.getcolors())>1:
-#            fully_covered = float(wet_areas.getcolors()[1][0]) / float( wet_areas.getcolors()[0][0] + wet_areas.getcolors()[1][0])
-#        else:
-#            fully_covered = 0.0
-#            
-#        percent_water_coverage = fully_covered + 0.5 * half_covered 
-#            
-#        if self.planet_name == "earth":
-#            percent_water_coverage = 0.594 + percent_water_coverage
-#        self.percent_water_coverage = percent_water_coverage
-#        if self.percent_water_coverage > 0.60:
-#            self.planet_data["smallplanet_color"] = (25,63,69)
-#    
-#    
-#        #determines how the bases on the planet fare in the surge. Bases under water are removed.
-#        bases_to_remove = []
-#        for base in self.bases:
-#            position_x_degrees = self.bases[base].position_coordinate[0]
-#            position_y_degrees = self.bases[base].position_coordinate[1]
-#            position_x_pixel = int(((position_x_degrees + 180.0 ) / 360.0) * wet_areas.size[0])
-#            position_y_pixel = int(wet_areas.size[1] - ((position_y_degrees + 90.0 ) / 180.0) * wet_areas.size[1])
-#            pixel_color = wet_areas.getpixel((position_x_pixel,position_y_pixel))
-#            if pixel_color == 1:
-#                self.bases[base].is_on_dry_land = "no"
-#                bases_to_remove.append(base)
-#            else:
-#                pixel_color_half_wet = half_wet_areas.getpixel((position_x_pixel,position_y_pixel))
-#                if pixel_color_half_wet == 1:
-#                    self.bases[base].is_on_dry_land = "almost"
-#                else:
-#                    self.bases[base].is_on_dry_land = "yes"
-#        for base in bases_to_remove:
-#            self.kill_a_base(base)
-#        
-#        if new_water_level != self.water_level:
-#            self.water_level = new_water_level   
-#            self.image = image
-##            self.image_string = self.image.tostring()
-#            #self.image_string = self.image.tostring()
-#            self.pre_drawn_surfaces = {}
-#    
-#        #returning the water_coverage map for use with base building etc.
-#        wet_areas.paste(1,None,half_wet_areas)
-#        try: earth_oceans
-#        except:
-#            pass
-#        else:
-#            wet_areas.paste(1,None,earth_oceans)
-#        self.action_layer = wet_areas
-#        
-#            
-#                   
-#
-#    
-#
-##    
-##    def sphere_to_image_index(self,sphere_coordinate,map_dim):
-##        """
-##        Takes a planet coordinate ex. (-12,14) for 12'w 14'n. Return the index of the RGB triplet in the imagestring. Some more words about coordinates:
-##        
-##        """
-###        image_coordinate = (sphere_coordinate[0]*(self.map_dim[0]/360)+self.map_dim[0]/2 , sphere_coordinate[1]*(self.map_dim[1]/180)+self.map_dim[1]/2)
-###        index_first = int(math.floor(image_coordinate[0]))*3 + int(math.floor(image_coordinate[1]))*self.map_dim[0]*3
-###        index_triplet = (index_first,index_first+1,index_first+2)
-###        return index_triplet
-##    
-##        image_coordinate = ((sphere_coordinate[0]*map_dim[0]+map_dim[0]*180)/360 , (sphere_coordinate[1]*map_dim[1]+map_dim[1]*90)/180)
-##        index_first = int(math.floor(image_coordinate[0]))*3 + int(math.floor(image_coordinate[1]))*map_dim[0]*3
-##        index_triplet = (index_first,index_first+1,index_first+2)
-##        return index_triplet
-##    
-#    
-
-
-
+ 
     def sphere_to_plane_total(self,sphere_coordinates,eastern_inclination,northern_inclination,projection_scaling):
         """
         Function to translate a list of single sphere_coordinates into projection coordinates with only one
@@ -1504,13 +1314,13 @@ class planet:
                 radius_size = 100 #this is the circular radius within wich the bases are disqualified for being to near
                 not_too_close = True
                 for base_instance in self.bases.values():
-                    if abs(base_instance.position_coordinate[0] - sphere_coordinates[0]) < square_size_degrees and abs(base_instance.position_coordinate[1] - sphere_coordinates[1]) < square_size_degrees:
-                        distance = self.calculate_distance(base_instance.position_coordinate, sphere_coordinates)
-                        if distance[0] < radius_size:
-                            print "The new position is less than " + str(radius_size) + " km to " + base_instance.name + " it is " + str(distance[0])
-                            not_too_close = False
-                        else:
-                            print "The new position is more than " + str(radius_size) + " km to " + base_instance.name + " it is " + str(distance[0])
+                    if base_instance.terrain_type != "Space":
+                        if abs(base_instance.position_coordinate[0] - sphere_coordinates[0]) < square_size_degrees and abs(base_instance.position_coordinate[1] - sphere_coordinates[1]) < square_size_degrees:
+                            distance = self.calculate_distance(base_instance.position_coordinate, sphere_coordinates)
+                            if distance[0] < radius_size:
+                                print_dict = {"text":"The new position is less than " + str(radius_size) + " km to " + base_instance.name + " it is " + str(distance[0]),"type":"general gameplay info"}
+                                self.solar_system_object_link.messages.append(print_dict)
+                                not_too_close = False
                             
                 
                 if not_too_close:
@@ -1574,14 +1384,14 @@ class planet:
         base_positions = self.calculate_base_positions(eastern_inclination, northern_inclination, projection_scaling)
         for base in base_positions:
             if base_positions[base][0] not in ["Space", "Not seen"]:
-                
                 for other_base in self.bases[base].trade_routes:
-                    if base_positions[other_base][0] == "Not seen":
-                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
-                    elif base_positions[other_base][0] == "Space":
-                        pass
-                    else:
-                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
+                    if other_base in base_positions.keys():
+                        if base_positions[other_base][0] == "Not seen":
+                            pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
+                        elif base_positions[other_base][0] == "Space":
+                            pass
+                        else:
+                            pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
                 
         return surface
         
