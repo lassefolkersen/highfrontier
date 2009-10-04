@@ -411,3 +411,32 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
 #    
      
     
+
+def nicefy_numbers(number):
+    """
+    Takes a number and returns a string that has had added billion or trillion or whatever
+    """
+    if not (isinstance(number,int) or isinstance(number,long) or isinstance(number,float)):
+        raise Exception("The received number was not of required class int, long or float")
+
+    if isinstance(number,float):
+        if abs(number) > 1000:
+            number = int(number)
+        else:
+            number = "%.4g" % number
+    
+    if isinstance(number,int) or isinstance(number,long):
+        if abs(number) > 1000*1000*1000*1000*1000*3:
+            number = "%.4g" % number
+        elif abs(number) > 1000*1000*1000*1000*3:
+            number = str(int(number / (1000*1000*1000*1000) )) + " trillion"
+        elif abs(number) > 1000*1000*1000*3:
+            number = str(int(number / (1000*1000*1000) )) + " billion"
+        elif abs(number) > 1000*1000*3:
+            number = str(int(number / (1000*1000) )) + " million"
+        elif abs(number) > 1000*3:
+            number = str(int(number / 1000)) + " thousand"
+        else:
+            number = str(number)
+            
+    return number

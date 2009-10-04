@@ -112,6 +112,7 @@ class gui():
                         elif return_value == "new base":
                             self.solar_system_object_link.display_mode = "planetary"
                             self.solar_system_object_link.build_base_mode = True
+                            self.solar_system_object_link.building_base = self.solar_system_object_link.current_planet.current_base
                             self.clear_screen()
                             text = global_variables.standard_font.render("Choose position of new base:",True,(150,150,150))
                             self.action_surface.blit(text, (global_variables.window_size[0] / 2 - text.get_width()/2, 400))
@@ -209,9 +210,11 @@ class gui():
                 sol.current_planet.projection_scaling = sol.current_planet.projection_scaling / 2
                 surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
             else:
+                sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000) 
                 sol.current_planet.unload_from_drawing()
                 sol.display_mode = "solar_system" 
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=datetime.date(2102,1,22),center_object=sol.current_planet.planet_name)
+
         elif sol.display_mode in ["firm","company","base"]:
             surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
             sol.display_mode = "planetary"
@@ -222,6 +225,7 @@ class gui():
         else:
             print "error. The mode: " + sol.display_mode +" is unknown"
             return
+        
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
                 
@@ -965,10 +969,8 @@ class planet_jump_window():
         
         
     def planet_jump(self,planet_name,function_parameter):
-        print planet_name
         planet = self.solar_system_object_link.planets[planet_name] 
         self.solar_system_object_link.current_planet = planet
-        print planet
         planet.load_for_drawing()
         self.solar_system_object_link.display_mode = "planetary"
         surface = planet.draw_entire_planet(planet.eastern_inclination,planet.northern_inclination,planet.projection_scaling)
@@ -1955,11 +1957,12 @@ class base_population_info():
 
             
             base_population_dict["Trade routes, number of"] = {"info":str(len(base_selected.trade_routes))}
-            if 0 < len(base_selected.trade_routes) < 4:
-                list_value = str(base_selected.trade_routes.keys())
-                list_value = list_value.rstrip("]")
-                list_value = list_value.lstrip("[")
-                base_population_dict["Trade routes"] = {"info":list_value}
+            if 0 < len(base_selected.trade_routes) < 6:
+                trade_route_list = ""
+                for trade_route in base_selected.trade_routes.keys():
+                    trade_route_list = trade_route_list + trade_route + ", "
+                trade_route_list = trade_route_list.rstrip(", ")
+                base_population_dict["Trade routes"] = {"info":trade_route_list}
             
 
             self.fast_list = gui_components.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
@@ -2953,7 +2956,7 @@ class base_build_menu():
         buildoption_data["merchant"]["input and output"] = "transport: 1 -> movement of goods"
 
         buildoption_data["new base"] = {}
-        buildoption_data["new base"]["input and output"] = "population: 100 steel: 100 labor: 100 -> new base"
+        buildoption_data["new base"]["input and output"] = "depends on distance"
         
         self.fast_list = gui_components.fast_list(self.action_surface, buildoption_data, rect = self.rect)
 
@@ -3215,7 +3218,7 @@ class base_build_menu():
         if self.solar_system_object_link.current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
         population = self.solar_system_object_link.current_planet.current_base.population
-        max_size = int(population * 0.1 / float(input_size))
+        max_size = max(int(population * 0.1 / float(input_size)),1)
         
         
         #check if the current_player already owns a company of that technology in the current base
@@ -3273,10 +3276,19 @@ class base_build_menu():
 #                print technology.keys()
                 for resource in technology["input_output_dict"][put].keys():
                     lineno = lineno + 1
-                    value = technology["input_output_dict"][put][resource]
-                    value = value * self.slider.position
-#                    nice_input_output_line = nice_input_output_line +  + "\n"
-                    value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
+                    if resource in self.solar_system_object_link.mineral_resources + ["food"] and put == "output":
+                        mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource, check_date = self.solar_system_object_link.current_date)
+                        unmodified_output = technology["input_output_dict"]["output"][resource]
+                        value = (mining_opportunity / 10) * unmodified_output
+                        value = int(value * self.slider.position)
+                        value_info = global_variables.standard_font_small.render(resource + ": " + str(value) + " (location modifier: " + str(round(mining_opportunity,2)) + ")",True,(0,0,0))
+
+                    else:
+                        value = technology["input_output_dict"][put][resource]
+                        value = value * self.slider.position
+                        value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
+                    
+                    
                     self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 70 + lineno * 20))
 
 
@@ -3319,7 +3331,7 @@ class base_build_menu():
         This command is called after the size selection box has been accepted
         """
         size_requested = self.slider.position
-        print "commodity_ask_for_name and existing_firm is " + str(existing_firm)
+#        print "commodity_ask_for_name and existing_firm is " + str(existing_firm)
         self.menu_position = "commodity name"
         update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
         pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
@@ -3344,7 +3356,7 @@ class base_build_menu():
             existing_info = global_variables.standard_font_small.render("Updating firm size",True,(0,0,0))
             self.action_surface.blit(existing_info, (self.rect[0] + 130, self.rect[1] + 70))
             pygame.display.flip()
-            print "commodity_ask_for_name knows that existing firm is not none but " + str(existing_firm)
+#            print "commodity_ask_for_name knows that existing firm is not none but " + str(existing_firm)
             self.commodity_build_firm(None, existing_firm)
             return "clear"
 
@@ -3737,7 +3749,7 @@ class construct_base_menu():
     """
     def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
-        self.rect = pygame.Rect(150,150,300,300)
+        self.rect = pygame.Rect(150,150,300,400)
         self.action_surface = action_surface
         self.text_receiver = None
 
@@ -3749,6 +3761,8 @@ class construct_base_menu():
             return self.ok_button.activate(None)
         if self.cancel_button.rect.collidepoint(event.pos) == 1:
             return self.cancel_button.activate(None)
+        if self.population_bar.rect.collidepoint(event.pos) == 1:
+            self.population_bar.activate(event.pos)
 
 
 
@@ -3762,31 +3776,127 @@ class construct_base_menu():
         Optional argument give_length_warning includes a label that specifies max " + str(global_variables.max_letters_in_company_names) + " characters
         """
         
+        #first we calculate the distance
+        building_base = self.solar_system_object_link.building_base
+        
+        gravitational_constant = 40
+        if building_base.home_planet == self.solar_system_object_link.current_planet: #intraplanetary 
+            if building_base.terrain_type != "Space" and sphere_coordinates != "space base": #ground based
+                transport_type = "ground transport"
+                distance = int(building_base.home_planet.calculate_distance(sphere_coordinates, building_base.position_coordinate)[0]) / 100 
+            else: #space based intraplanetary
+                if building_base.terrain_type != "Space" and sphere_coordinates == "space base": #ground to space building - mostly depends on escape velocity
+                    transport_type = "space transport"
+                    distance = (self.solar_system_object_link.current_planet.gravity_at_surface * gravitational_constant) ** 2
+                else: #space-to-ground or space-to-space (cheap)
+                    transport_type = "space transport"
+                    distance = 10.0
+        else: #inter-planetary -- one fixed part and one part ground escape velocity
+            transport_type = "space transport"
+            distance = 100.0
+
+            #adding an extra for travels between far-away planets
+            endpoint_distances = []
+            for endpoint in [building_base.home_planet, self.solar_system_object_link.current_planet]: 
+                while endpoint.planet_data["satellite_of"] != "sun":
+                    endpoint = self.solar_system_object_link.planets[endpoint.planet_data["satellite_of"]]
+                endpoint_distances.append(endpoint.planet_data["semi_major_axis"])
+            distance = distance + int(abs(endpoint_distances[0] - endpoint_distances[1]) ** 0.5) / 50
+
+            if building_base.terrain_type != "Space":
+                distance = distance + int((building_base.home_planet.gravity_at_surface*gravitational_constant) ** 2)
+                distance = distance * 2 #because it is generally more difficult to have to launch from surface of planet
+
+#        print "distance is " + str(distance) + " using " + transport_type
+        self.pricing = {
+                        "steel_cost_per_person" : 0.51 + distance / 100,
+                        "power_cost_per_person" : 0.5 + distance / 100,
+                        "transport_cost_per_person" : distance,
+                        "electronics_cost_per_person" : 0.01 + distance / 2000,
+                        "transport_type":transport_type,
+                        "distance":distance
+        }
+        
         pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
         pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
 
         if sphere_coordinates == "space base":
-            location_description = "in space"
+            location_description = "in orbit around " + self.solar_system_object_link.current_planet.name
         else:
-            location_description = "at (" + str(round(sphere_coordinates[0]))+ "," + str(round(sphere_coordinates[1])) + "):"
-        description = global_variables.standard_font.render("Enter name for base " + location_description,True,(0,0,0))
-        self.action_surface.blit(description, (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2 - 70))
+            location_description = "at (" + str(round(sphere_coordinates[0]))+ "," + str(round(sphere_coordinates[1])) + ") on "+ self.solar_system_object_link.current_planet.name
+        
+        description = global_variables.standard_font.render("Building a base " + location_description,True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + 20, self.rect[1]  + 20))
+
+        description = global_variables.standard_font.render("Enter name",True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + 20, self.rect[1]  + 40))
+        
         if give_length_warning:
             warning = global_variables.standard_font.render("Name must be unique",True,(0,0,0))
-            self.action_surface.blit(warning, (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2 - 30))
+            self.action_surface.blit(warning, (self.rect[0] + 20, self.rect[1] + 50))
             
             
         self.text_receiver = gui_components.entry(self.action_surface, 
-                             topleft = (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + self.rect[3] / 2), 
+                             topleft = (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + 70), 
                              width = 200, 
                              max_letters = global_variables.max_letters_in_company_names)
         self.text_receiver.active = True
 
+        description = global_variables.standard_font.render("Set initial population size:",True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + 20, self.rect[1]  + 120))
+        
+        
+        price_rect = pygame.Rect(self.rect[0] + 10, self.rect[1] + 210, self.rect[2] - 20, 80)
+
+        def population_execute(label,price_rect):
+            pygame.draw.rect(self.action_surface,(212,212,212),price_rect)
+            
+            text = primitives.nicefy_numbers(int(self.population_bar.position)) + " people" 
+            rendered_text = global_variables.standard_font.render(text,True,(0,0,0))
+            self.action_surface.blit(rendered_text, (price_rect[0], price_rect[1]))
+            
+            text = primitives.nicefy_numbers(int(self.population_bar.position * self.pricing["steel_cost_per_person"])) + " steel" 
+            rendered_text = global_variables.standard_font.render(text,True,(0,0,0))
+            self.action_surface.blit(rendered_text, (price_rect[0], price_rect[1] + 15))
+            
+            text = primitives.nicefy_numbers(int(self.population_bar.position * self.pricing ["power_cost_per_person"])) + " power" 
+            rendered_text = global_variables.standard_font.render(text,True,(0,0,0))
+            self.action_surface.blit(rendered_text, (price_rect[0], price_rect[1] + 30))
+            
+            text = primitives.nicefy_numbers(int(self.population_bar.position * self.pricing["transport_cost_per_person"])) + " " + transport_type 
+            rendered_text = global_variables.standard_font.render(text,True,(0,0,0))
+            self.action_surface.blit(rendered_text, (price_rect[0], price_rect[1] + 45))
+            
+            text = primitives.nicefy_numbers(int(self.population_bar.position * self.pricing ["electronics_cost_per_person"])) + " electronics" 
+            rendered_text = global_variables.standard_font.render(text,True,(0,0,0))
+            self.action_surface.blit(rendered_text, (price_rect[0], price_rect[1] + 60))
+
+            pygame.display.update(price_rect)
+
+
+        self.population_bar = gui_components.hscrollbar(
+                                                        self.action_surface,
+                                                        population_execute, 
+                                                        (self.rect[0] + 10, self.rect[1] + 140), 
+                                                        self.rect[2]-20, 
+                                                        (100,10000), 
+                                                        start_position = 100,
+                                                        function_parameter=price_rect)
+        
+        description = global_variables.standard_font.render("Price of setting up base:",True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + 20, self.rect[1]  + 170))
+        description = global_variables.standard_font.render("Calculated on a cost-distance of " + str(int(distance)),True,(0,0,0))
+        self.action_surface.blit(description, (self.rect[0] + 20, self.rect[1]  + 185))
+
+        
+        population_execute(None,price_rect)
+
         self.ok_button = gui_components.button("ok", 
                                                 self.action_surface,
-                                                self.new_base_build, function_parameter = sphere_coordinates, 
+                                                self.new_base_build, 
+                                                function_parameter = sphere_coordinates, 
                                                 fixed_size = (100,35), 
                                                 topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
         
@@ -3798,11 +3908,13 @@ class construct_base_menu():
 
     def new_base_build(self,label,sphere_coordinates):
         name = self.text_receiver.text
+        size = self.population_bar.position 
+
 
         if sphere_coordinates == "space base":
             location_description = "in space"
         else:
-            location_description = "at (" + str(round(sphere_coordinates[0]))+ "," + str(round(sphere_coordinates[1])) + "):"
+            location_description = "at (" + str(round(sphere_coordinates[0]))+ "," + str(round(sphere_coordinates[1])) + ")"
         
         
         #test if name is unique
@@ -3813,9 +3925,11 @@ class construct_base_menu():
         
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
             
-#            (self,base_name,home_planet,base_data,owner,manager)
+
             home_planet = self.solar_system_object_link.current_planet
-            building_base = self.solar_system_object_link.current_planet.current_base
+            owner = self.solar_system_object_link.current_player
+            building_base = self.solar_system_object_link.building_base
+            self.solar_system_object_link.building_base = None
             
             
             if sphere_coordinates == "space base":
@@ -3825,38 +3939,49 @@ class construct_base_menu():
                 northern_loc = sphere_coordinates[1]
                 eastern_loc = sphere_coordinates[0]
             
-            base_data = {
+            
+            input_output_dict = {"input":{
+                                          "steel":int(self.pricing["steel_cost_per_person"] * size),
+                                          "power":int(self.pricing["power_cost_per_person"] * size),
+                                          self.pricing["transport_type"]:int(self.pricing["transport_cost_per_person"] * size),
+                                          "electronics":int(self.pricing["electronics_cost_per_person"] * size)
+                                          },
+                                      "output":{},
+                                      "timeframe":30,
+                                      "byproducts":{}
+            }
+            
+
+            base_to_be_build_data = {
                          "northern_loc":northern_loc,
                          "eastern_loc":eastern_loc,
-                         "population":100,
+                         "population":size,
                          "country":self.solar_system_object_link.current_player.name,
-                         "GDP_per_capita_in_dollars":building_base.gdp_per_capita_in_dollars
+                         "GDP_per_capita_in_dollars":building_base.gdp_per_capita_in_dollars,
+                         "home_planet":home_planet,
+                         "size":size,
+                         "owner":owner,
+                         "name":name,
+                         "distance_to_origin":self.pricing["distance"],
+                         "transport_type_to_origin":self.pricing["transport_type"]
                          }
             
-            owner = self.solar_system_object_link.current_player
             
-            new_base = company.base(self.solar_system_object_link,name,home_planet,base_data,owner)
-            owner.home_cities[name] = new_base
+            base_construction = company.base_construction(
+                                                          solar_system_object = self.solar_system_object_link, 
+                                                          input_output_dict = input_output_dict, 
+                                                          location = building_base, 
+                                                          name = name + " construction", 
+                                                          home_planet = building_base.home_planet, 
+                                                          base_to_be_build_data = base_to_be_build_data, 
+                                                          owner = owner,
+                                                          size = size)
             
-            #making the trade route from the founding base
-            if sphere_coordinates == "space base":
-                distance = [200] #Low earth orbit distance
-                transport_type = "space transport"
-            else:
-                distance = home_planet.calculate_distance(sphere_coordinates, building_base.position_coordinate)
-                transport_type = "ground transport"
-            endpoints = [new_base.base_name,building_base.base_name] #try to remove this if you get the opportunity FIXME
-            endpoint_links = [new_base,building_base]
-            trade_route = {"distance":distance[0],"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
-            new_base.trade_routes[building_base.base_name] = trade_route
-            building_base.trade_routes[new_base.base_name] = trade_route
             
-            home_planet.bases[name] = new_base
-            
-            owner.owned_firms[name] = new_base
+            owner.owned_firms[name + " construction"] = base_construction
 
 
-            print_dict = {"text":"Building a base named " + str(name) + " " + location_description,"type":"general gameplay info"}
+            print_dict = {"text":"The building construction for a base named " + str(name) + " " + location_description+ " has started in " + str(building_base.name),"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 
             #clear up everything to make space
