@@ -86,3 +86,10 @@ OracleHQ.jpg	Flickr RaghuP	cc-by-sa-2.0
 GlassTowerFrankfurt.jpg	Flickr WireLizard	cc-by-sa-2.0
 
 
+dextre_iss017_big.jpg	http://antwrp.gsfc.nasa.gov/apod/image/0806/dextre_iss017_big.jpg	NASA
+trussnauts_sts116.jpg	http://antwrp.gsfc.nasa.gov/apod/image/0612/trussnauts_sts116.jpg	NASA
+truss_sts113_big.jpg	http://apod.nasa.gov/apod/image/0212/truss_sts113_big.jpg	NASA
+i5-11.jpg	http://history.nasa.gov/EP-177/i5-11.jpg	NASA
+Internal_view_of_the_Stanford_torus.jpg	http://upload.wikimedia.org/wikipedia/commons/f/fc/Internal_view_of_the_Stanford_torus.jpg	public domain
+Spacecolony1.jpg	http://en.wikipedia.org/wiki/File:Spacecolony1.jpg	public domain
+ISS_STS-128_Zenith.jpg	http://en.wikipedia.org/wiki/File:ISS_STS-128_Zenith.jpg	public domain

@@ -127,8 +127,7 @@ class planet:
                 
                 base_database[base_name] = base_instance
             self.bases = base_database
-            for base_instance in base_database.values():
-                base_instance.calculate_trade_routes(self)
+
         else: #ie. if no pre-designed bases are found
             base_database = {}
         return base_database
@@ -535,16 +534,18 @@ class planet:
         for base in self.bases:
             position_x_degrees = self.bases[base].position_coordinate[0]
             position_y_degrees = self.bases[base].position_coordinate[1]
-            position_x_pixel = int(((position_x_degrees + 180.0 ) / 360.0) * self.action_layer.size[0])
-            position_y_pixel = int(self.action_layer.size[1] - ((position_y_degrees + 90.0 ) / 180.0) * self.action_layer.size[1])
-            pixel_color = self.action_layer.getpixel((position_x_pixel,position_y_pixel))
-            if 190 < pixel_color <= 220 or pixel_color == 0:
-                self.bases[base].is_on_dry_land = "no"
-                bases_to_remove.append(base)
-            elif 220 < pixel_color <= 250:
-                self.bases[base].is_on_dry_land = "almost"
-            else:
-                self.bases[base].is_on_dry_land = "yes"
+            if (position_x_degrees, position_y_degrees) != (None,None):# space stations are not affected     
+                
+                position_x_pixel = int(((position_x_degrees + 180.0 ) / 360.0) * self.action_layer.size[0])
+                position_y_pixel = int(self.action_layer.size[1] - ((position_y_degrees + 90.0 ) / 180.0) * self.action_layer.size[1])
+                pixel_color = self.action_layer.getpixel((position_x_pixel,position_y_pixel))
+                if 190 < pixel_color <= 220 or pixel_color == 0:
+                    self.bases[base].is_on_dry_land = "no"
+                    bases_to_remove.append(base)
+                elif 220 < pixel_color <= 250:
+                    self.bases[base].is_on_dry_land = "almost"
+                else:
+                    self.bases[base].is_on_dry_land = "yes"
         for base in bases_to_remove:
             self.kill_a_base(base)
         
@@ -1336,12 +1337,16 @@ class planet:
                     surface.blit(rgba_action_surface,(0,0))
                     self.pre_drawn_action_layers[(northern_inclination,eastern_inclination,projection_scaling)] = rgba_action_surface
         
+        
+        
         surface = self.draw_bases(surface,eastern_inclination,northern_inclination,projection_scaling)
+        
         #if self.planet_name == "mars":
         
         
         blackscreen.blit(surface, ((global_variables.window_size[0]-self.projection_dim[0])/2 ,(global_variables.window_size[1]-self.projection_dim[1])/2))
         surface = blackscreen
+        surface = self.draw_space_stations(surface,eastern_inclination,northern_inclination,projection_scaling)
         
         if self.planet_display_mode not in ["visible light","trade network"]:
             try: self.heat_bar
@@ -1383,15 +1388,19 @@ class planet:
                 reverse_sphere_coordinates = []
                 base_names = []
                 for base in self.bases:
-                    sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                    sphere_coordinates.append(sphere_position)
-                    
-                    if sphere_position[0] < 0:
-                        reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
+                    if self.bases[base].position_coordinate == (None, None): #for space stations
+                        base_positions_here[base] = ["Space",None]
                     else:
-                        reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
-                    reverse_sphere_coordinates.append(reverse_sphere_position)
-                    base_names.append(base)
+                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
+                        sphere_coordinates.append(sphere_position)
+                        
+                        if sphere_position[0] < 0:
+                            reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
+                        else:
+                            reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
+                        reverse_sphere_coordinates.append(reverse_sphere_position)
+                        base_names.append(base)
+                
                 plane_coordinates = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
                 reverse_plane_coordinates = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
                 
@@ -1399,7 +1408,7 @@ class planet:
                     if plane_coordinates[i] != "Not seen":
                         base_positions_here[base_names[i]] = (int(plane_coordinates[i][0] ),int(plane_coordinates[i][1]))
                         absolute_position = (plane_coordinates[i][0] + (window_size[0]/2) - (projection_scaling/2), plane_coordinates[i][1] + ( window_size[1] /2) - (projection_scaling/2))
-                        areas_of_interest_here[(absolute_position[0],absolute_position[1],2,2)] = base_names[i]
+                        areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
                     else:
                         #calculation the edge position for a base below the edge (for use in trade_network drawing)
                         reverse_x =  - ( int(reverse_plane_coordinates[i][0]) - 0.5 * projection_scaling )
@@ -1418,20 +1427,21 @@ class planet:
                 east_west_span = east_border - west_border
                 north_south_span = north_border - south_border
                 for base in self.bases:
-                    sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                    if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
-                        x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                        y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                        base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
-                        areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
-                    else:
-                        #calculation the edge position for a base over the edge (for use in trade_network drawing)
-                        x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                        y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                        #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
-                        
-                        
-                        base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
+                    if self.bases[base].position_coordinate != (None, None):
+                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
+                        if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
+                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
+                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
+                            base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
+                            areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
+                        else:
+                            #calculation the edge position for a base over the edge (for use in trade_network drawing)
+                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
+                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
+                            #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
+                            
+                            
+                            base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
                         
                         
                         
@@ -1515,14 +1525,14 @@ class planet:
                     else:
                         print_dict = {"text":"Can't build a base here","type":"general gameplay info"}
                         self.solar_system_object_link.messages.append(print_dict)
-                        return "Can't build a base here"
+                        return "Can't build a base in this terrain"
 
                 else:
                     print_dict = {"text":"This position is less than " + str(radius_size) + " from another base","type":"general gameplay info"}
                     self.solar_system_object_link.messages.append(print_dict)
                     return "Too close to another base" 
         else:
-            return "No bases in space"
+            return "space base"
         
         
     
@@ -1537,7 +1547,7 @@ class planet:
         
         base_positions = self.calculate_base_positions(eastern_inclination, northern_inclination, projection_scaling)
         for base in base_positions:
-            if base_positions[base][0] != "Not seen":
+            if base_positions[base][0] not in ["Space", "Not seen"]:
                 if self.bases[base].is_on_dry_land == "almost":
                     pygame.draw.circle(surface,(255,36,0),base_positions[base],outer_circle_radius)
                     pygame.draw.circle(surface,(0,0,0),base_positions[base],inner_circle_radius)
@@ -1562,13 +1572,15 @@ class planet:
         """
         base_positions = self.calculate_base_positions(eastern_inclination, northern_inclination, projection_scaling)
         for base in base_positions:
-            if base_positions[base][0] != "Not seen":
+            if base_positions[base][0] not in ["Space", "Not seen"]:
                 
                 for other_base in self.bases[base].trade_routes:
-                    if base_positions[other_base][0] != "Not seen":
-                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
-                    else:
+                    if base_positions[other_base][0] == "Not seen":
                         pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
+                    elif base_positions[other_base][0] == "Space":
+                        pass
+                    else:
+                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
                 
         return surface
         
@@ -1581,65 +1593,65 @@ class planet:
         if projection_scaling <= 180:
             km_per_pixels = float(self.planet_diameter_km) / float(projection_scaling) 
             transposition = (global_variables.window_size[0]/2,global_variables.window_size[1]/2)
-            for space_station_name in self.space_stations:
-                space_station = self.space_stations[space_station_name]
-#                print space_station["name"] + " " + str(space_station["semi_major_axis"]) + " km semi major axis"
-                relative_semi_major_axis = space_station["semi_major_axis"] / km_per_pixels
-                inclination = space_station["inclination_degrees"]
-                eccentricity = abs(1 - (space_station["eccentricity"] + abs(northern_inclination / 95.0)) - random.random() * 0.05)
-                relative_semi_minor_axis = ((relative_semi_major_axis ** 2) * (1 - (eccentricity **2) )) ** 0.5
-                orbit = []
-#                #starting_point is between 0 and 50, depending on the eccentricity. If eccentricity is 0, it should be 0
-#                starting_point = int(eccentricity * 30.0) + 20
-#                if abs(northern_inclination) >= 60:
-#                    starting_point = 0
-#                starting_point = 0
-                for i in range(0,101):
-                    t = -math.pi + i * ((2 * math.pi) / 100 )
-                    x = relative_semi_major_axis * math.cos(t) 
-                    y = relative_semi_minor_axis * math.sin(t) 
+            relative_semi_major_axis = (self.planet_diameter_km ) / km_per_pixels #space stations are found on planet diameter from center of planet (ie, on planet-radius of height)
+            eccentricity = abs(abs(northern_inclination)/2 - 89.5) / 90
+            
+            relative_semi_minor_axis = ((relative_semi_major_axis ** 2) * (1 - (eccentricity **2) )) ** 0.5
+            orbit = []
+
+            for i in range(0,101):
+                t = -math.pi + i * ((2 * math.pi) / 100 )
+                x = relative_semi_major_axis * math.cos(t) 
+                y = relative_semi_minor_axis * math.sin(t)
+                
+                #transpose
+                x = x + transposition[0]
+                y = y + transposition[1]
+                
+                orbit.append((x,y))
+            
+            space_station_number = 0 # for assigning more or less permannent position
+            for space_station_name in self.bases:
+                if self.bases[space_station_name].position_coordinate == (None, None):
+                    space_station = self.bases[space_station_name]
                     
-                    #rotate with inclination
-                    r = math.sqrt(x**2+y**2)
-                    theta_radians = math.atan2(x, y)
-                    theta_degrees = (int(math.degrees(theta_radians)))
-                    theta_degrees = inclination + theta_degrees
-                    if theta_degrees < 0:
-                        theta_degrees = theta_degrees + 360
-                    theta_radians = math.radians(360-(theta_degrees-90))
-                    x = r * math.cos(theta_radians)    
-                    y = r * math.sin(theta_radians)
+                    
+                    #Draw the space station itself
+                    orbit_position_index = space_station_number * 77 + int(100 * eastern_inclination / 360.0)
+                    space_station_number = space_station_number + 1 
+                    if northern_inclination < 0:
+                        orbit_position_index = - orbit_position_index
+                    orbit_position_index = orbit_position_index % 100
+                    
+                    
+                    if not 17 < orbit_position_index < 33 or northern_inclination != 0:
+                        space_station_position = orbit[orbit_position_index]    
+                        space_station_position = (int(space_station_position[0]), int(space_station_position[1]))
+                        outer_circle_radius = 4
+                        inner_circle_radius = outer_circle_radius / 2
+                        pygame.draw.circle(surface,(255,255,255),space_station_position,outer_circle_radius)
+                        if not space_station == self.current_base:
+                            pygame.draw.circle(surface,(0,0,0),space_station_position,inner_circle_radius)
+                        if projection_scaling == 90:
+                            space_station_label = global_variables.standard_font.render(space_station.name,True,(255,255,255))
+                            surface.blit(space_station_label,space_station_position)
+                        if projection_scaling == 45:
+                            space_station_label = global_variables.standard_font_small.render(space_station.name,True,(255,255,255))
+                            surface.blit(space_station_label,space_station_position)
+                            
+                        viewpoint = (northern_inclination,eastern_inclination,projection_scaling)
+                        self.areas_of_interest[viewpoint][(space_station_position[0]-1, space_station_position[1], 2, 2)] = space_station.name
+
+                if space_station_number > 0:
+                    if northern_inclination == 0:
+                        pygame.draw.lines(surface, (60,60,60), False, orbit[0:17])
+                        pygame.draw.lines(surface, (60,60,60), False, orbit[33:100])
+                    else:
+                        pygame.draw.lines(surface, (60,60,60), False, orbit)
+
     
-                    #transpose
-                    x = x + transposition[0]
-                    y = y + transposition[1]
-                    
-                    orbit.append((x,y))
-                
-                
-#                for i in range(len(orbit),0):
-#                    x = orbit[i][0]
-#                    y = orbit[i][1]
-#                    if global_variables.window_size[0]/2 - projection_scaling/2 < x < global_variables.window_size[0]/2 - projection_scaling/2:
-#                         if global_variables.window_size[1]/2 - projection_scaling/2 < y < global_variables.window_size[1]/2 - projection_scaling/2:
-#                             orbit.pop(i)
-                
-                pygame.draw.lines(surface, (60,60,60), False, orbit)
-                
-                #Draw the space station itself
-                space_station_position = random.choice(orbit)
-                space_station_position = (int(space_station_position[0]), int(space_station_position[1]))
-
-                outer_circle_radius = 4
-                inner_circle_radius = outer_circle_radius / 2
-                
-                pygame.draw.circle(surface,(255,255,255),space_station_position,outer_circle_radius)
-                pygame.draw.circle(surface,(0,0,0),space_station_position,inner_circle_radius)
-                if projection_scaling <= 90:
-                    space_station_label = global_variables.standard_font.render(space_station["name"],True,(255,255,255))
-                    surface.blit(space_station_label,space_station_position)
-
-                
+        
+        return surface        
             
             
     def explode(self,per_hit_intensity,number_of_hits,bases_involved,mainscreen):
