@@ -328,6 +328,8 @@ class solarsystem:
                 base.owner = company_database[base_owner_name]
                 for resource in self.mineral_resources:
                     base.get_mining_opportunities(planet,resource,check_date = self.start_date)
+                
+                base.get_mining_opportunities(planet,"food",check_date = self.start_date)
         
         
         

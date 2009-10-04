@@ -246,31 +246,31 @@ class planet:
         """
         Function that will check if humans can live on the surface without housing.
         
-        Returns "Yes", "Barely", or "No"
+        Returns ""Breathable atmosphere", "Survivable atmosphere", or "Lethal atmosphere"
         
-        "Yes" is earth like
-        "Barely" is not nice, but with simple assist devices it is possible (type breathing masks from Red Mars, Green Mars, Blue Mars)
+        "Breathable atmosphere" is earth like
+        "Survivable atmosphere" is not nice, but with simple assist devices it is possible (type breathing masks from Red Mars, Green Mars, Blue Mars)
         
         FIXME add temperature at some point
         """
         
-        answer = "Yes"
+        answer = "Breathable atmosphere"
 
         if self.planet_data["athmospheric_surface_pressure_pa"] < 500000:
-            answer = "Barely"
+            answer = "Survivable atmosphere"
             if self.planet_data["athmospheric_surface_pressure_pa"] < 300000:
-                answer = "No"
+                answer = "Lethal atmosphere"
 
         if self.planet_data["athmospheric_oxygen"] < 200000:
-            answer = "Barely"
+            answer = "Survivable atmosphere"
             if self.planet_data["athmospheric_oxygen"] < 150000:
-                answer = "No"
+                answer = "Lethal atmosphere"
 
 
         if self.planet_data["athmospheric_carbondioxide"] > 3840:
-            answer = "Barely"
+            answer = "Survivable atmosphere"
             if self.planet_data["athmospheric_carbondioxide"] > 38400:
-                answer = "No"
+                answer = "Lethal atmosphere"
         
         return answer
 
@@ -532,9 +532,10 @@ class planet:
         #determines how the bases on the planet fare in the surge. Bases under water are removed.
         bases_to_remove = []
         for base in self.bases:
-            position_x_degrees = self.bases[base].position_coordinate[0]
-            position_y_degrees = self.bases[base].position_coordinate[1]
-            if (position_x_degrees, position_y_degrees) != (None,None):# space stations are not affected     
+            if self.bases[base].terrain_type != "Space":
+                position_x_degrees = self.bases[base].position_coordinate[0]
+                position_y_degrees = self.bases[base].position_coordinate[1]
+                     
                 
                 position_x_pixel = int(((position_x_degrees + 180.0 ) / 360.0) * self.action_layer.size[0])
                 position_y_pixel = int(self.action_layer.size[1] - ((position_y_degrees + 90.0 ) / 180.0) * self.action_layer.size[1])
@@ -1388,7 +1389,7 @@ class planet:
                 reverse_sphere_coordinates = []
                 base_names = []
                 for base in self.bases:
-                    if self.bases[base].position_coordinate == (None, None): #for space stations
+                    if self.bases[base].terrain_type == "Space": #for space stations
                         base_positions_here[base] = ["Space",None]
                     else:
                         sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
@@ -1427,7 +1428,7 @@ class planet:
                 east_west_span = east_border - west_border
                 north_south_span = north_border - south_border
                 for base in self.bases:
-                    if self.bases[base].position_coordinate != (None, None):
+                    if self.bases[base].terrain_type != "Space":
                         sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
                         if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
                             x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
@@ -1612,7 +1613,7 @@ class planet:
             
             space_station_number = 0 # for assigning more or less permannent position
             for space_station_name in self.bases:
-                if self.bases[space_station_name].position_coordinate == (None, None):
+                if self.bases[space_station_name].terrain_type == "Space":
                     space_station = self.bases[space_station_name]
                     
                     

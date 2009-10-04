@@ -1173,7 +1173,7 @@ class trade_window():
             self.fast_list.receive_click(event)            
         elif self.menu_position == "base bidding":
             if self.bid_button.rect.collidepoint(event.pos) == 1:
-                self.bid_button.activate(event)
+                return self.bid_button.activate(event)
         else:
             raise Exception("Unknown menu_position: " + str(self.menu_position))
         
@@ -1349,13 +1349,13 @@ class trade_window():
             if self.selections["sale_object"].for_sale_deadline <= self.solar_system_object_link.current_date:
                 print_dict = {"text":"You are too late for the bidding deadline, which was " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
                 self.solar_system_object_link.messages.append(print_dict)
-                return None
+                return "clear"
 #            else:
 #                print str(self.selections["sale_object"].for_sale_deadline) + " is ok within time-limit"        
         else:
             print_dict = {"text":"You are too late for the bidding deadline","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
-            return None
+            return "clear"
 
             
         self.selections["sale_object"].for_sale_bids[self.solar_system_object_link.current_player] = price
@@ -2557,10 +2557,9 @@ class base_and_firm_market_window():
         else:
             #buy quantity
             if isinstance(firm_selected, company.merchant):
-                print "NEED TO SET quantity range for a merchant. Defaulting to 100"
-                quantity_max = 100
+                quantity_max = (firm_selected.from_location.population + firm_selected.to_location.population) / 2 
             else:
-                quantity_max = firm_selected.input_output_dict["input"][resource] * 10
+                quantity_max = firm_selected.input_output_dict["input"][resource] * 50
 
 
         quantity_range = (0,quantity_max)
@@ -2575,17 +2574,22 @@ class base_and_firm_market_window():
         else:
             market = firm_selected.location.market
             
+            
+        
+        max_price = 0
+        
+        if initial_price is not None:
+            max_price = max(initial_price, max_price)
+    
         if len(market["buy_offers"][resource]) > 0:
-            max_price = market["buy_offers"][resource][0]["price"]
-        else:
-            max_price = 10
+            max_price = max(market["buy_offers"][resource][0]["price"], max_price)
+
         for transaction in market["transactions"][resource]:
             max_price = max(max_price, transaction["price"])
+        
             
-        price_range = (0,int(max_price * 2))
-        if initial_price is None:
-            initial_price = max_price
-                
+        price_range = (0,int(max_price * 2))    
+        
         
 #        print "initial_quantity: " + str(initial_quantity)
 #        print "quantity_range: " + str(quantity_range)
@@ -2612,13 +2616,18 @@ class base_and_firm_market_window():
             self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
             pygame.display.update(price_rect)
             
-
+        if price_range[0] > int(initial_price) or int(initial_price) > price_range[1]:
+            print int(max_price)
+            print price_range
+            raise Exception("This has been observed before... check print outs")
+        
+        
         self.price_bar = gui_components.hscrollbar(self.action_surface, 
                                   price_execute, 
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-20, 
                                   price_range, 
-                                  start_position = int(initial_price), 
+                                  start_position = int(max_price), 
                                   function_parameter=price_rect)
 
 
@@ -2718,7 +2727,16 @@ class base_and_firm_market_window():
                 return
             own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
         elif direction == "sell":
-            if quantity > firm_selected.stock_dict[resource]:
+            if isinstance(firm_selected, company.merchant):
+                if market == firm_selected.from_location.market:
+                    quantity_available = firm_selected.from_stock_dict[resource]
+                elif market == firm_selected.to_location.market:
+                    quantity_available = firm_selected.to_stock_dict[resource]
+                else:
+                    raise Exception("Unknown direction for merchant type firm")
+            else:
+                quantity_available = firm_selected.stock_dict[resource]
+            if quantity > quantity_available:
                 print_dict = {"text":firm_selected.name + " only has " + str(firm_selected.stock_dict[resource]) + " " + str(unit) + " and can't offer " + str(quantity) + " for sale","type":"general gameplay info"}
                 self.solar_system_object_link.messages.append(print_dict)
                 return
@@ -2763,7 +2781,7 @@ class base_and_firm_market_window():
             
             else: #if we are in history or market mode
                 if self.bidding_mode: #if the graphs accept bids we start the bidding sections up
-                    print "the graph will now accept your bid"
+                    
                     if self.graph_selected == "market bids":
                         top_of_plot = self.rect[1] + self.frame_size  + 21
                         self.blank_area_in_middle_height
@@ -2805,7 +2823,7 @@ class base_and_firm_market_window():
                             else:
                                 quantity = None
                         
-                            print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
+#                            print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
                             self.make_manual_bid(price,quantity)
                                 
     

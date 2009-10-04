@@ -1349,21 +1349,24 @@ class base(firm):
 
 	def check_terrain_type(self):
 		"""
-		Function that checks what type of terrain the base is in
+		Function that checks what type of terrain the base is in.
+		The reason for a per-base decision is
 		"""
 		if self.position_coordinate == (None, None):
-			return "space"
+			return "Space"
 		
 		#check atmospheric safety
 		environmental_safety = self.home_planet.check_environmental_safety()
 		
 		#check local safety (radiation)
-		print "start check"
+		
 		try:  self.home_planet.action_layer
-		except:   pass
+		except:   pass #print "Didn't find any action layer for " + self.home_planet.name
 		else:
 			print self.home_planet.action_layer
-		
+#		print "returning " + environmental_safety + " for " + self.name
+		return environmental_safety
+
 
 	def calculate_demand_reaction(self):
 		"""
@@ -1450,10 +1453,6 @@ class base(firm):
 			#they always price the stuff at the level of demand and their income
 			price = (base_demand_dict[resource] / bitternes_of_base) * (self.wages * self.population / quantity_wanted)
 
-#			if self.name == "zygote":
-#				print "in zygote price for " + resource + " is " + str(price) + " because the base_demand is + " + str(base_demand_dict[resource]) + " and bitternes_of_base " + str(bitternes_of_base) + " and self.wages " + str(self.wages) + " and quantity_wanted " + str(quantity_wanted)
-
-			
 			
 			if quantity_wanted * price <= self.owner.capital and quantity_wanted > 0 and price > 0:
 				buy_offer = {"resource":resource,"price":price,"buyer":self,"name":self.name,"quantity":quantity_wanted,"date":self.solar_system_object_link.current_date}
@@ -1706,7 +1705,7 @@ class base(firm):
 		Function to calculate the trade routes of a base. Takes a planet instance and 
 		uses that to calculate networks to other bases. 
 		"""
-		if self.position_coordinate != (None, None): #only ground bases
+		if self.terrain_type != "Space": #only ground bases
 			distance_dict = {}
 			if self.population > 0:
 				number_of_trade_routes = min(int(math.log10(self.population)), len(planet.bases)-1)
@@ -1740,7 +1739,7 @@ class base(firm):
 		else: #space station trade route
 			possible_space_ports = []
 			for other_base in planet.bases.values():
-				if other_base.position_coordinate != (None, None): #don't connect to other space stations
+				if other_base.terrain_type != "Space": #don't connect to other space stations
 					if other_base.original_country == self.original_country:
 						possible_space_ports.append(other_base)
 #			print self.name + " has " +str(len(possible_space_ports))  + " possible space port. no 1 is " + str(possible_space_ports[0].name)
@@ -1774,7 +1773,7 @@ class base(firm):
 		range_km = 400 #the width in km's of the farthest interval
 
 		#for space stations
-		if self.position_coordinate == (None, None):
+		if self.terrain_type == "Space":
 			return 0
 
 		try:self.mining_opportunities[resource]
@@ -1782,15 +1781,13 @@ class base(firm):
 			mining_opportunity_exists = False
 		else:
 			mining_opportunity_exists = True
-			
+		
 		if mining_opportunity_exists and check_date is not None:
 			if self.mining_opportunities[resource]["check_date"] is None:
 				perform_calculation = True
 			else:
 				old_date = self.mining_opportunities[resource]["check_date"]
-				
 				time_difference = (check_date - old_date)
-				print "time_difference: " + str(time_difference)
 				if time_difference.days > update_interval:
 					perform_calculation = True
 				else:
@@ -1803,6 +1800,22 @@ class base(firm):
 
 		
 		else:
+			if resource == "food":
+				if self.terrain_type == "Breathable atmosphere":
+					food_multiplier = 1
+				elif self.terrain_type == "Survivable atmosphere":
+					food_multiplier = 0.8
+				else:
+					food_multiplier = 0.4
+				
+				earth_sun_distance = self.solar_system_object_link.planets["earth"].planet_data["semi_major_axis"]
+				effective_sun_distance = float(max(self.home_planet.planet_data["semi_major_axis"], earth_sun_distance))
+				food_multiplier = ((earth_sun_distance / effective_sun_distance) ** 0.5) * food_multiplier
+				self.mining_opportunities[resource] = {"sum_of_resources":food_multiplier * 100,"check_date":check_date}
+				return food_multiplier * 100
+
+			
+			
 			try: planet.resource_maps[resource]
 			except:
 				planet.calculate_resource_map(resource)
@@ -1888,6 +1901,9 @@ class base(firm):
 				return sum_of_resources
 					
 			else: #creating the image of a resource overlay around a base
+				if resource == "food":
+					raise Exception("It should not be possible to ask for a food resource map")
+				
 				territory_mask = Image.new("L",resource_map.size,0)
 				for distance in resource_matrix:
 					for pixels in resource_matrix[distance]:
@@ -2131,3 +2147,4 @@ class merchant(tertiary):
 
 
 
+ 

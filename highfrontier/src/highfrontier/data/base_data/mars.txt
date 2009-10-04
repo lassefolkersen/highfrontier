@@ -1,0 +1,6 @@
+dataname	northern_loc	eastern_loc	population	country	GDP_per_capita_in_dollars
+datatype	float	float	int	string	float
+Robinson Landing	-26.32	-48.84	500009	denmark	6937.909
+Zygote	-31.6	-60.69	500365	denmark	6606.27
+Beagle	NA	NA	100	denmark	10000
+
