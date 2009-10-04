@@ -390,8 +390,9 @@ class company:
 			if self.automation_dict["Pick research (pick research automatically)"]:
 			 	self.pick_research()
  			else: #FIXME
-				print_dict = {"text":self.name + " needs to pick a technology. Go to the technology window","type":"general gameplay info"}
-				self.solar_system_object_link.messages.append(print_dict)
+				if self.research > 0:
+					print_dict = {"text":self.name + " needs to pick a technology. Go to the technology window","type":"general gameplay info"}
+					self.solar_system_object_link.messages.append(print_dict)
 				
 				
 
@@ -1297,8 +1298,6 @@ class base(firm):
 	"""
 	
 	def __init__(self,solar_system_object,base_name,home_planet,base_data,owner):
-#		self._signals["transaction"] = []
-		
 		self.location = self
 		self.name = base_name
 		self.base_name = base_name
@@ -1323,7 +1322,7 @@ class base(firm):
 		self.technology_name = "Base"
 		self.size = self.population
 		
-		
+		self.terrain_type = self.check_terrain_type()
 		
 		self.starving = "No" #reset to "No" every Year end, but set to "A little" or "A lot" by various events. Has impact on growth. 
 		self.lacks_housing = "No" #reset to "No" every Year end, but set to "A little" or "A lot" by various events. Has impact on growth.
@@ -1348,7 +1347,23 @@ class base(firm):
 			self.stock_dict[resource] = 0
 
 
-
+	def check_terrain_type(self):
+		"""
+		Function that checks what type of terrain the base is in
+		"""
+		if self.position_coordinate == (None, None):
+			return "space"
+		
+		#check atmospheric safety
+		environmental_safety = self.home_planet.check_environmental_safety()
+		
+		#check local safety (radiation)
+		print "start check"
+		try:  self.home_planet.action_layer
+		except:   pass
+		else:
+			print self.home_planet.action_layer
+		
 
 	def calculate_demand_reaction(self):
 		"""
@@ -1553,22 +1568,13 @@ class base(firm):
 
 		# if housing is lacking, a lot more people will die if the environment is unfriendly.
 		if housing_modifier < 0:
-			environmental_safety = self.home_planet.check_environmental_safety()
-#			if self.name == "stockholm":
-#				print self.home_planet.planet_data["athmospheric_surface_pressure_pa"]
-#				print self.home_planet.planet_data["athmospheric_oxygen"]
-#				print self.home_planet.planet_data["athmospheric_carbondioxide"]
-#				print "For stockholm the answer is " + str(environmental_safety)
-				
-			if environmental_safety == "Barely":
+			if self.terrain_type in ["Barely survivable"]:
 				housing_modifier = housing_modifier * 2
-			if environmental_safety == "No":
+			if self.terrain_type in ["Space","No atmosphere","Radiation"]:
 				housing_modifier = housing_modifier * 4
 		
 		growth_percent = base_growth_percent + starving_modifier + housing_modifier
 		
-#		if self.name in ["zygote","stockholm"]:
-#			print self.name + " grew by " + str(int(100*growth_percent)) + "%, which equals " + str(int(self.population*growth_percent)) + " persons"
 
 		if self.home_planet.solar_system_object_link.effectuate_growth_and_migration:
 			self.population = int(self.population * (1.0 + growth_percent))
@@ -1625,10 +1631,13 @@ class base(firm):
 		if self.picture_file != None:
 			file_name_and_path = self.picture_file
 		else:
-			if os.access(os.path.join("images","base",self.home_planet.planet_name),os.R_OK):
-				planet_base_dir = os.path.join("images","base",self.home_planet.planet_name)
+			if self.position_coordinate == (None, None):
+				planet_base_dir = os.path.join("images","base","space")
 			else:
-				planet_base_dir = os.path.join("images","base","other")
+				if os.access(os.path.join("images","base",self.home_planet.planet_name),os.R_OK):
+					planet_base_dir = os.path.join("images","base",self.home_planet.planet_name)
+				else:
+					planet_base_dir = os.path.join("images","base","other")
 
 			file_name = self.base_name + ".jpg"
 			file_list = []
@@ -1697,39 +1706,57 @@ class base(firm):
 		Function to calculate the trade routes of a base. Takes a planet instance and 
 		uses that to calculate networks to other bases. 
 		"""
-		
-		distance_dict = {}
-		if self.population > 0:
-			number_of_trade_routes = min(int(math.log10(self.population)), len(planet.bases)-1)
-		else:
-			number_of_trade_routes = 0
-		
-		position_one = (self.position_coordinate[0],self.position_coordinate[1])
-		
-		search_length = 0
-		search_increment = 1
-		while len(self.trade_routes) < number_of_trade_routes: 
+		if self.position_coordinate != (None, None): #only ground bases
+			distance_dict = {}
+			if self.population > 0:
+				number_of_trade_routes = min(int(math.log10(self.population)), len(planet.bases)-1)
+			else:
+				number_of_trade_routes = 0
 			
-			search_length = search_length + search_increment
-			if search_length > 180:
-				break
-			for other_base in planet.bases.values():
-				if other_base.base_name != self.base_name:
-					position_two = (other_base.position_coordinate[0],other_base.position_coordinate[1])
-					if position_one[0] - search_length < position_two[0] < position_one[0] + search_length and position_one[1] - search_length < position_two[1] < position_one[1] + search_length:
-						if not other_base.base_name in self.trade_routes.keys():
-							
-							if len(other_base.trade_routes) < int(math.log10(other_base.population)):
-								distance = planet.calculate_distance(position_one,position_two)
-								
-								transport_type = "ground transport"
-								endpoints = [other_base.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
-								endpoint_links = [other_base,self]
-								trade_route = {"distance":distance[0],"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
-								self.trade_routes[other_base.base_name] = trade_route
-								other_base.trade_routes[self.base_name] = trade_route
-								#print trade_route
+			position_one = (self.position_coordinate[0],self.position_coordinate[1])
+			
+			search_length = 0
+			search_increment = 1
+			while len(self.trade_routes) < number_of_trade_routes: 
 				
+				search_length = search_length + search_increment
+				if search_length > 180:
+					break
+				for other_base in planet.bases.values():
+					if other_base.base_name != self.base_name:
+						position_two = (other_base.position_coordinate[0],other_base.position_coordinate[1])
+						if position_one[0] - search_length < position_two[0] < position_one[0] + search_length and position_one[1] - search_length < position_two[1] < position_one[1] + search_length:
+							if not other_base.base_name in self.trade_routes.keys():
+								
+								if len(other_base.trade_routes) < int(math.log10(other_base.population)):
+									distance = planet.calculate_distance(position_one,position_two)
+									
+									transport_type = "ground transport"
+									endpoints = [other_base.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
+									endpoint_links = [other_base,self]
+									trade_route = {"distance":distance[0],"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+									self.trade_routes[other_base.base_name] = trade_route
+									other_base.trade_routes[self.base_name] = trade_route
+		else: #space station trade route
+			possible_space_ports = []
+			for other_base in planet.bases.values():
+				if other_base.position_coordinate != (None, None): #don't connect to other space stations
+					if other_base.original_country == self.original_country:
+						possible_space_ports.append(other_base)
+#			print self.name + " has " +str(len(possible_space_ports))  + " possible space port. no 1 is " + str(possible_space_ports[0].name)
+			if len(possible_space_ports) == 0:
+				raise Exception("No possible space ports for " + str(self.name))
+			space_port = random.choice(possible_space_ports)
+			distance = planet.gravity_at_surface #fixme? for now the distance is set to gravity_at_surface to give the escape velocity
+			transport_type = "space transport"
+			endpoints = [space_port.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
+			endpoint_links = [space_port,self]
+			trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+			self.trade_routes[space_port.base_name] = trade_route
+			space_port.trade_routes[self.base_name] = trade_route
+						
+			
+					
 	
 	def get_mining_opportunities(self,planet,resource,check_date = None, show_area=False):
 		"""
@@ -1746,6 +1773,9 @@ class base(firm):
 		cost_addition_for_distance = 2 #the factor which is multiplied to the distance when calculating costs
 		range_km = 400 #the width in km's of the farthest interval
 
+		#for space stations
+		if self.position_coordinate == (None, None):
+			return 0
 
 		try:self.mining_opportunities[resource]
 		except: 
@@ -1870,7 +1900,6 @@ class base(firm):
 		
 		
 
-		
 
 
 
