@@ -283,9 +283,10 @@ class company:
 		if len(self.home_cities)==0:
 			potential_bases = []
 			for planet in solar_system_object.planets.values():
-				for base in planet.bases.values():
-					potential_bases.append(base)
-			new_home_city = potential_bases[random.randint(0,len(potential_bases)-1)]
+				for base_names in planet.bases:
+					potential_bases.append(base_names)
+			new_home_city_name = random.choice(potential_bases)
+#			print "made a list of " + str(len(potential_bases)) + " and picked from this " + str(new_home_city_name)
 		else:
 			potential_base_names = []
 			for planet in solar_system_object.planets.values():
@@ -308,13 +309,13 @@ class company:
 
 				new_home_city_name = None
 			
-			if new_home_city_name is None:
-				new_home_city = None
-			else:
-				for planet in solar_system_object.planets.values():
-					for base in planet.bases.values():
-						if base.base_name == new_home_city_name:
-							new_home_city = base
+		if new_home_city_name is None:
+			new_home_city = None
+		else:
+			for planet in solar_system_object.planets.values():
+				for base in planet.bases.values():
+					if base.base_name == new_home_city_name:
+						new_home_city = base
 			
 		return new_home_city
 
@@ -325,6 +326,10 @@ class company:
 		Most importantly it will close all firms 
 		Later expansions might includes rules for selling off of values
 		"""
+		if self.solar_system_object_link.company_selected == self:
+			self.solar_system_object_link.company_selected = None
+
+		
 		close_these_firms = []
 		for firm_name in self.owned_firms:
 			firm_instance = self.owned_firms[firm_name]
@@ -369,6 +374,12 @@ class company:
 		This function will also save the company capital in self.company_accounting for later plotting 
 		
 		"""
+		#making sure at least one home_city is found
+		if len(self.home_cities) == 0:
+			new_home_city = self.expand_home_cities(self.solar_system_object_link)
+			self.home_cities[new_home_city.name] = new_home_city
+			
+		
 		
 		#checking if research is obtained:
 		if self.research >= self.target_technology_cost and self.target_technology is not None:
@@ -848,6 +859,10 @@ class firm():
 		Most importantly it will withdraw all bids in the market
 		But later expansions might includes rules for selling of values
 		"""
+		if self.solar_system_object_link.firm_selected == self:
+			self.solar_system_object_link.firm_selected = None
+		
+		
 		if self.owner == self.solar_system_object_link.current_player:
 				print_dict = {"text":"The firm " + self.name + " is up for closing","type":"firm info"}
 				self.solar_system_object_link.messages.append(print_dict)
@@ -1273,11 +1288,20 @@ class firm():
 						
 					self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict[output_resource]
 
+				#adding byproducts to the atmosphere
 				for byproduct in self.input_output_dict["byproducts"]:
-					self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct])
+					self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct] * number_of_rounds)
 					if self.owner == self.solar_system_object_link.current_player: 
-						print_dict = {"text":"changed " + byproduct + " with " + str(self.input_output_dict["byproducts"][byproduct]) + " units on " + str(self.location.home_planet.name),"type":"firm info"}
+						print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(self.input_output_dict["byproducts"][byproduct] * number_of_rounds) + " units on " + str(self.location.home_planet.name),"type":"climate"}
 						self.solar_system_object_link.messages.append(print_dict)
+				
+				for resource in self.input_output_dict["output"]:
+					if resource in self.solar_system_object_link.mineral_resources:
+						self.location.mining_performed[resource] = self.location.mining_performed[resource] + number_of_rounds * self.input_output_dict["output"][resource]
+						if self.owner == self.solar_system_object_link.current_player: 
+							print_dict = {"text":self.name + " mined " + primitives.nicefy_numbers(int(number_of_rounds * self.input_output_dict["output"][resource])) + " on " + str(self.location.home_planet.name),"type":"mining"}
+							self.solar_system_object_link.messages.append(print_dict)
+						
 
 				
 						
@@ -1343,6 +1367,11 @@ class base(firm):
 		self.last_accounting = self.solar_system_object_link.current_date
 		self.accounting = []
 		self.mining_opportunities = {}
+		self.mining_performed = {} #a dictionary with the amount of mined materials taken from the ground, used for updating mining.
+		for resource in self.solar_system_object_link.mineral_resources:
+			self.mining_performed[resource] = 0
+
+		
 		self.market = self.initialize_market() #a dictionary of traded resources as keys, and lists of past transaction as value
 		
 		
@@ -1350,9 +1379,11 @@ class base(firm):
 		
 
 		self.stock_dict = {}
+		
 		for resource in self.solar_system_object_link.trade_resources:
 			if self.solar_system_object_link.trade_resources[resource]["demanded_by_base"]:
 				self.stock_dict[resource] = self.population
+		
 		for resource in self.input_output_dict["output"]:
 			self.stock_dict[resource] = 0
 
@@ -1534,9 +1565,6 @@ class base(firm):
 								print_dict = {"text":"The base " + self.name + " has lost all of its population due to migration","type":"base info"}
 								self.solar_system_object_link.messages.append(print_dict)
 						
-		
-			
-
 
 	def calculate_growth_and_deaths(self):
 		"""
@@ -1765,7 +1793,8 @@ class base(firm):
 			space_port.trade_routes[self.base_name] = trade_route
 						
 			
-					
+
+
 	
 	def get_mining_opportunities(self,planet,resource,check_date = None, show_area=False):
 		"""
@@ -1792,28 +1821,29 @@ class base(firm):
 			mining_opportunity_exists = False
 		else:
 			mining_opportunity_exists = True
-		
 		if mining_opportunity_exists and check_date is not None:
 			if self.mining_opportunities[resource]["check_date"] is None:
 				perform_calculation = True
+
 			else:
 				old_date = self.mining_opportunities[resource]["check_date"]
 				time_difference = (check_date - old_date)
 				if time_difference.days > update_interval:
 					perform_calculation = True
+
 				else:
 					perform_calculation = False
+
 		else:
 			perform_calculation = True
 		
 		if perform_calculation is False and show_area is False:
 			return self.mining_opportunities[resource]["sum_of_resources"]
 
-		
 		else:
 			if resource == "food":
 				if self.terrain_type == "Breathable atmosphere":
-					food_multiplier = 1
+					food_multiplier = 1.0
 				elif self.terrain_type == "Survivable atmosphere":
 					food_multiplier = 0.8
 				else:
@@ -1825,67 +1855,89 @@ class base(firm):
 				self.mining_opportunities[resource] = {"sum_of_resources":food_multiplier * 20,"check_date":check_date}
 				return food_multiplier * 20
 
-			
-			
-			try: planet.resource_maps[resource]
-			except:
-				planet.calculate_resource_map(resource)
+			else:#mineral resources
+				try: planet.resource_maps[resource]
+				except:
+					planet.calculate_resource_map(resource)
+					
+				resource_map = planet.resource_maps[resource]
+				resource_map = resource_map.convert("L")
+				distance_data = global_variables.distance_data
+				#max_distance_in_matrix_degrees = distance_data["steps"] * distance_data["step_size"]
+				planet_circumference = planet.planet_diameter_km * math.pi
+				distance_matrix = distance_data["distance_matrix"]
 				
-			resource_map = planet.resource_maps[resource]
-			resource_map = resource_map.convert("L")
-			distance_data = global_variables.distance_data
-			#max_distance_in_matrix_degrees = distance_data["steps"] * distance_data["step_size"]
-			planet_circumference = planet.planet_diameter_km * math.pi
-			distance_matrix = distance_data["distance_matrix"]
-			
-			eastern_loc_degrees = self.position_coordinate[0]
-			northern_loc_degrees = -self.position_coordinate[1]
-			northern_loc_px = int((northern_loc_degrees + 90)/ 4)
-			eastern_loc_px = int((eastern_loc_degrees + 180) / 4)
-			resource_extrema = (resource_map.getextrema()[0] , resource_map.getextrema()[1] +1)
-			
-			#calculating a resource matrix - which is a dictionary, starting with distance as keys, then with positions at that distance as keys, and then finally with the resource_concentration as value.
-			resource_matrix = {}
-			distance_matrix_here = distance_matrix[(0,northern_loc_px)]
-			
-			max_distance_step_degrees = (float(range_km) / float(planet_circumference)) * 360.0
-			max_distance_step_degrees_rounded = int(max_distance_step_degrees / distance_data["step_size"]) * distance_data["step_size"]
-			if max_distance_step_degrees_rounded >= (distance_data["step_size"] * distance_data["steps"]):
-				#print "it is long"
-				max_distance_step_degrees_rounded = distance_data["step_size"] * (distance_data["steps"]-1)
-			if max_distance_step_degrees_rounded == 0:
-				max_distance_step_degrees_rounded = distance_data["step_size"] * 1
-				#print "it is short"
+				eastern_loc_degrees = self.position_coordinate[0]
+				northern_loc_degrees = -self.position_coordinate[1]
+				northern_loc_px = int((northern_loc_degrees + 90)/ 4)
+				eastern_loc_px = int((eastern_loc_degrees + 180) / 4)
+#				resource_extrema = (resource_map.getextrema()[0] , resource_map.getextrema()[1] +1)
+				resource_extrema = (50, 255)
 
-			
-			new_distance_matrix_here = {}
-			for i in range(0,max_distance_step_degrees_rounded  + distance_data["step_size"] ,distance_data["step_size"]):
-				new_distance_matrix_here[i] = distance_matrix_here[i]
 				
-			del distance_matrix_here
-			distance_matrix_here = new_distance_matrix_here
+				#calculating a resource matrix - which is a dictionary, starting with distance as keys, then with positions at that distance as keys, and then finally with the resource_concentration as value.
+				resource_matrix = {}
+				distance_matrix_here = distance_matrix[(0,northern_loc_px)]
+				
+				max_distance_step_degrees = (float(range_km) / float(planet_circumference)) * 360.0
+				max_distance_step_degrees_rounded = int(max_distance_step_degrees / distance_data["step_size"]) * distance_data["step_size"]
+				if max_distance_step_degrees_rounded >= (distance_data["step_size"] * distance_data["steps"]):
+					#print "it is long"
+					max_distance_step_degrees_rounded = distance_data["step_size"] * (distance_data["steps"]-1)
+				if max_distance_step_degrees_rounded == 0:
+					max_distance_step_degrees_rounded = distance_data["step_size"] * 1
+					#print "it is short"
+	
+				
+				new_distance_matrix_here = {}
+				for i in range(0,max_distance_step_degrees_rounded  + distance_data["step_size"] ,distance_data["step_size"]):
+					new_distance_matrix_here[i] = distance_matrix_here[i]
+					
+				del distance_matrix_here
+				distance_matrix_here = new_distance_matrix_here
+	
+				for distance in distance_matrix_here:
+					resource_matrix[distance] = {}
+					for zero_position in distance_matrix_here[distance]:
+						
+						real_position = (zero_position[0] +  eastern_loc_px,zero_position[1])
+						
+						if not 0 < real_position[0] < resource_map.size[0]:
+							if 0 > real_position[0]:
+								#print "too small"
+								real_position = (zero_position[0] +  eastern_loc_px + resource_map.size[0],zero_position[1])
+							else:
+								#print "too big"
+								real_position = (zero_position[0] +  eastern_loc_px - resource_map.size[0],zero_position[1])
+		
+						#print real_position
+						real_position = (int(real_position[0]), int(real_position[1])) #this has been shown to be necessary on linux computeres for some reason
+						resource_value = (100*(resource_map.getpixel(real_position) - resource_extrema[0])) / (resource_extrema[1] - resource_extrema[0])
 
-			for distance in distance_matrix_here:
-				resource_matrix[distance] = {}
-				for zero_position in distance_matrix_here[distance]:
+						resource_matrix[distance][real_position] = resource_value
+						
+			
+			
+			#adjusting the resource levels of the planet in case there has been extensive mining
+			if self.mining_performed[resource] > 0:
+				deposit_reduction = (self.mining_performed[resource] / 50000.0) / global_variables.mineral_deposit_size_multiplier
+#				print "Deposit_reduction: " + str(deposit_reduction)
+				if deposit_reduction > 1:
+					deposit_reduction_rest = deposit_reduction % 1
+#					print "In " + self.name + " a " + resource + " deposit_reduction of " + str(int(deposit_reduction)) + " is taken place. From " + str (self.mining_performed[resource]) + " There was a deposit rest of " + str(deposit_reduction_rest) + " so " + str(50000.0 * global_variables.mineral_deposit_size_multiplier * deposit_reduction_rest) + " was left in mined pool"
 					
-					real_position = (zero_position[0] +  eastern_loc_px,zero_position[1])
-					
-					if not 0 < real_position[0] < resource_map.size[0]:
-						if 0 > real_position[0]:
-							#print "too small"
-							real_position = (zero_position[0] +  eastern_loc_px + resource_map.size[0],zero_position[1])
-						else:
-							#print "too big"
-							real_position = (zero_position[0] +  eastern_loc_px - resource_map.size[0],zero_position[1])
-	
-					#print real_position
-                                        real_position = (int(real_position[0]), int(real_position[1])) #this has been shown to be necessary on linux computeres for some reason
-					resource_value = (100*(resource_map.getpixel(real_position) - resource_extrema[0])) / (resource_extrema[1] - resource_extrema[0])
-					resource_matrix[distance][real_position] = resource_value
-					
-	
-					
+#					print self.name + " is performing adjustment of " + primitives.nicefy_numbers(self.mining_performed[resource]) + " mined units of " + resource + " map with " + str(int(deposit_reduction)) + " units"		
+					self.mining_performed[resource] = 50000.0 * global_variables.mineral_deposit_size_multiplier * deposit_reduction_rest 
+					for distance in resource_matrix:
+						for pixels in resource_matrix[distance]:
+							original_tuple = planet.resource_maps[resource].getpixel(pixels)
+							
+							reduced_value = int(original_tuple[1] - int(deposit_reduction) * (4 - distance))
+							new_tuple= (original_tuple[0], reduced_value, original_tuple[2])
+							
+							planet.resource_maps[resource].putpixel(pixels,new_tuple)
+						
+
 			
 			
 			

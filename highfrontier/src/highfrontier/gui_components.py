@@ -263,19 +263,19 @@ class hscrollbar():
             raise Exception("range_of_values must be a tuple of length 2")
         
         if range_of_values[1] < range_of_values[0]:
-            raise Exception("the first entry in range_of_values must be smaller than the second")
+            raise Exception("the first entry in range_of_values must be smaller than the second: " + str(range_of_values))
         
         if range_of_values[0] < 0 or range_of_values[1] < 0:
-            raise Exception("range_of_values cannot contain negative entries")
+            raise Exception("range_of_values cannot contain negative entries: " + str(range_of_values))
         
         if not isinstance(range_of_values[0], int): 
-            raise Exception("range_of_values[0] must be an integer")
+            raise Exception("range_of_values[0] must be an integer. It was " + str(range_of_values[0]))
         
         if not isinstance(range_of_values[1], int):
-            raise Exception("range_of_values[0] must be an integer")
+            raise Exception("range_of_values[1] must be an integer. It was " + str(range_of_values[1]))
         
         if start_position < range_of_values[0] or start_position > range_of_values[1]:
-            raise Exception("start position must be within the range_of_values")
+            raise Exception("start position must be within the range_of_values. It was " + str(start_position) + " and range_of_values were: " + str(range_of_values))
         
         if range_of_values[1] - range_of_values[0] <= 0:
             self.unmovable = True

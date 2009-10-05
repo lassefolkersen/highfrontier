@@ -44,5 +44,4 @@ karachi	24.86	67.01	12461423	pakistan	908.933
 bombay	18.96	72.82	13662885	india	977.738
 shanghai	31.23	121.47	15584627	china	2460.786
 stockholm	59.33	18.07	1265999	sweden	49654.869
-ISS	NA	NA	100	denmark	10000
 
