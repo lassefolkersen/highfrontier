@@ -471,7 +471,10 @@ class market_decisions:
         
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
-                quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
+                if not isinstance(self, company.base_construction):
+                    quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
                 try: market["sell_offers"][resource][0]
                 except:
                     price = float(random.randint(1,100)) 
@@ -504,8 +507,12 @@ class market_decisions:
                     price = 10 
                 price = float(price * self.urgency[resource])
                 self.urgency[resource] = self.urgency[resource] * 1.5
-                quantity_wanted = int(self.input_output_dict["input"][resource]) * timeframe_considered 
                 
+                if not isinstance(self, company.base_construction):
+                    quantity_wanted = int(self.input_output_dict["input"][resource]) * timeframe_considered 
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
+
                 if quantity_wanted * price > self.owner.capital:
                     quantity_wanted = int(self.owner.capital / price )
                 
@@ -545,7 +552,10 @@ class market_decisions:
                 price = random.random() * (max(prices)-min(prices)) + min(prices)
                 
 
-                quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
+                if not isinstance(self, company.base_construction):
+                    quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
                 
                 if quantity_wanted > 1:
                     if quantity_wanted * price <= self.owner.capital:
@@ -595,7 +605,13 @@ class market_decisions:
         
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
-                quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
+                
+                if not isinstance(self, company.base_construction):
+                    quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource] 
+
+                
                 try: market["sell_offers"][resource][0]
                 except:
                     price = chosen_price_of_input_per_unit  
