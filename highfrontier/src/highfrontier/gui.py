@@ -145,11 +145,14 @@ class gui():
         elif sol.display_mode == "planetary":
             self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))                        
         elif sol.display_mode == "base":
-            self.going_to_base_mode_event(sol.current_planet.current_base)
+            if sol.current_planet.current_base is not None:
+                self.going_to_base_mode_event(sol.current_planet.current_base)
         elif sol.display_mode == "firm":
-            self.going_to_firm_window_event(sol.firm_selected)
+            if sol.firm_selected is not None:
+                self.going_to_firm_window_event(sol.firm_selected)
         elif sol.display_mode == "company":
-            self.going_to_company_window_event(sol.company_selected)
+            if sol.company_selected is not None:
+                self.going_to_company_window_event(sol.company_selected)
         elif sol.display_mode in ["techtree"]:
             pass
         else:
@@ -927,6 +930,7 @@ class overlay_window():
         sol.current_planet.planet_display_mode = type_of_overlay
         surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         self.action_surface.blit(surface,(0,0))
+        self.create()
         pygame.display.flip()
 
 #    def (self,button_name,function_parameter):
@@ -950,7 +954,13 @@ class overlay_window():
         
         labels = ["visible light","trade network","topographical"] + self.solar_system_object_link.mineral_resources
 
-        self.radiobuttons = gui_components.radiobuttons(labels, self.action_surface, self.overlay_set, function_parameter = None, topleft = (self.rect[0] + 10 , self.rect[1] + 10), selected = None)
+        self.radiobuttons = gui_components.radiobuttons(
+                                                        labels, 
+                                                        self.action_surface, 
+                                                        self.overlay_set, 
+                                                        function_parameter = None, 
+                                                        topleft = (self.rect[0] + 10 , self.rect[1] + 10), 
+                                                        selected = self.solar_system_object_link.current_planet.planet_display_mode)
         
         
 
@@ -2489,8 +2499,6 @@ class base_and_firm_market_window():
                 y_position = int(self.graph_rect[3] - (self.frame_size + ( (self.graph_rect[3]-self.frame_size*2) * (price[i] - ylim[0]) / (ylim[1]-ylim[0]) )))
                 try: dot_size = int(math.log10(quantity[i]))
                 except:
-                    print "DEBUGGING WARNING: quantity in a depicted transaction was " + str(quantity[i]) + " and this made the log function crash. You should probably look into the market functions and investigate why some bids are 0 or negative"
-                    print "all quantities: " + str(quantity)
                     dot_size = 1
                 pygame.draw.circle(history_surface,(0,0,0),(x_position,y_position),dot_size)
                 

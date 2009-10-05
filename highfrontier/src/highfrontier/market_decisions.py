@@ -117,7 +117,13 @@ class market_decisions:
         if research_ratio < self.company_database["desired_research"]:
             #determine location (this can be expanded a lot)
             home_city_names = self.home_cities.keys()
-            location_choice_name = random.choice(home_city_names)
+            
+            try:    location_choice_name = random.choice(home_city_names)
+            except: 
+                print self.name
+                print self.home_cities
+                raise Exception("This bug has been observed before and probably results from a company not having any home_cities")
+            
             location_choice = self.home_cities[location_choice_name]
             
             desired_research_size = (research_volume + non_research_volume) * self.company_database["desired_research"] 

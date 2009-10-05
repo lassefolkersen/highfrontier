@@ -39,7 +39,18 @@ class planet:
         self.eastern_inclination = 0
         self.northern_inclination = 0
         self.gravity_at_surface = planet_data["gravity_at_surface"]
-        self.surface_area = 4 * math.pi * ((planet_data["diameter_km"]*0.5) ** 2) 
+        self.surface_area = 4 * math.pi * ((planet_data["diameter_km"]*0.5) ** 2)
+        
+         
+        self.athmospheric_surface_pressure_pa = self.planet_data["athmospheric_carbondioxide"]
+        self.athmospheric_nitrogen = self.planet_data["athmospheric_carbondioxide"]
+        self.athmospheric_carbondioxide = self.planet_data["athmospheric_carbondioxide"]
+        self.athmospheric_oxygen = self.planet_data["athmospheric_oxygen"]
+        self.athmospheric_helium = self.planet_data["athmospheric_helium"]
+        self.athmospheric_hydrogen = self.planet_data["athmospheric_hydrogen"]
+        
+        
+        
         
         
         self.areas_of_interest = {}
@@ -95,16 +106,38 @@ class planet:
         
         ton_per_pa_here = ton_per_pa_on_earth * gravity_at_surface_ratio / surface_area_ratio 
         
+        
+        ton_per_pa_here = ton_per_pa_here / (global_variables.gas_change_multiplier * 100000) # for fine tuning in global variables. The number is to try to keep 100.0 a standard value.
+        
         if str("athmospheric_" + gas) in self.planet_data.keys():
-            before = self.planet_data["athmospheric_" + gas]
-            self.planet_data["athmospheric_" + gas] = self.planet_data["athmospheric_" + gas] + (ton / ton_per_pa_here)
-            print "added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str(int(before)) + " to " + str(int(self.planet_data["athmospheric_" + gas])) 
+            before = getattr(self, "athmospheric_" + gas)
+            setattr(self, "athmospheric_" + gas, before + (ton / ton_per_pa_here))
+            print_dict = {"text":"added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str((before)) + " to " + str(getattr(self, "athmospheric_" + gas)),"type":"climate"}
+            self.solar_system_object_link.messages.append(print_dict)
+
+            print  
         else:
-            print self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys())   
+            raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys()))   
     
-
+        
+        
+        
                      
+    
+    def check_gas_in_atmosphere(self):
+        """
+        Checks if the water level of the planet should be raised
+        At the moment this is a very simple implementation where it is only the carbondioxide level
+        that plays in, but room for expansion of this model is open.
+        """
+        difference_from_original = self.athmospheric_carbondioxide - self.planet_data["athmospheric_carbondioxide"] 
+        if self.water_level * 10 + 10 < difference_from_original:
+             before = self.water_level
+             self.change_water_level(self.water_level + 0.5)
+             print_dict = {"text":"The waters are rising on" + self.name + "!","type":"general gameplay info"}
+             self.solar_system_object_link.messages.append(print_dict)
 
+    
         
     def read_pre_base_file(self,planet_name):
         data_file_name = os.path.join("data","base_data",str(str(planet_name) + ".txt"))
@@ -1164,7 +1197,7 @@ class planet:
             except:
                 self.heat_bar = pygame.image.load(os.path.join("images","heat_bar.png"))
             else:
-                surface.blit(self.heat_bar,(0,global_variables.window_size[1]-220))
+                surface.blit(self.heat_bar,(0,global_variables.window_size[1]-320))
         
         return surface
     
@@ -1269,15 +1302,56 @@ class planet:
             if self.current_base is not None:
                 if self.current_base.name == base_name:
                     self.current_base = None
-            del self.bases[base_name]
-        deleted_trade_routes = []
-        for base in self.bases.values():
-            for trade_route in base.trade_routes:
-                if base.trade_routes[trade_route]["endpoints"][0] == base_name or base.trade_routes[trade_route]["endpoints"][1] == base_name:
-                    deleted_trade_routes.append((trade_route,base))
-        for deletion in deleted_trade_routes:
-            del deletion[1].trade_routes[deletion[0]]
-            #print "the base " + str(base_name) + " has been removed"
+
+            dying_base = self.bases[base_name]
+            
+            for trade_route in dying_base.trade_routes:
+                trade_route_instance = dying_base.trade_routes[trade_route]
+                for endpoint_base in trade_route_instance["endpoint_links"]:
+                    if endpoint_base != dying_base:
+                        break
+                del endpoint_base.trade_routes[dying_base.name]
+                print "deleted trade route entry to " + dying_base.name + " from " + endpoint_base.name
+
+
+            firms_to_delete = {}
+            for company_instance in self.solar_system_object_link.companies.values():
+                for firm_name in company_instance.owned_firms:
+                    firm_instance = company_instance.owned_firms[firm_name]
+                    if not isinstance(firm_instance, company.merchant):
+                        if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
+                            firm_instance.close_firm()
+                            firms_to_delete[firm_name] = company_instance
+                            
+                    else:
+                        if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
+                            print "deleting " + firm_instance.name + " merchant owned by " + company_instance.name + " in " + str(dying_base.name)
+                            firm_instance.close_firm()
+                            firms_to_delete[firm_name] = company_instance
+            
+                if dying_base.name in company_instance.home_cities.keys():
+                    del company_instance.home_cities[dying_base.name]
+                    print "deleted " + dying_base.name + " from " + company_instance.name + "'s list of home_cities"
+            
+            for firm_to_delete in firms_to_delete:
+                del firms_to_delete[firm_to_delete].owned_firms[firm_to_delete]
+            
+            try:    dying_base.owner.owned_firms[base_name]
+            except: print "Didn't find " + base_name + " in owned firms of " + str(dying_base.owner.name)
+            else:   
+                del dying_base.owner.owned_firms[base_name]
+                print "Found and deleted " + base_name + " in owned firms of " + str(dying_base.owner.name)
+
+            try:    self.bases[base_name]
+            except: print "Didn't find " + base_name + " in bases of " + str(self.name)
+            else:   
+                del self.bases[base_name]
+                print "Found and deleted " + base_name + " in bases of " + str(self.name)
+                
+            
+
+        
     
     def check_base_position(self,projection_position):
         """

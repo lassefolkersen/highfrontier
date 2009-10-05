@@ -27,7 +27,7 @@ class solarsystem:
     """
 
     def __init__(self,start_date, de_novo_initialization = True):
-#        global_variables.market_decisions = company.market_decisions()
+
         if de_novo_initialization:
             self.display_mode = "planetary"
             self.effectuate_growth_and_migration = global_variables.effectuate_growth_and_migration #if False all growth and migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
@@ -47,6 +47,8 @@ class solarsystem:
                                 "base sales":False,
                                 "firm info":True, #this one only goes for the players own firms
                                 "base info":True, #this one only goes for the players own firms
+                                "climate":False, 
+                                "mining":False 
                                 }
     
             
@@ -142,11 +144,15 @@ class solarsystem:
                         if base.bitternes_of_base < self.bitterness_of_world[0]:
                             self.bitterness_of_world = (base.bitternes_of_base, self.bitterness_of_world[1])
          
+                #emigration, growth, emission and climate change
                 for planet in self.planets.values():
+                    planet.check_gas_in_atmosphere()
                     for base in planet.bases.values():
                         base.calculate_emigration()
                         base.calculate_growth_and_deaths()
                         base.calculate_emissions()
+                        for resource in self.mineral_resources:
+                            base.get_mining_opportunities(base.home_planet, resource, check_date = self.current_date)
                         
  
                 people = 0

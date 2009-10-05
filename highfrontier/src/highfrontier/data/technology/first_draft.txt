@@ -77,7 +77,7 @@
 
 	<subject>
 		<title>fossil fuel mining</title>
-		<productivity_multiplier>4</productivity_multiplier>
+		<productivity_multiplier>6</productivity_multiplier>
 		<abstract_process_dict>
 			<input>labor</input>
 			<output>fossil fuel</output>
@@ -572,7 +572,7 @@
 
 	<subject>
 		<title>fossil fuel power</title>
-		<productivity_multiplier>1</productivity_multiplier>
+		<productivity_multiplier>2</productivity_multiplier>
 		<abstract_process_dict>
 			<input>fossil fuel</input>
 			<input>labor</input>

@@ -218,6 +218,10 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                 else:
                     action_surface.blit(surface,(0,0))
                 
+
+#            try:    sol.planets["earth"].bases["stockholm"]
+#            except: print "stockholm gone"
+#            else:   sol.planets["earth"].kill_a_base("stockholm")
             
             pygame.display.flip()
 
