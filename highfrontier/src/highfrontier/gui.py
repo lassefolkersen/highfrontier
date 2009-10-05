@@ -440,13 +440,11 @@ class gui():
                 env_string = self.solar_system_object_link.current_planet.planet_name
             else:
                 env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name 
-        elif self.solar_system_object_link.display_mode == "planetary":
-            env_string = self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "company":
+        elif self.solar_system_object_link.display_mode == "company" and self.solar_system_object_link.company_selected is not None:
             env_string = self.solar_system_object_link.company_selected.name
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == "firm" and self.solar_system_object_link.firm_selected is not None:
             env_string = self.solar_system_object_link.firm_selected.name
-        elif self.solar_system_object_link.display_mode == "base":
+        elif self.solar_system_object_link.display_mode == "base" and self.solar_system_object_link.current_planet.current_base is not None:
             env_string = self.solar_system_object_link.current_planet.current_base.name
         elif self.solar_system_object_link.display_mode == "techtree":
             env_string = "technology tree"
@@ -461,7 +459,7 @@ class gui():
         
         #creating the capital string
         if self.solar_system_object_link.current_player is not None:
-            capital_string = str(int(self.solar_system_object_link.current_player.capital))
+            capital_string = str(primitives.nicefy_numbers(int(self.solar_system_object_link.current_player.capital)))
             rendered_capital_string = global_variables.standard_font.render(capital_string,True,(0,0,0))
             self.infobox_surface.blit(rendered_capital_string, (10,50))
         
@@ -546,177 +544,177 @@ class gui():
 
 
 
-class infobox_window():
-    """
-    The infobox window. Always visible and shows time and location - ie "solarsystem, centered on earth",
-    "Frankfurt" etc. It also shows internet-browser style backward and forward buttons.
-    """
-    def __init__(self,solar_system_object,commandbox):
-        self.solar_system_object_link = solar_system_object
-        self.size = (400,40)
-        self.topleft = (global_variables.window_size[0]/2 - self.size[0]/2,0)
-        self.data = self.update_data()
-        self.history = []
-        self.has_been_history = []
-        self.history_button_size = (30,30)
-        self.current_event = Signals.Event("going_to_planetary_mode_event",self.solar_system_object_link.current_planet)
-        self.protect_has_been_history = False  #Without this variable has_been_history would be deleted even when going steps forward
-        self.create_infobox(self.renderer)
+#class infobox_window():
+#    """
+#    The infobox window. Always visible and shows time and location - ie "solarsystem, centered on earth",
+#    "Frankfurt" etc. It also shows internet-browser style backward and forward buttons.
+#    """
+#    def __init__(self,solar_system_object,commandbox):
+#        self.solar_system_object_link = solar_system_object
+#        self.size = (400,40)
+#        self.topleft = (global_variables.window_size[0]/2 - self.size[0]/2,0)
+#        self.data = self.update_data()
+#        self.history = []
+#        self.has_been_history = []
+#        self.history_button_size = (30,30)
+#        self.current_event = Signals.Event("going_to_planetary_mode_event",self.solar_system_object_link.current_planet)
+#        self.protect_has_been_history = False  #Without this variable has_been_history would be deleted even when going steps forward
+#        self.create_infobox(self.renderer)
+#        
+#    
+#    def forwardbutton_callback(self):
+#        if len(self.has_been_history) > 0: 
+#            signal_to_emit = self.has_been_history.pop()
+#            
+#            self.protect_has_been_history = True
+#            if signal_to_emit.signal == "going_to_solar_system_mode_event":
+#                self.solar_system_object_link.current_planet.projection_scaling = 45
+#                self.solar_system_object_link.display_mode = "planetary"
+#                self.manager.emit("zoom_out",None)
+#            elif signal_to_emit.signal == "going_to_planetary_mode_event":
+#                self.manager.emit("center_on",signal_to_emit.data.name)
+#            else:
+#                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
+#            self.protect_has_been_history = False
+#        
+#        else:
+#            raise Exception("The forward button was pressed but it should not have been set to sensitive")
+#
+#        if len(self.has_been_history) < 1:
+#            self.forwardbutton.sensitive = False
+#
+#        
+#    def backbutton_callback(self):
+#        
+#        if len(self.history) > 0:
+#            self.has_been_history.append(self.current_event)
+#
+#            signal_to_emit = self.history.pop()
+#            self.protect_has_been_history = True
+#            if signal_to_emit.signal == "going_to_solar_system_mode_event":
+#                #print "going to solar system mode"
+#                self.solar_system_object_link.current_planet.projection_scaling = 45
+#                self.solar_system_object_link.display_mode = "planetary"
+#                self.manager.emit("zoom_out",None)
+#            elif signal_to_emit.signal == "going_to_planetary_mode_event":
+#                self.manager.emit("center_on",signal_to_emit.data.name)
+#            else:
+#                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
+#            self.protect_has_been_history = False
+#            
+#            try: self.forwardbutton.sensitive
+#            except: pass
+#            else:
+#                self.forwardbutton.sensitive = True
+#            
+#            self.history.pop()
+#        else:
+#            raise Exception("The back button was pressed but it should not have been set to sensitive")
+#
+#        if len(self.history) < 1:
+#            try: self.backbutton.sensitive
+#            except: pass
+#            else:
+#                self.backbutton.sensitive = False
+#        
+#        
+#    def create_infobox(self,renderer):
+#        """
+#        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
+#        """
+#        info_label = Label(self.data)
+#        info_label.multiline = True
+#        self.window = VFrame()
+#        self.window.set_opacity(100)
+#        self.window.border = BORDER_NONE
+#        self.window.add_child(info_label)
+#        self.window.topleft = self.topleft
+#        self.window.minsize = self.size
+#        self.window.depth = 1
+#        renderer.add_widget(self.window)
+#        
+#        
+#        #Drawing a button with an arrow
+#        blank_surface = pygame.Surface(self.history_button_size)
+#        blank_surface.fill((234,228,223))
+#        pygame.draw.line(blank_surface,(155,155,155),(5,13),(30,13))
+#        pygame.draw.line(blank_surface,(155,155,155),(5,16),(30,16))
+#        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,10))
+#        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,20))
+#        pygame.draw.line(blank_surface,(155,155,155),(5,10),(5,13))
+#        pygame.draw.line(blank_surface,(155,155,155),(5,20),(5,16))
+#        pygame.draw.line(blank_surface,(155,155,155),(30,13),(30,16))
+#
+#        flipped_blank_surface = pygame.transform.flip(blank_surface,True,False)
+#        
+#        self.backbutton = ImageButton(blank_surface)
+#        self.forwardbutton = ImageButton(flipped_blank_surface)
+#        self.backbutton.set_opacity(100)
+#        self.forwardbutton.set_opacity(100)
+#        self.forwardbutton.topleft = (self.topleft[0] + self.size[0] + 5, self.topleft[1])
+#        self.backbutton.topleft = (self.topleft[0] - self.history_button_size[0] - 15 , self.topleft[1])
+#        if len(self.history) < 1:
+#            self.backbutton.sensitive = False
+#        if len(self.has_been_history) < 1:
+#            self.forwardbutton.sensitive = False
+#
+#        
+#        self.backbutton.connect_signal(Constants.SIG_CLICKED,self.backbutton_callback)
+#        self.forwardbutton.connect_signal(Constants.SIG_CLICKED,self.forwardbutton_callback)
+#
+#        self.backbutton.depth = 1
+#        self.forwardbutton.depth = 1
+#
+#        
+#        self.renderer.add_widget(self.backbutton,self.forwardbutton)
+#        
         
-    
-    def forwardbutton_callback(self):
-        if len(self.has_been_history) > 0: 
-            signal_to_emit = self.has_been_history.pop()
-            
-            self.protect_has_been_history = True
-            if signal_to_emit.signal == "going_to_solar_system_mode_event":
-                self.solar_system_object_link.current_planet.projection_scaling = 45
-                self.solar_system_object_link.display_mode = "planetary"
-                self.manager.emit("zoom_out",None)
-            elif signal_to_emit.signal == "going_to_planetary_mode_event":
-                self.manager.emit("center_on",signal_to_emit.data.name)
-            else:
-                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
-            self.protect_has_been_history = False
-        
-        else:
-            raise Exception("The forward button was pressed but it should not have been set to sensitive")
-
-        if len(self.has_been_history) < 1:
-            self.forwardbutton.sensitive = False
-
-        
-    def backbutton_callback(self):
-        
-        if len(self.history) > 0:
-            self.has_been_history.append(self.current_event)
-
-            signal_to_emit = self.history.pop()
-            self.protect_has_been_history = True
-            if signal_to_emit.signal == "going_to_solar_system_mode_event":
-                #print "going to solar system mode"
-                self.solar_system_object_link.current_planet.projection_scaling = 45
-                self.solar_system_object_link.display_mode = "planetary"
-                self.manager.emit("zoom_out",None)
-            elif signal_to_emit.signal == "going_to_planetary_mode_event":
-                self.manager.emit("center_on",signal_to_emit.data.name)
-            else:
-                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
-            self.protect_has_been_history = False
-            
-            try: self.forwardbutton.sensitive
-            except: pass
-            else:
-                self.forwardbutton.sensitive = True
-            
-            self.history.pop()
-        else:
-            raise Exception("The back button was pressed but it should not have been set to sensitive")
-
-        if len(self.history) < 1:
-            try: self.backbutton.sensitive
-            except: pass
-            else:
-                self.backbutton.sensitive = False
-        
-        
-    def create_infobox(self,renderer):
-        """
-        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer. 
-        """
-        info_label = Label(self.data)
-        info_label.multiline = True
-        self.window = VFrame()
-        self.window.set_opacity(100)
-        self.window.border = BORDER_NONE
-        self.window.add_child(info_label)
-        self.window.topleft = self.topleft
-        self.window.minsize = self.size
-        self.window.depth = 1
-        renderer.add_widget(self.window)
-        
-        
-        #Drawing a button with an arrow
-        blank_surface = pygame.Surface(self.history_button_size)
-        blank_surface.fill((234,228,223))
-        pygame.draw.line(blank_surface,(155,155,155),(5,13),(30,13))
-        pygame.draw.line(blank_surface,(155,155,155),(5,16),(30,16))
-        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,10))
-        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,20))
-        pygame.draw.line(blank_surface,(155,155,155),(5,10),(5,13))
-        pygame.draw.line(blank_surface,(155,155,155),(5,20),(5,16))
-        pygame.draw.line(blank_surface,(155,155,155),(30,13),(30,16))
-
-        flipped_blank_surface = pygame.transform.flip(blank_surface,True,False)
-        
-        self.backbutton = ImageButton(blank_surface)
-        self.forwardbutton = ImageButton(flipped_blank_surface)
-        self.backbutton.set_opacity(100)
-        self.forwardbutton.set_opacity(100)
-        self.forwardbutton.topleft = (self.topleft[0] + self.size[0] + 5, self.topleft[1])
-        self.backbutton.topleft = (self.topleft[0] - self.history_button_size[0] - 15 , self.topleft[1])
-        if len(self.history) < 1:
-            self.backbutton.sensitive = False
-        if len(self.has_been_history) < 1:
-            self.forwardbutton.sensitive = False
-
-        
-        self.backbutton.connect_signal(Constants.SIG_CLICKED,self.backbutton_callback)
-        self.forwardbutton.connect_signal(Constants.SIG_CLICKED,self.forwardbutton_callback)
-
-        self.backbutton.depth = 1
-        self.forwardbutton.depth = 1
-
-        
-        self.renderer.add_widget(self.backbutton,self.forwardbutton)
-        
-        
-    def exit(self):
-        try: self.window
-        except: pass
-        else:
-            self.window.destroy()
-            del self.window
-        try: self.backbutton
-        except: pass
-        else:
-            self.backbutton.destroy()
-            del self.backbutton
-        try: self.forwardbutton
-        except: pass
-        else:
-            self.forwardbutton.destroy()
-            del self.forwardbutton
-
-
-    def notify(self,event):
-        if event.signal in ["going_to_planetary_mode_event","going_to_solar_system_mode_event","going_to_base_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-            self.history.append(self.current_event) 
-            self.current_event = event
-            if not self.protect_has_been_history:
-                self.has_been_history = []
-                try: self.forwardbutton
-                except: pass
-                else:
-                    self.forwardbutton.sensitive = False
-            while len(self.history) > global_variables.max_stepback_history_size:
-                del self.history[0]
-            try: self.backbutton
-            except: pass
-            else:
-                self.backbutton.sensitive = True
-        if event.signal == "update_infobox":
-            try: self.window
-            except:
-                pass
-            else:
-                self.window.lock()
-                self.data = self.update_data()
-                info_label = Label(self.data)
-                info_label.multiline = True
-                self.window.set_children([info_label])
-                self.window.update()
-                self.window.unlock()
+#    def exit(self):
+#        try: self.window
+#        except: pass
+#        else:
+#            self.window.destroy()
+#            del self.window
+#        try: self.backbutton
+#        except: pass
+#        else:
+#            self.backbutton.destroy()
+#            del self.backbutton
+#        try: self.forwardbutton
+#        except: pass
+#        else:
+#            self.forwardbutton.destroy()
+#            del self.forwardbutton
+#
+#
+#    def notify(self,event):
+#        if event.signal in ["going_to_planetary_mode_event","going_to_solar_system_mode_event","going_to_base_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
+#            self.history.append(self.current_event) 
+#            self.current_event = event
+#            if not self.protect_has_been_history:
+#                self.has_been_history = []
+#                try: self.forwardbutton
+#                except: pass
+#                else:
+#                    self.forwardbutton.sensitive = False
+#            while len(self.history) > global_variables.max_stepback_history_size:
+#                del self.history[0]
+#            try: self.backbutton
+#            except: pass
+#            else:
+#                self.backbutton.sensitive = True
+#        if event.signal == "update_infobox":
+#            try: self.window
+#            except:
+#                pass
+#            else:
+#                self.window.lock()
+#                self.data = self.update_data()
+#                info_label = Label(self.data)
+#                info_label.multiline = True
+#                self.window.set_children([info_label])
+#                self.window.update()
+#                self.window.unlock()
 #        if event.signal == "infobox_toggle":
 #            if not event.data:
 #                try: self.window
@@ -729,38 +727,38 @@ class infobox_window():
 #                self.exit()
 
 
-    
-    def update_data(self):
-        date_string = str(self.solar_system_object_link.current_date)
-        if self.solar_system_object_link.display_mode == "solar_system":
-            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
-        elif self.solar_system_object_link.display_mode == "planetary":
-            if self.solar_system_object_link.current_planet.current_base == None:
-                env_string = self.solar_system_object_link.current_planet.planet_name
-            else:
-                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name 
-        elif self.solar_system_object_link.display_mode == "planetary":
-            env_string = self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "company":
-            env_string = self.solar_system_object_link.company_selected.name
-        elif self.solar_system_object_link.display_mode == "firm":
-            env_string = self.solar_system_object_link.firm_selected.name
-        elif self.solar_system_object_link.display_mode == "base":
-            env_string = self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "techtree":
-            env_string = "technology tree"
-        else:
-            env_string = ""
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
-
-
-            
-            
-        info_string = date_string + "\n" + env_string
-        
-        return info_string
+#    
+#    def update_data(self):
+#        date_string = str(self.solar_system_object_link.current_date)
+#        if self.solar_system_object_link.display_mode == "solar_system":
+#            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
+#        elif self.solar_system_object_link.display_mode == "planetary":
+#            if self.solar_system_object_link.current_planet.current_base == None:
+#                env_string = self.solar_system_object_link.current_planet.planet_name
+#            else:
+#                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name 
+#        elif self.solar_system_object_link.display_mode == "planetary":
+#            env_string = self.solar_system_object_link.current_planet.current_base.name
+#        elif self.solar_system_object_link.display_mode == "company":
+#            env_string = self.solar_system_object_link.company_selected.name
+#        elif self.solar_system_object_link.display_mode == "firm":
+#            env_string = self.solar_system_object_link.firm_selected.name
+#        elif self.solar_system_object_link.display_mode == "base":
+#            env_string = self.solar_system_object_link.current_planet.current_base.name
+#        elif self.solar_system_object_link.display_mode == "techtree":
+#            env_string = "technology tree"
+#        else:
+#            env_string = ""
+#            if self.solar_system_object_link.message_printing["debugging"]:
+#                print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
+#                self.solar_system_object_link.messages.append(print_dict)
+#
+#
+#            
+#            
+#        info_string = date_string + "\n" + env_string
+#        
+#        return info_string
     
 
         
@@ -2543,48 +2541,62 @@ class base_and_firm_market_window():
                 direction = "buy"
             else:
                 direction = "sell"
-        elif resource in firm_selected.input_output_dict["input"]:
+        elif isinstance(firm_selected, company.base_construction):
             direction = "buy"
-        elif resource in firm_selected.input_output_dict["output"]:
+        elif resource in firm_selected.input_output_dict["input"].keys():
+            direction = "buy"
+        elif resource in firm_selected.input_output_dict["output"].keys():
             direction = "sell"
         else:
             raise Exception("Oddly the resource " + str(resource) + " was neither found in the input or output of " + str(firm_selected.name)) 
         
         
         
+        
+        #quantity
+        quantity_max = 0
         if direction == "sell": #in this case we are mostly interested in the stock
             #sell quantity
             if isinstance(firm_selected, company.merchant):
                 if self.base_selected_for_merchant == firm_selected.from_location:
-                    quantity_max = firm_selected.from_stock_dict[resource]
+                    quantity_max = max(quantity_max, firm_selected.from_stock_dict[resource])
                 elif self.base_selected_for_merchant == firm_selected.to_location:
-                    quantity_max = firm_selected.to_stock_dict[resource]
+                    quantity_max = max(quantity_max, firm_selected.to_stock_dict[resource])
                 else:
                     raise Exception("The self.base_selected_for_merchant " + str(self.base_selected_for_merchant.name) + " was neither in the from or the to_location of " + str(firm_selected.name))
             else:
-                quantity_max = firm_selected.stock_dict[resource]
+                quantity_max = max(quantity_max, firm_selected.stock_dict[resource])
                 
 
         else:
             #buy quantity
             if isinstance(firm_selected, company.merchant):
-                quantity_max = (firm_selected.from_location.population + firm_selected.to_location.population) / 2 
+                quantity_max = max(quantity_max, (firm_selected.from_location.population + firm_selected.to_location.population) / 2) 
             else:
-                quantity_max = firm_selected.input_output_dict["input"][resource] * 50
+                quantity_max = max(quantity_max, firm_selected.input_output_dict["input"][resource] * 50)
 
 
-        quantity_range = (0,quantity_max)
-        if initial_quantity is None:
-            initial_quantity = quantity_max
-        else:
-            initial_quantity = min(quantity_range[1], initial_quantity)
+        if initial_quantity is not None:
+            quantity_max = max(initial_quantity, quantity_max)
             
-        #price setting
+        if isinstance(firm_selected, company.base_construction):
+            quantity_max = firm_selected.input_output_dict["output"][resource]
+        
+        quantity_max = int(quantity_max)
+        quantity_range = (0,quantity_max)
+
+        if initial_quantity is not None:
+            pre_selected_quantity = int(initial_quantity)
+        else:
+            pre_selected_quantity = int(quantity_max / 2)
+        
+        #marketsetting
         if isinstance(firm_selected, company.merchant):
             market = self.base_selected_for_merchant.market
         else:
             market = firm_selected.location.market
             
+        
             
         
         max_price = 0
@@ -2665,7 +2677,7 @@ class base_and_firm_market_window():
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-10, 
                                   quantity_range, 
-                                  start_position = initial_quantity, 
+                                  start_position = pre_selected_quantity, 
                                   function_parameter=quantity_rect)
 
 
