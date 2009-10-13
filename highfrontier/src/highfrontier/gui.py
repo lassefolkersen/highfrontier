@@ -59,7 +59,7 @@ class gui():
         self.all_windows["Base overview"] = base_window(solar_system_object, action_surface)
         self.all_windows["Map overlays"] = overlay_window(solar_system_object, action_surface)
         self.all_windows["Planet shortcuts"] = planet_jump_window(solar_system_object, action_surface)
-        self.all_windows["Navigation"] = navigation_window(solar_system_object, action_surface)
+#        self.all_windows["Navigation"] = navigation_window(solar_system_object, action_surface)
         self.all_windows["File menu"] = file_window(solar_system_object, action_surface)
         self.all_windows["Technology"] = tech_window(solar_system_object, action_surface)
         
@@ -491,7 +491,7 @@ class gui():
         self.command_surface.fill((150,150,150))
 #        pygame.draw.rect(self.command_surface, (150,150,150), self.command_rect)
         
-        labels = ["Navigation","Map overlays","Planet shortcuts","Company menu","Base overview","Technology","Trade menu","File menu"]
+        labels = ["Map overlays","Planet shortcuts","Company menu","Base overview","Technology","Trade menu","File menu"]
         self.command_buttons = {}
         for i, label in enumerate(labels):
             self.command_buttons[label] = gui_components.button(label, 
@@ -2580,7 +2580,7 @@ class base_and_firm_market_window():
             quantity_max = max(initial_quantity, quantity_max)
             
         if isinstance(firm_selected, company.base_construction):
-            quantity_max = firm_selected.input_output_dict["output"][resource]
+            quantity_max = firm_selected.input_output_dict["input"][resource]
         
         quantity_max = int(quantity_max)
         quantity_range = (0,quantity_max)
