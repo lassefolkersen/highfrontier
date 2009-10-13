@@ -1311,7 +1311,7 @@ class planet:
                     if endpoint_base != dying_base:
                         break
                 del endpoint_base.trade_routes[dying_base.name]
-                print "deleted trade route entry to " + dying_base.name + " from " + endpoint_base.name
+#                print "deleted trade route entry to " + dying_base.name + " from " + endpoint_base.name
 
 
             firms_to_delete = {}
@@ -1320,19 +1320,19 @@ class planet:
                     firm_instance = company_instance.owned_firms[firm_name]
                     if not isinstance(firm_instance, company.merchant):
                         if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
-                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
+#                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
                             
                     else:
                         if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
-                            print "deleting " + firm_instance.name + " merchant owned by " + company_instance.name + " in " + str(dying_base.name)
+#                            print "deleting " + firm_instance.name + " merchant owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
             
                 if dying_base.name in company_instance.home_cities.keys():
                     del company_instance.home_cities[dying_base.name]
-                    print "deleted " + dying_base.name + " from " + company_instance.name + "'s list of home_cities"
+#                    print "deleted " + dying_base.name + " from " + company_instance.name + "'s list of home_cities"
             
             for firm_to_delete in firms_to_delete:
                 del firms_to_delete[firm_to_delete].owned_firms[firm_to_delete]
@@ -1341,13 +1341,13 @@ class planet:
             except: print "Didn't find " + base_name + " in owned firms of " + str(dying_base.owner.name)
             else:   
                 del dying_base.owner.owned_firms[base_name]
-                print "Found and deleted " + base_name + " in owned firms of " + str(dying_base.owner.name)
+#                print "Found and deleted " + base_name + " in owned firms of " + str(dying_base.owner.name)
 
             try:    self.bases[base_name]
             except: print "Didn't find " + base_name + " in bases of " + str(self.name)
             else:   
                 del self.bases[base_name]
-                print "Found and deleted " + base_name + " in bases of " + str(self.name)
+#                print "Found and deleted " + base_name + " in bases of " + str(self.name)
                 
             
 
