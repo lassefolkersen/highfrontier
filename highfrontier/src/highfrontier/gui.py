@@ -1454,20 +1454,16 @@ class file_window():
                                    "Save game":self.select_save_name,
                                    "Load game":self.select_game_to_load,
                                    "New game":self.new_game,
-                                   "Game settings":"Game settings",
                                    "Automation settings":self.automation_settings,
                                    "Message settings":self.message_settings,
-                                   "Quit game":"Quit game"},
+                                   "Quit game":"Quit game",
+                                   "Game speed":self.game_speed_settings,
+                                   "Catastrophes":"Catastrophe window"},
                            "Quit game":{
                                         "Ok":self.quit,
                                         "Cancel":"File menu",
                                         "Save first":self.select_save_name
                                     },
-                           "Game settings":{
-                                        "Game speed":self.game_speed_settings,
-                                        "Difficulty":"File menu",
-                                        "Catastrophes":"Catastrophe window"
-                                            },
                            "Catastrophe window":{
                                                  "Global warming":self.raise_waters,
                                                  "Global cooling":self.lower_waters,
@@ -1490,6 +1486,7 @@ class file_window():
         self.button_list_now = []
         self.distribute_click_to_subwindow = None
         self.position = "File menu"
+        self.text_receiver = None
         self.draw()
 
     def draw(self):
@@ -1539,6 +1536,10 @@ class file_window():
                         self.button_instances_now[button_pressed].activate(event.pos)
         else:
             self.distribute_click_to_subwindow.receive_click(event)
+            if event.button == 3:
+                if self.position == "Load menu":
+                    self.solar_system_object_link.load_solar_system(os.path.join("savegames",self.distribute_click_to_subwindow.selected))
+    
 
 
 
@@ -1586,14 +1587,13 @@ class file_window():
         
 
     def select_game_to_load(self, label, function_parameter):
+        self.position = "Load menu"
         load_window = gui_components.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
-        self.distribute_click_to_subwindow = load_window                                            
+        self.distribute_click_to_subwindow = load_window
+                                                    
 
-    def effectuate_load(self):
-        load_file_name = self.distribute_click_to_subwindow.text
-        if load_file_name is not None:
-            self.solar_system_object_link.load_solar_system(os.path.join("savegames",load_file_name))
-    
+#    def effectuate_load(self):
+
         
 
     def new_game(self, label, function_parameter):
@@ -2578,9 +2578,14 @@ class base_and_firm_market_window():
 
         if initial_quantity is not None:
             quantity_max = max(initial_quantity, quantity_max)
+             
             
         if isinstance(firm_selected, company.base_construction):
             quantity_max = firm_selected.input_output_dict["input"][resource]
+
+        if initial_quantity is None:
+            initial_quantity = quantity_max
+
         
         quantity_max = int(quantity_max)
         quantity_range = (0,quantity_max)
@@ -2983,6 +2988,7 @@ class base_build_menu():
 
     def receive_click(self,event):
         
+        
         if event.button == 1:
             if self.menu_position == "pick name":
                 if self.ok_button.rect.collidepoint(event.pos) == 1:
@@ -2993,19 +2999,16 @@ class base_build_menu():
                     self.slider.activate(event.pos)
                 if self.ok_button.rect.collidepoint(event.pos) == 1:
                     return self.ok_button.activate(event.pos)
-            
-            elif self.menu_position == "commodity name":
-                if self.ok_button.rect.collidepoint(event.pos) == 1:
-                    self.ok_button.activate(event.pos)
-                    return "clear"
-                    
                 
             else:
                 self.fast_list.receive_click(event)
         
         
         if event.button == 3:
-            self.fast_list.receive_click(event)
+            if self.menu_position in ["root","pick destination","pick resource"]:
+                self.fast_list.receive_click(event)
+            
+            
             if self.menu_position == "root":
                 if self.fast_list.selected_name is not None:
                     if self.fast_list.selected_name == "merchant":
@@ -3216,6 +3219,9 @@ class base_build_menu():
         """
         self.menu_position = "commodity size"
         
+        self.selections = {}
+        self.selections["firm_type"] = firm_type
+        
         if firm_type in ["new base","merchant"]:
             raise Exception("This should have been distributed correctly already at the select_button_callback step")
         elif firm_type == "research":
@@ -3238,7 +3244,7 @@ class base_build_menu():
         if self.solar_system_object_link.current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
         population = self.solar_system_object_link.current_planet.current_base.population
-        max_size = max(int(population * 0.1 / float(input_size)),1)
+        max_size = max(int(population * 0.05 / float(input_size)),1)
         
         
         #check if the current_player already owns a company of that technology in the current base
@@ -3256,20 +3262,34 @@ class base_build_menu():
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
 
-        text = global_variables.standard_font.render("Choose size of firm:",True,(0,0,0))
-        self.action_surface.blit(text, (self.rect[0] + 90, self.rect[1] + 10))
 
         
         
         if existing_firm is None:
-            existing_firm_text = "No existing firms of this type owned here"
             start_value = 1
+            existing_firm_rendered_text = global_variables.standard_font.render("Choose name of firm:",True,(0,0,0))
+            self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 90, self.rect[1] + 70))
+            self.text_receiver = gui_components.entry(self.action_surface, 
+                     topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150), 
+                     width = 300, 
+                     max_letters = global_variables.max_letters_in_company_names)
+            self.text_receiver.active = True
+
+        
         else:
-            existing_firm_text = "An existing size " + str(existing_firm.size) + " firm of this type already owned here. Choose size change?"
+            
             start_value = existing_firm.size
-  
-        existing_firm_rendered_text = global_variables.standard_font_small.render(existing_firm_text,True,(0,0,0))
-        self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 130, self.rect[1] + 50))
+            
+             
+            existing_firm_rendered_text = global_variables.standard_font.render("An existing size " + str(existing_firm.size) + " firm of this type already owned here.",True,(0,0,0))
+            self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 130, self.rect[1] + 70))
+            existing_firm_rendered_text = global_variables.standard_font.render("Select new size and press ok if new size is required.",True,(0,0,0))
+            self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 130, self.rect[1] + 85))
+
+
+        text = global_variables.standard_font.render("Choose size of firm:",True,(0,0,0))
+        self.action_surface.blit(text, (self.rect[0] + 90, self.rect[1] + 150))
+
         
         fastest = global_variables.standard_font.render("Smallest",True,(0,0,0))
         self.action_surface.blit(fastest, (self.rect[0] + 40, self.rect[1] + 40))
@@ -3283,16 +3303,16 @@ class base_build_menu():
             This function is activated on scrollbar value change on the size selection box, and updates the input_output_dict
             """
 
-            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
+            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250) 
             pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
             
             size_info = global_variables.standard_font_small.render("size: " + str(self.slider.position),True,(0,0,0))
-            self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 70))
+            self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 170))
             lineno = 0
             for put in ["input","output"]:
                 lineno = lineno + 1
                 direction_info = global_variables.standard_font_small.render(put+":",True,(0,0,0))
-                self.action_surface.blit(direction_info, (self.rect[0] + 130, self.rect[1] + 70 + lineno * 20))
+                self.action_surface.blit(direction_info, (self.rect[0] + 130, self.rect[1] + 170 + lineno * 20))
 #                print technology.keys()
                 for resource in technology["input_output_dict"][put].keys():
                     lineno = lineno + 1
@@ -3309,7 +3329,7 @@ class base_build_menu():
                         value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
                     
                     
-                    self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 70 + lineno * 20))
+                    self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 170 + lineno * 20))
 
 
 
@@ -3317,7 +3337,7 @@ class base_build_menu():
             
             self.ok_button = gui_components.button("ok", 
                                         self.action_surface,
-                                        self.commodity_ask_for_name, 
+                                        self.commodity_build_firm, 
                                         function_parameter = existing_firm, 
                                         fixed_size = (100,35), 
                                         topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
@@ -3341,63 +3361,60 @@ class base_build_menu():
                                                 )
         execute(None,technology)
         
-        self.selections = {"technology":technology} 
+        self.selections["technology"] = technology 
       
 
 
-        
-    def commodity_ask_for_name(self,label,existing_firm,give_length_warning=False):
-        """
-        This command is called after the size selection box has been accepted
-        """
-        size_requested = self.slider.position
-#        print "commodity_ask_for_name and existing_firm is " + str(existing_firm)
-        self.menu_position = "commodity name"
-        update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
-        pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
-
-        
-        if existing_firm is None:
-            self.text_receiver = gui_components.entry(self.action_surface, 
-                     topleft = (self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150), 
-                     width = 300, 
-                     max_letters = global_variables.max_letters_in_company_names)
-            self.text_receiver.active = True
-            self.ok_button = gui_components.button("ok", 
-                self.action_surface,
-                self.commodity_build_firm, 
-                function_parameter = None, 
-                fixed_size = (100,35), 
-                topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
-
-        else: #in cases where the firm already exists, we preserve the name
-             
-            
-            existing_info = global_variables.standard_font_small.render("Updating firm size",True,(0,0,0))
-            self.action_surface.blit(existing_info, (self.rect[0] + 130, self.rect[1] + 70))
-            pygame.display.flip()
-#            print "commodity_ask_for_name knows that existing firm is not none but " + str(existing_firm)
-            self.commodity_build_firm(None, existing_firm)
-            return "clear"
 
 
-            
-#            self.commodity_build_firm(technology, self.size_requested, existing_name = existing_firm.name)
-            
 
-        
+#
+#
+#
+#        
+#    def commodity_ask_for_name(self,label,existing_firm,give_length_warning=False):
+#        """
+#        This command is called after the size selection box has been accepted
+#        """
+#        size_requested = self.slider.position
+##        print "commodity_ask_for_name and existing_firm is " + str(existing_firm)
+#        self.menu_position = "commodity name"
+#        update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 70, self.rect[2] - 100, self.rect[3] - 150) 
+#        pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
+#
+#        
+#        if existing_firm is None:
+#            name = self.text_receiver.text
+#            
+#        else: #in cases where the firm already exists, we preserve the name
+#             
+#            
+##            existing_info = global_variables.standard_font_small.render("Updating firm size",True,(0,0,0))
+##            self.action_surface.blit(existing_info, (self.rect[0] + 130, self.rect[1] + 70))
+##            pygame.display.flip()
+##            print "commodity_ask_for_name knows that existing firm is not none but " + str(existing_firm)
+#            self.commodity_build_firm(None, existing_firm)
+#            return "clear"
+#
+#
+#            
+##            self.commodity_build_firm(technology, self.size_requested, existing_name = existing_firm.name)
+#            
+#
+#        
 
 
 
     def commodity_build_firm(self,label,existing_firm):
         """
-        The effectuating function for building commodity firms
+        The effectuating function for building commodity firms.
+            either takes a name for a new firm
+            or the instance for an existing firm
         """
-#        self.menu_position = "commodity build"
+
         
         if existing_firm is None:
             name = self.text_receiver.text
-            
             unique = True
             for company_instance in self.solar_system_object_link.companies.values():
                 if name in company_instance.owned_firms.keys():
@@ -3406,8 +3423,7 @@ class base_build_menu():
             if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
                 print_dict = {"text":"the selected name " + str(name) + " was too long and/or not unique. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
                 self.solar_system_object_link.messages.append(print_dict)
-
-                self.commodity_ask_for_name(None,None,True)
+                self.commodity_size_selection(self.selections["firm_type"])
                 return None
             
         else: #if existing name exists, we use that
@@ -3422,14 +3438,14 @@ class base_build_menu():
         
         owner.change_firm_size(location,size,technology["technology_name"], name)
         if isinstance(name, str) or isinstance(name, unicode):
-            print_dict = {"text":"Built a firm named " + str(name) + " at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
+            print_dict = {"text":str(name) + ", a " + self.selections["firm_type"] + " firm of size " + str(size) + " was built at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 
         else:
             print name
             print name.__class__
             raise Exception("The name used: " + str(name) + " was of class " + str(name.__class__) + " but should have been a string")
-        
+        return "clear"
 
 
 
@@ -3662,9 +3678,12 @@ class firm_trade_partners_info():
         
         transactions = {}
         for k, location_instance in enumerate(location_list):
+            
             market = location_instance.market
             for i, resource in enumerate(market["transactions"]):
+                
                 for j, transaction in enumerate(market["transactions"][resource]):
+                    
                     date = transaction["date"]
                     if transaction["buyer"] is not None:
                         buyer = transaction["buyer"].name
@@ -3678,13 +3697,21 @@ class firm_trade_partners_info():
                     #print "The price is of class " + str(price.__class__)
                     quantity = transaction["quantity"]
                     if firm_selected.name in [buyer,seller]:
-                        transactions[i*j*k] =  {"date":date,"buyer":buyer,"seller":seller,"price":price,"quantity":quantity}
-
+                        transactions[(i+1)*(j+1)*(k+1)] =  {"date":date,"buyer":buyer,"seller":seller,"price":price,"quantity":quantity}
+#                        print "no this was it"
+#                        print location_instance.name + " name of market"
+#                        print "for the " + str(i) + " resource which is " + str(resource)
+#                        print "for the " + str(j) + " transaction which is " + str(transaction)
+                    
+                        
+#        print "transaction keys " + str(transactions.keys())
+#        print "transactions: " + str(transactions)
         self.fast_list = gui_components.fast_list(
                                                   self.action_surface, 
                                                   transactions, 
                                                   rect = self.rect,
-                                                  column_order = ["rownames","date","buyer","seller","price","quantity"])
+                                                  sort_by = "date",
+                                                  column_order = ["date","buyer","seller","price","quantity"])
 
     def receive_click(self,event):
         self.fast_list.receive_click(event)

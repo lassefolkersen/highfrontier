@@ -770,7 +770,7 @@ class Backbone_Tree(Tree):
 		
 		self.subject_list = []
 		
-		self.import_core(os.path.join(os.getcwd(),"data","technology","first_draft.txt"))
+		self.import_core(os.path.join(os.getcwd(),"data","technology","technology.txt"))
 		
 		self.link_crossovers()
 		
