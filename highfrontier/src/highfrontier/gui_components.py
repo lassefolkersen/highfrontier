@@ -268,10 +268,10 @@ class hscrollbar():
         if range_of_values[0] < 0 or range_of_values[1] < 0:
             raise Exception("range_of_values cannot contain negative entries: " + str(range_of_values))
         
-        if not isinstance(range_of_values[0], int): 
+        if not (isinstance(range_of_values[0], int) or isinstance(range_of_values[0], long)): 
             raise Exception("range_of_values[0] must be an integer. It was " + str(range_of_values[0]))
         
-        if not isinstance(range_of_values[1], int):
+        if not (isinstance(range_of_values[1], int) or isinstance(range_of_values[1], long)):
             raise Exception("range_of_values[1] must be an integer. It was " + str(range_of_values[1]))
         
         if start_position < range_of_values[0] or start_position > range_of_values[1]:
@@ -583,7 +583,7 @@ class fast_list():
     """
     A list similar to the ScrolledList, but faster
     """
-    def __init__(self, surface, tabular_data, rect, column_order = None):
+    def __init__(self, surface, tabular_data, rect, column_order = None, sort_by = "rownames"):
         self.surface = surface
       
 
@@ -594,7 +594,7 @@ class fast_list():
         self.top_frame_width = 5 # this is a guesstimate of how much the Frame is filling
         self.title = None #either None (in which case it can't be rendered" or else a dictionary with key "text", containing a string with the text to write, and key "entry_span" containing another dictionary with the column names as values and their length in pixels as keys
         self.original_tabular_data = tabular_data
-        self.receive_data(tabular_data,column_order = column_order)
+        self.receive_data(tabular_data,column_order = column_order, sort_by = sort_by)
         self.selected = None
         self.selected_name = None
 
@@ -671,50 +671,50 @@ class fast_list():
                 pygame.display.flip()
         
         
-    def notify(self,event):
-        try: self.list_frame
-        except: pass
-        else:
-            try: self.vscrollbar
-            except: right_border = self.topleft[0] + self.list_size[0]
-            else: right_border = self.topleft[0] + self.list_size[0] - self.vscrollbar.width
-            
-            if self.topleft[0] < event.data.pos[0] and event.data.pos[0] < right_border:
-                if self.topleft[1] < event.data.pos[1] and event.data.pos[1] < self.topleft[1] + self.list_size[1]:    
-                    index_selected = (event.data.pos[1] - self.topleft[1] - self.top_frame_width) / self.text_height + self.interval[0]
-                    #print "clicked at relative y_pos: " + str(event.data.pos[1] - self.topleft[1] - self.top_frame_width) + " which is index: " + str(index_selected)
-                    if 0 <= index_selected and index_selected < len(self.data):
-                        self.selected = self.data[index_selected]
-                        self.selected_name = self.selected.split("  ")[0]
-                        self.selected_name = self.selected_name.rstrip(" ")
-                        self.update_fast_list()
-                        #print self.selected
-            
-                #checking to see if the click is on the titlebar
-                try: self.list_frame
-                except: pass
-                else:
-                    top_border = int(self.topleft[1] - 2 * self.text_height)
-                    bottom_border = int(self.topleft[1] - self.text_height + self.top_frame_width * 2) 
-                    if top_border < event.data.pos[1] and event.data.pos[1] < bottom_border:
-                        horizontal_position = event.data.pos[0] - self.topleft[0]
-                        for key in self.title["entry_span"].keys():
-                            if key[0] < horizontal_position and horizontal_position < key[1]:
-                                sort_by_this_column = self.title["entry_span"][key]
-                        try: self.original_tabular_data
-                        except: raise Exception("The fast_list was supposed to have the self.orginal_tabular_data variable, but didn't")
-                        else: 
-                            print "self.sorted_by_this_column: " + str(self.sorted_by_this_column)
-                            print "sort_by_this_column: " + str(sort_by_this_column)
-                            if self.sorted_by_this_column == sort_by_this_column:
-                                self.reverse_sorting = not self.reverse_sorting
-                            else:
-                                self.reverse_sorting = self.reverse_sorting
-                                
-                            
-                            self.receive_data(self.original_tabular_data, sort_by = sort_by_this_column , column_order = self.original_column_order, reverse_sort = self.reverse_sorting)
-                              
-                            self.update_fast_list()                    
+#    def notify(self,event):
+#        try: self.list_frame
+#        except: pass
+#        else:
+#            try: self.vscrollbar
+#            except: right_border = self.topleft[0] + self.list_size[0]
+#            else: right_border = self.topleft[0] + self.list_size[0] - self.vscrollbar.width
+#            
+#            if self.topleft[0] < event.data.pos[0] and event.data.pos[0] < right_border:
+#                if self.topleft[1] < event.data.pos[1] and event.data.pos[1] < self.topleft[1] + self.list_size[1]:    
+#                    index_selected = (event.data.pos[1] - self.topleft[1] - self.top_frame_width) / self.text_height + self.interval[0]
+#                    #print "clicked at relative y_pos: " + str(event.data.pos[1] - self.topleft[1] - self.top_frame_width) + " which is index: " + str(index_selected)
+#                    if 0 <= index_selected and index_selected < len(self.data):
+#                        self.selected = self.data[index_selected]
+#                        self.selected_name = self.selected.split("  ")[0]
+#                        self.selected_name = self.selected_name.rstrip(" ")
+#                        self.update_fast_list()
+#                        #print self.selected
+#            
+#                #checking to see if the click is on the titlebar
+#                try: self.list_frame
+#                except: pass
+#                else:
+#                    top_border = int(self.topleft[1] - 2 * self.text_height)
+#                    bottom_border = int(self.topleft[1] - self.text_height + self.top_frame_width * 2) 
+#                    if top_border < event.data.pos[1] and event.data.pos[1] < bottom_border:
+#                        horizontal_position = event.data.pos[0] - self.topleft[0]
+#                        for key in self.title["entry_span"].keys():
+#                            if key[0] < horizontal_position and horizontal_position < key[1]:
+#                                sort_by_this_column = self.title["entry_span"][key]
+#                        try: self.original_tabular_data
+#                        except: raise Exception("The fast_list was supposed to have the self.orginal_tabular_data variable, but didn't")
+#                        else: 
+#                            print "self.sorted_by_this_column: " + str(self.sorted_by_this_column)
+#                            print "sort_by_this_column: " + str(sort_by_this_column)
+#                            if self.sorted_by_this_column == sort_by_this_column:
+#                                self.reverse_sorting = not self.reverse_sorting
+#                            else:
+#                                self.reverse_sorting = self.reverse_sorting
+#                                
+#                            
+#                            self.receive_data(self.original_tabular_data, sort_by = sort_by_this_column , column_order = self.original_column_order, reverse_sort = self.reverse_sorting)
+#                              
+#                            self.update_fast_list()                    
                     
                         
                     
@@ -966,43 +966,4 @@ class fast_list():
 
 
 
-#import random
-#from ocempgui.widgets import *
-#from ocempgui.events import EventManager
-#re = Renderer()
-##input = ["one test line","another test line","yet another test line","even one more test line","an extremely long line that is way too long and perhaps should give a warning"]
-##input_long = []
-##for i in range(0,23):
-##    realwords = input[random.randint(0,len(input)-1)]
-##    input_long.append(realwords + " " + str(random.randint(1,10000)))  
-#
-#
-#
-#
-#
-#fast_list_instance = fast_list(re)
-#fast_list_instance.title={}
-##fast_list_instance.title["text"] = "Test1 test2 test3 test4"
-##fast_list_instance.title["entry_span"] = {(5,30):"Test1",(30,70):"test2",(70,160):"test3",(160,250):"test4"}
-##fast_list_instance.data = input_long
-#
-#
-#import os
-#data_file_name = os.path.join("data","economy","trade resources.txt")
-#trade_resources = primitives.import_datasheet(data_file_name)
-#fast_list_instance.listify_tabular_data(trade_resources)
-#
-##print trade_resources
-#
-#fast_list_instance.create_fast_list()
-#fast_list_instance.render_title()
-#
-#
-##print fast_list_instance.title
-#re.create_screen (800, 600)
-#re.title = "Window examples"
-#re.color = (234, 228, 223)
-#
-#re.start ()
-#
 

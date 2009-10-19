@@ -277,7 +277,7 @@ class solarsystem:
         
         ### starting up all companies (=countries) which are mentioned as owners of a base in the base_data files (and therefore
         ### put in the self.original_country variable), but which are not found in the above
-        model_company_data = company_database["united states of america"].company_database #hehe - as if
+        model_company_data = company_database["united states of america"].company_database 
         for company_name in country_to_base_list:
             if company_name not in company_database: 
                 single_company_data = {}
@@ -323,8 +323,6 @@ class solarsystem:
             home_city = all_bases.keys()[random.randint(0,len(all_bases)-1)]
             company_instance = company.company(self,capital=capital)
             company_instance.company_database["type"] = "private company"
-            
-            #print company_instance.company_database
             company_instance.home_cities[home_city] = all_bases[home_city]
             company_database[company_instance.company_name] = company_instance
             
@@ -336,16 +334,24 @@ class solarsystem:
                 for resource in self.mineral_resources + ["food"]:
                     base.get_mining_opportunities(planet,resource,check_date = self.start_date)
                 
-                
+        for company_instance in company_database.values():
+            for technology in company_instance.known_technologies:
+                if technology != "common knowledge":
+                    if random.randint(1,3) == 1:
+                        start_up_name = technology + " "+ str(random.randint(1000,9999))
+                        size_chosen = random.randint(1, all_bases[home_city].population)
+                        location_name = company_instance.home_cities.keys()[0]
+                        location = company_instance.home_cities[location_name]
+                        company_instance.change_firm_size(
+                                               location,
+                                               size_chosen,
+                                               technology, 
+                                               start_up_name)
+#                        print company_instance.name + " started " + start_up_name + " in " + str(location.name)
         
         
         
         
-#        for company_instance in company_database.values():
-#            if len(company_instance.owned_firms) > 0:
-#                print company_instance.name + " has owned firms"
-#                print company_instance.owned_firms
-#        
         return company_database
 
 
@@ -518,7 +524,18 @@ class solarsystem:
         
         """
         file = open(filename,"r")
-        new_solar_system = cPickle.load(file)
+        
+        try:    new_solar_system = cPickle.load(file)
+        except EOFError, error:
+            print_dict = {"text":"Un-loadable file: " + str(filename) + " - no load performed","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            return "clear"
+        except error:
+            print error
+            raise Exception("An error of type: " + str(error) + " was found")
+        else:
+            print_dict = {"text":"Loaded " + str(filename),"type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
         file.close()
         
 #        print "loaded " + str(new_solar_system)
