@@ -30,7 +30,8 @@ class solarsystem:
 
         if de_novo_initialization:
             self.display_mode = "planetary"
-            self.effectuate_growth_and_migration = global_variables.effectuate_growth_and_migration #if False all growth and migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
+            self.effectuate_migration = global_variables.effectuate_migration #if False all migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
+            self.effectuate_growth = global_variables.effectuate_growth #if False all growth calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
             self.current_player = None #switch that determines what company is playing. If None it would default to simulatormode without possibility of interaction. Else it should be a company object.
             self.start_date = start_date
             self.current_date = self.start_date

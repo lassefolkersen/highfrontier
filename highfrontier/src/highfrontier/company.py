@@ -1554,7 +1554,7 @@ class base(firm):
 #					if self.name in ["zygote","stockholm"]:
 #						print self.name + " is neighbour with " + str(neighbour.name) + " - their relation should result in " + str(people_leaving) + " people emigrating from " + self.name + " this is " + str(int(100*(percent_emigration_from_bitterness +  percent_emigration_from_fear_of_flood))) + "%"
 					
-					if self.home_planet.solar_system_object_link.effectuate_growth_and_migration:
+					if self.home_planet.solar_system_object_link.effectuate_migration:
 						if people_leaving < self.population:
 							self.population = self.population - people_leaving
 							neighbour.population = neighbour.population + people_leaving
@@ -1613,7 +1613,7 @@ class base(firm):
 		growth_percent = base_growth_percent + starving_modifier + housing_modifier
 		
 
-		if self.home_planet.solar_system_object_link.effectuate_growth_and_migration:
+		if self.home_planet.solar_system_object_link.effectuate_growth:
 			self.population = int(self.population * (1.0 + growth_percent))
 		
 		
@@ -2032,41 +2032,72 @@ class base_construction(firm):
 					all_materials_present = False
 					break
 			
+
 			if all_materials_present:
-				base_data_here = {
-							 "northern_loc":self.base_to_be_build_data["northern_loc"],
-							 "eastern_loc":self.base_to_be_build_data["eastern_loc"],
-							 "population":self.base_to_be_build_data["population"],
-							 "country":self.base_to_be_build_data["country"],
-							 "GDP_per_capita_in_dollars":self.base_to_be_build_data["GDP_per_capita_in_dollars"]
-							 }
-				
 				owner = self.base_to_be_build_data["owner"]
 				name = self.base_to_be_build_data["name"]
-				new_base = base(
-									    self.solar_system_object_link,
-									    base_name = name,
-									    home_planet = self.base_to_be_build_data["home_planet"],
-									    base_data = base_data_here,
-									    owner = owner)
+
+				#checking population size
+				if self.base_to_be_build_data["population"] > self.location.population:
+					if self.base_to_be_build_data["population"] == 0:
+						print_dict = {"text":"Population of " + str(self.location.name)+ " was zero and the construction have been cancelled.","type":"general gameplay info"}
+						self.solar_system_object_link.messages.append(print_dict)
+						owner.change_firm_size(
+											   location = self.location,
+											   size = 0,
+											   technology_name = self.technology_name)
+						return
+					else:
+						print_dict = {"text":"Population of " + str(self.location.name)+ " was less than required for " + self.name + ". Only + " + str(self.base_to_be_build_data["population"]) + " people have been sent.","type":"general gameplay info"}
+						self.solar_system_object_link.messages.append(print_dict)
+						self.base_to_be_build_data["population"] = self.location.population
+				   
+				#removing the population from building base
+				self.location.population = self.location.population - self.base_to_be_build_data["population"]
+				
+				
+				#if this is just a population transfer
+				if self.base_to_be_build_data["destination_base"] is not None:
+					destination_base = self.base_to_be_build_data["destination_base"] 
+					destination_base.population = destination_base.population + self.base_to_be_build_data["population"] 
+					print_dict = {"text":str(self.base_to_be_build_data["population"]) + " people have moved from " + str(self.location.name) + " to " + str(destination_base.name),"type":"general gameplay info"}
+					self.solar_system_object_link.messages.append(print_dict)
+				
+				#if this is a new base
+				else:
+					base_data_here = {
+								 "northern_loc":self.base_to_be_build_data["northern_loc"],
+								 "eastern_loc":self.base_to_be_build_data["eastern_loc"],
+								 "population":self.base_to_be_build_data["population"],
+								 "country":self.base_to_be_build_data["country"],
+								 "GDP_per_capita_in_dollars":self.base_to_be_build_data["GDP_per_capita_in_dollars"]
+								 }
+					
+					new_base = base(
+										    self.solar_system_object_link,
+										    base_name = name,
+										    home_planet = self.base_to_be_build_data["home_planet"],
+										    base_data = base_data_here,
+										    owner = owner)
+		
 	
+					#making the trade route from the founding base
+					distance = self.base_to_be_build_data["distance_to_origin"]
+					transport_type = self.base_to_be_build_data["transport_type_to_origin"]
+					endpoints = [new_base.base_name,self.location.base_name] #try to remove this if you get the opportunity FIXME
+					endpoint_links = [new_base,self.location]
+					trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+					new_base.trade_routes[self.location.base_name] = trade_route
+					self.location.trade_routes[new_base.base_name] = trade_route
+					
+					owner.owned_firms[name] = new_base
+					self.base_to_be_build_data["home_planet"].bases[name] = new_base
+					owner.home_cities[name] = new_base
+	
+					print_dict = {"text":"Building a base named " + str(name),"type":"general gameplay info"}
+					self.solar_system_object_link.messages.append(print_dict)
 
-				#making the trade route from the founding base
-				distance = self.base_to_be_build_data["distance_to_origin"]
-				transport_type = self.base_to_be_build_data["transport_type_to_origin"]
-				endpoints = [new_base.base_name,self.location.base_name] #try to remove this if you get the opportunity FIXME
-				endpoint_links = [new_base,self.location]
-				trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
-				new_base.trade_routes[self.location.base_name] = trade_route
-				self.location.trade_routes[new_base.base_name] = trade_route
-				
-				owner.owned_firms[name] = new_base
-				self.base_to_be_build_data["home_planet"].bases[name] = new_base
-				owner.home_cities[name] = new_base
-
-				print_dict = {"text":"Building a base named " + str(name),"type":"general gameplay info"}
-				self.solar_system_object_link.messages.append(print_dict)
-				
+				#closing and shutting down
 				owner.change_firm_size(
 									   location = self.location,
 									   size = 0,
@@ -2296,4 +2327,5 @@ class merchant(tertiary):
 
 
 
+ 
  

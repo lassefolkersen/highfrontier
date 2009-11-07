@@ -1359,6 +1359,13 @@ class planet:
         too close to another base, means within 100 km
         and returns the sphere_coordinates
         """
+        click_spot = pygame.Rect(projection_position[0]-3,projection_position[1]-3,6,6)
+        collision_test_result = click_spot.collidedict(self.areas_of_interest[(self.eastern_inclination,self.northern_inclination,self.projection_scaling)])
+        if collision_test_result != None:
+
+            return "transfer population to " + collision_test_result[1]
+            
+        
         if self.projection_scaling <= 360: #for the round world projection
             transposed_projection_position = (projection_position[0] - global_variables.window_size[0]/2 + self.projection_scaling/2, projection_position[1] - global_variables.window_size[1]/2 + self.projection_scaling/2)
             proj_to_sphere_coordinates = self.plane_to_sphere_total(self.eastern_inclination, self.northern_inclination, self.projection_scaling, transposed_projection_position)
@@ -1413,8 +1420,6 @@ class planet:
                         return "Can't build a base in this terrain"
 
                 else:
-                    print_dict = {"text":"This position is less than " + str(radius_size) + " from another base","type":"general gameplay info"}
-                    self.solar_system_object_link.messages.append(print_dict)
                     return "Too close to another base" 
         else:
             return "space base"
