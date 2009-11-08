@@ -334,11 +334,14 @@ class solarsystem:
                 base.owner = company_database[base_owner_name]
                 for resource in self.mineral_resources + ["food"]:
                     base.get_mining_opportunities(planet,resource,check_date = self.start_date)
-                
+
+
+        #add one of each firm of everything that is known
         for company_instance in company_database.values():
             for technology in company_instance.known_technologies:
                 if technology != "common knowledge":
-                    if random.randint(1,3) == 1:
+#                    if random.randint(1,3) == 1:
+                    if True:
                         start_up_name = technology + " "+ str(random.randint(1000,9999))
                         size_chosen = random.randint(1, all_bases[home_city].population)
                         location_name = company_instance.home_cities.keys()[0]
@@ -348,6 +351,9 @@ class solarsystem:
                                                size_chosen,
                                                technology, 
                                                start_up_name)
+                        start_up_firm = company_instance.owned_firms[start_up_name]
+                        for resource in start_up_firm.input_output_dict["input"]:
+                            start_up_firm.stock_dict[resource] = start_up_firm.input_output_dict["input"][resource]
 #                        print company_instance.name + " started " + start_up_name + " in " + str(location.name)
         
         

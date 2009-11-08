@@ -114,8 +114,6 @@ class planet:
             setattr(self, "athmospheric_" + gas, before + (ton / ton_per_pa_here))
             print_dict = {"text":"added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str((before)) + " to " + str(getattr(self, "athmospheric_" + gas)),"type":"climate"}
             self.solar_system_object_link.messages.append(print_dict)
-
-            print  
         else:
             raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys()))   
     
@@ -176,7 +174,9 @@ class planet:
         between the two in kilometers based on the diameter_km entry in planet_data
         """
         if len(position_a) != len(position_b):
-            print "WARNING: The two lists given in calculate_distance() are not the same length"
+            if self.solar_system_object_link.message_printing["debugging"]:
+                print_dict = {"text":"WARNING: The two lists given in calculate_distance() are not the same length","type":"debugging"} 
+                self.solar_system_object_link.messages.append(print_dict)
             
         
         result = []
@@ -381,7 +381,10 @@ class planet:
                 self.image = Image.open(os.path.join("images","planet","placeholder.jpg"))
             self.projection_dim = (self.projection_scaling,self.projection_scaling)
             if((self.image.size[0]/self.image.size[1])!=2):
-                print "oh no! The map file is not twice as wide as it is high"
+                if self.solar_system_object_link.message_printing["debugging"]:
+                    print_dict = {"text":"oh no! The map file is not twice as wide as it is high","type":"debugging"} 
+                    self.solar_system_object_link.messages.append(print_dict)
+
                 self.image = self.image.resize((self.image.size[0],self.image.size[0]/2))
             
             if self.image.size[0]<1800: 
@@ -816,7 +819,7 @@ class planet:
                     communication_string = communication_string + (str(x_proj) + " " + str(y_proj) + "\n")
                     
             else:
-                print "Major error in plane_to_sphere_total - the coordinates given does not make sense"
+                raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")
 
 
             
@@ -864,7 +867,7 @@ class planet:
                     plane_to_sphere[proj_position] =(x_sphere_position,y_sphere_position)
             
             else:
-                print "Major error in plane_to_sphere_total - the coordinates given does not make sense"
+                raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")
         
         return plane_to_sphere
 
