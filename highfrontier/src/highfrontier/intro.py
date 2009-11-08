@@ -13,6 +13,7 @@ import datetime
 import gui_components
 import main
 import time
+import primitives
 
 
 
@@ -73,9 +74,11 @@ class Intro_gui():
         if self.gui_rect.collidepoint(event.pos) == 1:
             for button in self.buttons.values():
                 if button.rect.collidepoint(event.pos) == 1:
-                    
                     if isinstance(button, gui_components.fast_list):
                         button.receive_click(event)
+                    elif isinstance(button, gui_components.radiobuttons):
+                        
+                        button.activate(event.pos)
                     else:
                         button.activate(event)
                 
@@ -312,10 +315,6 @@ class Intro_gui():
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         
         
-#        file_window = gui.file_window(None, self.window)
-#        file_window.rect = 
-#        file_window.select_game_to_load(None, None)
-        
         load_window = gui_components.fast_list(self.window, os.listdir("savegames"), rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
 
         
@@ -355,7 +354,7 @@ class Intro_gui():
         """
         #reset gui_rect in case it was altered
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 90,global_variables.window_size[1] / 3, 180,180)
-        
+        self.text_receiver = None
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
 
         pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]), (self.gui_rect[0] + self.gui_rect[2], self.gui_rect[1]),2)        
@@ -363,7 +362,7 @@ class Intro_gui():
 
         
         button_names= ["New game","Load game","Game settings","Quit game"]
-        button_functions = [self.ask_company_name,self.load_callback,self.game_settings_callback,self.quit_callback]
+        button_functions = [self.ask_company_type,self.load_callback,self.game_settings_callback,self.quit_callback]
         
         self.buttons = {}
         
@@ -376,7 +375,90 @@ class Intro_gui():
                                   fixed_size = (130,30))
                                   
         
+
+
+    def ask_company_type(self,label,function_parameter):
+        pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         
+        title = global_variables.standard_font.render("Type of company:",True,(0,0,0))
+        self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
+        
+
+        def dummy_function_for_radiobuttons(label, function_parameter):
+            pass
+        self.buttons = {}
+        self.buttons["type_selector"] = gui_components.radiobuttons(
+                                    ["Private company","Country"],
+                                    surface = self.window, 
+                                    function = dummy_function_for_radiobuttons,
+                                    function_parameter = None, 
+                                    topleft = (self.gui_rect[0] + 10, self.gui_rect[1] + 40), 
+                                    selected = None)
+        self.buttons["ok"] = gui_components.button("ok", 
+                              self.window, 
+                              self.decide_company_type, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+        self.buttons["cancel"] = gui_components.button("cancel", 
+                              self.window, 
+                              self.create_intro_gui, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
+
+
+
+    def decide_company_type(self, label, function_parameter):
+        #creating list of current countries
+        data_file_name = os.path.join("data","base_data","earth.txt")
+        if os.access(data_file_name,os.R_OK):
+            read_base_database = primitives.import_datasheet(data_file_name)
+        else:
+            raise Exception("The intro script couldn't access:" + str(data_file_name))
+        self.countries = []
+        for entry in read_base_database.values():
+            if entry["country"] not in self.countries:
+                self.countries.append(entry["country"])
+        self.countries.sort()
+
+        
+        if self.buttons["type_selector"].selected == "Private company":
+            self.ask_company_name(None,None)
+            self.is_country = False
+        elif self.buttons["type_selector"].selected == "Country":
+            self.ask_country_name(None,None)
+            self.is_country = True
+        else:
+            raise Exception("unknown company type selected: ",self.buttons["type_selector"].selected)
+
+
+
+
+    
+    def ask_country_name(self,label,function_parameter):
+        self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
+        pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
+
+        country_window = gui_components.fast_list(self.window, self.countries, rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
+        
+        self.buttons = {}
+        self.buttons["country_window"] = country_window
+        self.buttons["ok"] = gui_components.button("ok", 
+                              self.window, 
+                              self.ask_company_capital, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
+        self.buttons["cancel"] = gui_components.button("cancel", 
+                              self.window, 
+                              self.create_intro_gui, 
+                              function_parameter = None, 
+                              topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                              fixed_size = None)
+
     
 
     def ask_company_name(self,label, function_parameter, give_warning = False):
@@ -416,13 +498,23 @@ class Intro_gui():
         
     
     def ask_company_capital(self, label, function_parameter, give_warning = False):
-        company_name = self.text_receiver.text
+        if "country_window" in self.buttons and self.is_country:
+            company_name = self.buttons["country_window"].selected
+            
+        elif self.text_receiver is not None and not self.is_country:
+            company_name = self.text_receiver.text
+        else:
+            raise Exception("Could not figure out whether country or private company was selected")
+            
         
         all_ok = True
         if not (0 < len(company_name) <= global_variables.max_letters_in_company_names):
             all_ok = False
             
         if company_name.find("  ") != -1: #somewhere it is used that there are two double spaces, so we can't allow that in a companyname
+            all_ok = False
+        
+        if company_name in self.countries and not self.is_country:
             all_ok = False
         
         if all_ok:
@@ -467,6 +559,10 @@ class Intro_gui():
         else:
             self.ask_company_name(None, None, give_warning=True)
             
+
+
+
+
 
     def start_new_game(self, label, function_parameter):
         company_capital = self.text_receiver.text

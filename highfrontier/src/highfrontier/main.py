@@ -55,7 +55,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     
     icon = pygame.image.load(os.path.join("images","window_icon.png"))
     pygame.display.set_icon(icon) 
-    
+    pygame.mouse.set_cursor(*pygame.cursors.arrow)
     #initializing the world - depends on if a previous game should be loaded
     if load_previous_game is not None:
         sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = False)
@@ -71,26 +71,28 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
             raise Exception("The loaded solar system already had a current player")
         
         if company_name in sol.companies.keys():
-            raise Exception("The company_name " + str(company_name) + " already existed")
             
-        model_company_name = random.choice(sol.companies.keys())
-        model_company = sol.companies[model_company_name]
-
-        new_company = company.company(sol,model_company.company_database,deviation=5,company_name=company_name,capital=company_capital)
-        sol.companies[company_name] = new_company
-        new_company.automation_dict = {
-                                    "Demand bidding (initiate buying bids)":False,
-                                    "Supply bidding (initiate selling bids)":False,
-                                    "Asset market (buy bases and firms)":False,
-                                    "Commodities market (start commodity producing firms)":False,
-                                    "Tech market (buy and sell technology)":False,
-                                    "Transport market (start up merchant firms)":False,
-                                    "Evaluate firms (close problematic firms)":False,
-                                    "Start research firms":False,
-                                    "Pick research (pick research automatically)":False,
-                                    "Expand area of operation (search for new home cities)":False
-                                    }
-        sol.current_player = new_company
+            sol.current_player = sol.companies[company_name]
+            sol.current_player.capital = company_capital
+        else:
+            model_company_name = random.choice(sol.companies.keys())
+            model_company = sol.companies[model_company_name]
+    
+            new_company = company.company(sol,model_company.company_database,deviation=5,company_name=company_name,capital=company_capital)
+            sol.companies[company_name] = new_company
+            new_company.automation_dict = {
+                                        "Demand bidding (initiate buying bids)":False,
+                                        "Supply bidding (initiate selling bids)":False,
+                                        "Asset market (buy bases and firms)":False,
+                                        "Commodities market (start commodity producing firms)":False,
+                                        "Tech market (buy and sell technology)":False,
+                                        "Transport market (start up merchant firms)":False,
+                                        "Evaluate firms (close problematic firms)":False,
+                                        "Start research firms":False,
+                                        "Pick research (pick research automatically)":False,
+                                        "Expand area of operation (search for new home cities)":False
+                                        }
+            sol.current_player = new_company
         
         
      
@@ -146,8 +148,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
     
 
-    #FIXME this is just for speeding up stuff
-#    sol.current_player.target_technology = sol.technology_tree.vertex_dict["basic fossil fuel mining"]
+
     
     i = 0
     while True:    
@@ -187,8 +188,10 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
         
         
         pygame.time.delay(15)
-        
-        
+
+
+
+
         
         i = i + 1
         if i%sol.step_delay_time == 0:
@@ -229,8 +232,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
 
 
 
-
-start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
+#start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
 
 #start_loop(company_name = "YourCompanyNameHere", company_capital = 10000000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
 

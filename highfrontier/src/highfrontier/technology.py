@@ -115,7 +115,7 @@ class Tree():
 					self.solar_system_object_link.messages.append(print_dict)
 
 			else:
-				print "DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. Do nothing"
+				raise Exception("DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. This should not be able to happen")
 				
 		image = self.plot_total_tree(self.vertex_dict,zoomlevel=self.zoomlevel,center=self.center)
 		
@@ -190,7 +190,10 @@ class Tree():
 						possible_origins.append(technology_name)
 			if len(possible_origins) < 1:
 				origin_technology_name = random.choice(known_technology_names)
-				print "DEBUGGING: There was a company that was not able to choose any origin technologies with unknown paths so a random known tech " + str(origin_technology) + " was chosen"
+				if self.solar_system_object_link.message_printing["debugging"]:
+					print_dict = {"text":"DEBUGGING: There was a company that was not able to choose any origin technologies with unknown paths so a random known tech " + str(origin_technology) + " was chosen","type":"debugging"}
+					self.solar_system_object_link.messages.append(print_dict)
+
 			origin_technology_name = random.choice(possible_origins)
 						
 						
@@ -495,7 +498,10 @@ class Tree():
 			number_of_potential_parents = int(len(parent_distance_list)*self.tendency_to_choose_forward_parents)
 			if number_of_potential_parents >len(parent_distance_list):
 				number_of_potential_parents = len(parent_distance_list)
-				print "DEBUGGING: Don't use self.tendency_to_choose_forward_parents above 1"
+				if self.solar_system_object_link.message_printing["debugging"]:
+					print_dict = {"text":"DEBUGGING: Don't use self.tendency_to_choose_forward_parents above 1","type":"debugging"}
+					self.solar_system_object_link.messages.append(print_dict)
+
 			parent_distance_list_shortened = parent_distance_list[0:number_of_potential_parents] #take the closest half
 			if len(parent_distance_list_shortened) == 0:
 				parent_distance_list_shortened = [parent_distance_list[0]]
@@ -538,7 +544,8 @@ class Tree():
 				else:
 					if tries > 50:
 						technology_name = "RANDOM_" + str(random.randint(1000,9999))
-						print "DEBUGGING: DID NOT FIND A UNIQUE NAME in " + str(subject_name) + " and assigned instead " + str(technology_name)
+						raise Exception("DEBUGGING: DID NOT FIND A UNIQUE NAME in " + str(subject_name))
+
 			new_technology["technology_name"] = technology_name
 
 

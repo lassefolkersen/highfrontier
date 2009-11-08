@@ -8,7 +8,6 @@ import math
 import company
 import primitives
 import gui_components
-
 import random
 import time
 
@@ -112,14 +111,15 @@ class gui():
                         elif return_value == "population transfer":
                             self.solar_system_object_link.display_mode = "planetary"
                             self.solar_system_object_link.build_base_mode = True
-                            self.solar_system_object_link.building_base = self.solar_system_object_link.current_planet.current_base
+                            print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
+                            self.solar_system_object_link.messages.append(print_dict)
+                            pygame.mouse.set_cursor(*pygame.cursors.diamond)
+                            print_dict = {"text":"Select destination for population transfer: new or existing base","type":"general gameplay info"}
                             self.clear_screen()
-                            text = global_variables.standard_font.render("Choose position of new base:",True,(150,150,150))
-                            self.action_surface.blit(text, (global_variables.window_size[0] / 2 - text.get_width()/2, 400))
                             self.active_window = None
                             pygame.display.flip()
                         else:
-                            print "should zoom to " + str(return_value)
+                            raise Exception("Receive click got this, return value: " + str(return_value))
                     return
 
         self.click_in_action_window(event)
@@ -156,7 +156,7 @@ class gui():
         elif sol.display_mode in ["techtree"]:
             pass
         else:
-            print "error. The mode: " + sol.display_mode +" is unknown"
+            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
         
         self.create_subcommandbox()
         pygame.display.flip()
@@ -190,8 +190,8 @@ class gui():
         elif sol.display_mode in ["techtree"]:
             surface = sol.technology_tree.zoom("in")
         else:
-            print "error. The mode: " + sol.display_mode +" is unknown"
-            return
+            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
+            
 
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
@@ -226,7 +226,7 @@ class gui():
             surface = sol.technology_tree.zoom("out")
             
         else:
-            print "error. The mode: " + sol.display_mode +" is unknown"
+            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
             return
         
         self.action_surface.blit(surface,(0,0))
@@ -262,6 +262,7 @@ class gui():
                 
                 if sphere_coordinates[0:19] == "transfer population" or isinstance(sphere_coordinates, tuple) or sphere_coordinates == "space base": #if the selection was correctly verified by check_base_position we send it back to the GUI for further processing
                     sol.build_base_mode = False
+                    pygame.mouse.set_cursor(*pygame.cursors.arrow)
                     self.all_windows["construct_base_menu"].new_base_ask_for_name(sphere_coordinates)
                     self.active_window = self.all_windows["construct_base_menu"]
                 return
@@ -294,7 +295,7 @@ class gui():
         elif sol.display_mode in ["company","firm","base"]:
             pass            
         else:
-            print "error. The mode: " + sol.display_mode +" is unknown"                
+            raise Exception("error. The mode: " + sol.display_mode +" is unknown")                
 
             
             
@@ -458,7 +459,7 @@ class gui():
         
         #creating the capital string
         if self.solar_system_object_link.current_player is not None:
-            capital_string = str(primitives.nicefy_numbers(int(self.solar_system_object_link.current_player.capital)))
+            capital_string = str(primitives.nicefy_numbers(int(self.solar_system_object_link.current_player.capital))) + " $"
             rendered_capital_string = global_variables.standard_font.render(capital_string,True,(0,0,0))
             self.infobox_surface.blit(rendered_capital_string, (10,50))
         
@@ -502,12 +503,17 @@ class gui():
     
     
     def subcommandbox_button_activate(self, nicelabel, label):
+        """
+        Activates the right-side menu lower subcommand box. This is specific for the navigation window context
+        such as for example base information and such
+        """
         self.all_windows[label].create()
         self.active_window = self.all_windows[label]
 
     def create_subcommandbox(self):    
         """
-        Creates the right-side menu lower subcommand box
+        Creates the right-side menu lower subcommand box. This is specific for the navigation window context
+        such as for example base information and such
         """
         self.subcommand_surface.fill((150,150,150))
         self.subcommand_buttons = {}
@@ -1596,7 +1602,7 @@ class file_window():
         
 
     def new_game(self, label, function_parameter):
-        print "should start new game"
+        raise Exception("should start new game, but this has not been implemented yet FIXME")
 
 
 
@@ -1974,7 +1980,11 @@ class base_population_info():
 
             self.fast_list = gui_components.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
         else:
-            print "DEBUGGING: Base selected was None"
+            if self.solar_system_object_link.message_printing["debugging"]:
+                print_dict = {"text":"DEBUGGING: Base selected was None","type":"debugging"} 
+                self.solar_system_object_link.messages.append(print_dict)
+
+            
 
 
 
@@ -2002,8 +2012,10 @@ class base_list_of_companies():
                 return "clear"
 
             else:
-                print_dict = {"text":"DEBUGGING:  " + str(self.fast_list.selected_name) + " was not found in company database","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                if self.solar_system_object_link.message_printing["debugging"]:
+                    print_dict = {"text":"DEBUGGING:  " + str(self.fast_list.selected_name) + " was not found in company database","type":"debugging"} 
+                    self.solar_system_object_link.messages.append(print_dict)
+            
                 
 
 
@@ -2833,8 +2845,10 @@ class base_and_firm_market_window():
                                 max_price = self.positional_database["bidding_mode"]["price"][1]
                                 price = y_relative_position * (max_price - min_price) + min_price
                                 if price < 0:
-                                    print "Changed price from " + str(price) + " to 0"
                                     price = 0
+                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                        print_dict = {"text":"Changed price from " + str(price) + " to 0","type":"debugging"} 
+                                        self.solar_system_object_link.messages.append(print_dict)
 
                             else:
                                 price = None
@@ -2843,7 +2857,9 @@ class base_and_firm_market_window():
                                 max_qt = self.positional_database["bidding_mode"]["quantity"][1]
                                 try:    math.log10(max_qt)
                                 except: 
-                                    print "DEBUGGING: no good selection of log10 max_qt"
+                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                        print_dict = {"text":"DEBUGGING: no good selection of log10 max_qt","type":"debugging"} 
+                                        self.solar_system_object_link.messages.append(print_dict)
                                     quantity = None
                                 else:
                                     quantity = int(10 ** (math.log10(max_qt) * x_relative_position))  
@@ -3586,7 +3602,10 @@ class company_financial_info():
 
 
     def receive_click(self,event):
-        print "Nothing should happen now"
+        if self.solar_system_object_link.message_printing["debugging"]:
+            print_dict = {"text":"Nothing should happen now in company_financial_info","type":"debugging"} 
+            self.solar_system_object_link.messages.append(print_dict)
+
 
 class company_list_of_firms():
     """
@@ -3825,8 +3844,12 @@ class construct_base_menu():
         #first we calculate the distance
         building_base = self.solar_system_object_link.building_base
         
-                #transfer population to other base
-        print sphere_coordinates
+        if self.solar_system_object_link.current_player != building_base.owner:
+            print_dict = {"text":"Could not transfer population from " + str(building_base.name) + " because it is not owned by you.","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+            pygame.mouse.set_cursor(*pygame.cursors.arrow)
+            return
+        
         if sphere_coordinates[0:19] == "transfer population":
             if sphere_coordinates[23:] in self.solar_system_object_link.current_planet.bases.keys():
                 destination_base = self.solar_system_object_link.current_planet.bases[sphere_coordinates[23:]]
@@ -3835,10 +3858,7 @@ class construct_base_menu():
                     print_dict = {"text":"Could not transfer population to " + str(destination_base.name) + " because it is not owned by you.","type":"general gameplay info"}
                     self.solar_system_object_link.messages.append(print_dict)
                     self.solar_system_object_link.build_base_mode = True 
-                    return
-                if self.solar_system_object_link.current_player != building_base.owner:
-                    print_dict = {"text":"Could not transfer population from " + str(building_base.name) + " because it is not owned by you.","type":"general gameplay info"}
-                    self.solar_system_object_link.messages.append(print_dict)
+                    pygame.mouse.set_cursor(*pygame.cursors.diamond)
                     return
 
             else:

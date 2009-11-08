@@ -867,7 +867,7 @@ class firm():
 				print_dict = {"text":"The firm " + self.name + " is up for closing","type":"firm info"}
 				self.solar_system_object_link.messages.append(print_dict)
 		if isinstance(self,base):
-			print self.name + " is up for closing, but it is a base - do something about this FIXME FIXME" #FIXME --- this should have been taken care of somehow else
+			raise Exception(self.name + " is up for closing, but it is a base - do something about this FIXME FIXME FIXME --- this should have been taken care of somehow else")
 		elif isinstance(self,merchant):
 			for place in ["from","to"]:
 				if place == "from":
@@ -1076,15 +1076,6 @@ class firm():
 		#evaluating how much was found to be available on market
 		if quantity_found > own_offer["quantity"]:
 			balance_of_findings = quantity_found - own_offer["quantity"]
-
-			if offers_of_interest[-1]["quantity"] - balance_of_findings < 0: #FIXME perhaps remove this
-				print "DEBUGGING WARNING: I think I found it"
-				print "balance_of_findings: " + str(balance_of_findings)
-				print "offers_of_interest[-1][\"quantity\"]: " + str(offers_of_interest[-1]["quantity"])
-				quantities = []
-				for offer in offers_of_interest:
-					quantities.append(offer["quantity"])
-				print quantities
 			
 			offers_of_interest[-1]["quantity"] = offers_of_interest[-1]["quantity"] - balance_of_findings
 
@@ -1401,10 +1392,6 @@ class base(firm):
 		
 		#check local safety (radiation)
 		
-		try:  self.home_planet.action_layer
-		except:   pass #print "Didn't find any action layer for " + self.home_planet.name
-		else:
-			print self.home_planet.action_layer
 #		print "returning " + environmental_safety + " for " + self.name
 		return environmental_safety
 

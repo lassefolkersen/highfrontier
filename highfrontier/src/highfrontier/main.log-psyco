@@ -1,485 +1,109 @@
-16:15:17.23  Logging started, 11/07/09                  %%%%%%%%%%%%%%%%%%%%
-16:15:17.23  ActivePassiveProfiler: starting                           %%%%%
-16:15:17.37   ______
+14:40:38.25  Logging started, 11/08/09                  %%%%%%%%%%%%%%%%%%%%
+14:40:38.25  ActivePassiveProfiler: starting                           %%%%%
+14:40:38.33   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-16:15:17.63   ______
+14:40:38.55   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-16:15:17.77   ______
+14:40:39.21   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-16:15:18.01   ______
+14:40:39.44   ______
         #1   |100.0 %|  active_start              ...psyco\profiler.py:273
-16:15:18.20   ______
-        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
-16:15:18.38   ______
-        #1   |98.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.3 %|  draw_space_stations       ...rontier\planet.py:1478
-        #3   | 0.2 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:18.59   ______
-        #1   |97.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.5 %|  draw_space_stations       ...rontier\planet.py:1478
-        #3   | 0.4 %|  tostring                  ...ages\PIL\Image.py:503
-        #4   | 0.3 %|  sphere_to_plane_total     ...rontier\planet.py:664
-        #5   | 0.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 0.2 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:18.77   ______
-        #1   |96.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #3   | 0.6 %|  tostring                  ...ages\PIL\Image.py:503
-        #4   | 0.4 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:18.98   ______
-        #1   |95.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #3   | 0.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #4   | 0.6 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #5   | 0.5 %|  sphere_to_plane_total     ...rontier\planet.py:664
-        #6   | 0.5 %|  draw_bases                ...rontier\planet.py:1429
-        #7   | 0.5 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:19.21   ______
-        #1   |95.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.0 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #4   | 0.6 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #5   | 0.5 %|  sphere_to_plane_total     ...rontier\planet.py:664
-        #6   | 0.5 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:19.39   ______
-        #1   |94.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.0 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #4   | 0.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #5   | 0.6 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.5 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:19.62   ______
-        #1   |94.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.0 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #4   | 0.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #5   | 0.6 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.5 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:19.79   ______
-        #1   |94.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #4   | 0.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #5   | 0.6 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.5 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:20.00   ______
-        #1   |93.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.7 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 1.1 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #5   | 0.6 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.6 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:20.22   ______
-        #1   |92.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 1.7 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 1.4 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #5   | 0.7 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.6 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:20.42   ______
-        #1   |92.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.2 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 1.4 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 0.9 %|  draw_space_stations       ...rontier\planet.py:1478
-        #5   | 0.7 %|  draw_bases                ...rontier\planet.py:1429
-        #6   | 0.6 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:20.62   ______
-        #1   |90.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 1.7 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.0 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #6   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #7   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:20.79   ______
-        #1   |89.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 2.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.1 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #6   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #7   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:21.04   ______
-        #1   |89.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 2.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.1 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #6   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #7   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:21.28   ______
-        #1   |88.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 2.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.1 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #6   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #7   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:21.54   ______
-        #1   |88.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 2.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.1 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #6   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #7   | 0.8 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:21.82   ______
-        #1   |88.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 2.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #3   | 2.2 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #4   | 1.1 %|  draw_bases                ...rontier\planet.py:1429
-        #5   | 1.0 %|  start_loop                ...hfrontier\main.py:40
-        #6   | 0.8 %|  draw_image                ...rontier\planet.py:999
-        #7   | 0.8 %|  draw_space_stations       ...rontier\planet.py:1478
-        #8   | 0.8 %|  draw_entire_planet        ...rontier\planet.py:1151
-16:15:22.11   ______
-        #1   |74.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.4 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 2.4 %|  tostring                  ...ages\PIL\Image.py:503
-        #5   | 2.2 %|  start_loop                ...hfrontier\main.py:40
-        #6   | 1.9 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:22.47   ______
-        #1   |74.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.4 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 2.4 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 2.4 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.9 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:22.74   ______
-        #1   |74.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.4 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 2.6 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 2.4 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.9 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:22.98   ______
-        #1   |74.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.4 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 2.8 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.9 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:23.21   ______
-        #1   |73.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.3 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 2.9 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.9 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:23.39   ______
-        #1   |73.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.3 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #4   | 3.1 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 0.9 %|  draw_bases                ...rontier\planet.py:1429
-16:15:23.65   ______
-        #1   |73.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.3 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.4 %|  start_loop                ...hfrontier\main.py:40
-        #4   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
-16:15:23.92   ______
-        #1   |72.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.3 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.6 %|  start_loop                ...hfrontier\main.py:40
-        #4   | 3.2 %|  get_research_project      ...ier\technology.py:163
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-        #6   | 1.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
-16:15:24.17   ______
-        #1   |71.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.2 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #4   | 3.7 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 3.1 %|  get_research_project      ...ier\technology.py:163
-        #6   | 1.8 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #7   | 1.6 %|  pick_research_01          ...rket_decisions.py:60
-        #8   | 1.4 %|  execute_stock_change      ...ontier\company.py:1224
-        #9   | 1.0 %|  expand_home_cities        ...ontier\company.py:277
-        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
-16:15:24.34   ______
-        #1   |69.2 %|  active_start              ...psyco\profiler.py:273
+14:40:39.63   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+14:40:39.93   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+14:40:40.25   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+14:40:40.50   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+14:40:40.66   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+14:40:40.90   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:40:41.07   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:40:41.28   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:40:41.50   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:40:41.67   ______
+        #1   |99.7 %|  active_start              ...psyco\profiler.py:273
+14:40:41.94   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:40:42.10   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:40:42.31   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:40:42.48   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:40:42.66   ______
+        #1   |99.6 %|  active_start              ...psyco\profiler.py:273
+14:40:42.88   ______
+        #1   |99.5 %|  active_start              ...psyco\profiler.py:273
+14:40:43.11   ______
+        #1   |99.5 %|  active_start              ...psyco\profiler.py:273
+14:40:43.28   ______
+        #1   |87.4 %|  active_start              ...psyco\profiler.py:273
         #2   | 4.1 %|  evaluate_self             ...ontier\company.py:366
-        #3   | 3.9 %|  tostring                  ...ages\PIL\Image.py:503
-        #4   | 3.8 %|  start_loop                ...hfrontier\main.py:40
-        #5   | 3.0 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 3.0 %|  get_research_project      ...ier\technology.py:163
-        #7   | 1.8 %|  draw_bases                ...rontier\planet.py:1429
-        #8   | 1.5 %|  pick_research_01          ...rket_decisions.py:60
-        #9   | 1.3 %|  execute_stock_change      ...ontier\company.py:1224
-        #10  | 1.0 %|  <module>                  ...hfrontier\main.py:7
-16:15:24.59   ______
-        #1   |68.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.1 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.0 %|  evaluate_self             ...ontier\company.py:366
-        #4   | 3.9 %|  tostring                  ...ages\PIL\Image.py:503
-        #5   | 3.0 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 3.0 %|  get_research_project      ...ier\technology.py:163
-        #7   | 1.7 %|  draw_bases                ...rontier\planet.py:1429
-        #8   | 1.5 %|  pick_research_01          ...rket_decisions.py:60
-        #9   | 1.3 %|  execute_stock_change      ...ontier\company.py:1224
-        #10  | 1.2 %|  <module>                  ...hfrontier\main.py:7
-16:15:24.74   ______
-        #1   |68.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.3 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.0 %|  evaluate_self             ...ontier\company.py:366
-        #4   | 3.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #5   | 3.0 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 3.0 %|  get_research_project      ...ier\technology.py:163
-        #7   | 1.7 %|  draw_bases                ...rontier\planet.py:1429
-        #8   | 1.5 %|  pick_research_01          ...rket_decisions.py:60
-        #9   | 1.3 %|  execute_stock_change      ...ontier\company.py:1224
-        #10  | 1.2 %|  <module>                  ...hfrontier\main.py:7
-16:15:24.92   ______
-        #1   |68.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.0 %|  evaluate_self             ...ontier\company.py:366
-        #4   | 3.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #5   | 3.0 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 2.9 %|  get_research_project      ...ier\technology.py:163
-        #7   | 1.7 %|  draw_bases                ...rontier\planet.py:1429
-        #8   | 1.5 %|  pick_research_01          ...rket_decisions.py:60
-        #9   | 1.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #10  | 1.3 %|  execute_stock_change      ...ontier\company.py:1224
-16:15:25.13   ______
-        #1   |67.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.0 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.0 %|  evaluate_self             ...ontier\company.py:366
-        #4   | 3.8 %|  tostring                  ...ages\PIL\Image.py:503
-        #5   | 3.0 %|  calculate_base_positions  ...rontier\planet.py:1216
-        #6   | 2.9 %|  get_research_project      ...ier\technology.py:163
-        #7   | 1.7 %|  draw_bases                ...rontier\planet.py:1429
-        #8   | 1.5 %|  dumpcharges               ...s\psyco\logger.py:62
-        #9   | 1.5 %|  pick_research_01          ...rket_decisions.py:60
-        #10  | 1.3 %|  execute_stock_change      ...ontier\company.py:1224
-16:15:25.24  tag function: solarsystem.solarsystem.evaluate_each_game_step %
-16:15:25.28  tag function: company.firm.execute_stock_change               %
-16:15:25.28  tag function: company.company.evaluate_self                   %
-16:15:25.41   ______
-        #1   |42.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.2 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.8 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.2 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.4 %|  tostring                  ...ages\PIL\Image.py:503
-16:15:25.73   ______
-        #1   |42.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 7.6 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.8 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.2 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.4 %|  tostring                  ...ages\PIL\Image.py:503
-16:15:26.06   ______
-        #1   |41.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.0 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.7 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.2 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-16:15:26.40   ______
-        #1   |41.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.4 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.7 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.1 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-16:15:26.64   ______
-        #1   |41.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 8.8 %|  start_loop                ...hfrontier\main.py:40
-        #3   | 4.7 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.1 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tostring                  ...ages\PIL\Image.py:503
-16:15:28.31  tag function: __main__.start_loop                             %
-16:15:28.31   ______
-        #1   |36.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.8 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tag                       ...psyco\profiler.py:109
-16:15:31.32   ______
-        #1   |36.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.8 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tag                       ...psyco\profiler.py:109
-16:15:32.63   ______
-        #1   |36.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.6 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.8 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tag                       ...psyco\profiler.py:109
-16:15:32.87   ______
-        #1   |36.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.5 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.7 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  tag                       ...psyco\profiler.py:109
-16:15:33.82   ______
-        #1   |36.3 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.5 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.7 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 2.3 %|  tag                       ...psyco\profiler.py:109
-16:15:34.06   ______
-        #1   |36.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.5 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.1 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 2.7 %|  calculate_emigration      ...ontier\company.py:1512
-        #5   | 2.7 %|  dumpcharges               ...s\psyco\logger.py:62
-        #6   | 2.2 %|  tag                       ...psyco\profiler.py:109
-16:15:34.65   ______
-        #1   |35.7 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.5 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.0 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.2 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.7 %|  calculate_emigration      ...ontier\company.py:1512
-        #6   | 2.2 %|  tag                       ...psyco\profiler.py:109
-16:15:34.91   ______
-        #1   |33.8 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.2 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 3.8 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #4   | 3.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #5   | 2.5 %|  calculate_emigration      ...ontier\company.py:1512
-        #6   | 2.2 %|  start_loop                ...hfrontier\main.py:40
-        #7   | 2.1 %|  tag                       ...psyco\profiler.py:109
-16:15:35.13   ______
-        #1   |33.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.2 %|  buildfncache              ...psyco\profiler.py:66
-        #3   | 4.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #4   | 3.8 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #5   | 2.5 %|  calculate_emigration      ...ontier\company.py:1512
-        #6   | 2.2 %|  start_loop                ...hfrontier\main.py:40
-        #7   | 2.1 %|  tag                       ...psyco\profiler.py:109
-16:15:35.81   ______
-        #1   |33.4 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.4 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 4.2 %|  buildfncache              ...psyco\profiler.py:66
-        #4   | 3.8 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #5   | 2.5 %|  calculate_emigration      ...ontier\company.py:1512
-        #6   | 2.2 %|  start_loop                ...hfrontier\main.py:40
-        #7   | 2.1 %|  tag                       ...psyco\profiler.py:109
-16:15:36.08   ______
-        #1   |32.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.1 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 4.1 %|  buildfncache              ...psyco\profiler.py:66
-        #4   | 3.7 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #5   | 2.6 %|  do_profile                ...psyco\profiler.py:314
-        #6   | 2.5 %|  calculate_emigration      ...ontier\company.py:1512
-        #7   | 2.4 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 2.0 %|  tag                       ...psyco\profiler.py:109
-16:15:36.22   ______
-        #1   |32.2 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.6 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 4.0 %|  buildfncache              ...psyco\profiler.py:66
-        #4   | 3.6 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #5   | 3.2 %|  do_profile                ...psyco\profiler.py:314
-        #6   | 2.4 %|  calculate_emigration      ...ontier\company.py:1512
-        #7   | 2.4 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 2.0 %|  tag                       ...psyco\profiler.py:109
-16:15:36.22  unsupported generator at walk                               % %
-16:15:36.29  tag function: os.walk                                         %
-16:15:36.29  tag function: os.walk                                         %
-16:15:36.29  tag function: ntpath.join                                     %
-16:15:36.31  tag function: os.walk                                         %
-16:15:36.34  tag function: ntpath.isdir                                    %
-16:15:36.36  tag function: os.walk                                         %
-16:15:36.44   ______
-        #1   |13.0 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 2.5 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #4   | 2.0 %|  isabs                     ...n25\lib\ntpath.py:51
-        #5   | 1.9 %|  do_profile                ...psyco\profiler.py:314
-        #6   | 1.6 %|  buildfncache              ...psyco\profiler.py:66
-        #7   | 1.5 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 1.5 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #9   | 1.4 %|  S_IFMT                    ...hon25\lib\stat.py:29
-        #10  | 1.4 %|  splitdrive                ...n25\lib\ntpath.py:116
-16:15:36.65   ______
-        #1   |12.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 3.2 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 2.6 %|  do_profile                ...psyco\profiler.py:314
-        #4   | 2.4 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #5   | 1.9 %|  isabs                     ...n25\lib\ntpath.py:51
-        #6   | 1.6 %|  buildfncache              ...psyco\profiler.py:66
-        #7   | 1.4 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 1.4 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #9   | 1.4 %|  S_IFMT                    ...hon25\lib\stat.py:29
-        #10  | 1.3 %|  splitdrive                ...n25\lib\ntpath.py:116
-16:15:37.97   ______
-        #1   |12.5 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.0 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 2.6 %|  do_profile                ...psyco\profiler.py:314
-        #4   | 2.4 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #5   | 1.9 %|  isabs                     ...n25\lib\ntpath.py:51
-        #6   | 1.6 %|  buildfncache              ...psyco\profiler.py:66
-        #7   | 1.4 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 1.4 %|  get_mining_opportunities  ...ontier\company.py:1799
-        #9   | 1.4 %|  S_IFMT                    ...hon25\lib\stat.py:29
-        #10  | 1.3 %|  splitdrive                ...n25\lib\ntpath.py:116
-16:15:38.19   ______
-        #1   |11.6 %|  active_start              ...psyco\profiler.py:273
-        #2   | 4.5 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 2.5 %|  __init__                  ...gui_components.py:475
-        #4   | 2.4 %|  do_profile                ...psyco\profiler.py:314
-        #5   | 2.2 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #6   | 1.8 %|  isabs                     ...n25\lib\ntpath.py:51
-        #7   | 1.6 %|  start_loop                ...hfrontier\main.py:40
-        #8   | 1.5 %|  draw                      ...gui_components.py:499
-        #9   | 1.4 %|  SOF                       ...pegImagePlugin.py:104
-        #10  | 1.4 %|  buildfncache              ...psyco\profiler.py:66
-16:15:38.40   ______
-        #1   |11.1 %|  active_start              ...psyco\profiler.py:273
-        #2   | 5.3 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 4.1 %|  draw                      ...gui_components.py:499
-        #4   | 2.6 %|  __init__                  ...gui_components.py:475
-        #5   | 2.3 %|  do_profile                ...psyco\profiler.py:314
-        #6   | 2.1 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #7   | 1.7 %|  isabs                     ...n25\lib\ntpath.py:51
-        #8   | 1.6 %|  start_loop                ...hfrontier\main.py:40
-        #9   | 1.4 %|  SOF                       ...pegImagePlugin.py:104
-        #10  | 1.4 %|  buildfncache              ...psyco\profiler.py:66
-16:15:39.17   ______
-        #1   |10.9 %|  active_start              ...psyco\profiler.py:273
-        #2   | 6.5 %|  dumpcharges               ...s\psyco\logger.py:62
-        #3   | 4.1 %|  draw                      ...gui_components.py:499
-        #4   | 2.6 %|  __init__                  ...gui_components.py:475
-        #5   | 2.3 %|  do_profile                ...psyco\profiler.py:314
-        #6   | 2.1 %|  S_ISDIR                   ...hon25\lib\stat.py:45
-        #7   | 1.7 %|  isabs                     ...n25\lib\ntpath.py:51
-        #8   | 1.6 %|  start_loop                ...hfrontier\main.py:40
-        #9   | 1.4 %|  SOF                       ...pegImagePlugin.py:104
-        #10  | 1.4 %|  buildfncache              ...psyco\profiler.py:66
-16:15:39.17  memory usage: 2006+ kb                                        %
-16:15:39.17  program exit, 11/07/09                     %%%%%%%%%%%%%%%%%%%%
+14:40:43.49   ______
+        #1   |82.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  evaluate_self             ...ontier\company.py:366
+14:40:43.58  tag function: company.firm.execute_stock_change               %
+14:40:43.65  tag function: company.company.evaluate_self                   %
+14:40:43.70   ______
+        #1   |68.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:40
+        #3   | 2.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 1.5 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #5   | 1.4 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.3 %|  get_mining_opportunities  ...ontier\company.py:1786
+        #7   | 1.0 %|  calculate_emigration      ...ontier\company.py:1499
+        #8   | 0.7 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.7 %|  pick_research             ...ontier\company.py:265
+        #10  | 0.4 %|  choice                    ...n25\lib\random.py:246
+14:40:43.86   ______
+        #1   |68.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.8 %|  start_loop                ...hfrontier\main.py:40
+        #3   | 2.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 1.5 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #5   | 1.4 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.3 %|  get_mining_opportunities  ...ontier\company.py:1786
+        #7   | 1.0 %|  calculate_emigration      ...ontier\company.py:1499
+        #8   | 0.7 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.7 %|  pick_research             ...ontier\company.py:265
+        #10  | 0.4 %|  choice                    ...n25\lib\random.py:246
+14:40:44.12   ______
+        #1   |68.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.1 %|  start_loop                ...hfrontier\main.py:40
+        #3   | 2.6 %|  get_research_project      ...ier\technology.py:163
+        #4   | 1.5 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #5   | 1.4 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.3 %|  get_mining_opportunities  ...ontier\company.py:1786
+        #7   | 0.9 %|  calculate_emigration      ...ontier\company.py:1499
+        #8   | 0.8 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.7 %|  pick_research             ...ontier\company.py:265
+        #10  | 0.4 %|  create                    ...ghfrontier\gui.py:804
+14:40:44.34   ______
+        #1   |67.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.4 %|  start_loop                ...hfrontier\main.py:40
+        #3   | 2.5 %|  get_research_project      ...ier\technology.py:163
+        #4   | 1.5 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #5   | 1.3 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.3 %|  get_mining_opportunities  ...ontier\company.py:1786
+        #7   | 0.9 %|  calculate_emigration      ...ontier\company.py:1499
+        #8   | 0.8 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.8 %|  create                    ...ghfrontier\gui.py:804
+        #10  | 0.7 %|  pick_research             ...ontier\company.py:265
+14:40:44.46   ______
+        #1   |67.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 3.5 %|  start_loop                ...hfrontier\main.py:40
+        #3   | 2.5 %|  get_research_project      ...ier\technology.py:163
+        #4   | 1.5 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #5   | 1.3 %|  pick_research_01          ...rket_decisions.py:60
+        #6   | 1.3 %|  get_mining_opportunities  ...ontier\company.py:1786
+        #7   | 0.9 %|  calculate_emigration      ...ontier\company.py:1499
+        #8   | 0.9 %|  <module>                  ...hfrontier\main.py:7
+        #9   | 0.8 %|  create                    ...ghfrontier\gui.py:804
+        #10  | 0.7 %|  pick_research             ...ontier\company.py:265
+14:40:44.46  memory usage: 2376+ kb                                        %
+14:40:44.46  program exit, 11/08/09                     %%%%%%%%%%%%%%%%%%%%

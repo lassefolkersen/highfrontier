@@ -3,7 +3,7 @@ Include added costs for housing in harsh environments
 
 
 
-
+I think the game will crash if one tries to do two transfers of population between the same cities. 
 Consider speed advantages to drawing water (and waste) on top of the sphereform instead of the planar form
 The distance calculation needs checking. Glasgow to Kisangini (middle of africa) has been observed to be closer than other european cities
 expand the implode_and_expand function so that it can be used, on already existing technology. This probably involves adding options for including input_output_dicts in the "common knowledge"
