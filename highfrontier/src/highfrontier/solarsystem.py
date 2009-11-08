@@ -152,8 +152,13 @@ class solarsystem:
                         base.calculate_emigration()
                         base.calculate_growth_and_deaths()
                         base.calculate_emissions()
-                        for resource in self.mineral_resources:
-                            base.get_mining_opportunities(base.home_planet, resource, check_date = self.current_date)
+                        if base.last_mining_check + datetime.timedelta(base.mining_check_interval) < self.current_date:
+#                            print base.name + " is checking resources because it has been a while ago"
+#                            print str(base.last_mining_check) + " base.last_mining_check"
+#                            print str(base.mining_check_interval) + " base.mining_check_interval"
+#                            print str(self.current_date) + " self.current_date"
+                            for resource in self.mineral_resources:
+                                base.get_mining_opportunities(base.home_planet, resource)
                         
  
                 people = 0
@@ -333,7 +338,7 @@ class solarsystem:
                 base_owner_name = base.original_country
                 base.owner = company_database[base_owner_name]
                 for resource in self.mineral_resources + ["food"]:
-                    base.get_mining_opportunities(planet,resource,check_date = self.start_date)
+                    base.get_mining_opportunities(planet,resource)
 
 
         #add one of each firm of everything that is known
@@ -540,9 +545,6 @@ class solarsystem:
         except error:
             print error
             raise Exception("An error of type: " + str(error) + " was found")
-        else:
-            print_dict = {"text":"Loaded " + str(filename),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
         file.close()
         
 #        print "loaded " + str(new_solar_system)

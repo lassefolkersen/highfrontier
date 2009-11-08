@@ -60,13 +60,10 @@ class planet:
         self.pre_drawn_action_layers = {}
         self.resource_maps = {}
         self.planet_display_mode = "visible light"
-        if self.planet_name == "earth":
-#            self.percent_water_coverage = 0.594
+        if self.name == "earth":
             self.water_level = 1
-             
         else:
             self.water_level = 0
-#            self.percent_water_coverage = 0.0
         self.bases = self.read_pre_base_file(planet_name)
         for base in self.bases.values():
             base.calculate_trade_routes(self)
@@ -967,36 +964,13 @@ class planet:
             overlay_image = self.resource_maps[resource_type].copy()
             
             if self.current_base is not None:
-                base_territory_mask = self.current_base.get_mining_opportunities(self,"ice",show_area = True)
-                #print overlay_image.mode
-                #print overlay_image.size
-                base_territory = Image.new(overlay_image.mode, overlay_image.size, (0,0,0))
-                overlay_image.paste(base_territory,None,base_territory_mask)
-            
-                    
-
-            
-            
-                
-
-            
-        #overlay_image.save("testing.png")
+                overlay_image = self.current_base.draw_mining_area(self,overlay_image)
         
         overlay_image = overlay_image.convert("RGB")
         surface = self.draw_image(eastern_inclination, northern_inclination,projection_scaling,fast_rendering=True,image=overlay_image)
 
-
-        
-        #blackscreen = pygame.Surface(global_variables.window_size)
-        #self.projection_dim =(projection_scaling,projection_scaling)
-        #surface = self.draw_bases(surface,eastern_inclination,northern_inclination,projection_scaling)
-        #blackscreen.blit(surface, ((global_variables.window_size[0]-self.projection_dim[0])/2 ,(global_variables.window_size[1]-self.projection_dim[1])/2))
-        #surface = blackscreen
-
         return surface
             
-            
-        #overlay_image.save("test.png")
 
             
     def draw_image(self,eastern_inclination,northern_inclination,projection_scaling,fast_rendering=False,image=None,plane_to_sphere = None):
@@ -1363,7 +1337,7 @@ class planet:
         and returns the sphere_coordinates
         """
         click_spot = pygame.Rect(projection_position[0]-3,projection_position[1]-3,6,6)
-        collision_test_result = click_spot.collidedict(self.areas_of_interest[(self.eastern_inclination,self.northern_inclination,self.projection_scaling)])
+        collision_test_result = click_spot.collidedict(self.areas_of_interest[(self.northern_inclination,self.eastern_inclination,self.projection_scaling)])
         if collision_test_result != None:
 
             return "transfer population to " + collision_test_result[1]

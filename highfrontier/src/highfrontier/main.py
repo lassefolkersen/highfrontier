@@ -33,8 +33,9 @@ if hasattr(sys,"setdefaultencoding"):
 
 
 
-
-
+load_previous_game = None
+company_name = None
+company_capital = None
 
 
 def start_loop(company_name = None, company_capital = None, load_previous_game = None):
@@ -62,25 +63,14 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
         sol.load_solar_system(load_previous_game)
     else:
         sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = True)
-
-
+    
+    
     
     #initialize current player company
     if company_name is not None:
         if sol.current_player is not None:
             raise Exception("The loaded solar system already had a current player")
-        
-        if company_name in sol.companies.keys():
-            
-            sol.current_player = sol.companies[company_name]
-            sol.current_player.capital = company_capital
-        else:
-            model_company_name = random.choice(sol.companies.keys())
-            model_company = sol.companies[model_company_name]
-    
-            new_company = company.company(sol,model_company.company_database,deviation=5,company_name=company_name,capital=company_capital)
-            sol.companies[company_name] = new_company
-            new_company.automation_dict = {
+        automation_dict = {
                                         "Demand bidding (initiate buying bids)":False,
                                         "Supply bidding (initiate selling bids)":False,
                                         "Asset market (buy bases and firms)":False,
@@ -92,6 +82,21 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                                         "Pick research (pick research automatically)":False,
                                         "Expand area of operation (search for new home cities)":False
                                         }
+        if company_name in sol.companies.keys():
+            
+            sol.current_player = sol.companies[company_name]
+            sol.current_player.automation_dict = automation_dict
+            sol.current_player.automation_dict["Demand bidding (initiate buying bids)"] = True
+            sol.current_player.automation_dict["Supply bidding (initiate selling bids)"] = True
+            sol.current_player.capital = company_capital
+
+        else:
+            model_company_name = random.choice(sol.companies.keys())
+            model_company = sol.companies[model_company_name]
+    
+            new_company = company.company(sol,model_company.company_database,deviation=5,company_name=company_name,capital=company_capital)
+            sol.companies[company_name] = new_company
+            new_company.automation_dict = automation_dict
             sol.current_player = new_company
         
         
@@ -104,7 +109,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     print "finished loading"
     
     
-
+    
     
     #divide the surface in action and non-action
     action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
@@ -115,7 +120,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     right_side_surface = window.subsurface(right_side_rect)
     message_surface = window.subsurface(message_rect)
     
-
+    
     
     #switch to determine planetary mode or solarsystem mode from beginning
     mode_before_change = sol.display_mode 
@@ -133,10 +138,10 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
     #Initialising the GUI
     gui_instance = gui.gui(right_side_surface, message_surface, action_surface, sol)
     
-
     
-
-
+    
+    
+    
     #getting psyco if available
     try:
         import psyco
@@ -146,10 +151,10 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
         pass
     
 
-    
 
 
-    
+
+
     i = 0
     while True:    
         events = pygame.event.get()
@@ -183,20 +188,22 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                     gui_instance.go_up(event)
                 if event.key == 274: #down
                     gui_instance.go_down(event)
-
+    
                 pygame.display.flip()
         
         
         pygame.time.delay(15)
-
-
-
-
+    
+    
+    
+    
         
         i = i + 1
         if i%sol.step_delay_time == 0:
             i = 0
             sol.current_date = datetime.timedelta(30)+sol.current_date
+#            if sol.current_date > global_variables.start_date + datetime.timedelta(10000):
+#                runall = False
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
             
@@ -205,7 +212,7 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
             for company_instance in sol.companies.values():
                 company_instance.evaluate_self()
                 
-
+    
             #in solar system the display needs updating all the time. However we need to protect whatever active window is shown:
             if sol.display_mode == "solar_system":
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
@@ -221,19 +228,20 @@ def start_loop(company_name = None, company_capital = None, load_previous_game =
                 else:
                     action_surface.blit(surface,(0,0))
                 
-
-#            try:    sol.planets["earth"].bases["stockholm"]
-#            except: print "stockholm gone"
-#            else:   sol.planets["earth"].kill_a_base("stockholm")
+    
             
             pygame.display.flip()
-
-
-
-
-
-#start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)
-
+    
+    
+    
+    
+#import cProfile    
+#test = cProfile.run('start_loop(company_name = "YourCompanyNameHere", company_capital = 100000000000)',"profiling")
+#test = cProfile.run('start_loop()',"profiling3")
+#start_loop()
+#import pstats
+#p = pstats.Stats('profiling3')
+#p.strip_dirs().sort_stats("time").print_stats(40)
 #start_loop(company_name = "YourCompanyNameHere", company_capital = 10000000000, load_previous_game = os.path.join("pickledmiscellanous","A_small_test_game"))
 
    

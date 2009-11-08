@@ -236,7 +236,7 @@ class market_decisions:
                             price_of_resource.append(neighbour.market["buy_offers"][resource][0]["price"])
                 if len(price_of_resource) > 0:
                     mean_price_of_resource = sum(price_of_resource) / len(price_of_resource)
-                    value = mining_opportunity["sum_of_resources"] * mean_price_of_resource
+                    value = mining_opportunity * mean_price_of_resource
                     mining_values.append(value)
             mining_value_term = sum(mining_values)
                 
