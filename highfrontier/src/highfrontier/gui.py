@@ -111,6 +111,7 @@ class gui():
                         elif return_value == "population transfer":
                             self.solar_system_object_link.display_mode = "planetary"
                             self.solar_system_object_link.build_base_mode = True
+                            self.solar_system_object_link.building_base = self.solar_system_object_link.current_planet.current_base
                             print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
                             self.solar_system_object_link.messages.append(print_dict)
                             pygame.mouse.set_cursor(*pygame.cursors.diamond)
@@ -1293,7 +1294,7 @@ class trade_window():
                                 price_of_resource.append(neighbour.market["buy_offers"][resource][0]["price"])
                     if len(price_of_resource) > 0:
                         mean_price_of_resource = sum(price_of_resource) / len(price_of_resource)
-                        value = mining_opportunity["sum_of_resources"] * mean_price_of_resource
+                        value = mining_opportunity * mean_price_of_resource
                         mining_values.append(value)
                 mining_value_term = sum(mining_values)
                 population_term = potential_base.population
@@ -1960,7 +1961,7 @@ class base_population_info():
             base_population_dict["Wages"] = {"info":base_selected.wages}
             
             for resource in base_selected.mining_opportunities:
-                 base_population_dict["Mining: " + resource] = {"info":base_selected.mining_opportunities[resource]["sum_of_resources"]}
+                 base_population_dict["Mining: " + resource] = {"info":base_selected.mining_opportunities[resource]}
             
             for resource in base_selected.stock_dict:
                  base_population_dict["Stock: " + resource] = {"info":base_selected.stock_dict[resource]}
@@ -3332,7 +3333,7 @@ class base_build_menu():
                 for resource in technology["input_output_dict"][put].keys():
                     lineno = lineno + 1
                     if resource in self.solar_system_object_link.mineral_resources + ["food"] and put == "output":
-                        mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource, check_date = self.solar_system_object_link.current_date)
+                        mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource)
                         unmodified_output = technology["input_output_dict"]["output"][resource]
                         value = (mining_opportunity / 10) * unmodified_output
                         value = int(value * self.slider.position)
