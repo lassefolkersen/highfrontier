@@ -16,8 +16,7 @@ persons_per_company = 1200000   #upper limit on the number of companies relative
 max_transactions_tracked = 100 #the max number of tracked transaction in a market.
 max_letters_in_company_names = 32
 
-courier_font = pygame.font.SysFont("monospace", 11, bold=False, italic=False) #some fonts
-courier_font_bold = pygame.font.SysFont("monospace", 11, bold=True, italic=False) #some fonts
+courier_font = pygame.font.Font(os.path.join("fonts","CRYSRG__.TTF"), 11) #some fonts
 standard_font = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"), 13, bold=False, italic=False) #some fonts
 standard_font_small= pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
 standard_font_small_bold = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
