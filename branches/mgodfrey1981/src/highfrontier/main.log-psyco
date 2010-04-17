@@ -1,0 +1,445 @@
+07:10:39.63  Logging started, 11/11/09                  %%%%%%%%%%%%%%%%%%%%
+07:10:39.63  ActivePassiveProfiler: starting                           %%%%%
+07:10:39.68   ______
+        #1   |100.0 %|  active_start              ...psyco\profiler.py:273
+07:10:39.89   ______
+        #1   |99.9 %|  active_start              ...psyco\profiler.py:273
+07:10:40.16   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:40.36   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:40.57   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:40.75   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:40.93   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:41.11   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:41.29   ______
+        #1   |99.4 %|  active_start              ...psyco\profiler.py:273
+07:10:41.61   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.5 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:41.93   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.5 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:42.24   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.5 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:42.51   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.6 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:42.72   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.6 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:42.89   ______
+        #1   |93.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 1.9 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 1.1 %|  execute_stock_change      ...ontier\company.py:1215
+        #4   | 1.0 %|  get_research_project      ...ier\technology.py:163
+        #5   | 0.6 %|  start_loop                             main.py:41
+        #6   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #7   | 0.3 %|  pick_research             ...ontier\company.py:265
+07:10:43.10   ______
+        #1   |89.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 2.6 %|  receive_data              ...gui_components.py:793
+        #3   | 1.8 %|  evaluate_self             ...ontier\company.py:366
+        #4   | 1.3 %|  __init__                  ...gui_components.py:586
+        #5   | 1.0 %|  execute_stock_change      ...ontier\company.py:1215
+        #6   | 0.9 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.6 %|  start_loop                             main.py:41
+        #8   | 0.5 %|  pick_research_01          ...rket_decisions.py:60
+        #9   | 0.2 %|  pick_research             ...ontier\company.py:265
+07:10:43.20  tag function: company.firm.execute_stock_change               %
+07:10:43.29   ______
+        #1   |76.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.2 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.6 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #9   | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+        #10  | 0.4 %|  <module>                               main.py:7
+07:10:43.48   ______
+        #1   |75.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.8 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:43.75   ______
+        #1   |75.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.8 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:43.96   ______
+        #1   |75.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.9 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:44.23   ______
+        #1   |75.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.9 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:44.39   ______
+        #1   |75.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.9 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:44.57   ______
+        #1   |75.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.9 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:44.81   ______
+        #1   |75.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.3 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 2.2 %|  receive_data              ...gui_components.py:793
+        #4   | 1.9 %|  start_loop                             main.py:41
+        #5   | 1.1 %|  __init__                  ...gui_components.py:586
+        #6   | 0.8 %|  get_research_project      ...ier\technology.py:163
+        #7   | 0.5 %|  calculate_emigration      ...ontier\company.py:1501
+        #8   | 0.5 %|  <module>                               main.py:7
+        #9   | 0.4 %|  evaluate_each_game_step   ...er\solarsystem.py:114
+        #10  | 0.4 %|  pick_research_01          ...rket_decisions.py:60
+07:10:44.96   ______
+        #1   |63.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 8.2 %|  evaluate_self             ...ontier\company.py:366
+        #3   | 4.1 %|  make_market_bid           ...ontier\company.py:952
+        #4   | 2.5 %|  start_loop                             main.py:41
+        #5   | 1.8 %|  receive_data              ...gui_components.py:793
+        #6   | 1.5 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.3 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #8   | 1.2 %|  calculate_demand_reaction ...ontier\company.py:830
+        #9   | 0.9 %|  __init__                  ...gui_components.py:586
+        #10  | 0.8 %|  calculate_supply_reaction ...ontier\company.py:843
+07:10:45.01  tag function: company.company.evaluate_self                   %
+07:10:45.18   ______
+        #1   |57.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.8 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:45.36   ______
+        #1   |57.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.8 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:45.63   ______
+        #1   |57.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.8 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:45.90   ______
+        #1   |57.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.9 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:46.16   ______
+        #1   |57.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.9 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:46.35   ______
+        #1   |57.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 2.9 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:46.61   ______
+        #1   |56.9 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.2 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.7 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:46.81   ______
+        #1   |56.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.3 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:47.02   ______
+        #1   |56.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.4 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:47.23   ______
+        #1   |56.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.4 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:47.44   ______
+        #1   |56.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.1 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.5 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:47.65   ______
+        #1   |56.5 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.0 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.5 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:47.91   ______
+        #1   |56.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.0 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.6 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:48.12   ______
+        #1   |56.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.0 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 3.7 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #5   | 1.9 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #6   | 1.7 %|  calculate_demand_reaction ...ontier\company.py:830
+        #7   | 1.6 %|  receive_data              ...gui_components.py:793
+        #8   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #9   | 1.3 %|  calculate_supply_reaction ...ontier\company.py:843
+        #10  | 1.2 %|  calculate_demand_reaction_02...rket_decisions.py:488
+07:10:48.32   ______
+        #1   |54.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 4.7 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.9 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.8 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.6 %|  receive_data              ...gui_components.py:793
+        #9   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  calculate_supply_reaction ...ontier\company.py:843
+07:10:48.59   ______
+        #1   |54.7 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.9 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 4.8 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.9 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.8 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.6 %|  receive_data              ...gui_components.py:793
+        #9   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  calculate_supply_reaction ...ontier\company.py:843
+07:10:48.76   ______
+        #1   |54.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.8 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 4.9 %|  start_loop                             main.py:41
+        #4   | 2.0 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.9 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.8 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.6 %|  receive_data              ...gui_components.py:793
+        #9   | 1.4 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  calculate_supply_reaction ...ontier\company.py:843
+07:10:49.08   ______
+        #1   |52.4 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 4.8 %|  start_loop                             main.py:41
+        #4   | 1.9 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.8 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.7 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.5 %|  receive_data              ...gui_components.py:793
+        #9   | 1.3 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  draw_bases                ...rontier\planet.py:1406
+07:10:49.29   ______
+        #1   |52.3 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 4.9 %|  start_loop                             main.py:41
+        #4   | 1.9 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.8 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.7 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.5 %|  receive_data              ...gui_components.py:793
+        #9   | 1.3 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  draw_bases                ...rontier\planet.py:1406
+07:10:49.56   ______
+        #1   |52.1 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 5.1 %|  start_loop                             main.py:41
+        #4   | 1.9 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.8 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.7 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.5 %|  receive_data              ...gui_components.py:793
+        #9   | 1.3 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  draw_bases                ...rontier\planet.py:1406
+07:10:49.80   ______
+        #1   |52.0 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.6 %|  make_market_bid           ...ontier\company.py:952
+        #3   | 5.2 %|  start_loop                             main.py:41
+        #4   | 1.9 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.8 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.7 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.6 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.5 %|  receive_data              ...gui_components.py:793
+        #9   | 1.3 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  draw_bases                ...rontier\planet.py:1406
+07:10:50.02   ______
+        #1   |50.2 %|  active_start              ...psyco\profiler.py:273
+        #2   | 5.5 %|  start_loop                             main.py:41
+        #3   | 5.4 %|  make_market_bid           ...ontier\company.py:952
+        #4   | 4.7 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.8 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.7 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.5 %|  receive_data              ...gui_components.py:793
+        #9   | 1.2 %|  calculate_demand_reaction_04...rket_decisions.py:572
+        #10  | 1.2 %|  draw_bases                ...rontier\planet.py:1406
+07:10:50.23   ______
+        #1   |49.8 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.0 %|  start_loop                             main.py:41
+        #3   | 5.3 %|  make_market_bid           ...ontier\company.py:952
+        #4   | 4.6 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.7 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.6 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.4 %|  receive_data              ...gui_components.py:793
+        #9   | 1.2 %|  <module>                               main.py:7
+        #10  | 1.2 %|  calculate_demand_reaction_04...rket_decisions.py:572
+07:10:50.53   ______
+        #1   |49.6 %|  active_start              ...psyco\profiler.py:273
+        #2   | 6.2 %|  start_loop                             main.py:41
+        #3   | 5.3 %|  make_market_bid           ...ontier\company.py:952
+        #4   | 4.6 %|  create                    ...ghfrontier\gui.py:805
+        #5   | 1.7 %|  calculate_supply_reaction_01...rket_decisions.py:681
+        #6   | 1.6 %|  calculate_demand_reaction_03...rket_decisions.py:542
+        #7   | 1.5 %|  calculate_demand_reaction ...ontier\company.py:830
+        #8   | 1.4 %|  receive_data              ...gui_components.py:793
+        #9   | 1.2 %|  <module>                               main.py:7
+        #10  | 1.2 %|  calculate_demand_reaction_04...rket_decisions.py:572
+07:10:50.53  memory usage: 2454+ kb                                        %
+07:10:50.53  program exit, 11/11/09                     %%%%%%%%%%%%%%%%%%%%

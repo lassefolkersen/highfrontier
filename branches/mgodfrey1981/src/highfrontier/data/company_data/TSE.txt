@@ -1,0 +1,387 @@
+AEON Credit Service
+ANEST IWATA
+AQ Interactive
+ASICS
+ATKK
+Access Co.
+Acom
+Advantest
+ÆON
+Aflac
+Aichi Bank
+Aichi Steel
+Aiful
+Aisin Seiki Co.
+Ajinomoto
+Akita Bank
+Alcatel-Lucent
+Alinco
+All Nippon Airways
+Allied Telesis
+Alpine Electronics
+Alps Electric Co.
+American International Group
+Anritsu
+Aomori Bank
+Aozora Bank
+Asahi Breweries
+Asahi Glass Co.
+Asahi Kasei
+Asahi Soft Drinks
+Asatsu-DK
+Astellas Pharma
+Autobacs Seven Co.
+BALS Corporation
+BNP Paribas
+Bandai Visual
+Bank of America
+Banpresto
+Barclays plc
+Bayer
+Benesse
+Best Denki
+Boeing
+Book Off
+BP
+Bridgestone
+Brother Industries
+CSK
+Canon
+Capcom
+Casio
+Central Japan Railway Company
+Chiba Bank
+Chubu Electric Power Company
+Circle K Sunkus
+Citigroup
+Citizen Watch Co.
+Clarion
+Columbia Music Entertainment
+Cosmo Oil Company
+Credit Saison
+D&M Holdings
+Dai Nippon Printing
+Daiei
+Daihatsu
+Daiichi Sankyo Co.
+Daikin Industries
+Daimaru
+Dainippon Ink & Chemicals
+Daiwa Securities Group
+Daiwa Seiko Corporation
+Denso
+Dentsu
+Deodeo
+Deutsche Telekom
+Disco Corporation
+Don Quijote (store)
+Doutor Coffee
+Dow Chemical Company
+East Japan Railway Company
+Eisai Co.
+Eizo
+Electric Power Development Company
+Elpida Memory
+Ezaki Glico
+FANUC Robotics
+FamilyMart
+Fast Retailing
+Fuji Electric
+Fuji Heavy Industries
+Fuji Kyuko
+Fuji Television
+Fujifilm
+Fujitec
+Fujitsu
+Funai
+Futaba Corporation
+GS Yuasa
+Gaba Corporation
+Gakken
+H.I.S.
+Hamamatsu Photonics
+Hankyu Hanshin Holdings
+Hazama Corporation
+Hino Motors
+Hiroshima Electric Railway
+Hitachi Cable
+Hitachi Maxell
+Hitachi Ltd.
+Hokkaido Electric Power Company
+Hokkoku Bank
+Honda
+Horiba
+Horipro
+Hosiden
+House Foods
+Howa
+Hoya Corporation
+IDEC
+IHI Corporation
+Icom Incorporated
+Ikegami Tsushinki
+Imperial Hotel
+Internet Initiative Japan
+Invoice (company)
+Iseki
+Isetan
+Isuzu
+Ito En
+Itochu
+Iwatsu Electric
+Izumiya
+JEOL
+JFE Holdings
+JTEKT
+JVC
+Japan Airlines
+Japan Aviation Electronics
+Japan Radio Company
+Japan Railways Group
+Japan Tobacco
+Joyo Bank
+K Line
+K's Holdings Corporation
+KDDI
+Kabuki-za
+Kadokawa Group Holdings
+Kadokawa Shoten
+Kagome Co. Ltd.
+Kajima Construction
+Kansai Electric Power Company
+Kansai Super
+Kao Corporation
+Kawai
+Kawasaki Heavy Industries
+Keihan Electric Railway
+Keihin Electric Express Railway
+Keio Corporation
+Keisei Electric Railway
+Kenwood Corporation
+Keyence
+Kikkoman
+Kinki Sharyo
+Kintetsu
+Kintetsu World Express
+Kirin Brewery Company
+Kobe Steel
+Koei
+Komatsu Limited
+Komori
+Konami
+Konica Minolta
+Kubota
+Kumagai Gumi
+Kuraray
+Kyocera
+Lawson
+Lion
+MOS Burger
+MUJI
+Mabuchi Motor
+Maeda Corporation
+Mag Garden
+Makita
+Mandarake
+Marubeni
+Maruei
+Marui
+Maspro Denkoh
+Matsushita Electric Industrial Co.
+Matsuya Co.
+Matsuzakaya
+Maxvalu Tokai
+Mazda
+Meiji Dairies
+Meiji Seika
+Meiwa Corp.
+Melco
+Merrill Lynch
+Mikuni
+Minebea
+Minebea Co.
+Ministop
+Mitsubishi Chemical Holdings
+Mitsubishi Corporation
+Mitsubishi Electric
+Mitsubishi Estate Co.
+Mitsubishi Gas Chemical Company
+Mitsubishi Heavy Industries
+Mitsubishi Motors
+Mitsubishi Plastics
+Mitsubishi UFJ Financial Group
+Mitsubishi UFJ Securities
+Mitsui Chemicals
+Mitsui Fudosan
+Mitsui O.S.K. Lines
+Mitsui Sumitomo Insurance Co.
+Mitsukoshi
+Mitsumi
+Mixi
+Mizuho Financial Group
+Mizuho Trust & Banking
+Mizuno Corp.
+Mori Seiki
+Morinaga & Company
+Morinaga Milk Industry
+Morozoff Ltd.
+Murata Manufacturing
+NGK
+NHK Spring Company
+NIFTY Corporation
+NSK Ltd.
+NTT Communications Corp
+NTT docomo
+Nagoya Railroad
+Namco Bandai Holdings
+Nanto Bank
+NEC
+Nichicon
+Nidec Copal Corporation
+Nihon Dempa Kogyo
+Nikko Cordial
+Nikon
+Nintendo
+Nippon Chemi-Con
+Nippon Express
+Nippon Flour Mills
+Nippon Oil
+Nippon Sharyo
+Nippon Sheet Glass
+Nippon Steel
+Nippon Suisan Kaisha
+Nippon Telegraph and Telephone
+Nippon Television
+Nippon Yusen
+Nishi-Nippon Railroad
+Nissan Motors
+Nissin Foods
+Nitto Denko
+Nomura Holdings
+Noritake
+OMRON
+ORIX
+Obayashi Corp.
+Odakyu Electric Railway
+Odakyu Group
+Oki Electric Industry
+Olympus Corporation
+Osaka Gas
+POPLAR
+POSCO
+Pilot
+Pioneer Corporation
+Pixela Corporation
+Plat'Home
+Resona Holdings
+Ricoh
+Riso Kagaku Corporation
+Rohm
+Rohto Pharmaceutical Co.
+Roland Corporation
+SFCG Co. Ltd.
+SKY Perfect
+Sagami Railway
+San-Ai Oil
+Sanrio
+Sansui
+Sanyo
+Sapporo Brewery
+Secom
+Sega Sammy Holdings
+Seiko
+Seiko Epson
+Seiko Group
+Seiren Co.
+Seven & I Holdings Co.
+The 77 Bank
+Sharp Corporation
+Shikoku Electric Power Company
+Shimadzu Corp.
+Shimano
+Shimizu Corporation
+Shin-Keisei Electric Railway
+Shinsei Bank
+Shiseido
+Shochiku
+Shoei
+Shonai Bank
+Showa Corporation
+Showa Denko
+Skymark Airlines
+So-net
+Sofmap
+SoftBank
+Sojitz
+Sokkia
+Sompo Japan Insurance
+Sony
+Sony Financial Holdings
+Square Enix
+Sukiya (restaurant chain)
+Sumitomo Corporation
+Sumitomo Electric Industries
+Sumitomo Heavy Industries
+Sumitomo Metal Industries
+Sumitomo Mitsui Financial Group
+Sumitomo Rubber Industries
+Sumitomo Trust and Banking
+Suzuki
+T. Hasegawa
+TDK
+TEAC
+TMS Entertainment
+TOA Corp.
+TOSE
+TV Asahi
+TV Tokyo
+Taiheiyo Cement
+Taisei Corporation
+Taisho Pharmaceutical
+Taiyo Yuden
+Takara
+Takasago International Corporation
+Takashimaya
+Takeda Pharmaceutical Company
+Takefuji
+Tamron
+Technics
+Tecmo
+Teijin
+Telefónica
+Terumo
+The Oriental Land Company
+The Seiyu
+The Tokyo Electric Power Company
+Tobu Railway
+Toei Company
+Toho
+Tokio Marine Holdings
+Tokyo Broadcasting System
+Tokyo Dome
+Tokyo Gas
+Tokyo Star Bank
+Tokyu Corporation
+Tomy
+Topcon
+Toray Industries
+Toronto-Dominion Bank
+Toshiba
+Tosoh
+Toto Ltd.
+Toyo Engineering
+Toyo Engineering Corporation
+Toyo Suisan
+Toyo Tire & Rubber Company
+Toyota
+Toyota Boshoku
+Toyota Industries
+Toyota Tsusho
+Trend Micro
+Tsubakimoto Chain
+Tohoku Electric Power Company
+UBS AG
+Ube Industries
+Uni-ball
+Uniden
+Universal Studios Japan
