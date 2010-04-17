@@ -1,0 +1,20 @@
+dataname	transportable	storable	type	starting_price	unit_of_measurment	demanded_by_base	base_demand_elasticity	base_demand_asymptote	base_demand_intensity
+datatype	logical	logical	string	int	string	logical	float	float	float
+iron	True	True	mineral	100	ton	False	NA	NA	NA
+ice	True	True	mineral	10	ton	False	NA	NA	NA
+food	True	True	farming	1000	ton	True	-1	0	1
+housing	False	True	manufacturing	1	units	True	-0.4	0.5	1
+fossil fuel	True	True	mineral	70	ton	False	NA	NA	NA
+silicium	True	True	mineral	100	ton	False	NA	NA	NA
+labor	False	False	labor	100	manhours	False	NA	NA	NA
+health care	False	False	service	100	units	True	-0.4	0.5	0.6
+education	False	False	service	100	units	True	-0.1	0.9	0.6
+consumer goods	True	True	manufacturing	100	units	True	-0.2	0.8	1
+steel	True	True	manufacturing	100	ton	False	NA	NA	NA
+electronics	True	True	manufacturing	1000	units	False	NA	NA	NA
+power	False	False	manufacturing	100	GWh	False	NA	NA	NA
+nuclear fuel	True	True	mineral	500	ton	False	NA	NA	NA
+ground transport	False	False	transportation	100	ton/km	False	NA	NA	NA
+space transport	False	False	transportation	100	ton/km	False	NA	NA	NA
+oxygen	True	True	manufacturing	5	ton	False	NA	NA	NA
+nitrogen	True	True	manufacturing	5	ton	False	NA	NA	NA
