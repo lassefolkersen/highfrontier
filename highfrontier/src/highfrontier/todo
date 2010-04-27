@@ -1,3 +1,10 @@
+Merge Mike's GUI additions into the main:
+	intro has been changed
+	main has been changed
+	solarsystem has been changed
+	SimThread has been added
+
+
 Needs a planet info window with info on atmosphere and resources
 Include added costs for housing in harsh environments
 
