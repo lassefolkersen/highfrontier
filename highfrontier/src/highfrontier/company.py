@@ -17,21 +17,21 @@ class company:
 	The class that holds all methods of the companies
 	"""
 	
-	def __init__(self,solar_system_object,model_company_database=None,deviation=0,company_name=None,capital=0):
+	def __init__(self,solar_system_object,model_company_database=None,deviation=0,companyName=None,capital=0):
 		"""
 		Starts the company. If no data is given, parameters are made up entirely
 		Optionally these parameters can be used
-			company_name - the company name
+			companyName - the company name
 			company_database - a database from another company from which numbers should be taken as much as possible
 			home_cities - a list of city names that the company operates in
 			capital - starting capital (aka money)
 		"""
-		if company_name == None:
-			self.company_name = self.make_up_names(self.make_up_wordlist())
+		if companyName == None:
+			self.companyName = self.make_up_names(self.make_up_wordlist())
 		else:
-			self.company_name = company_name
+			self.companyName = companyName
 		
-		self.name = self.company_name
+		self.name = self.companyName
 		self.home_cities = {}
 		self.owned_firms = {}
 		self.capital = capital
