@@ -101,7 +101,7 @@ class Game:
         i = 0
         sol.launchThread()
         while True:
-            print "Game running another gui cycle"
+#            print "Game running another gui cycle"
             events = pygame.event.get()
             for event in events: 
                 if event.type == QUIT: 
