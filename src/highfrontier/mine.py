@@ -1,0 +1,2 @@
+class mine(primary):
+	pass

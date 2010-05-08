@@ -1,0 +1,2 @@
+class primary(producer):
+	pass
