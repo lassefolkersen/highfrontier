@@ -1,3 +1,4 @@
+import merchant
 import os
 import global_variables
 import sys
@@ -2066,7 +2067,7 @@ class base_list_of_firms():
         list_of_firms_in_base = []
         for company_instance in self.solar_system_object_link.companies.values():
             for firm_instance in company_instance.owned_firms.values():
-                if not isinstance(firm_instance, company.merchant):
+                if not firm_instance.isMerchant():
                     if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                         list_of_firms_in_base.append(firm_instance)
                 else:
@@ -2102,7 +2103,7 @@ class base_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = self.links[self.fast_list.selected_name]
-            if isinstance(firm_selected, company.base): #in this case we are already in the base, so we do nothing.
+            if firm_selected.isBase():
                 return "clear"
             else:
                 self.solar_system_object_link.display_mode = "firm"
@@ -2173,7 +2174,7 @@ class base_and_firm_market_window():
             resource_button_names = self.solar_system_object_link.trade_resources.keys()
         elif self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 resource_button_names = [firm_selected.resource, firm_selected.transport_type]
             else:
                 resource_button_names = []
@@ -2209,7 +2210,7 @@ class base_and_firm_market_window():
         #in case it is a merchant selected we have to also pick the markets looked upon.
         if self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 self.market_selection_buttons = gui_components.radiobuttons(
                                                         ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
                                                         self.action_surface, 
@@ -2306,7 +2307,7 @@ class base_and_firm_market_window():
                 market = self.solar_system_object_link.current_planet.current_base.market
             elif self.solar_system_object_link.display_mode == "firm":
                 firm_selected = self.solar_system_object_link.firm_selected
-                if isinstance(firm_selected, company.merchant):
+                if firm_selected.isMerchant():
                     market = self.base_selected_for_merchant.market
                 else:
                     market = firm_selected.location.market
@@ -2464,7 +2465,7 @@ class base_and_firm_market_window():
             market = self.solar_system_object_link.current_planet.current_base.market
         elif self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 market = self.base_selected_for_merchant.market
             else:
                 market = firm_selected.location.market
@@ -2548,12 +2549,12 @@ class base_and_firm_market_window():
 
         
         #seller or buyer
-        if isinstance(firm_selected, company.merchant): 
+        if firm_selected.isMerchant():
             if self.base_selected_for_merchant == firm_selected.from_location:
                 direction = "buy"
             else:
                 direction = "sell"
-        elif isinstance(firm_selected, company.base_construction):
+        elif firm_selected.isBaseConstruction():
             direction = "buy"
         elif resource in firm_selected.input_output_dict["input"].keys():
             direction = "buy"
@@ -2569,7 +2570,7 @@ class base_and_firm_market_window():
         quantity_max = 0
         if direction == "sell": #in this case we are mostly interested in the stock
             #sell quantity
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 if self.base_selected_for_merchant == firm_selected.from_location:
                     quantity_max = max(quantity_max, firm_selected.from_stock_dict[resource])
                 elif self.base_selected_for_merchant == firm_selected.to_location:
@@ -2582,7 +2583,7 @@ class base_and_firm_market_window():
 
         else:
             #buy quantity
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 quantity_max = max(quantity_max, (firm_selected.from_location.population + firm_selected.to_location.population) / 2) 
             else:
                 quantity_max = max(quantity_max, firm_selected.input_output_dict["input"][resource] * 50)
@@ -2592,7 +2593,7 @@ class base_and_firm_market_window():
             quantity_max = max(initial_quantity, quantity_max)
              
             
-        if isinstance(firm_selected, company.base_construction):
+        if firm_selected.isBaseConstruction():
             quantity_max = firm_selected.input_output_dict["input"][resource]
 
         if initial_quantity is None:
@@ -2608,7 +2609,7 @@ class base_and_firm_market_window():
             pre_selected_quantity = int(quantity_max / 2)
         
         #marketsetting
-        if isinstance(firm_selected, company.merchant):
+        if firm_selected.isMerchant():
             market = self.base_selected_for_merchant.market
         else:
             market = firm_selected.location.market
@@ -2767,7 +2768,7 @@ class base_and_firm_market_window():
                 return
             own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
         elif direction == "sell":
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 if market == firm_selected.from_location.market:
                     quantity_available = firm_selected.from_stock_dict[resource]
                 elif market == firm_selected.to_location.market:
@@ -2876,12 +2877,12 @@ class base_and_firm_market_window():
                     click_spot_result = click_spot.collidedict(self.positional_database["non_bidding_mode"])
                     if click_spot_result is not None:
                         if event.button == 3:
-                            if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
+                            if not click_spot_result[1]["linkto"].isBase():
                                 linkto = click_spot_result[1]["linkto"]
-                                if isinstance(linkto, company.base):
+                                if linkto.isBase():
                                     self.solar_system_object_link.display_mode = "base"
                                     self.solar_system_object_link.current_planet.current_base = linkto
-                                elif isinstance(linkto, company.firm) or isinstance(linkto, company.merchant) or isinstance(linkto, company.research):
+                                elif linkto.isFirm() or linkto.isMerchant() or linkto.isResearch():
                                     self.solar_system_object_link.display_mode = "firm"
                                     self.solar_system_object_link.firm_selected = linkto
                                 else:
@@ -3135,7 +3136,7 @@ class base_build_menu():
         #check that this does not already exist
         exists = False
         for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
-            if isinstance(firm_instance, company.merchant):
+            if firm_instance.isMerchant():
                 if firm_instance.from_location == self.selections["from_location"]:
                     if firm_instance.to_location == self.selections["to_location"]:
                         if firm_instance.resource == resource:
@@ -3205,15 +3206,15 @@ class base_build_menu():
             input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
             distance = self.selections["trade_route_selected"]["distance"]
             transport_type = self.selections["trade_route_selected"]["transport_type"]
-            new_merchant_firm = company.merchant(self.solar_system_object_link,
-                                                 self.selections["from_location"],
-                                                 self.selections["to_location"],
-                                                 input_output_dict,
-                                                 owner,
-                                                 name,
-                                                 transport_type,
-                                                 distance,
-                                                 self.selections["resource"])
+            new_merchant_firm = merchant.merchant(self.solar_system_object_link,
+                                                  self.selections["from_location"],
+                                                  self.selections["to_location"],
+                                                  input_output_dict,
+                                                  owner,
+                                                  name,
+                                                  transport_type,
+                                                  distance,
+                                                  self.selections["resource"])
             owner.owned_firms[name] = new_merchant_firm
             print_dict = {"text":"Built a merchant named " + str(name) + " between " + str(self.selections["from_location"].name) + " and " + str(self.selections["to_location"].name) + " trading in " + str(self.selections["resource"]),"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
@@ -3659,7 +3660,7 @@ class company_list_of_firms():
                     self.solar_system_object_link.messages.append(print_dict)
     
             else:
-                if isinstance(firm_selected, company.base):
+                if firm_selected.isBase():
                     self.solar_system_object_link.display_mode = "base"
                     self.solar_system_object_link.current_planet.current_base = firm_selected
                     
@@ -3688,7 +3689,7 @@ class firm_trade_partners_info():
         """
         
         firm_selected = self.solar_system_object_link.firm_selected
-        if isinstance(firm_selected,company.merchant):
+        if firm_selected.isMerchant():
             location_list = [firm_selected.from_location, firm_selected.to_location]
             
         else:
@@ -3765,7 +3766,7 @@ class firm_process_info():
         
         if firm_selected is not None:
             
-            if isinstance(firm_selected, company.merchant):
+            if firm_selected.isMerchant():
                 process_and_stock_dict = {}
                 for direction_name in ["destination","origin"]:
                     if direction_name == "destination":

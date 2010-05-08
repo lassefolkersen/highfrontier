@@ -1,0 +1,2 @@
+class housing(secondary):
+	pass

@@ -1,3 +1,4 @@
+import merchant
 import global_variables
 import datetime
 import primitives
@@ -9,6 +10,34 @@ import company
 
 
 class market_decisions:
+    def calculate_demand_reaction_03(market_decision_class,self):
+        """
+        Function that will decide if a "buy" offer should be emitted, and at what price and quantity
+        """
+        market = self.location.market
+        current_date = self.solar_system_object_link.current_date
+        for resource in self.input_output_dict["input"]:
+                prices = []
+                for transaction in market["transactions"][resource]:
+                    prices.append(transaction["price"])
+                price = random.random() * (max(prices)-min(prices)) + min(prices)
+                
+
+                if not self.isBaseConstruction():
+                    quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
+                
+                if quantity_wanted > 1:
+                    if quantity_wanted * price <= self.owner.capital:
+                        if quantity_wanted < 0:
+                            if self.solar_system_object_link.message_printing["debugging"]:
+                                print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_03 quantity_is negative. VERY WEIRD","type":"debugging"}
+                                self.solar_system_object_link.messages.append(print_dict)
+
+                        
+                        buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
+                        self.make_market_bid(market,buy_offer)
     """
     Class that holds all the algorithms pertaining to market decision.
     The class consists of self dictionaries, organized by theme:
@@ -102,7 +131,7 @@ class market_decisions:
         research_volume = 0
         non_research_volume = 0
         for firm_instance in self.owned_firms.values():
-            if isinstance(firm_instance, company.research):
+            if firm_instance.isResearch():
                 research_volume = research_volume + firm_instance.size
                 
             else:
@@ -344,7 +373,7 @@ class market_decisions:
         #first we see what bases are already connected by the merchant firms of the company
         already_connected = []
         for firm_instance in self.owned_firms.values():
-            if isinstance(firm_instance, company.merchant):
+            if firm_instance.isMerchant():
                 existing_pair = [firm_instance.from_location, firm_instance.to_location, firm_instance.resource]
                 already_connected.append(existing_pair)
         
@@ -392,7 +421,7 @@ class market_decisions:
                                                     input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
                                                     distance = trade_route["distance"]
                                                     transport_type = trade_route["transport_type"]
-                                                    new_merchant_firm = company.merchant(self.solar_system_object_link, seller_base,buyer_base,input_output_dict,owner,name,transport_type,distance,resource)
+                                                    new_merchant_firm = merchant.merchant(self.solar_system_object_link, seller_base,buyer_base,input_output_dict,owner,name,transport_type,distance,resource)
                                                     self.owned_firms[name] = new_merchant_firm
                                                     if self == self.solar_system_object_link.current_player:
                                                         print_dict = {"text":self.name + " started up a merchant between " + str(seller_base.name) + " and " + str(buyer_base.name),"type":"tech discovery"}
@@ -427,9 +456,9 @@ class market_decisions:
         
         for firm_name in self.owned_firms:
             firm_instance = self.owned_firms[firm_name]
-            if not isinstance(firm_instance,company.research): #do not close research firms here, since they will always give negative results (this is done in the start_research_firms function
+            if not firm_instance.isMerchant():
 
-                if isinstance(firm_instance,company.base):
+                if firm_instance.isBase():
                     #checking what to do with the base
                     if self.company_database["Target_bitterness_of_base"] < firm_instance.bitternes_of_base:
                         firm_instance.wages = firm_instance.wages * 1.1  
@@ -443,7 +472,7 @@ class market_decisions:
                     close_these_firms.append(firm_name)
         
         for firm_to_close in close_these_firms:
-            if not isinstance(self.owned_firms[firm_to_close], company.base):
+            if not self.owned_firms[firm_to_close].isBase():
                 self.owned_firms[firm_to_close].close_firm()
                 del self.owned_firms[firm_to_close]
                 
@@ -471,7 +500,7 @@ class market_decisions:
         
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
-                if not isinstance(self, company.base_construction):
+                if not self.isBaseConstruction():
                     quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
@@ -508,7 +537,7 @@ class market_decisions:
                 price = float(price * self.urgency[resource])
                 self.urgency[resource] = self.urgency[resource] * 1.5
                 
-                if not isinstance(self, company.base_construction):
+                if not self.isBaseConstruction():
                     quantity_wanted = int(self.input_output_dict["input"][resource]) * timeframe_considered 
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
@@ -539,34 +568,6 @@ class market_decisions:
                 self.urgency[resource] = 1
     
     
-    def calculate_demand_reaction_03(market_decision_class,self):
-        """
-        Function that will decide if a "buy" offer should be emitted, and at what price and quantity
-        """
-        market = self.location.market
-        current_date = self.solar_system_object_link.current_date
-        for resource in self.input_output_dict["input"]:
-                prices = []
-                for transaction in market["transactions"][resource]:
-                    prices.append(transaction["price"])
-                price = random.random() * (max(prices)-min(prices)) + min(prices)
-                
-
-                if not isinstance(self, company.base_construction):
-                    quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
-                else:
-                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
-                
-                if quantity_wanted > 1:
-                    if quantity_wanted * price <= self.owner.capital:
-                        if quantity_wanted < 0:
-                            if self.solar_system_object_link.message_printing["debugging"]:
-                                print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_03 quantity_is negative. VERY WEIRD","type":"debugging"}
-                                self.solar_system_object_link.messages.append(print_dict)
-
-                        
-                        buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
-                        self.make_market_bid(market,buy_offer)
     
                     
     def calculate_demand_reaction_04(market_decision_class,self):
@@ -606,7 +607,7 @@ class market_decisions:
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
                 
-                if not isinstance(self, company.base_construction):
+                if not self.isBaseConstruction():
                     quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource] 

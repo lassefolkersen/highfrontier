@@ -1,3 +1,4 @@
+import base
 import primitives
 import pygame, sys,os
 from pygame.locals import *
@@ -11,13 +12,6 @@ import os
 import global_variables
 import company
 import random
-
-
-
-
-
-
-
 
 class planet:
     """
@@ -151,7 +145,7 @@ class planet:
             
             for base_name in read_base_database: 
                 
-                base_instance = company.base(self.solar_system_object_link,base_name,self,read_base_database[base_name],placeholder)
+                base_instance = base.base(self.solar_system_object_link,base_name,self,read_base_database[base_name],placeholder)
                 
                 base_database[base_name] = base_instance
             self.bases = base_database
@@ -1295,7 +1289,7 @@ class planet:
             for company_instance in self.solar_system_object_link.companies.values():
                 for firm_name in company_instance.owned_firms:
                     firm_instance = company_instance.owned_firms[firm_name]
-                    if not isinstance(firm_instance, company.merchant):
+                    if not firm_instance.isMerchant():
                         if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
 #                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
@@ -1614,19 +1608,14 @@ class planet:
                 proj_hit_location_transposed = (int(proj_hit_location[0] - medium_blast_surface.get_width()/2), int(proj_hit_location[1] - medium_blast_surface.get_height()/2))
                 mainscreen.blit(medium_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
-#                mainscreen.set_picture(surface)
-#                renderer.update()
                 pygame.time.delay(100)
                 proj_hit_location_transposed = (int(proj_hit_location[0] - large_blast_surface.get_width()/2), int(proj_hit_location[1] - large_blast_surface.get_height()/2))
                 mainscreen.blit(large_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
-#                mainscreen.set_picture(surface)
-#                renderer.update()
                 pygame.time.delay(100)
                 surface = background.copy()
                 mainscreen.blit(surface,(0,0))
                 pygame.display.flip()
-#                renderer.update()
                 
                 
                 
@@ -1637,32 +1626,6 @@ class planet:
             print "puff"
         
 
-#        
-#        surface = self.draw_entire_planet(self.eastern_inclination,self.northern_inclination,self.projection_scaling)
-#
-#
-#        delay_time = 300 / len(sphere_hit_locations)
-#
-#        for i, sphere_hit_location in enumerate(sphere_hit_locations):
-#            if isinstance(sphere_hit_location, tuple):
-#                size_of_blast = random.choice(["small","medium","large"])
-#                if size_of_blast == "small":
-#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - small_blast_surface.get_width()/2), int(sphere_hit_location[1] - small_blast_surface.get_height()/2))
-#                    surface.blit(small_blast_surface,sphere_hit_location_transposed)
-#                elif size_of_blast == "medium":
-#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - medium_blast_surface.get_width()/2), int(sphere_hit_location[1] - medium_blast_surface.get_height()/2))
-#                    surface.blit(medium_blast_surface,sphere_hit_location_transposed)
-#                elif size_of_blast == "large":
-#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - large_blast_surface.get_width()/2), int(sphere_hit_location[1] - large_blast_surface.get_height()/2))
-#                    surface.blit(large_blast_surface,sphere_hit_location_transposed)
-#                else:
-#                    raise Exception("Weird")
-#
-#                mainscreen.set_picture(surface)
-#                renderer.update()
-#                pygame.time.delay(delay_time)
-#                
-#                
 
             
             

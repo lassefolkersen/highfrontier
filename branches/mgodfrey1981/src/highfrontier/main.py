@@ -145,3 +145,10 @@ class Game:
                 else:
                     action_surface.blit(surface,(0,0))
             pygame.display.flip()
+
+if(__name__=='__main__'):
+    g=Game()
+    g.start_loop(companyName = 'quickstart', 
+                 companyCapital = 1000000000, 
+                 loadPreviousGame = None)
+    

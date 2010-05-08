@@ -1,0 +1,2 @@
+class space(secondary):
+	pass
