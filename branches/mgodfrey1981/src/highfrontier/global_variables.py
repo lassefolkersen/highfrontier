@@ -1,8 +1,6 @@
-
 import datetime
 import pygame
 import time
-import market_decisions
 import os
 pygame.font.init()
 
@@ -22,7 +20,7 @@ standard_font_small= pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),1
 standard_font_small_bold = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
 standard_font_small_bold.set_bold(True)
 max_stepback_history_size = 10 # how many steps back we can use the "back" key
-market_decisions = market_decisions.market_decisions() #this is the class of market decisions that should be globally available. 
+market_decisions = None
 
 
 
