@@ -13,12 +13,13 @@ import random
 import time
 
 class file_window():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     The file window. Can be toggled from commandbox. Quitting, saving, loading, settings and all the usual stuff you'd
     expect to find such a place.
     """
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,400,500)
         self.action_surface = action_surface
         self.text_receiver = None 
@@ -114,7 +115,7 @@ class file_window():
             self.distribute_click_to_subwindow.receive_click(event)
             if event.button == 3:
                 if self.position == "Load menu":
-                    self.solar_system_object_link.load_solar_system(os.path.join("savegames",self.distribute_click_to_subwindow.selected))
+                    self.solarSystem().load_solar_system(os.path.join("savegames",self.distribute_click_to_subwindow.selected))
     
 
 
@@ -158,7 +159,7 @@ class file_window():
         
     def effectuate_save(self,label,function_parameter):
         save_game_name = self.button_instances_now["Name box"].text
-        self.solar_system_object_link.save_solar_system(os.path.join("savegames",save_game_name))
+        self.solarSystem().save_solar_system(os.path.join("savegames",save_game_name))
         self.create()
         
 
@@ -189,17 +190,17 @@ class file_window():
         
         
         
-        if self.solar_system_object_link.current_player is None:
-            if self.solar_system_object_link.message_printing["debugging"]:
+        if self.solarSystem().current_player is None:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Game is in simulation mode so no changes can be made","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
             
             self.button_instances_now = {}
             self.button_list_now = []
 
-            button_names = self.solar_system_object_link.current_player.automation_dict.keys()
+            button_names = self.solarSystem().current_player.automation_dict.keys()
 
             for i, button_name in enumerate(button_names):
                 self.button_list_now.append(button_name)
@@ -210,7 +211,7 @@ class file_window():
                                                           function_parameter = button_name,
                                                           fixed_size = (self.rect[2] - 20, 35),
                                                           topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1]),
-                                                          pressed = self.solar_system_object_link.current_player.automation_dict[button_name]
+                                                          pressed = self.solarSystem().current_player.automation_dict[button_name]
                                                     )
             
             
@@ -231,15 +232,15 @@ class file_window():
         """
         Function that will effectuate the change of automation status
         """
-        if self.solar_system_object_link.current_player is None:
+        if self.solarSystem().current_player is None:
             raise Exception("No player selected")
-        if function_parameter not in self.solar_system_object_link.current_player.automation_dict.keys():
+        if function_parameter not in self.solarSystem().current_player.automation_dict.keys():
             raise Exception("The automation_type " + str(function_parameter) + " was not found in the automation_dict")
-        previous_setting = self.solar_system_object_link.current_player.automation_dict[function_parameter]
-        self.solar_system_object_link.current_player.automation_dict[function_parameter] = not previous_setting
+        previous_setting = self.solarSystem().current_player.automation_dict[function_parameter]
+        self.solarSystem().current_player.automation_dict[function_parameter] = not previous_setting
 
-        print_dict = {"text":"For " + self.solar_system_object_link.current_player.name + " the " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general company info"}
-        self.solar_system_object_link.messages.append(print_dict)
+        print_dict = {"text":"For " + self.solarSystem().current_player.name + " the " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general company info"}
+        self.solarSystem().messages.append(print_dict)
 #        self.manager.emit("update_infobox", None)
         
         
@@ -249,14 +250,14 @@ class file_window():
         The window that is shown when asking for decision_variables.
         """
 
-        if self.solar_system_object_link.current_player is None:
-            if self.solar_system_object_link.message_printing["debugging"]:
+        if self.solarSystem().current_player is None:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Game is in simulation mode so no changes can be made","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
             decision_variables_window = gui_components.fast_list(self.action_surface, 
-                                                                 self.solar_system_object_link.current_player.company_database.keys(),
+                                                                 self.solarSystem().current_player.company_database.keys(),
                                                                  rect = self.rect)
 
             self.distribute_click_to_subwindow = decision_variables_window                                            
@@ -281,7 +282,7 @@ class file_window():
                     try:    int(value)
                     except: 
                         print_dict = {"text":"The value " + str(value) + " at " + str(name) + " is not integer","type":"general gameplay info"}
-                        self.solar_system_object_link.messages.append(print_dict)
+                        self.solarSystem().messages.append(print_dict)
                         self.manager.emit("update_infobox", None)
                         all_passed_check = False
                         break
@@ -294,14 +295,14 @@ class file_window():
                         pass
                     else:
                         print_dict = {"text":"The value " + str(value) + " at " + str(name) + " is not between 1 and 100","type":"general gameplay info"}
-                        self.solar_system_object_link.messages.append(print_dict)
+                        self.solarSystem().messages.append(print_dict)
                         self.manager.emit("update_infobox", None)
                         all_passed_check = False
                         break
  
         if all_passed_check:
-            print_dict = {"text":"The decision matrix has been updated for " + self.solar_system_object_link.current_player.name,"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
+            print_dict = {"text":"The decision matrix has been updated for " + self.solarSystem().current_player.name,"type":"general gameplay info"}
+            self.solarSystem().messages.append(print_dict)
             self.manager.emit("update_infobox", None)
             for column_offset in [0,2]:
                 for row_index in range(0,self.window.rows - 1): #don't include rows with buttons
@@ -310,7 +311,7 @@ class file_window():
                         value = self.window.grid[(row_index, column_offset + 1)].text
                         value_as_int = int(value)
                         
-                        self.solar_system_object_link.current_player.company_database[name] = value_as_int
+                        self.solarSystem().current_player.company_database[name] = value_as_int
             
             self.exit(True)
             
@@ -322,7 +323,7 @@ class file_window():
         """
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = self.solarSystem().message_printing.keys()
 
         self.button_instances_now = {}
         self.button_list_now = []
@@ -336,7 +337,7 @@ class file_window():
                                                       function_parameter = button_name,
                                                       fixed_size = (self.rect[2] - 20, 35),
                                                       topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1]),
-                                                      pressed = self.solar_system_object_link.message_printing[button_name]
+                                                      pressed = self.solarSystem().message_printing[button_name]
                                                 )
 
 
@@ -344,13 +345,13 @@ class file_window():
         """
         Function that will effectuate the change of message settings
         """
-        if function_parameter not in self.solar_system_object_link.message_printing.keys():
+        if function_parameter not in self.solarSystem().message_printing.keys():
             raise Exception("The message type " + str(function_parameter) + " was not found in the message_printing dict")
-        previous_setting = self.solar_system_object_link.message_printing[function_parameter]
-        self.solar_system_object_link.message_printing[function_parameter] = not previous_setting
+        previous_setting = self.solarSystem().message_printing[function_parameter]
+        self.solarSystem().message_printing[function_parameter] = not previous_setting
 
         print_dict = {"text":"The show-settings for " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general gameplay info"}
-        self.solar_system_object_link.messages.append(print_dict)
+        self.solarSystem().messages.append(print_dict)
 #        self.manager.emit("update_infobox", None)
                         
     
@@ -363,12 +364,12 @@ class file_window():
         """
         The window that is shown when asking for time delay settings
         Time delay settings is defined as a value between 0 and 100 with 100 being the fastest.
-        It translates into the self.solar_system_object_link.step_delay_time
+        It translates into the self.solarSystem().step_delay_time
         which is a value between 0 (perform game-iteration at every loop-iteration) and infinity (but then the game will stop)
         a loop-iteration is the time it takes to react to clicks etc + 15 milliseconds (but check value pygame.time.delay in main 
         document to be sure). A game-iteration is all the movement of planets, thinking of companies etc.
         
-        We here define the range of self.solar_system_object_link.step_delay_time as given in step_delay_time_range. This is certainly up to testing.
+        We here define the range of self.solarSystem().step_delay_time as given in step_delay_time_range. This is certainly up to testing.
         In any case it means that the lowest value of step_delay_time_range equals time delays settings of 100 (max speed) and the highest
         value of step_delay_time_range equals time delay settings of 0 (slowest speed)
         """
@@ -376,9 +377,9 @@ class file_window():
 
         delay_range = (10,500)
 
-        old_game_speed = self.solar_system_object_link.step_delay_time
+        old_game_speed = self.solarSystem().step_delay_time
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = self.solarSystem().message_printing.keys()
         
         
         fastest = global_variables.standard_font.render("Fastest",True,(0,0,0))
@@ -390,7 +391,7 @@ class file_window():
         
         def execute(label, function_parameter):
             game_speed = self.distribute_click_to_subwindow.position / 30
-            self.solar_system_object_link.step_delay_time = self.distribute_click_to_subwindow.position
+            self.solarSystem().step_delay_time = self.distribute_click_to_subwindow.position
         
         self.distribute_click_to_subwindow = gui_components.vscrollbar (self.action_surface,
                                                 execute,
@@ -428,7 +429,7 @@ class file_window():
         """
         Function to raise waters
         """
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
 
         if sol.display_mode == "planetary":
             sol.current_planet.change_water_level(sol.current_planet.water_level + 0.5)
@@ -440,7 +441,7 @@ class file_window():
 
 
     def lower_waters(self,label,function_parameter):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
 
         if sol.display_mode == "planetary":
             sol.current_planet.change_water_level(sol.current_planet.water_level - 0.5)                        
@@ -452,7 +453,7 @@ class file_window():
 
 
     def nuclear_war(self,label,function_parameter):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "planetary":
             earth = sol.planets["earth"]
             base_names_chosen = ["stockholm","glasgow","bremen","rotterdam","stuttgart","genoa"]

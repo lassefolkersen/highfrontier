@@ -13,12 +13,13 @@ import random
 import time
 
 class company_ownership_info():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Subview of the company view. Shows miscellanous information about a company, such as decision parameters, capital and number of firms.
     """
 
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -35,7 +36,7 @@ class company_ownership_info():
         """
         The creation function.  
         """
-        company_selected = self.solar_system_object_link.company_selected
+        company_selected = self.solarSystem().company_selected
         if company_selected is not None:
             company_ownership_dict = {}
             
@@ -65,9 +66,9 @@ class company_ownership_info():
 
             self.fast_list = gui_components.fast_list(self.action_surface, company_ownership_dict, rect = self.rect)
         else:
-            if self.solar_system_object_link.message_printing["debugging"]:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Company selected was None","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
 
 
 

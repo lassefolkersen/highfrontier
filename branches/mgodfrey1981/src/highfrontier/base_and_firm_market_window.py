@@ -13,6 +13,8 @@ import random
 import time
 
 class base_and_firm_market_window():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Subview of the base view and also of the firm view. Shows information about the market in the base. For a chosen resource this can be either
     a history of what transactions has been made, or an overview of the bids currently in effect.
@@ -20,13 +22,12 @@ class base_and_firm_market_window():
     This is also the interface where manual bids can be made
     """
 
-    def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
+    def __init__(self,action_surface):
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
 
-        self.resource_selected = self.solar_system_object_link.trade_resources.keys()[0]
+        self.resource_selected = self.solarSystem().trade_resources.keys()[0]
         self.graph_rect = pygame.Rect(200,100,400,400)
 
 
@@ -69,10 +70,10 @@ class base_and_firm_market_window():
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
         #first making a list of the resources that should be displayed
-        if self.solar_system_object_link.display_mode == "base":
-            resource_button_names = self.solar_system_object_link.trade_resources.keys()
-        elif self.solar_system_object_link.display_mode == "firm":
-            firm_selected = self.solar_system_object_link.firm_selected
+        if self.solarSystem().display_mode == "base":
+            resource_button_names = self.solarSystem().trade_resources.keys()
+        elif self.solarSystem().display_mode == "firm":
+            firm_selected = self.solarSystem().firm_selected
             if firm_selected.isMerchant():
                 resource_button_names = [firm_selected.resource, firm_selected.transport_type]
             else:
@@ -81,7 +82,7 @@ class base_and_firm_market_window():
                     for resource in firm_selected.input_output_dict[put]:
                         resource_button_names.append(resource)
         else:
-            raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
+            raise Exception("The display mode " + str(self.solarSystem().display_mode) + " is not supposed to show market data")
 
         if self.resource_selected not in resource_button_names:
             self.resource_selected = resource_button_names[0]
@@ -107,8 +108,8 @@ class base_and_firm_market_window():
         
         
         #in case it is a merchant selected we have to also pick the markets looked upon.
-        if self.solar_system_object_link.display_mode == "firm":
-            firm_selected = self.solar_system_object_link.firm_selected
+        if self.solarSystem().display_mode == "firm":
+            firm_selected = self.solarSystem().firm_selected
             if firm_selected.isMerchant():
                 self.market_selection_buttons = gui_components.radiobuttons(
                                                         ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
@@ -124,9 +125,9 @@ class base_and_firm_market_window():
             else:
                 self.market_selection_buttons = None
                 
-        elif self.solar_system_object_link.display_mode == "base":
+        elif self.solarSystem().display_mode == "base":
             self.market_selection_buttons = None
-            firm_selected = self.solar_system_object_link.current_planet.current_base 
+            firm_selected = self.solarSystem().current_planet.current_base 
         else:
             raise Exception("Unknown display_mode: " + str(global_variabes.display_mode))
                     
@@ -147,7 +148,7 @@ class base_and_firm_market_window():
 
         
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
-        if firm_selected.name in self.solar_system_object_link.current_player.owned_firms.keys():
+        if firm_selected.name in self.solarSystem().current_player.owned_firms.keys():
             self.bid_button = gui_components.togglebutton("Make market bid",
                                            self.action_surface,
                                            function = self.place_bid_callback,
@@ -195,23 +196,23 @@ class base_and_firm_market_window():
         """
         Function that draws a stock-market style surface with all the sell and buy bids that currently exists for a given resource
         """
-        if self.solar_system_object_link.current_planet.current_base is None:
+        if self.solarSystem().current_planet.current_base is None:
             raise Exception("A market bid window was requested at a time when the selected base was None")
         else:
             resource = self.resource_selected
             
             
             #first determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
-            if self.solar_system_object_link.display_mode == "base":
-                market = self.solar_system_object_link.current_planet.current_base.market
-            elif self.solar_system_object_link.display_mode == "firm":
-                firm_selected = self.solar_system_object_link.firm_selected
+            if self.solarSystem().display_mode == "base":
+                market = self.solarSystem().current_planet.current_base.market
+            elif self.solarSystem().display_mode == "firm":
+                firm_selected = self.solarSystem().firm_selected
                 if firm_selected.isMerchant():
                     market = self.base_selected_for_merchant.market
                 else:
                     market = firm_selected.location.market
             else:
-                raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
+                raise Exception("The display mode " + str(self.solarSystem().display_mode) + " is not supposed to show market data")
 
             #painting the basic market_analysis surface
             market_analysis_surface = pygame.Surface((self.graph_rect[2],self.graph_rect[3]))
@@ -360,16 +361,16 @@ class base_and_firm_market_window():
         resource = self.resource_selected
 
         #determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
-        if self.solar_system_object_link.display_mode == "base":
-            market = self.solar_system_object_link.current_planet.current_base.market
-        elif self.solar_system_object_link.display_mode == "firm":
-            firm_selected = self.solar_system_object_link.firm_selected
+        if self.solarSystem().display_mode == "base":
+            market = self.solarSystem().current_planet.current_base.market
+        elif self.solarSystem().display_mode == "firm":
+            firm_selected = self.solarSystem().firm_selected
             if firm_selected.isMerchant():
                 market = self.base_selected_for_merchant.market
             else:
                 market = firm_selected.location.market
         else:
-            raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
+            raise Exception("The display mode " + str(self.solarSystem().display_mode) + " is not supposed to show market data")
 
         if len(market["transactions"][resource])==0:
             no_history_label = global_variables.standard_font.render("No " + resource + " sold on market",True,(0,0,0))
@@ -377,8 +378,8 @@ class base_and_firm_market_window():
         else:
             start_date = market["transactions"][resource][0]["date"]
             end_date = market["transactions"][resource][-1]["date"]
-            relative_numeric_start_date = (start_date - self.solar_system_object_link.start_date).days
-            relative_numeric_end_date = (end_date - self.solar_system_object_link.start_date).days
+            relative_numeric_start_date = (start_date - self.solarSystem().start_date).days
+            relative_numeric_end_date = (end_date - self.solarSystem().start_date).days
             xlim = (relative_numeric_start_date,relative_numeric_end_date)
             dates = []
             price = []
@@ -386,7 +387,7 @@ class base_and_firm_market_window():
             seller = []
             buyer = []
             for transaction in market["transactions"][resource]:
-                dates.append((transaction["date"] - self.solar_system_object_link.start_date).days)
+                dates.append((transaction["date"] - self.solarSystem().start_date).days)
                 price.append(transaction["price"])
                 quantity.append(transaction["quantity"])
                 seller.append(transaction["seller"])
@@ -397,8 +398,8 @@ class base_and_firm_market_window():
             if xlim[0] == xlim[1]:
                 xlim = (xlim[0]-1,xlim[1]+1)
             
-            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, self.solar_system_object_link, unit ="price")
-            history_surface = primitives.make_linear_x_axis(history_surface, self.frame_size, xlim, solar_system_object_link = self.solar_system_object_link, unit = "date")
+            history_surface = primitives.make_linear_y_axis(history_surface, self.frame_size, ylim, self.solarSystem(), unit ="price")
+            history_surface = primitives.make_linear_x_axis(history_surface, self.frame_size, xlim, solar_system_object_link = self.solarSystem(), unit = "date")
             
             
             self.positional_database = {"bidding_mode":{},"non_bidding_mode":{}}
@@ -437,12 +438,12 @@ class base_and_firm_market_window():
         self.graph_selected = "place bid mode"
         resource = self.resource_selected
         
-        if self.solar_system_object_link.display_mode == "base":
-            firm_selected = self.solar_system_object_link.current_planet.current_base
-        elif self.solar_system_object_link.display_mode == "firm":
-            firm_selected = self.solar_system_object_link.firm_selected
+        if self.solarSystem().display_mode == "base":
+            firm_selected = self.solarSystem().current_planet.current_base
+        elif self.solarSystem().display_mode == "firm":
+            firm_selected = self.solarSystem().firm_selected
         else:
-            raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
+            raise Exception("The display mode " + str(self.solarSystem().display_mode) + " is not supposed to show market data")
         
         
 
@@ -642,12 +643,12 @@ class base_and_firm_market_window():
         """
         
 #        all_ok = True
-        if self.solar_system_object_link.display_mode == "base":
-            firm_selected = self.solar_system_object_link.current_planet.current_base
-        elif self.solar_system_object_link.display_mode == "firm":
-            firm_selected = self.solar_system_object_link.firm_selected
+        if self.solarSystem().display_mode == "base":
+            firm_selected = self.solarSystem().current_planet.current_base
+        elif self.solarSystem().display_mode == "firm":
+            firm_selected = self.solarSystem().firm_selected
         else:
-            raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
+            raise Exception("The display mode " + str(self.solarSystem().display_mode) + " is not supposed to show market data")
         price = self.price_bar.position
         quantity = self.quantity_bar.position
         
@@ -658,14 +659,14 @@ class base_and_firm_market_window():
         resource = self.resource_selected
         
         #determining unit
-        unit = self.solar_system_object_link.trade_resources[resource]["unit_of_measurment"]
+        unit = self.solarSystem().trade_resources[resource]["unit_of_measurment"]
         
         if direction == "buy":
             if price * quantity > firm_selected.owner.capital:
                 print_dict = {"text":"Too low capital to bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
                 return
-            own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
+            own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solarSystem().current_date}
         elif direction == "sell":
             if firm_selected.isMerchant():
                 if market == firm_selected.from_location.market:
@@ -678,16 +679,16 @@ class base_and_firm_market_window():
                 quantity_available = firm_selected.stock_dict[resource]
             if quantity > quantity_available:
                 print_dict = {"text":firm_selected.name + " only has " + str(firm_selected.stock_dict[resource]) + " " + str(unit) + " and can't offer " + str(quantity) + " for sale","type":"general gameplay info"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
                 return
-            own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
+            own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solarSystem().current_date}
         else:
             raise Exception("Unknown direction " + str(direction))
         
         firm_selected.make_market_bid(market,own_offer)
         
         print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
-        self.solar_system_object_link.messages.append(print_dict)
+        self.solarSystem().messages.append(print_dict)
         self.graph_selected = "market bids"
         return "clear"
 
@@ -747,9 +748,9 @@ class base_and_firm_market_window():
                                 price = y_relative_position * (max_price - min_price) + min_price
                                 if price < 0:
                                     price = 0
-                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                    if self.solarSystem().message_printing["debugging"]:
                                         print_dict = {"text":"Changed price from " + str(price) + " to 0","type":"debugging"} 
-                                        self.solar_system_object_link.messages.append(print_dict)
+                                        self.solarSystem().messages.append(print_dict)
 
                             else:
                                 price = None
@@ -758,9 +759,9 @@ class base_and_firm_market_window():
                                 max_qt = self.positional_database["bidding_mode"]["quantity"][1]
                                 try:    math.log10(max_qt)
                                 except: 
-                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                    if self.solarSystem().message_printing["debugging"]:
                                         print_dict = {"text":"DEBUGGING: no good selection of log10 max_qt","type":"debugging"} 
-                                        self.solar_system_object_link.messages.append(print_dict)
+                                        self.solarSystem().messages.append(print_dict)
                                     quantity = None
                                 else:
                                     quantity = int(10 ** (math.log10(max_qt) * x_relative_position))  
@@ -779,11 +780,11 @@ class base_and_firm_market_window():
                             if not click_spot_result[1]["linkto"].isBase():
                                 linkto = click_spot_result[1]["linkto"]
                                 if linkto.isBase():
-                                    self.solar_system_object_link.display_mode = "base"
-                                    self.solar_system_object_link.current_planet.current_base = linkto
+                                    self.solarSystem().display_mode = "base"
+                                    self.solarSystem().current_planet.current_base = linkto
                                 elif linkto.isFirm() or linkto.isMerchant() or linkto.isResearch():
-                                    self.solar_system_object_link.display_mode = "firm"
-                                    self.solar_system_object_link.firm_selected = linkto
+                                    self.solarSystem().display_mode = "firm"
+                                    self.solarSystem().firm_selected = linkto
                                 else:
                                     raise Exception("The class of " + linkto.name + " was " + linkto.__class__)
                                 return "clear"

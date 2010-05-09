@@ -14,6 +14,8 @@ import company
 import random
 
 class planet:
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     The class that holds all methods of the planets
     And instance of class planet also holds all the base instances within.
@@ -21,7 +23,6 @@ class planet:
     
     def __init__(self,planet_name,solar_system_object_link,planet_data):
         planet_file_name = planet_name + ".jpg"
-        self.solar_system_object_link = solar_system_object_link
         self.planet_data = planet_data
         self.planet_diameter_km = planet_data["diameter_km"]
         self.planet_type = planet_data["type"]
@@ -92,8 +93,8 @@ class planet:
         ton_per_pa_on_earth = ton_carbondioxide_on_earth_2008 / pascal_carbondioxide_on_earth_2008
         
         #we then take surface area and gravity of the planet in account and calculate a useful factor
-        surface_area_ratio = self.solar_system_object_link.planets["earth"].surface_area / self.surface_area
-        gravity_at_surface_ratio = self.solar_system_object_link.planets["earth"].gravity_at_surface / self.gravity_at_surface
+        surface_area_ratio = self.solarSystem().planets["earth"].surface_area / self.surface_area
+        gravity_at_surface_ratio = self.solarSystem().planets["earth"].gravity_at_surface / self.gravity_at_surface
         
         ton_per_pa_here = ton_per_pa_on_earth * gravity_at_surface_ratio / surface_area_ratio 
         
@@ -104,7 +105,7 @@ class planet:
             before = getattr(self, "athmospheric_" + gas)
             setattr(self, "athmospheric_" + gas, before + (ton / ton_per_pa_here))
             print_dict = {"text":"added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str((before)) + " to " + str(getattr(self, "athmospheric_" + gas)),"type":"climate"}
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
         else:
             raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys()))   
     
@@ -124,7 +125,7 @@ class planet:
              before = self.water_level
              self.change_water_level(self.water_level + 0.5)
              print_dict = {"text":"The waters are rising on" + self.name + "!","type":"general gameplay info"}
-             self.solar_system_object_link.messages.append(print_dict)
+             self.solarSystem().messages.append(print_dict)
 
     
         
@@ -141,11 +142,11 @@ class planet:
             class Placeholder():
                 pass
             placeholder = Placeholder()
-            placeholder.solar_system_object_link = self.solar_system_object_link
+            placeholder.solar_system_object_link = self.solarSystem()
             
             for base_name in read_base_database: 
                 
-                base_instance = base.base(self.solar_system_object_link,base_name,self,read_base_database[base_name],placeholder)
+                base_instance = base.base(self.solarSystem(),base_name,self,read_base_database[base_name],placeholder)
                 
                 base_database[base_name] = base_instance
             self.bases = base_database
@@ -165,9 +166,9 @@ class planet:
         between the two in kilometers based on the diameter_km entry in planet_data
         """
         if len(position_a) != len(position_b):
-            if self.solar_system_object_link.message_printing["debugging"]:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"WARNING: The two lists given in calculate_distance() are not the same length","type":"debugging"} 
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
             
         
         result = []
@@ -372,9 +373,9 @@ class planet:
                 self.image = Image.open(os.path.join("images","planet","placeholder.jpg"))
             self.projection_dim = (self.projection_scaling,self.projection_scaling)
             if((self.image.size[0]/self.image.size[1])!=2):
-                if self.solar_system_object_link.message_printing["debugging"]:
+                if self.solarSystem().message_printing["debugging"]:
                     print_dict = {"text":"oh no! The map file is not twice as wide as it is high","type":"debugging"} 
-                    self.solar_system_object_link.messages.append(print_dict)
+                    self.solarSystem().messages.append(print_dict)
 
                 self.image = self.image.resize((self.image.size[0],self.image.size[0]/2))
             
@@ -520,9 +521,9 @@ class planet:
         
         if new_water_level > len(table_of_topology):
             new_water_level = len(table_of_topology)
-            if self.solar_system_object_link.message_printing["debugging"]:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"The planet " + str(self.planet_name) + " has reached its max water level of " + str(len(table_of_topology)),"type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
 
         
 
@@ -1286,17 +1287,17 @@ class planet:
 
 
             firms_to_delete = {}
-            for company_instance in self.solar_system_object_link.companies.values():
+            for company_instance in self.solarSystem().companies.values():
                 for firm_name in company_instance.owned_firms:
                     firm_instance = company_instance.owned_firms[firm_name]
                     if not firm_instance.isMerchant():
-                        if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+                        if firm_instance.location == self.solarSystem().current_planet.current_base:
 #                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
                             
                     else:
-                        if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
+                        if firm_instance.from_location == self.solarSystem().current_planet.current_base or firm_instance.to_location == self.solarSystem().current_planet.current_base:
 #                            print "deleting " + firm_instance.name + " merchant owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
@@ -1371,7 +1372,7 @@ class planet:
                             distance = self.calculate_distance(base_instance.position_coordinate, sphere_coordinates)
                             if distance[0] < radius_size:
                                 print_dict = {"text":"The new position is less than " + str(radius_size) + " km to " + base_instance.name + " it is " + str(distance[0]),"type":"general gameplay info"}
-                                self.solar_system_object_link.messages.append(print_dict)
+                                self.solarSystem().messages.append(print_dict)
                                 not_too_close = False
                             
                 
@@ -1387,7 +1388,7 @@ class planet:
                         return sphere_coordinates
                     else:
                         print_dict = {"text":"Can't build a base here","type":"general gameplay info"}
-                        self.solar_system_object_link.messages.append(print_dict)
+                        self.solarSystem().messages.append(print_dict)
                         return "Can't build a base in this terrain"
 
                 else:
@@ -1532,7 +1533,7 @@ class planet:
         hit_locations = []
         
         blast_surface = pygame.image.load(os.path.join("images","blast.png"))
-        ratio = 0.25 *(float(per_hit_intensity) / 100.0) * (float(self.projection_scaling) / 360.0) * (self.solar_system_object_link.planets["earth"].planet_diameter_km / float(self.planet_diameter_km)) 
+        ratio = 0.25 *(float(per_hit_intensity) / 100.0) * (float(self.projection_scaling) / 360.0) * (self.solarSystem().planets["earth"].planet_diameter_km / float(self.planet_diameter_km)) 
 #        print "ratio " + str(ratio)
         large_blast_surface = pygame.transform.scale(blast_surface, (int(blast_surface.get_width() * ratio / 2), int(blast_surface.get_height() * ratio / 2)))
         medium_blast_surface = pygame.transform.scale(blast_surface, (int(blast_surface.get_width() * ratio / 3), int(blast_surface.get_height() * ratio / 3)))

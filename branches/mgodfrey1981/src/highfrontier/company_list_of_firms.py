@@ -13,12 +13,13 @@ import random
 import time
 
 class company_list_of_firms():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Subview of the company view. Shows a list of all firms owned by the company. A shortcut button allows quick zoom to the firm page of these firms.
     """
 
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -28,7 +29,7 @@ class company_list_of_firms():
         """
         The creation function.  
         """
-        company_selected = self.solar_system_object_link.company_selected
+        company_selected = self.solarSystem().company_selected
         if company_selected is None:
             raise Exception("A list of firms was requested, but no company was selected")
         
@@ -54,22 +55,22 @@ class company_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = None
-            for firm in self.solar_system_object_link.company_selected.owned_firms.values():
+            for firm in self.solarSystem().company_selected.owned_firms.values():
                 if firm.name == self.fast_list.selected_name:
                     firm_selected = firm
             if firm_selected is None:
-                if self.solar_system_object_link.message_printing["debugging"]:
+                if self.solarSystem().message_printing["debugging"]:
                     print_dict = {"text":"POSSIBLE DEBUGGING: - the firm asked for was of None type","type":"debugging"}
-                    self.solar_system_object_link.messages.append(print_dict)
+                    self.solarSystem().messages.append(print_dict)
     
             else:
                 if firm_selected.isBase():
-                    self.solar_system_object_link.display_mode = "base"
-                    self.solar_system_object_link.current_planet.current_base = firm_selected
+                    self.solarSystem().display_mode = "base"
+                    self.solarSystem().current_planet.current_base = firm_selected
                     
                 else:
-                    self.solar_system_object_link.display_mode = "firm"
-                    self.solar_system_object_link.firm_selected = firm_selected
+                    self.solarSystem().display_mode = "firm"
+                    self.solarSystem().firm_selected = firm_selected
                 return "clear"
 
 
