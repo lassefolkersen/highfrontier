@@ -8,7 +8,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -67,7 +66,7 @@ class firm_trade_partners_info():
                         
 #        print "transaction keys " + str(transactions.keys())
 #        print "transactions: " + str(transactions)
-        self.fast_list = gui_components.fast_list(
+        self.fast_list = fast_list.fast_list(
                                                   self.action_surface, 
                                                   transactions, 
                                                   rect = self.rect,

@@ -1,3 +1,4 @@
+import radiobuttons
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -52,7 +52,7 @@ class overlay_window():
         
         labels = ["visible light","trade network","topographical"] + self.solarSystem().mineral_resources
 
-        self.radiobuttons = gui_components.radiobuttons(
+        self.radiobuttons = radiobuttons.radiobuttons(
                                                         labels, 
                                                         self.action_surface, 
                                                         self.overlay_set, 
