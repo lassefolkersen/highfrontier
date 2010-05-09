@@ -24,9 +24,10 @@ class base_build_menu():
     
     
     """
+    def solarSystem(self):
+        return global_variables.solar_system
 
-    def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
+    def __init__(self,action_surface):
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -46,9 +47,9 @@ class base_build_menu():
         
 
         buildoption_data = {}
-        for technology_name in self.solar_system_object_link.current_player.known_technologies:
+        for technology_name in self.solarSystem().current_player.known_technologies:
             if technology_name != "common knowledge":
-                technology = self.solar_system_object_link.current_player.known_technologies[technology_name]
+                technology = self.solarSystem().current_player.known_technologies[technology_name]
             
                 buildoption_data[technology_name] = {}
                 
@@ -131,7 +132,7 @@ class base_build_menu():
         """
         self.menu_position = "pick destination"
         destination_data = {}
-        location = self.solar_system_object_link.current_planet.current_base
+        location = self.solarSystem().current_planet.current_base
         for destination_name in location.trade_routes:
             destination = location.trade_routes[destination_name]
             
@@ -151,7 +152,7 @@ class base_build_menu():
         self.menu_position = "pick resource"
         
 
-        from_location = self.solar_system_object_link.current_planet.current_base
+        from_location = self.solarSystem().current_planet.current_base
         trade_route_selected = from_location.trade_routes[destination_name]
     
         #prepare direct links to the other endpoint location
@@ -161,8 +162,8 @@ class base_build_menu():
         
         #prepare resource data
         resource_data = {}
-        for resource in self.solar_system_object_link.trade_resources.keys():
-            if self.solar_system_object_link.trade_resources[resource]["transportable"]:
+        for resource in self.solarSystem().trade_resources.keys():
+            if self.solarSystem().trade_resources[resource]["transportable"]:
                 resource_data[resource] = {}
                 
                 quantity_offered_here = 0
@@ -190,7 +191,7 @@ class base_build_menu():
         
         
         
-        from_location = self.solar_system_object_link.current_planet.current_base
+        from_location = self.solarSystem().current_planet.current_base
         trade_route_selected = from_location.trade_routes[destination_name]
         for endpoint in trade_route_selected["endpoint_links"]:
             if endpoint != from_location:
@@ -210,7 +211,7 @@ class base_build_menu():
 
         #check that this does not already exist
         exists = False
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+        for firm_instance in self.solarSystem().current_player.owned_firms.values():
             if firm_instance.isMerchant():
                 if firm_instance.from_location == self.selections["from_location"]:
                     if firm_instance.to_location == self.selections["to_location"]:
@@ -218,7 +219,7 @@ class base_build_menu():
                             exists = True
         if exists:
             print_dict = {"text":"A merchant from " + str(self.selections["from_location"].name) + " to " + str(self.selections["to_location"].name) + " trading " + str(resource) + " does already exist","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
 
             
         else:
@@ -272,16 +273,16 @@ class base_build_menu():
 
         #test if name is unique
         unique = True
-        for company_instance in self.solar_system_object_link.companies.values():
+        for company_instance in self.solarSystem().companies.values():
             if name in company_instance.owned_firms.keys():
                 unique = False
         
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
-            owner = self.solar_system_object_link.current_player
+            owner = self.solarSystem().current_player
             input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
             distance = self.selections["trade_route_selected"]["distance"]
             transport_type = self.selections["trade_route_selected"]["transport_type"]
-            new_merchant_firm = merchant.merchant(self.solar_system_object_link,
+            new_merchant_firm = merchant.merchant(self.solarSystem(),
                                                   self.selections["from_location"],
                                                   self.selections["to_location"],
                                                   input_output_dict,
@@ -292,12 +293,12 @@ class base_build_menu():
                                                   self.selections["resource"])
             owner.owned_firms[name] = new_merchant_firm
             print_dict = {"text":"Built a merchant named " + str(name) + " between " + str(self.selections["from_location"].name) + " and " + str(self.selections["to_location"].name) + " trading in " + str(self.selections["resource"]),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
             self.selections = {}
             self.menu_position = "root"
         else:
             print_dict = {"text":"the selected name " + str(name) + " was too long. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
             self.merchant_pick_name(self.selections["resource"],give_length_warning=True)
 
 
@@ -323,7 +324,7 @@ class base_build_menu():
             technology["input_output_dict"]["output"] = {"research:":1}
             technology["technology_name"] = "research"
         else:
-            technology = self.solar_system_object_link.current_player.known_technologies[firm_type]
+            technology = self.solarSystem().current_player.known_technologies[firm_type]
         
         input_size = 0
         
@@ -333,16 +334,16 @@ class base_build_menu():
             input_size = input_size + input
         if input_size < 2: 
             input_size = 2
-        if self.solar_system_object_link.current_planet.current_base is None:
+        if self.solarSystem().current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
-        population = self.solar_system_object_link.current_planet.current_base.population
+        population = self.solarSystem().current_planet.current_base.population
         max_size = max(int(population * 0.05 / float(input_size)),1)
         
         
         #check if the current_player already owns a company of that technology in the current base
         existing_firm = None
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
-            if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
+        for firm_instance in self.solarSystem().current_player.owned_firms.values():
+            if firm_instance.location == self.solarSystem().current_planet.current_base:
                 if firm_instance.technology_name == firm_type:
                     existing_firm = firm_instance
                     break
@@ -408,8 +409,8 @@ class base_build_menu():
 #                print technology.keys()
                 for resource in technology["input_output_dict"][put].keys():
                     lineno = lineno + 1
-                    if resource in self.solar_system_object_link.mineral_resources + ["food"] and put == "output":
-                        mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource)
+                    if resource in self.solarSystem().mineral_resources + ["food"] and put == "output":
+                        mining_opportunity = self.solarSystem().current_planet.current_base.get_mining_opportunities(self.solarSystem().current_planet, resource)
                         unmodified_output = technology["input_output_dict"]["output"][resource]
                         value = (mining_opportunity / 10) * unmodified_output
                         value = int(value * self.slider.position)
@@ -508,13 +509,13 @@ class base_build_menu():
         if existing_firm is None:
             name = self.text_receiver.text
             unique = True
-            for company_instance in self.solar_system_object_link.companies.values():
+            for company_instance in self.solarSystem().companies.values():
                 if name in company_instance.owned_firms.keys():
                     unique = False
         
             if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
                 print_dict = {"text":"the selected name " + str(name) + " was too long and/or not unique. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
                 self.commodity_size_selection(self.selections["firm_type"])
                 return None
             
@@ -524,14 +525,14 @@ class base_build_menu():
         
         
         technology = self.selections["technology"]
-        location = self.solar_system_object_link.current_planet.current_base
-        owner = self.solar_system_object_link.current_player
+        location = self.solarSystem().current_planet.current_base
+        owner = self.solarSystem().current_player
         size = self.slider.position
         
         owner.change_firm_size(location,size,technology["technology_name"], name)
         if isinstance(name, str) or isinstance(name, unicode):
             print_dict = {"text":str(name) + ", a " + self.selections["firm_type"] + " firm of size " + str(size) + " was built at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
 
         else:
             print name

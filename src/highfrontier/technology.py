@@ -13,6 +13,8 @@ import primitives
 
 
 class Tree():
+	def solarSystem(self):
+		return global_variables.solar_system
 	"""
 	The tree is the class that holds all that exists. It started actually as an igraph object (from the igraph class),
 	but because none of the igraph related functions were used it was migrated to instead by two variables called
@@ -29,7 +31,7 @@ class Tree():
 	
 	
 	"""
-	def __init__(self,coretree,solar_system_object_link):
+	def __init__(self,coretree,solar_system_object):
 		
 		
 		self.vertex_dict = {}
@@ -46,7 +48,6 @@ class Tree():
 		
 		
 		
-		self.solar_system_object_link = solar_system_object_link
 		
 		self.tendency_to_choose_forward_parents = 0.5 #a number between 0 and 1. It describes the fraction of a sorted-by-distance list of potential parents (in the parent_area), to use in selecting parents  
 		self.number_of_parents_list = [1,1,1,1,1,1,1,1,2,2,3,3,3,4] # list containing numbers of parents. A sample is taken from this list to determine the number of parents of any given new_iteration vertex
@@ -80,23 +81,23 @@ class Tree():
 			if click_type == 1:
 				if self.selected != collision_test_result[1]:
 					self.selected =  collision_test_result[1]
-					if self.solar_system_object_link.current_player is not None:
-						if self.selected in self.solar_system_object_link.current_player.known_technologies:
-							destination = self.get_research_project(self.selected, self.solar_system_object_link.current_player.known_technologies)
+					if self.solarSystem().current_player is not None:
+						if self.selected in self.solarSystem().current_player.known_technologies:
+							destination = self.get_research_project(self.selected, self.solarSystem().current_player.known_technologies)
 							if destination is not None:
-								self.solar_system_object_link.current_player.target_technology = destination["target_technology"]
-								self.solar_system_object_link.current_player.target_technology_cost = int(destination["distance"] * self.solar_system_object_link.technology_research_cost)
-								print_dict = {"text":self.solar_system_object_link.current_player.name + " selected to research from " + self.selected,"type":"general gameplay info"}
-								self.solar_system_object_link.messages.append(print_dict)
-	#							self.solar_system_object_link.current_player.target_technology = self.selected
+								self.solarSystem().current_player.target_technology = destination["target_technology"]
+								self.solarSystem().current_player.target_technology_cost = int(destination["distance"] * self.solarSystem().technology_research_cost)
+								print_dict = {"text":self.solarSystem().current_player.name + " selected to research from " + self.selected,"type":"general gameplay info"}
+								self.solarSystem().messages.append(print_dict)
+	#							self.solarSystem().current_player.target_technology = self.selected
 							else:
-								self.solar_system_object_link.current_player.target_technology = None
+								self.solarSystem().current_player.target_technology = None
 								print_dict = {"text":"Nothing useful can be discovered from " + self.selected,"type":"general gameplay info"}
-								self.solar_system_object_link.messages.append(print_dict)
+								self.solarSystem().messages.append(print_dict)
 						else:
-							self.solar_system_object_link.current_player.target_technology = None
-							print_dict = {"text":self.selected + " is not known by " + self.solar_system_object_link.current_player.name + " and can not be used as origin of research","type":"general gameplay info"}
-							self.solar_system_object_link.messages.append(print_dict)
+							self.solarSystem().current_player.target_technology = None
+							print_dict = {"text":self.selected + " is not known by " + self.solarSystem().current_player.name + " and can not be used as origin of research","type":"general gameplay info"}
+							self.solarSystem().messages.append(print_dict)
 
 				else:
 					self.center = ( self.center[0]  - position[0] + global_variables.action_window_size[0]/2,   self.center[1] - (position[1] - global_variables.action_window_size[1]/2))
@@ -112,7 +113,7 @@ class Tree():
 							message_text = message_text + resource + ": " + str(self.vertex_dict[collision_test_result[1]]["input_output_dict"][put][resource]) + ", "
 
 					print_dict = {"text":message_text,"type":"general gameplay info"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 			else:
 				raise Exception("DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. This should not be able to happen")
@@ -190,9 +191,9 @@ class Tree():
 						possible_origins.append(technology_name)
 			if len(possible_origins) < 1:
 				origin_technology_name = random.choice(known_technology_names)
-				if self.solar_system_object_link.message_printing["debugging"]:
+				if self.solarSystem().message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING: There was a company that was not able to choose any origin technologies with unknown paths so a random known tech " + str(origin_technology) + " was chosen","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 			origin_technology_name = random.choice(possible_origins)
 						
@@ -381,10 +382,10 @@ class Tree():
 
 		"""
 		
-		point_of_view = self.solar_system_object_link.current_player
+		point_of_view = self.solarSystem().current_player
 		#for testing point-of-view
-#		point_of_view_name = random.choice(self.solar_system_object_link.companies.keys())
-#		point_of_view = self.solar_system_object_link.companies[point_of_view_name]
+#		point_of_view_name = random.choice(self.solarSystem().companies.keys())
+#		point_of_view = self.solarSystem().companies[point_of_view_name]
 #		print "Chose " + str(point_of_view_name) + " for point of view"
 		
 		surface = pygame.Surface((global_variables.action_window_size[0],global_variables.action_window_size[1]))
@@ -498,9 +499,9 @@ class Tree():
 			number_of_potential_parents = int(len(parent_distance_list)*self.tendency_to_choose_forward_parents)
 			if number_of_potential_parents >len(parent_distance_list):
 				number_of_potential_parents = len(parent_distance_list)
-				if self.solar_system_object_link.message_printing["debugging"]:
+				if self.solarSystem().message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING: Don't use self.tendency_to_choose_forward_parents above 1","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 			parent_distance_list_shortened = parent_distance_list[0:number_of_potential_parents] #take the closest half
 			if len(parent_distance_list_shortened) == 0:

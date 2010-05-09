@@ -16,6 +16,8 @@ import pygame
 
 
 class company:
+	def solarSystem(self):
+		return global_variables.solar_system
 	def marketDecisions(self):
 		if(global_variables.market_decisions==None):
 			global_variables.market_decisions=market_decisions.market_decisions()
@@ -26,8 +28,8 @@ class company:
 		Most importantly it will close all firms 
 		Later expansions might includes rules for selling off of values
 		"""
-		if self.solar_system_object_link.company_selected == self:
-			self.solar_system_object_link.company_selected = None
+		if self.solarSystem().company_selected == self:
+			self.solarSystem().company_selected = None
 
 		
 		close_these_firms = []
@@ -35,9 +37,9 @@ class company:
 			firm_instance = self.owned_firms[firm_name]
 			if firm_instance.isBase():
 				firm_instance.for_sale = True
-				firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
+				firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solarSystem().current_date
 				print_dict = {"text":firm_name + " is up for sale because the owning company " + self.name + " is going bankrupt","type":"base sales"}
-				self.solar_system_object_link.messages.append(print_dict)
+				self.solarSystem().messages.append(print_dict)
 
 			else:
 				close_these_firms.append(firm_name)
@@ -48,13 +50,13 @@ class company:
 		if len(self.owned_firms) == 0:
 			
 			#ok - no firms left. Now we check if for any technologies that it owns and removes it self from them
-			for technology_name in self.solar_system_object_link.technology_tree.vertex_dict:
-				technology = self.solar_system_object_link.technology_tree.vertex_dict[technology_name]
+			for technology_name in self.solarSystem().technology_tree.vertex_dict:
+				technology = self.solarSystem().technology_tree.vertex_dict[technology_name]
 				if self in technology["for_sale_by"]:
 					del technology["for_sale_by"][self]
 			
 			#finally the deletion
-			self.solar_system_object_link.close_company(self.name)
+			self.solarSystem().close_company(self.name)
 		else:
 			pass
 	"""
@@ -80,11 +82,10 @@ class company:
 		self.owned_firms = {}
 		self.capital = capital
 		self.picture_file = None
-		self.solar_system_object_link = solar_system_object
-		self.last_firm_evaluation = self.solar_system_object_link.current_date
-		self.last_market_evaluation = self.solar_system_object_link.current_date
-		self.last_supply_evaluation = self.solar_system_object_link.current_date
-		self.last_demand_evaluation = self.solar_system_object_link.current_date
+		self.last_firm_evaluation = self.solarSystem().current_date
+		self.last_market_evaluation = self.solarSystem().current_date
+		self.last_supply_evaluation = self.solarSystem().current_date
+		self.last_demand_evaluation = self.solarSystem().current_date
 		self.calculate_company_database(model_company_database,deviation)
 		self.company_accounting = []
 		 
@@ -108,8 +109,8 @@ class company:
 
 		
 		self.known_technologies = {}
-		for vertex_name in self.solar_system_object_link.technology_tree.vertex_dict:
-			vertex = self.solar_system_object_link.technology_tree.vertex_dict[vertex_name]
+		for vertex_name in self.solarSystem().technology_tree.vertex_dict:
+			vertex = self.solarSystem().technology_tree.vertex_dict[vertex_name]
 			if vertex["known_by"] == "everybody":
 				self.known_technologies[vertex_name] = vertex
 		
@@ -191,9 +192,9 @@ class company:
 
 			number_of_files_to_pick_from = len(file_list)
 			if number_of_files_to_pick_from == 0:
-				if self.solar_system_object_link.message_printing["debugging"]:
+				if self.solarSystem().message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING: In get_company_background There are no JPGs in the given folder","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 			else:
 				my_pick = random.randrange(0,number_of_files_to_pick_from)
 				file_name = file_list[my_pick]
@@ -347,9 +348,9 @@ class company:
 			if len(potential_base_names) > 0:
 				new_home_city_name = potential_base_names[random.randint(0,len(potential_base_names)-1)]
 			else:
-				if self.solar_system_object_link.message_printing["debugging"]:
+				if self.solarSystem().message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING: The expand_home_cities function did not find any new home_cities for " + self.name + " which have the current home_cities: " + str(self.home_cities),"type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 				new_home_city_name = None
 			
@@ -382,7 +383,7 @@ class company:
 		"""
 		#making sure at least one home_city is found
 		if len(self.home_cities) == 0:
-			new_home_city = self.expand_home_cities(self.solar_system_object_link)
+			new_home_city = self.expand_home_cities(self.solarSystem())
 			self.home_cities[new_home_city.name] = new_home_city
 			
 		
@@ -394,13 +395,13 @@ class company:
 			self.known_technologies[self.target_technology["technology_name"]] = self.target_technology
 			try: self.target_technology["known_by"][self.name] = self
 			except:
-				if self.solar_system_object_link.message_printing["debugging"]:
+				if self.solarSystem().message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING: a firm discovered " + self.target_technology["technology_name"] + " which is known by " + str(self.target_technology["known_by"]) + " this is probably a mistake","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 			else:
 				pass
 			print_dict = {"text":self.name + " discovered " + self.target_technology["technology_name"] + " which cost " + str(self.target_technology_cost) + " the remaining " + str(research_rest) + " research points have been transferred to further research.","type":"tech discovery"}
-			self.solar_system_object_link.messages.append(print_dict)
+			self.solarSystem().messages.append(print_dict)
 			self.target_technology = None
 			self.research = research_rest
 		if self.target_technology is None:
@@ -409,7 +410,7 @@ class company:
  			else: #FIXME
 				if self.research > 0:
 					print_dict = {"text":self.name + " needs to pick a technology. Go to the technology window","type":"general gameplay info"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 				
 				
 
@@ -417,7 +418,7 @@ class company:
 		#checking if any firms are for sale, if their bid_deadline is crossed and if so effectuates the sale
 		for firm_instance in self.owned_firms.values():
 			if firm_instance.for_sale:
-				if firm_instance.for_sale_deadline > self.solar_system_object_link.current_date:
+				if firm_instance.for_sale_deadline > self.solarSystem().current_date:
 					bids = firm_instance.for_sale_bids.values()
 					bids.sort()
 					inverted_bids = primitives.invert_dict(firm_instance.for_sale_bids)
@@ -429,7 +430,7 @@ class company:
 						try: bids[i]
 						except: 
 							print_dict = {"text":"Did not find a buyer for base " + firm_instance.name + " - extending deadline with half a year","type":"base sales"}
-							self.solar_system_object_link.messages.append(print_dict)
+							self.solarSystem().messages.append(print_dict)
 
 							
 							break
@@ -443,7 +444,7 @@ class company:
 					
 					if winning_company is not None:
 						print_dict = {"text":firm_instance.name + " was for sale but was won by " + winning_company.name + " for the price of " + str(int(winning_price)) + " buying from " + self.name,"type":"base sales"}
-						self.solar_system_object_link.messages.append(print_dict)
+						self.solarSystem().messages.append(print_dict)
 						
 						winning_company.capital = winning_company.capital - winning_price
 						self.capital = self.capital - winning_price
@@ -455,12 +456,12 @@ class company:
 						firm_instance.for_sale_deadline = None
 						firm_instance.for_sale_bids = {}
 					else:
-						firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
+						firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solarSystem().current_date
 						
 					
 		
 		max_records_kept_in_account = 500
-		self.company_accounting.append({"capital":self.capital,"date":self.solar_system_object_link.current_date})
+		self.company_accounting.append({"capital":self.capital,"date":self.solarSystem().current_date})
 		while len(self.company_accounting) > max_records_kept_in_account:
 			del self.company_accounting[0]
 
@@ -477,27 +478,27 @@ class company:
 			#firm evaluation
 			if self.automation_dict["Evaluate firms (close problematic firms)"]:
 				time_limit_of_firm_evaluation = int(((101 - self.company_database["evaluate_firms_often"])/100.0) * (max_time_firm_and_market - min_time_firm_and_market) + min_time_firm_and_market)
-				if (self.solar_system_object_link.current_date - self.last_firm_evaluation).days >  time_limit_of_firm_evaluation:
-					self.last_firm_evaluation = self.solar_system_object_link.current_date
+				if (self.solarSystem().current_date - self.last_firm_evaluation).days >  time_limit_of_firm_evaluation:
+					self.last_firm_evaluation = self.solarSystem().current_date
 					self.evaluate_firms()
 			
 			#market evaluation
 			time_limit_of_market_evaluation = int(((101 - self.company_database["evaluate_market_often"])/100.0) * (max_time_firm_and_market - min_time_firm_and_market) + min_time_firm_and_market)
-			if (self.solar_system_object_link.current_date - self.last_market_evaluation).days >  time_limit_of_market_evaluation:
-				self.last_market_evaluation = self.solar_system_object_link.current_date
+			if (self.solarSystem().current_date - self.last_market_evaluation).days >  time_limit_of_market_evaluation:
+				self.last_market_evaluation = self.solarSystem().current_date
 				self.evaluate_market()
 				
 			#stock change evaluation - always done
 			for firm_instance in self.owned_firms.values():
-				firm_instance.execute_stock_change(self.solar_system_object_link.current_date)
+				firm_instance.execute_stock_change(self.solarSystem().current_date)
 
 			
 			#supply evaluation
 			#time_limit_of_supply_evaluation = ((101 - self.company_database["evaluate_supply_often"]) * max_time_supply_and_demand) / 100
 			if self.automation_dict["Supply bidding (initiate selling bids)"]:
 				time_limit_of_supply_evaluation = int(((101 - self.company_database["evaluate_supply_often"])/100.0) * (max_time_supply_and_demand - min_time_supply_and_demand) + min_time_supply_and_demand)
-				if (self.solar_system_object_link.current_date - self.last_supply_evaluation).days >  time_limit_of_supply_evaluation:
-					self.last_supply_evaluation = self.solar_system_object_link.current_date
+				if (self.solarSystem().current_date - self.last_supply_evaluation).days >  time_limit_of_supply_evaluation:
+					self.last_supply_evaluation = self.solarSystem().current_date
 					for firm_instance in self.owned_firms.values():
 						firm_instance.calculate_supply_reaction()
 
@@ -505,15 +506,15 @@ class company:
 			#demand evaluation
 			if self.automation_dict["Demand bidding (initiate buying bids)"]:
 				time_limit_of_demand_evaluation = int(((101 - self.company_database["evaluate_demand_often"])/100.0) * (max_time_supply_and_demand - min_time_supply_and_demand) + min_time_supply_and_demand)
-				if (self.solar_system_object_link.current_date - self.last_demand_evaluation).days >  time_limit_of_demand_evaluation:
-					self.last_demand_evaluation = self.solar_system_object_link.current_date
+				if (self.solarSystem().current_date - self.last_demand_evaluation).days >  time_limit_of_demand_evaluation:
+					self.last_demand_evaluation = self.solarSystem().current_date
 					for firm_instance in self.owned_firms.values():
 						firm_instance.calculate_demand_reaction()
 
 
 		
 		else:
-			if self != self.solar_system_object_link.current_player:
+			if self != self.solarSystem().current_player:
 				self.close_company()
 			else:
 				raise Exception("Game over - the current player does not have any more money")
@@ -627,9 +628,9 @@ class company:
 		
 		#first some checking of the size variable we got
 		if isinstance(size,float):
-			if self.solar_system_object_link.message_printing["debugging"]:
+			if self.solarSystem().message_printing["debugging"]:
 				print_dict = {"text":"DEBUGGING: change_firm_size received a float " + str(size) + " -- correct this","type":"debugging"}
-				self.solar_system_object_link.messages.append(print_dict)
+				self.solarSystem().messages.append(print_dict)
 			size = int(size)
 		elif isinstance(size,int) or isinstance(size,long):
 			pass
@@ -652,7 +653,7 @@ class company:
 							break
 						else:
 							firm_instance.for_sale = True
-							firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
+							firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solarSystem().current_date
 		elif 0 < size and size < 1:
 			raise Exception("Received a size " + str(size) + " - this will risk creating zero input processes")
 		
@@ -674,15 +675,15 @@ class company:
 						while name_is_not_unique:
 							name_is_not_unique = False
 							firm_name = technology_name + "_" + str(random.randint(10000,99999))
-							for company_instance in self.solar_system_object_link.companies.values():
+							for company_instance in self.solarSystem().companies.values():
 								if firm_name in company_instance.owned_firms.keys():
 									name_is_not_unique = True
 					else:
 				   		firm_name = name
 					input_output_dict = {"input":{"labor":size},"output":{},"timeframe":30*6,"byproducts":{}}
-					new_firm = research.research(self.solar_system_object_link, location,input_output_dict,self,firm_name)
+					new_firm = research.research(self.solarSystem(), location,input_output_dict,self,firm_name)
 					new_firm.size = size
-					new_firm.last_consumption_date = self.solar_system_object_link.current_date
+					new_firm.last_consumption_date = self.solarSystem().current_date
 					self.owned_firms[firm_name] = new_firm
 					
 				
@@ -707,17 +708,17 @@ class company:
 						while name_is_not_unique:
 							name_is_not_unique = False
 							firm_name = technology_name + "_" + str(random.randint(10000,99999))
-							for company_instance in self.solar_system_object_link.companies.values():
+							for company_instance in self.solarSystem().companies.values():
 								if firm_name in company_instance.owned_firms.keys():
 									name_is_not_unique = True
 					else:
 						firm_name = name
-					new_firm = firm.firm(self.solar_system_object_link,location,firm_specific_process,self,firm_name,technology_name)
+					new_firm = firm.firm(self.solarSystem(),location,firm_specific_process,self,firm_name,technology_name)
 					
 					
 					
 					new_firm.size = size
-					new_firm.last_consumption_date = self.solar_system_object_link.current_date
+					new_firm.last_consumption_date = self.solarSystem().current_date
 					self.owned_firms[firm_name] = new_firm
 	
 					#checking input_output_dict FIXME this check can perhaps be omitted

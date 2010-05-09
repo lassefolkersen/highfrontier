@@ -3,6 +3,8 @@ import datetime
 import tertiary
 
 class research(tertiary.tertiary):
+	def solarSystem(self):
+		return global_variables.solar_system
 	"""
 	Special rules for research firms are included in this class, the most important being that they do not have any output
 	from their input_output_dict, but instead add research points directly to the owning company.
@@ -13,13 +15,12 @@ class research(tertiary.tertiary):
 
 		self.name = name
 		self.owner = owner
-		self.solar_system_object_link = solar_system_object
 		if not location.isBase():
 			raise Exception(self.name + " is a research firm but received a location that was not a base: " + str(location))
 		self.location = location
 		self.picture_file = None
-		self.last_consumption_date = self.solar_system_object_link.current_date
-		self.last_accounting = self.solar_system_object_link.current_date
+		self.last_consumption_date = self.solarSystem().current_date
+		self.last_accounting = self.solarSystem().current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
 		
@@ -32,7 +33,7 @@ class research(tertiary.tertiary):
 		self.for_sale_deadline = None # a date at which the bidding contest is over
 		
 		#self.decision_data = self.process_decision_data(decision_data)
-		for resource in self.solar_system_object_link.trade_resources:
+		for resource in self.solarSystem().trade_resources:
 			self.stock_dict[resource] = 0
 
 	def execute_stock_change(self,current_date):
@@ -42,11 +43,11 @@ class research(tertiary.tertiary):
 		"""
 		try: self.last_consumption_date
 		except:
-			if (current_date - self.solar_system_object_link.start_date).days > 100: #because it is an error if there is no last_consuptiom_data
-				if self.solar_system_object_link.message_printing["debugging"]:
-					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solar_system_object_link.start_date was used but this should be corrected at some point","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
-			self.last_consumption_date = self.solar_system_object_link.start_date
+			if (current_date - self.solarSystem().start_date).days > 100: #because it is an error if there is no last_consuptiom_data
+				if self.solarSystem().message_printing["debugging"]:
+					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solarSystem().start_date was used but this should be corrected at some point","type":"debugging"}
+					self.solarSystem().messages.append(print_dict)
+			self.last_consumption_date = self.solarSystem().start_date
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
 		timeframe = self.input_output_dict["timeframe"]
@@ -68,9 +69,9 @@ class research(tertiary.tertiary):
 					number_of_rounds = new_number_of_rounds
 			
 			if number_of_rounds > 0:
-				if self.owner == self.solar_system_object_link.current_player:
+				if self.owner == self.solarSystem().current_player:
 					print_dict = {"text":"for " + self.name + ", " + str(number_of_rounds) + " research rounds were completed adding research to " + self.owner.name,"type":"tech discovery"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 				for input_resource in new_stock_level:
 					self.stock_dict[input_resource] = new_stock_level[input_resource]

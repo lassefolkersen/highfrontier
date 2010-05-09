@@ -13,17 +13,18 @@ import random
 import time
 
 class overlay_window():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     The overlay control window. Can be toggled from commandbox. When visible it can be used to control which visual overlays
     that can be seen in planet mode (topographical maps, resource maps etc)
     """
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(500,50,200,250)
         self.action_surface = action_surface
         
     def overlay_set(self,type_of_overlay, function_parameter):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         sol.current_planet.planet_display_mode = type_of_overlay
         surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         self.action_surface.blit(surface,(0,0))
@@ -49,7 +50,7 @@ class overlay_window():
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
-        labels = ["visible light","trade network","topographical"] + self.solar_system_object_link.mineral_resources
+        labels = ["visible light","trade network","topographical"] + self.solarSystem().mineral_resources
 
         self.radiobuttons = gui_components.radiobuttons(
                                                         labels, 
@@ -57,4 +58,4 @@ class overlay_window():
                                                         self.overlay_set, 
                                                         function_parameter = None, 
                                                         topleft = (self.rect[0] + 10 , self.rect[1] + 10), 
-                                                        selected = self.solar_system_object_link.current_planet.planet_display_mode)
+                                                        selected = self.solarSystem().current_planet.planet_display_mode)

@@ -8,6 +8,8 @@ import math
 import datetime
 
 class firm:
+    def solarSystem(self):
+        return global_variables.solar_system
     def make_market_bid(self,market,own_offer):
             """
             Function that takes a sell or buy offer (identified if it has "seller" or "buyer" in it
@@ -27,13 +29,13 @@ class firm:
             #defining basics and checking if the offer is valid
             if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],long)):
                     own_offer["quantity"] = int(own_offer["quantity"])
-                    if self.solar_system_object_link.message_printing["debugging"]: 
+                    if self.solarSystem().message_printing["debugging"]: 
                             print_dict = {"text":"DEBUGGING: The quantity given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not an integer. Try to keep it as integers","type":"debugging"}
-                            self.solar_system_object_link.messages.append(print_dict)
+                            self.solarSystem().messages.append(print_dict)
             if not isinstance(own_offer["price"],float):
                     print_dict = {"text":"DEBUGGING: The price given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not a float. Try to keep it as floats","type":"debugging"}
-                    if self.solar_system_object_link.message_printing["debugging"]:
-                            self.solar_system_object_link.messages.append(print_dict)
+                    if self.solarSystem().message_printing["debugging"]:
+                            self.solarSystem().messages.append(print_dict)
                             own_offer["price"] = float(own_offer["price"])
             resource = own_offer["resource"]
             if "seller" in own_offer.keys():
@@ -42,25 +44,25 @@ class firm:
                     competing_bids = market["sell_offers"][resource]
                     if self.stock_dict[resource] < own_offer["quantity"]:
                             own_offer["quantity"] = int(self.stock_dict[resource])
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: adjusted " + resource + " sell offer from " + str(self.name) + " to " + str(own_offer["quantity"]) + " because of lack of resources  - you should try to correct this from the calculate_supply functions","type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
             elif "buyer" in own_offer.keys():
                     type = "buy_offer"
                     opposite_bids = market["sell_offers"][resource]
                     competing_bids = market["buy_offers"][resource]
                     if self.owner.capital < (own_offer["price"] * own_offer["quantity"]):
                             own_offer["quantity"] = int(self.owner.capital / own_offer["price"])
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: adjusted buy offer from " + str(self.name) + " to " + str(own_offer["quantity"]) +" because of lack of capital - you should try to correct this from the calculate_demand functions. The original price was " + str(own_offer["price"]) + " and the capital was " + str(self.owner.capital),"type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
             else:
                     print "Unknown offer type in make_market_bid() function"
                     raise Exception('unknown offer type')
             if own_offer["quantity"] < 0:
-                    if self.solar_system_object_link.message_printing["debugging"]:
+                    if self.solarSystem().message_printing["debugging"]:
                             print_dict = {"text":"DEBUGGING WARNING: The quantity " + str(own_offer["quantity"]) + " offered by " + str(self.name) + " is not a positive amount. This should be corrected from market_decisions. It was set to 0 as a safeguard","type":"debugging"}
-                            self.solar_system_object_link.messages.append(print_dict)
+                            self.solarSystem().messages.append(print_dict)
                     own_offer["quantity"] = 0
             quantity_found = 0
             i = 0
@@ -94,9 +96,9 @@ class firm:
                             if counterpart.owner.capital < (opposite_bids[i]["quantity"] * opposite_bids[i]["price"]) and type == "sell_offer": 
                                     opposite_bids[i]["quantity"] = max(int(counterpart.owner.capital / opposite_bids[i]["price"]),0)
                             if opposite_bids[i]["quantity"]<0:
-                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                    if self.solarSystem().message_printing["debugging"]:
                                             print_dict = {"text":"DEBUGGING WARNING: The quantity in an offer from " + counterpart.name + " was changed to " + str(opposite_bids[i]["quantity"]) + " during a " + type +" from " + str(self.name) + " regarding " + resource,"type":"debugging"}
-                                            self.solar_system_object_link.messages.append(print_dict)
+                                            self.solarSystem().messages.append(print_dict)
 
                             quantity_found = opposite_bids[i]["quantity"] + quantity_found
                             offers_of_interest.append(opposite_bids[i])
@@ -129,9 +131,9 @@ class firm:
                     else:
                             raise Exception('unknown offer type')
                     if offer_of_interest["quantity"] < 0:
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: The quantity in an offer_of_interest from " + counterpart.name + " regarding " + resource + " was found to be " + str(offer_of_interest["quantity"]) + ". " + str(counterpart.name) + " has a calculate_supply_reaction parameter of " + str(counterpart.owner.company_database["calculate_supply_reaction"]) + " and a calculate_demand_reaction parameter of " + str(counterpart.owner.company_database["calculate_demand_reaction"]),"type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
                     counterparts_list.append(counterpart.name)
                     if type == "sell_offer":
                             counterpart = offer_of_interest["buyer"]
@@ -139,9 +141,9 @@ class firm:
                             counterpart.stock_dict[resource] = counterpart.stock_dict[resource] + offer_of_interest["quantity"] 
                             self.owner.capital = self.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"] 
                             self.stock_dict[resource] = self.stock_dict[resource] - offer_of_interest["quantity"] 
-                            if self.owner == self.solar_system_object_link.current_player or counterpart.owner == self.solar_system_object_link.current_player:
+                            if self.owner == self.solarSystem().current_player or counterpart.owner == self.solarSystem().current_player:
                                     print_dict = {"text":self.name + " sold " + str(offer_of_interest["quantity"]) + " units of " + resource + " to " + counterpart.name + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
                             transaction_report = {"seller":self,"buyer":counterpart,"price":offer_of_interest["price"],"quantity":offer_of_interest["quantity"],"date":own_offer["date"],"resource":resource}
                     elif type == "buy_offer":
                             counterpart = offer_of_interest["seller"]
@@ -149,9 +151,9 @@ class firm:
                             counterpart.stock_dict[resource] = counterpart.stock_dict[resource] - offer_of_interest["quantity"] 
                             self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
                             self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"] 
-                            if self.owner == self.solar_system_object_link.current_player or counterpart.owner == self.solar_system_object_link.current_player:
+                            if self.owner == self.solarSystem().current_player or counterpart.owner == self.solarSystem().current_player:
                                     print_dict = {"text":str(self.name) + " bought " + str(offer_of_interest["quantity"]) + " units of " + str(resource) + " from " + str(counterpart.name) + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
 
                             transaction_report = {"seller":counterpart,"buyer":self,"price":offer_of_interest["price"],"quantity":offer_of_interest["quantity"],"date":own_offer["date"],"resource":resource}
                     else:
@@ -166,9 +168,9 @@ class firm:
 
                     if transaction_report["quantity"] < 0:
                             #print 
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: The quantity in a " + type + " of " + resource + " by " + self.name + " was found to be " + str(transaction_report["quantity"]),"type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
 
             #removing bids from the market if they have been effectuated
             remove_these = []
@@ -194,9 +196,9 @@ class firm:
             #checking to see if the offer was satisfied, and if not, adds it to the market database
             if need_to_find_more and balance_of_findings != 0:
                     if balance_of_findings >= 0:
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING MESSAGE: balance_of_findings was thought to be negative but was " + str(balance_of_findings) + " for " + self.name,"type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
 
 
                     own_offer["quantity"] = -balance_of_findings
@@ -216,9 +218,9 @@ class firm:
                             competing_bids.insert(insert_own_offer_at,own_offer)
 
                             if own_offer["quantity"]<0:
-                                    if self.solar_system_object_link.message_printing["debugging"]:
+                                    if self.solarSystem().message_printing["debugging"]:
                                             print_dict = {"text":"DEBUGGING WARNING: The quantity in an offer from " + self.name + " somehow ended up being negative","type":"debugging"}
-                                            self.solar_system_object_link.messages.append(print_dict)
+                                            self.solarSystem().messages.append(print_dict)
 
 
 
@@ -246,9 +248,8 @@ class firm:
             self.location = location
             self.picture_file = None
             self.owner = owner
-            self.solar_system_object_link = solar_system_object
-            self.last_consumption_date = self.solar_system_object_link.current_date
-            self.last_accounting = self.solar_system_object_link.current_date
+            self.last_consumption_date = self.solarSystem().current_date
+            self.last_accounting = self.solarSystem().current_date
             self.accounting = []
             self.input_output_dict = input_output_dict
             self.stock_dict = {}
@@ -262,11 +263,11 @@ class firm:
 
             #modifying output for mining
             for resource in input_output_dict["output"]:
-                    if resource in self.solar_system_object_link.mineral_resources + ["food"]:
+                    if resource in self.solarSystem().mineral_resources + ["food"]:
                             mining_opportunity = self.location.mining_opportunities[resource]
                             unmodified_output = input_output_dict["output"][resource]
                             input_output_dict["output"][resource] = (mining_opportunity / 10) * unmodified_output
-            for resource in self.solar_system_object_link.trade_resources:
+            for resource in self.solarSystem().trade_resources:
                     self.stock_dict[resource] = 0
 
     def get_firm_background(self):
@@ -286,9 +287,9 @@ class firm:
 
                     number_of_files_to_pick_from = len(file_list)
                     if number_of_files_to_pick_from == 0:
-                            if self.solar_system_object_link.message_printing["debugging"]:
+                            if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING: In get_firm_background There are no JPGs in the given folder","type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
                     else:
                             my_pick = random.randrange(0,number_of_files_to_pick_from)
                             file_name = file_list[my_pick]
@@ -339,13 +340,13 @@ class firm:
             Most importantly it will withdraw all bids in the market
             But later expansions might includes rules for selling of values
             """
-            if self.solar_system_object_link.firm_selected == self:
-                    self.solar_system_object_link.firm_selected = None
+            if self.solarSystem().firm_selected == self:
+                    self.solarSystem().firm_selected = None
 
 
-            if self.owner == self.solar_system_object_link.current_player:
+            if self.owner == self.solarSystem().current_player:
                             print_dict = {"text":"The firm " + self.name + " is up for closing","type":"firm info"}
-                            self.solar_system_object_link.messages.append(print_dict)
+                            self.solarSystem().messages.append(print_dict)
             if self.isMerchant():
                     for place in ["from","to"]:
                             if place == "from":
@@ -394,7 +395,7 @@ class firm:
             """
             revenue = 0
             profit = 0
-            timeframe = (self.solar_system_object_link.current_date - self.last_accounting).days
+            timeframe = (self.solarSystem().current_date - self.last_accounting).days
 
             if len(self.accounting) == 0:
 
@@ -412,7 +413,7 @@ class firm:
                     accounting_report = {"revenue":revenue,"profit":profit,"timeframe":timeframe}
 
             self.accounting = []
-            #self.owner.company_accounting.append({"firm":self,"date":self.solar_system_object_link.current_date,"accounting_report":accounting_report})
+            #self.owner.company_accounting.append({"firm":self,"date":self.solarSystem().current_date,"accounting_report":accounting_report})
 
             self.last_profit = accounting_report["profit"]
             return accounting_report
@@ -438,11 +439,11 @@ class firm:
             """
             try: self.last_consumption_date
             except:
-                    if (current_date - self.solar_system_object_link.start_date).days > 100: #because it is an error if there is no last_consumption_data
-                            if self.solar_system_object_link.message_printing["debugging"]:
-                                    print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solar_system_object_link.start_date was used but this should be corrected at some point","type":"debugging"}
-                                    self.solar_system_object_link.messages.append(print_dict)
-                    self.last_consumption_date = self.solar_system_object_link.start_date
+                    if (current_date - self.solarSystem().start_date).days > 100: #because it is an error if there is no last_consumption_data
+                            if self.solarSystem().message_printing["debugging"]:
+                                    print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solarSystem().start_date was used but this should be corrected at some point","type":"debugging"}
+                                    self.solarSystem().messages.append(print_dict)
+                    self.last_consumption_date = self.solarSystem().start_date
             time_since_last_calculation = current_date - self.last_consumption_date
             time_span_days = time_since_last_calculation.days
             timeframe = self.input_output_dict["timeframe"]
@@ -476,29 +477,29 @@ class firm:
                                     number_of_rounds = new_number_of_rounds
 
                     if time_span_days / timeframe > number_of_rounds and self.isBase():
-                            if self.owner == self.solar_system_object_link.current_player:
+                            if self.owner == self.solarSystem().current_player:
                                     print_dict = {"text":self.name + " is a base, it is starving, but it will continue to produce","type":"base info"}
-                                    self.solar_system_object_link.messages.append(print_dict)
+                                    self.solarSystem().messages.append(print_dict)
                             number_of_rounds = time_span_days / timeframe
 
                     if number_of_rounds > 0:
                             for input_resource in new_stock_level:
                                     self.stock_dict[input_resource] = new_stock_level[input_resource]
                             for output_resource in self.input_output_dict["output"]:
-                                    if not self.solar_system_object_link.trade_resources[output_resource]["storable"]:
+                                    if not self.solarSystem().trade_resources[output_resource]["storable"]:
                                             self.stock_dict[output_resource] = 0
 
                                     self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict[output_resource]
                             #adding byproducts to the atmosphere
                             for byproduct in self.input_output_dict["byproducts"]:
                                     self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct] * number_of_rounds)
-                                    if self.owner == self.solar_system_object_link.current_player: 
+                                    if self.owner == self.solarSystem().current_player: 
                                             print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(self.input_output_dict["byproducts"][byproduct] * number_of_rounds) + " units on " + str(self.location.home_planet.name),"type":"climate"}
-                                            self.solar_system_object_link.messages.append(print_dict)
+                                            self.solarSystem().messages.append(print_dict)
 
                             for resource in self.input_output_dict["output"]:
-                                    if resource in self.solar_system_object_link.mineral_resources:
+                                    if resource in self.solarSystem().mineral_resources:
                                             self.location.mining_performed[resource] = self.location.mining_performed[resource] + number_of_rounds * self.input_output_dict["output"][resource]
-                                            if self.owner == self.solar_system_object_link.current_player: 
+                                            if self.owner == self.solarSystem().current_player: 
                                                     print_dict = {"text":self.name + " mined " + primitives.nicefy_numbers(int(number_of_rounds * self.input_output_dict["output"][resource])) + " on " + str(self.location.home_planet.name),"type":"mining"}
-                                                    self.solar_system_object_link.messages.append(print_dict)
+                                                    self.solarSystem().messages.append(print_dict)

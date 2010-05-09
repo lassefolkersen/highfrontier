@@ -13,12 +13,13 @@ import random
 import time
 
 class firm_process_info():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Subview of the firm view. Shows a list of the resources of interest for the firm. Both the stock and the production rate is shown.
     """
 
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -34,7 +35,7 @@ class firm_process_info():
         The creation function.  
         """
         
-        firm_selected = self.solar_system_object_link.firm_selected
+        firm_selected = self.solarSystem().firm_selected
         
         
         if firm_selected is not None:

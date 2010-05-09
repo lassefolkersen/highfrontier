@@ -3,6 +3,8 @@ import math
 import tertiary
 
 class merchant(tertiary.tertiary):
+	def solarSystem(self):
+		return global_variables.solar_system
         def isMerchant(self):
             return True
 	"""
@@ -12,7 +14,6 @@ class merchant(tertiary.tertiary):
 	def __init__(self,solar_system_object,from_location,to_location,input_output_dict,owner,name,transport_type,distance,resource):
 		self.name = name
 		self.owner = owner
-		self.solar_system_object_link = solar_system_object
 		if not from_location.isBase():
 			raise Exception(self.name + " is a merchant firm but received a from_location that was not a base: " + str(from_location))
 		self.from_location = from_location
@@ -25,8 +26,8 @@ class merchant(tertiary.tertiary):
 
 		
 		self.picture_file = None
-		self.last_consumption_date = self.solar_system_object_link.current_date
-		self.last_accounting = self.solar_system_object_link.current_date
+		self.last_consumption_date = self.solarSystem().current_date
+		self.last_accounting = self.solarSystem().current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
 		
@@ -47,7 +48,7 @@ class merchant(tertiary.tertiary):
 		self.for_sale_deadline = None # a date at which the bidding contest is over
 		
 		#self.decision_data = self.process_decision_data(decision_data)
-		for resource in self.solar_system_object_link.trade_resources:
+		for resource in self.solarSystem().trade_resources:
 			self.to_stock_dict[resource] = 0
 			self.from_stock_dict[resource] = 0
 			
@@ -77,9 +78,9 @@ class merchant(tertiary.tertiary):
 			
 			self.from_stock_dict[self.transport_type] = self.from_stock_dict[self.transport_type] - int(math.ceil((quantity_to_transport * self.distance) / 1000.0))
 			
-			if self.owner == self.solar_system_object_link.current_player:
+			if self.owner == self.solarSystem().current_player:
 				print_dict = {"text":self.name + " transported " + str(quantity_to_transport) + " " + str(self.resource) + " from " + self.from_location.name + " to " + self.to_location.name + " using " + str(int((quantity_to_transport * self.distance) / 1000.0)) + " units of transport","type":"tech discovery"}
-				self.solar_system_object_link.messages.append(print_dict)
+				self.solarSystem().messages.append(print_dict)
 
 
 

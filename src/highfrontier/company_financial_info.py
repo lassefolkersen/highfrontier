@@ -13,13 +13,14 @@ import random
 import time
 
 class company_financial_info():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Subview of the company view. Shows a graph of the capital of the company as it has been over the past years. 
     """
 
 
     def __init__(self,solar_system_object,action_surface):
-        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         self.frame_size = 80
@@ -31,7 +32,7 @@ class company_financial_info():
         The creation function.  
         """
         
-        company_selected = self.solar_system_object_link.company_selected
+        company_selected = self.solarSystem().company_selected
         company_accounting = company_selected.company_accounting
 
         blank_surface = pygame.Surface((self.rect[2], self.rect[3]))
@@ -49,13 +50,13 @@ class company_financial_info():
         else:
             start_date = company_accounting[0]["date"]
             end_date = company_accounting[len(company_accounting)-1]["date"]
-            relative_numeric_start_date = (start_date - self.solar_system_object_link.start_date).days
-            relative_numeric_end_date = (end_date - self.solar_system_object_link.start_date).days
+            relative_numeric_start_date = (start_date - self.solarSystem().start_date).days
+            relative_numeric_end_date = (end_date - self.solarSystem().start_date).days
             
             dates = []
             capital = []
             for account_report in company_accounting:
-                dates.append((account_report["date"] - self.solar_system_object_link.start_date).days)
+                dates.append((account_report["date"] - self.solarSystem().start_date).days)
                 capital.append(account_report["capital"])
                 
             xlim = (min(dates),max(dates))
@@ -66,8 +67,8 @@ class company_financial_info():
                 xlim = (xlim[0]-1,xlim[1]+1)
             
             
-            blank_surface = primitives.make_linear_y_axis(blank_surface, self.frame_size, ylim, solar_system_object_link=self.solar_system_object_link, unit = "capital")
-            blank_surface = primitives.make_linear_x_axis(blank_surface,self.frame_size,xlim, solar_system_object_link=self.solar_system_object_link, unit="date")
+            blank_surface = primitives.make_linear_y_axis(blank_surface, self.frame_size, ylim, solar_system_object_link=self.solarSystem(), unit = "capital")
+            blank_surface = primitives.make_linear_x_axis(blank_surface,self.frame_size,xlim, solar_system_object_link=self.solarSystem(), unit="date")
 #            print "(self.graph_rect[2]-self.frame_size*2): " + str((self.graph_rect[2]-self.frame_size*2))
             for i in range(1,len(capital)):
                 x1_position = int(self.frame_size + ((self.rect[2]-self.frame_size*2) * (dates[i-1] - xlim[0])) / (xlim[1]-xlim[0]))
@@ -85,8 +86,8 @@ class company_financial_info():
 
 
     def receive_click(self,event):
-        if self.solar_system_object_link.message_printing["debugging"]:
+        if self.solarSystem().message_printing["debugging"]:
             print_dict = {"text":"Nothing should happen now in company_financial_info","type":"debugging"} 
-            self.solar_system_object_link.messages.append(print_dict)
+            self.solarSystem().messages.append(print_dict)
 
 
