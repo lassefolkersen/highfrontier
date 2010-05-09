@@ -1,18 +1,22 @@
-class base_construction(firm):
+import firm
+import global_variables
+class base_construction(firm.firm):
         def isBaseConstruction(self):
-            return True
+		return True
+	def solarSystem(self):
+		return global_variables.solar_system
+
 	"""
 	Class containing the construction of a new base before it is shipped out
 	"""
-	def __init__(self,solar_system_object, input_output_dict, location, name, home_planet, base_to_be_build_data, owner, size):	
+	def __init__(self,input_output_dict, location, name, home_planet, base_to_be_build_data, owner, size):	
 		self.name = name
 		self.location = location
 		self.owner = owner
 		self.picture_file = None
 		self.technology_name = name
-		self.solar_system_object_link = solar_system_object
-		self.last_consumption_date = self.solar_system_object_link.current_date
-		self.last_accounting = self.solar_system_object_link.current_date
+		self.last_consumption_date = self.solarSystem().current_date
+		self.last_accounting = self.solarSystem().current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
 		self.stock_dict = {}
@@ -20,7 +24,7 @@ class base_construction(firm):
 		self.for_sale = False
 		self.base_to_be_build_data = base_to_be_build_data
 		
-		for resource in self.solar_system_object_link.trade_resources:
+		for resource in self.solarSystem().trade_resources:
 			self.stock_dict[resource] = 0
 
 	def execute_stock_change(self,current_date):
@@ -32,12 +36,12 @@ class base_construction(firm):
 		"""
 		try: self.last_consumption_date
 		except:
-			if (current_date - self.solar_system_object_link.start_date).days > 100: #because it is an error if there is no last_consumption_data
-				if self.solar_system_object_link.message_printing["debugging"]:
-					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solar_system_object_link.start_date was used but this should be corrected at some point","type":"debugging"}
-					self.solar_system_object_link.messages.append(print_dict)
+			if (current_date - self.solarSystem().start_date).days > 100: #because it is an error if there is no last_consumption_data
+				if self.solarSystem().message_printing["debugging"]:
+					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solarSystem().start_date was used but this should be corrected at some point","type":"debugging"}
+					self.solarSystem().messages.append(print_dict)
  
-			self.last_consumption_date = self.solar_system_object_link.start_date
+			self.last_consumption_date = self.solarSystem().start_date
 
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
@@ -59,7 +63,7 @@ class base_construction(firm):
 				if self.base_to_be_build_data["population"] > self.location.population:
 					if self.base_to_be_build_data["population"] == 0:
 						print_dict = {"text":"Population of " + str(self.location.name)+ " was zero and the construction have been cancelled.","type":"general gameplay info"}
-						self.solar_system_object_link.messages.append(print_dict)
+						self.solarSystem().messages.append(print_dict)
 						owner.change_firm_size(
 											   location = self.location,
 											   size = 0,
@@ -67,7 +71,7 @@ class base_construction(firm):
 						return
 					else:
 						print_dict = {"text":"Population of " + str(self.location.name)+ " was less than required for " + self.name + ". Only + " + str(self.base_to_be_build_data["population"]) + " people have been sent.","type":"general gameplay info"}
-						self.solar_system_object_link.messages.append(print_dict)
+						self.solarSystem().messages.append(print_dict)
 						self.base_to_be_build_data["population"] = self.location.population
 				   
 				#removing the population from building base
@@ -79,7 +83,7 @@ class base_construction(firm):
 					destination_base = self.base_to_be_build_data["destination_base"] 
 					destination_base.population = destination_base.population + self.base_to_be_build_data["population"] 
 					print_dict = {"text":str(self.base_to_be_build_data["population"]) + " people have moved from " + str(self.location.name) + " to " + str(destination_base.name),"type":"general gameplay info"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 				
 				#if this is a new base
 				else:
@@ -92,7 +96,7 @@ class base_construction(firm):
 								 }
 					
 					new_base = base(
-										    self.solar_system_object_link,
+										    self.solarSystem(),
 										    base_name = name,
 										    home_planet = self.base_to_be_build_data["home_planet"],
 										    base_data = base_data_here,
@@ -113,7 +117,7 @@ class base_construction(firm):
 					owner.home_cities[name] = new_base
 	
 					print_dict = {"text":"Building a base named " + str(name),"type":"general gameplay info"}
-					self.solar_system_object_link.messages.append(print_dict)
+					self.solarSystem().messages.append(print_dict)
 
 				#closing and shutting down
 				owner.change_firm_size(

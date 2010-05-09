@@ -13,6 +13,8 @@ import random
 import time
 
 class message_bar():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     Class that receives messages for the player and prints them.
     It will show the message depending on the type. Types are:
@@ -23,7 +25,6 @@ class message_bar():
     The message bar is visible at all times in the bottom of the screen.
     """
     def __init__(self,solar_system_object,action_surface,message_surface):
-        self.solar_system_object_link = solar_system_object
         self.action_surface = action_surface
         self.message_surface = message_surface
 
@@ -54,12 +55,12 @@ class message_bar():
 
         messages = []
         
-        range_here = range(0,len(self.solar_system_object_link.messages))
+        range_here = range(0,len(self.solarSystem().messages))
         range_here.reverse()
 
         for i in range_here:
-            message = self.solar_system_object_link.messages[i]
-            if self.solar_system_object_link.message_printing[message["type"]]:
+            message = self.solarSystem().messages[i]
+            if self.solarSystem().message_printing[message["type"]]:
                 messages.append(message)
             if len(messages) >= self.max_print_length:
                 break
@@ -68,7 +69,7 @@ class message_bar():
 
         i = 0
         for message in messages:
-            if self.solar_system_object_link.message_printing[message["type"]]:
+            if self.solarSystem().message_printing[message["type"]]:
                 if len(message["text"]) > self.max_string_length:
                     message_text = message["text"][0:self.max_string_length]
                 else:

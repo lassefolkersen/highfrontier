@@ -87,6 +87,8 @@ class solarsystem:
                     print_dict = {"text":"Made " + str(len(list_of_model_companies_names)) + " new companies on the model of: " + str(list_of_model_companies_names),"type":"general company info"}
                     self.messages.append(print_dict)
     def __init__(self,start_date, de_novo_initialization = True):
+        global_variables.solar_system=self
+        self.current_date=None
         if de_novo_initialization:
             self.display_mode = "planetary"
             self.effectuate_migration = global_variables.effectuate_migration #if False all migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
@@ -412,14 +414,7 @@ class solarsystem:
         for entry_name in dir(new_solar_system):
             entry = getattr(new_solar_system, entry_name)
             setattr(self,entry_name, entry)
-        #updating all solar_system_object_links (this is actually rather weird that it has to be done)
-        for company_instance in self.companies.values():
-            company_instance.solar_system_object_link = self
-            for owned_firm_instance in company_instance.owned_firms.values():
-                owned_firm_instance.solar_system_object_link = self
-        for planet_instance in self.planets.values():
-            planet_instance.solars_system_object_link = self
-        self.technology_tree.solar_system_object_link = self
+        global_variables.solar_system=self # oh look it's shorter
     def get_satellite_to_center_position(self,object,zoom_level,date_variable):
         """
         given the orbital parameters and satellite, this returns 

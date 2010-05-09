@@ -32,6 +32,8 @@ import time
 import message_bar
 
 class gui():
+    def solarSystem(self):
+        return global_variables.solar_system
     """
     This class holds all the top-level gui stuff, such as functions to distribute clicks and the commandbox buttons on the right side and such
     """
@@ -60,7 +62,6 @@ class gui():
         self.subcommand_surface = right_side_surface.subsurface(pygame.Rect(0, subcommand_top, command_width, global_variables.window_size[1] -subcommand_top))
 
 
-        self.solar_system_object_link = solar_system_object
         
         
         self.active_window = None
@@ -79,8 +80,8 @@ class gui():
         self.all_windows["base_population_info"] = base_population_info.base_population_info(solar_system_object, action_surface)
         self.all_windows["base_list_of_companies"] = base_list_of_companies.base_list_of_companies(solar_system_object, action_surface)
         self.all_windows["base_list_of_firms"] = base_list_of_firms.base_list_of_firms(solar_system_object, action_surface)
-        self.all_windows["base_and_firm_market_window"] = base_and_firm_market_window.base_and_firm_market_window(solar_system_object, action_surface)
-        self.all_windows["base_build_menu"] = base_build_menu.base_build_menu(solar_system_object, action_surface)
+        self.all_windows["base_and_firm_market_window"] = base_and_firm_market_window.base_and_firm_market_window(action_surface)
+        self.all_windows["base_build_menu"] = base_build_menu.base_build_menu(action_surface)
         self.all_windows["company_ownership_info"] = company_ownership_info.company_ownership_info(solar_system_object, action_surface)
         self.all_windows["company_financial_info"] = company_financial_info.company_financial_info(solar_system_object, action_surface)
         self.all_windows["company_list_of_firms"] = company_list_of_firms.company_list_of_firms(solar_system_object, action_surface)
@@ -123,11 +124,11 @@ class gui():
                         if return_value == "clear":
                             self.clear_screen()
                         elif return_value == "population transfer":
-                            self.solar_system_object_link.display_mode = "planetary"
-                            self.solar_system_object_link.build_base_mode = True
-                            self.solar_system_object_link.building_base = self.solar_system_object_link.current_planet.current_base
+                            self.solarSystem().display_mode = "planetary"
+                            self.solarSystem().build_base_mode = True
+                            self.solarSystem().building_base = self.solarSystem().current_planet.current_base
                             print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
-                            self.solar_system_object_link.messages.append(print_dict)
+                            self.solarSystem().messages.append(print_dict)
                             pygame.mouse.set_cursor(*pygame.cursors.diamond)
                             print_dict = {"text":"Select destination for population transfer: new or existing base","type":"general gameplay info"}
                             self.clear_screen()
@@ -154,7 +155,7 @@ class gui():
         to be on it, thus overwriting what gui-box might be there
         """
         self.active_window = None
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "solar_system":
             self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
         elif sol.display_mode == "planetary":
@@ -180,7 +181,7 @@ class gui():
 
     def zoom_in(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "solar_system":
             sol.solar_system_zoom = sol.solar_system_zoom * 2
             surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
@@ -215,7 +216,7 @@ class gui():
         
     def zoom_out(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "solar_system":
             if sol.solar_system_zoom >= 2:
                 sol.solar_system_zoom = sol.solar_system_zoom / 2
@@ -250,7 +251,7 @@ class gui():
 
     
     def click_in_action_window(self,event):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         position = event.pos
         button = event.button
         click_spot = pygame.Rect(position[0]-3,position[1]-3,6,6)
@@ -318,7 +319,7 @@ class gui():
     
     def go_left(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "planetary":
             sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination - 30
             if sol.current_planet.eastern_inclination <= -180:
@@ -334,7 +335,7 @@ class gui():
         
     def go_right(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "planetary":
             sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination + 30
             if sol.current_planet.eastern_inclination > 180:
@@ -351,7 +352,7 @@ class gui():
         
     def go_down(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "planetary":
             if sol.current_planet.northern_inclination > -90:
                 sol.current_planet.northern_inclination = sol.current_planet.northern_inclination - 30
@@ -369,7 +370,7 @@ class gui():
     
     def go_up(self,event):
         self.clear_screen()
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         if sol.display_mode == "planetary":
             if sol.current_planet.northern_inclination < 90:
                 sol.current_planet.northern_inclination = sol.current_planet.northern_inclination + 30
@@ -394,7 +395,7 @@ class gui():
 
 
     def going_to_company_window_event(self,company_selected):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
 #        company_selected = event.data
 #        mode_before_change = sol.display_mode
         sol.display_mode = "company"
@@ -403,14 +404,14 @@ class gui():
         pygame.display.flip()
 
     def going_to_firm_window_event(self,firm_selected):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
         sol.display_mode = "firm"
         surface = firm_selected.draw_firm_window()
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
         
     def going_to_base_mode_event(self,base_selected):
-        sol = self.solar_system_object_link
+        sol = self.solarSystem()
 #        mode_before_change = sol.display_mode
         sol.current_planet.current_base = base_selected
         sol.current_planet = base_selected.home_planet
@@ -443,38 +444,38 @@ class gui():
         self.infobox_surface.fill((150,150,150))
         
         # creating the date string
-        date_string = str(self.solar_system_object_link.current_date)
+        date_string = str(self.solarSystem().current_date)
         rendered_date_string = global_variables.standard_font.render(date_string,True,(0,0,0))
         self.infobox_surface.blit(rendered_date_string, (10,10))
 
         # creating the env string
-        if self.solar_system_object_link.display_mode == "solar_system":
-            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
-        elif self.solar_system_object_link.display_mode == "planetary":
-            if self.solar_system_object_link.current_planet.current_base == None:
-                env_string = self.solar_system_object_link.current_planet.planet_name
+        if self.solarSystem().display_mode == "solar_system":
+            env_string = "Solar system -" + string.capitalize(self.solarSystem().current_planet.planet_name)
+        elif self.solarSystem().display_mode == "planetary":
+            if self.solarSystem().current_planet.current_base == None:
+                env_string = self.solarSystem().current_planet.planet_name
             else:
-                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name 
-        elif self.solar_system_object_link.display_mode == "company" and self.solar_system_object_link.company_selected is not None:
-            env_string = self.solar_system_object_link.company_selected.name
-        elif self.solar_system_object_link.display_mode == "firm" and self.solar_system_object_link.firm_selected is not None:
-            env_string = self.solar_system_object_link.firm_selected.name
-        elif self.solar_system_object_link.display_mode == "base" and self.solar_system_object_link.current_planet.current_base is not None:
-            env_string = self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "techtree":
+                env_string = self.solarSystem().current_planet.planet_name + " - " + self.solarSystem().current_planet.current_base.name 
+        elif self.solarSystem().display_mode == "company" and self.solarSystem().company_selected is not None:
+            env_string = self.solarSystem().company_selected.name
+        elif self.solarSystem().display_mode == "firm" and self.solarSystem().firm_selected is not None:
+            env_string = self.solarSystem().firm_selected.name
+        elif self.solarSystem().display_mode == "base" and self.solarSystem().current_planet.current_base is not None:
+            env_string = self.solarSystem().current_planet.current_base.name
+        elif self.solarSystem().display_mode == "techtree":
             env_string = "technology tree"
         else:
             env_string = ""
-            if self.solar_system_object_link.message_printing["debugging"]:
+            if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+                self.solarSystem().messages.append(print_dict)
         rendered_env_string = global_variables.standard_font.render(env_string,True,(0,0,0))
         self.infobox_surface.blit(rendered_env_string, (10,30))
 
         
         #creating the capital string
-        if self.solar_system_object_link.current_player is not None:
-            capital_string = str(primitives.nicefy_numbers(int(self.solar_system_object_link.current_player.capital))) + " $"
+        if self.solarSystem().current_player is not None:
+            capital_string = str(primitives.nicefy_numbers(int(self.solarSystem().current_player.capital))) + " $"
             rendered_capital_string = global_variables.standard_font.render(capital_string,True,(0,0,0))
             self.infobox_surface.blit(rendered_capital_string, (10,50))
         
@@ -485,12 +486,12 @@ class gui():
         Function that decides what to do if a commandbox button is pressed
         """
         if label == "Technology":
-            if self.solar_system_object_link.display_mode == "techtree":
-                self.solar_system_object_link.display_mode = self.all_windows["Technology"].display_mode_before
+            if self.solarSystem().display_mode == "techtree":
+                self.solarSystem().display_mode = self.all_windows["Technology"].display_mode_before
                 self.clear_screen()
                 return
             else:
-                self.all_windows["Technology"].display_mode_before = self.solar_system_object_link.display_mode
+                self.all_windows["Technology"].display_mode_before = self.solarSystem().display_mode
                 
             
         
@@ -534,13 +535,13 @@ class gui():
         self.subcommand_buttons = {}
 #        pygame.draw.rect(self.subcommand_surface, (150,150,150), self.subcommand_rect)
 
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solarSystem().display_mode == "base":
             self.buttonlinks = ["base_population_info","base_list_of_companies","base_list_of_firms","base_and_firm_market_window","base_build_menu"]
             self.buttonnicenames = ["Population","Companies","Firms","Market","Build"]
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solarSystem().display_mode == "firm":
             self.buttonlinks = ["firm_process_info","base_and_firm_market_window","firm_trade_partners_info"]
             self.buttonnicenames = ["Production","Market","Trade partners"]
-        elif self.solar_system_object_link.display_mode == "company":
+        elif self.solarSystem().display_mode == "company":
             self.buttonlinks = ["company_ownership_info","company_financial_info","company_list_of_firms"]
             self.buttonnicenames = ["Ownership info","Financial info","Owned firms"]
 

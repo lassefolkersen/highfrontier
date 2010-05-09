@@ -24,6 +24,8 @@ import global_variables
 
 
 class base(firm.firm):
+	def solarSystem(self):
+		return global_variables.solar_system
         def isBase(self):
             return True
 
@@ -50,7 +52,6 @@ class base(firm.firm):
 		self.base_name = base_name
 		self.owner = owner
 		self.home_planet = home_planet
-		self.solar_system_object_link = solar_system_object
 		
 		self.for_sale = False #can be set to True when base is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
@@ -77,13 +78,13 @@ class base(firm.firm):
 		self.picture_file = None
 		self.is_on_dry_land = "Yes"
 		self.trade_routes = {}
-		self.last_accounting = self.solar_system_object_link.current_date
-		self.last_mining_check = self.solar_system_object_link.current_date
+		self.last_accounting = self.solarSystem().current_date
+		self.last_mining_check = self.solarSystem().current_date
 		self.mining_check_interval = random.randint(6000,10000) #just to keep it from cropping up everybody at the same time
 		self.accounting = []
 		self.mining_opportunities = {}
 		self.mining_performed = {} #a dictionary with the amount of mined materials taken from the ground, used for updating mining.
-		for resource in self.solar_system_object_link.mineral_resources:
+		for resource in self.solarSystem().mineral_resources:
 			self.mining_performed[resource] = 0
 
 		
@@ -95,8 +96,8 @@ class base(firm.firm):
 
 		self.stock_dict = {}
 		
-		for resource in self.solar_system_object_link.trade_resources:
-			if self.solar_system_object_link.trade_resources[resource]["demanded_by_base"]:
+		for resource in self.solarSystem().trade_resources:
+			if self.solarSystem().trade_resources[resource]["demanded_by_base"]:
 				self.stock_dict[resource] = self.population
 		
 		for resource in self.input_output_dict["output"]:
@@ -169,11 +170,11 @@ class base(firm.firm):
 		
 		#First we calculate how the inhabitants feel about the world and what they demand
 		base_demand_dict = {}
-		for resource in self.solar_system_object_link.trade_resources:
-			if self.solar_system_object_link.trade_resources[resource]["demanded_by_base"]:
-				a = self.solar_system_object_link.trade_resources[resource]["base_demand_elasticity"]
-				b = self.solar_system_object_link.trade_resources[resource]["base_demand_asymptote"]
-				c = self.solar_system_object_link.trade_resources[resource]["base_demand_intensity"]
+		for resource in self.solarSystem().trade_resources:
+			if self.solarSystem().trade_resources[resource]["demanded_by_base"]:
+				a = self.solarSystem().trade_resources[resource]["base_demand_elasticity"]
+				b = self.solarSystem().trade_resources[resource]["base_demand_asymptote"]
+				c = self.solarSystem().trade_resources[resource]["base_demand_intensity"]
 				
 				resource_level = self.stock_dict[resource]
 				if resource_level == 0:
@@ -206,7 +207,7 @@ class base(firm.firm):
 
 			
 			if quantity_wanted * price <= self.owner.capital and quantity_wanted > 0 and price > 0:
-				buy_offer = {"resource":resource,"price":price,"buyer":self,"name":self.name,"quantity":quantity_wanted,"date":self.solar_system_object_link.current_date}
+				buy_offer = {"resource":resource,"price":price,"buyer":self,"name":self.name,"quantity":quantity_wanted,"date":self.solarSystem().current_date}
 				
 				self.make_market_bid(market,buy_offer)
 				
@@ -244,14 +245,14 @@ class base(firm.firm):
 			
 			
 			if self.bitternes_of_base > neighbour.bitternes_of_base:
-				percent_emigration_from_bitterness = (0.1 * (self.bitternes_of_base - neighbour.bitternes_of_base) / (self.solar_system_object_link.bitterness_of_world[1] - self.solar_system_object_link.bitterness_of_world[0]) ) / len(self.trade_routes) 
+				percent_emigration_from_bitterness = (0.1 * (self.bitternes_of_base - neighbour.bitternes_of_base) / (self.solarSystem().bitterness_of_world[1] - self.solarSystem().bitterness_of_world[0]) ) / len(self.trade_routes) 
 				
 				if self.is_on_dry_land == "almost":
 					percent_emigration_from_fear_of_flood = 0.2 / len(self.trade_routes)
 					#print "DEBUGGING: 
-					if self.owner == self.solar_system_object_link.current_player:
+					if self.owner == self.solarSystem().current_player:
 						print_dict = {"text":"the base: " + self.name + " is facing flooding and will experience a refuge surge","type":"base info"}
-						self.solar_system_object_link.messages.append(print_dict)
+						self.solarSystem().messages.append(print_dict)
 
 				else:
 					percent_emigration_from_fear_of_flood = 0
@@ -267,9 +268,9 @@ class base(firm.firm):
 						else:
 							self.population = 0
 							neighbour.population = neighbour.population + self.population
-							if self.owner == self.solar_system_object_link.current_player: 
+							if self.owner == self.solarSystem().current_player: 
 								print_dict = {"text":"The base " + self.name + " has lost all of its population due to migration","type":"base info"}
-								self.solar_system_object_link.messages.append(print_dict)
+								self.solarSystem().messages.append(print_dict)
 						
 
 	def calculate_growth_and_deaths(self):
@@ -348,12 +349,12 @@ class base(firm.firm):
 		market["buy_offers"] = {}
 		market["transactions"] = {}
 
-		for trade_resource in self.solar_system_object_link.trade_resources:
+		for trade_resource in self.solarSystem().trade_resources:
 			market["sell_offers"][trade_resource] = []
 			market["buy_offers"][trade_resource] = []
 			market["transactions"][trade_resource] = []
 			for i in range(1,number_of_startup_transactions):
-				market["transactions"][trade_resource].append({"price":self.solar_system_object_link.trade_resources[trade_resource]["starting_price"],"buyer":None,"seller":None,"quantity":random.randint(500,1000),"date":self.solar_system_object_link.start_date-datetime.timedelta(0)})
+				market["transactions"][trade_resource].append({"price":self.solarSystem().trade_resources[trade_resource]["starting_price"],"buyer":None,"seller":None,"quantity":random.randint(500,1000),"date":self.solarSystem().start_date-datetime.timedelta(0)})
 		return market
 		
 
@@ -406,9 +407,9 @@ class base(firm.firm):
 						files_to_choose_from_filtered.append(file_to_choose_from)
 				number_of_files_to_pick_from = len(files_to_choose_from_filtered)
 				if number_of_files_to_pick_from == 0:
-					if self.solar_system_object_link.message_printing["debugging"]:
+					if self.solarSystem().message_printing["debugging"]:
 						print_dict = {"text":"DEBUGGING: in get_base_background there are no cities in the given folder","type":"debugging"}
-						self.solar_system_object_link.messages.append(print_dict)
+						self.solarSystem().messages.append(print_dict)
 
 				else:
 					my_pick = random.randrange(0,number_of_files_to_pick_from)
@@ -512,7 +513,7 @@ class base(firm.firm):
 		cost_addition_for_distance = 2 #the factor which is multiplied to the distance when calculating costs
 		range_km = 400 #the width in km's of the farthest interval
 		
-		self.last_mining_check = self.solar_system_object_link.current_date
+		self.last_mining_check = self.solarSystem().current_date
 
 
 		#for space stations
@@ -528,7 +529,7 @@ class base(firm.firm):
 			else:
 				food_multiplier = 0.4
 			
-			earth_sun_distance = self.solar_system_object_link.planets["earth"].planet_data["semi_major_axis"]
+			earth_sun_distance = self.solarSystem().planets["earth"].planet_data["semi_major_axis"]
 			effective_sun_distance = float(max(self.home_planet.planet_data["semi_major_axis"], earth_sun_distance))
 			food_multiplier = ((earth_sun_distance / effective_sun_distance) ** 0.5) * food_multiplier
 			self.mining_opportunities[resource] = food_multiplier * 20

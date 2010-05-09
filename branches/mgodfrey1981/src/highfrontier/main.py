@@ -15,6 +15,10 @@ reload(sys)
 if hasattr(sys,"setdefaultencoding"):
     sys.setdefaultencoding("latin-1")
 class Game:
+    def solarSystem(self):
+        return global_variables.solar_system
+    def setSolarSystem(self,ss):
+        global_variables.solar_system=ss
     def __init__(self):
         print "init Game"
         return
@@ -36,13 +40,13 @@ class Game:
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         #initializing the world - depends on if a previous game should be loaded
         if loadPreviousGame is not None:
-            sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = False)
-            sol.load_solar_system(loadPreviousGame)
+            self.setSolarSystem(solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = False))
+            self.solarSystem().load_solar_system(loadPreviousGame)
         else:
-            sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = True)
+            self.setSolarSystem(solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = True))
         #initialize current player company
         if companyName is not None:
-            if sol.current_player is not None:
+            if self.solarSystem().current_player is not None:
                 raise Exception("The loaded solar system already had a current player")
             automation_dict = {
                 "Demand bidding (initiate buying bids)":False,
@@ -56,22 +60,22 @@ class Game:
                 "Pick research (pick research automatically)":False,
                 "Expand area of operation (search for new home cities)":False
                 }
-            if companyName in sol.companies.keys():
-                sol.current_player = sol.companies[companyName]
-                sol.current_player.automation_dict = automation_dict
-                sol.current_player.automation_dict["Demand bidding (initiate buying bids)"] = True
-                sol.current_player.automation_dict["Supply bidding (initiate selling bids)"] = True
-                sol.current_player.capital = companyCapital
+            if companyName in self.solarSystem().companies.keys():
+                self.solarSystem().current_player = self.solarSystem().companies[companyName]
+                self.solarSystem().current_player.automation_dict = automation_dict
+                self.solarSystem().current_player.automation_dict["Demand bidding (initiate buying bids)"] = True
+                self.solarSystem().current_player.automation_dict["Supply bidding (initiate selling bids)"] = True
+                self.solarSystem().current_player.capital = companyCapital
             else:
-                model_companyName = random.choice(sol.companies.keys())
-                model_company = sol.companies[model_companyName]
-                new_company = company.company(sol,model_company.company_database,deviation=5,companyName=companyName,capital=companyCapital)
-                sol.companies[companyName] = new_company
+                model_companyName = random.choice(self.solarSystem().companies.keys())
+                model_company = self.solarSystem().companies[model_companyName]
+                new_company = company.company(self.solarSystem(),model_company.company_database,deviation=5,companyName=companyName,capital=companyCapital)
+                self.solarSystem().companies[companyName] = new_company
                 new_company.automation_dict = automation_dict
-                sol.current_player = new_company
+                self.solarSystem().current_player = new_company
         #loading planets that are often used:
         print "loading earth"
-        sol.planets["earth"].pickle_all_projections()
+        self.solarSystem().planets["earth"].pickle_all_projections()
         print "finished loading"
         #divide the surface in action and non-action
         action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
@@ -81,16 +85,16 @@ class Game:
         right_side_surface = window.subsurface(right_side_rect)
         message_surface = window.subsurface(message_rect)
         #switch to determine planetary mode or solarsystem mode from beginning
-        mode_before_change = sol.display_mode 
-        if sol.display_mode == "solar_system":
-            surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-        if sol.display_mode == "planetary":
-            sol.current_planet = sol.planets["earth"]
-            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+        mode_before_change = self.solarSystem().display_mode 
+        if self.solarSystem().display_mode == "solar_system":
+            surface = self.solarSystem().draw_solar_system(zoom_level=self.solarSystem().solar_system_zoom,date_variable=self.solarSystem().current_date,center_object=self.solarSystem().current_planet.planet_name)
+        if self.solarSystem().display_mode == "planetary":
+            self.solarSystem().current_planet = self.solarSystem().planets["earth"]
+            surface = self.solarSystem().current_planet.draw_entire_planet(self.solarSystem().current_planet.eastern_inclination,self.solarSystem().current_planet.northern_inclination,self.solarSystem().current_planet.projection_scaling)
         action_surface.blit(surface,(0,0))
         pygame.display.flip()
         #Initialising the GUI
-        gui_instance = gui.gui(right_side_surface, message_surface, action_surface, sol)
+        gui_instance = gui.gui(right_side_surface, message_surface, action_surface, self.solarSystem())
         #getting psyco if available
         try:
             import psyco
@@ -99,7 +103,7 @@ class Game:
         except ImportError:
             pass
         i = 0
-        sol.launchThread()
+        self.solarSystem().launchThread()
         while True:
 #            print "Game running another gui cycle"
             events = pygame.event.get()
@@ -131,8 +135,8 @@ class Game:
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
             #in solar system the display needs updating all the time. However we need to protect whatever active window is shown:
-            if sol.display_mode == "solar_system":
-                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
+            if self.solarSystem().display_mode == "solar_system":
+                surface = self.solarSystem().draw_solar_system(zoom_level=self.solarSystem().solar_system_zoom,date_variable=self.solarSystem().current_date,center_object=self.solarSystem().current_planet.planet_name)
                 if gui_instance.active_window is not None:
                     left_rect = pygame.Rect(0,0,gui_instance.active_window.rect[0],global_variables.window_size[1])
                     right_rect = pygame.Rect(gui_instance.active_window.rect[0] + gui_instance.active_window.rect[2],0,global_variables.window_size[0]-gui_instance.active_window.rect[0]-gui_instance.active_window.rect[2],global_variables.window_size[1])

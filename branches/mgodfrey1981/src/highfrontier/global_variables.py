@@ -3,7 +3,7 @@ import pygame
 import time
 import os
 pygame.font.init()
-
+solar_system=None
 # variables that are "meta-gamespecific" ie. that should not follow a savegame
 window_size=(1024,768)
 
