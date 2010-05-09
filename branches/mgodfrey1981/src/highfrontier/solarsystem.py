@@ -1,3 +1,5 @@
+import Tree
+import Backbone_Tree
 import SimThread
 import os
 import math
@@ -137,8 +139,8 @@ class solarsystem:
             self.planets = self.initialize_planets()
             print "done initializing planets"
             print "initializing tech tree"
-            backbone_tree_here = technology.Backbone_Tree()
-            self.technology_tree = technology.Tree(backbone_tree_here,self)
+            backbone_tree_here = Backbone_Tree.Backbone_Tree()
+            self.technology_tree = Tree.Tree(backbone_tree_here,self)
             self.technology_tree.implode_and_expand()
             print "done initializing tech tree"
             print "initializing companies"
