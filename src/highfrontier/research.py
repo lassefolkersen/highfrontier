@@ -1,3 +1,4 @@
+import global_variables
 import datetime
 
 import tertiary

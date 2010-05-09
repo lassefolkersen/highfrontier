@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 

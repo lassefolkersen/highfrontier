@@ -1,3 +1,4 @@
+import button
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -63,4 +63,4 @@ class planet_jump_window():
 
         self.buttons = {}
         for i, button_label in enumerate(self.button_labels):
-            self.buttons[button_label] = gui_components.button(button_label, self.action_surface, self.planet_jump, topleft = (self.rect[0] + 5, self.rect[1] + 5 + i * 30),fixed_size = (self.rect[2] - 10, 25))
+            self.buttons[button_label] = button.button(button_label, self.action_surface, self.planet_jump, topleft = (self.rect[0] + 5, self.rect[1] + 5 + i * 30),fixed_size = (self.rect[2] - 10, 25))

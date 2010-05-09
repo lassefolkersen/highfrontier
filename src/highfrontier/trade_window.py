@@ -1,3 +1,6 @@
+import button
+import entry
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +11,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -81,7 +83,7 @@ class trade_window():
         else:
             
             column_order = ["rownames","Type","Best price","For sale by"]
-            self.fast_list = gui_components.fast_list(self.action_surface, asset_and_tech_data, rect = self.rect, column_order = column_order)
+            self.fast_list = fast_list.fast_list(self.action_surface, asset_and_tech_data, rect = self.rect, column_order = column_order)
 
     def receive_click(self,event):
         #if event.button == 1:
@@ -137,7 +139,7 @@ class trade_window():
                 sellers_data[seller.name] = {"Price":price_here,"seller_link":seller}
     
             column_order = ["rownames","Price"]
-            self.fast_list = gui_components.fast_list(self.action_surface,sellers_data,self.rect,column_order)
+            self.fast_list = fast_list.fast_list(self.action_surface,sellers_data,self.rect,column_order)
     
         else: #only one seller - just go for standard algorithm
             return self.perform_bid(self.selections["for_sale_by"][0].name) #chose the only one
@@ -204,13 +206,13 @@ class trade_window():
                 base_value = int(dry_term * mining_value_term * population_term * company_term * 0.00000001)
                 
                 #start the entry box
-                self.text_receiver = gui_components.entry(self.action_surface,
+                self.text_receiver = entry.entry(self.action_surface,
                                      (self.rect[0] + 10, self.rect[1] + 40), 
                                      300, 32, 
                                      starting_text = str(base_value))
                 
                 
-                self.bid_button = gui_components.button(
+                self.bid_button = button.button(
                                     "Bid",
                                     self.action_surface,
                                     self.effectuate_base_bid,

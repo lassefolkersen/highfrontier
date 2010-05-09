@@ -1,3 +1,6 @@
+import entry
+import hscrollbar
+import button
 import base_construction
 import merchant
 import os
@@ -9,7 +12,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -140,7 +142,7 @@ class construct_base_menu():
                 self.action_surface.blit(warning, (self.rect[0] + 20, self.rect[1] + 50))
                 
                 
-            self.text_receiver = gui_components.entry(self.action_surface, 
+            self.text_receiver = entry.entry(self.action_surface, 
                                  topleft = (self.rect[0] + self.rect[2]/2 - 100, self.rect[1] + 70), 
                                  width = 200, 
                                  max_letters = global_variables.max_letters_in_company_names)
@@ -183,7 +185,7 @@ class construct_base_menu():
 
         max_size = min(10000,building_base.population)
         min_size = min(max_size/2, 100)
-        self.population_bar = gui_components.hscrollbar(
+        self.population_bar = hscrollbar.hscrollbar(
                                                         self.action_surface,
                                                         population_execute, 
                                                         (self.rect[0] + 10, self.rect[1] + 140), 
@@ -201,14 +203,14 @@ class construct_base_menu():
         population_execute(None,price_rect)
 
         if destination_base is None:
-            self.ok_button = gui_components.button("ok", 
+            self.ok_button = button.button("ok", 
                                                     self.action_surface,
                                                     self.new_base_build, 
                                                     function_parameter = sphere_coordinates, 
                                                     fixed_size = (100,35), 
                                                     topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
         else:
-            self.ok_button = gui_components.button("ok", 
+            self.ok_button = button.button("ok", 
                                                     self.action_surface,
                                                     self.new_base_build, 
                                                     function_parameter = destination_base, 
@@ -216,7 +218,7 @@ class construct_base_menu():
                                                     topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
 
         
-        self.cancel_button = gui_components.button("cancel", 
+        self.cancel_button = button.button("cancel", 
                                                 self.action_surface,
                                                 self.exit, function_parameter = None, 
                                                 fixed_size = (100,35), 

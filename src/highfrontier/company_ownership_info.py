@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -64,7 +64,7 @@ class company_ownership_info():
             
             company_ownership_dict["firms owned, number of"] = {"info":str(len(company_selected.owned_firms))}
 
-            self.fast_list = gui_components.fast_list(self.action_surface, company_ownership_dict, rect = self.rect)
+            self.fast_list = fast_list.fast_list(self.action_surface, company_ownership_dict, rect = self.rect)
         else:
             if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Company selected was None","type":"debugging"}

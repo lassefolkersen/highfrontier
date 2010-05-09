@@ -261,7 +261,7 @@ class base(firm.firm):
 				
 				people_leaving = int((percent_emigration_from_bitterness +  percent_emigration_from_fear_of_flood)* self.population)
 				if people_leaving > 0:
-					if self.home_planet.solar_system_object_link.effectuate_migration:
+					if self.solarSystem().effectuate_migration:
 						if people_leaving < self.population:
 							self.population = self.population - people_leaving
 							neighbour.population = neighbour.population + people_leaving
@@ -320,7 +320,7 @@ class base(firm.firm):
 		growth_percent = base_growth_percent + starving_modifier + housing_modifier
 		
 
-		if self.home_planet.solar_system_object_link.effectuate_growth:
+		if self.solarSystem().effectuate_growth:
 			self.population = int(self.population * (1.0 + growth_percent))
 		
 		

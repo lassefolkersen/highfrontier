@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -61,4 +61,4 @@ class base_list_of_companies():
                 company_data[company_instance.name]["local firms"] = owned_firms_here
         
             
-        self.fast_list = gui_components.fast_list(self.action_surface, company_data, rect = self.rect)
+        self.fast_list = fast_list.fast_list(self.action_surface, company_data, rect = self.rect)

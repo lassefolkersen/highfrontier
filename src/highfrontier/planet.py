@@ -142,7 +142,6 @@ class planet:
             class Placeholder():
                 pass
             placeholder = Placeholder()
-            placeholder.solar_system_object_link = self.solarSystem()
             
             for base_name in read_base_database: 
                 
