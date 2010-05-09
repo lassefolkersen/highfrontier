@@ -1,3 +1,4 @@
+import button
 import company_window
 import trade_window
 import base_window
@@ -26,7 +27,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 import message_bar
@@ -510,7 +510,7 @@ class gui():
         labels = ["Map overlays","Planet shortcuts","Company menu","Base overview","Technology","Trade menu","File menu"]
         self.command_buttons = {}
         for i, label in enumerate(labels):
-            self.command_buttons[label] = gui_components.button(label, 
+            self.command_buttons[label] = button.button(label, 
                                                                 self.command_surface,
                                                                 self.commandbox_button_activate, 
                                                                 function_parameter = label, 
@@ -552,7 +552,7 @@ class gui():
         
         self.subcommand_buttons = {}
         for i, label in enumerate(self.buttonlinks):
-            self.subcommand_buttons[label] = gui_components.button(self.buttonnicenames[i], self.subcommand_surface,
+            self.subcommand_buttons[label] = button.button(self.buttonnicenames[i], self.subcommand_surface,
                                                                 self.subcommandbox_button_activate, function_parameter = label, 
                                                                 fixed_size = (self.subcommand_surface.get_width()-20,35), 
                                                                 topleft = (10, i * 40 + 10))

@@ -1,3 +1,8 @@
+import entry
+import button
+import fast_list
+import togglebutton
+import vscrollbar
 import merchant
 import os
 import global_variables
@@ -8,7 +13,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -75,7 +79,7 @@ class file_window():
         
         for i, button_name in enumerate(self.button_list_now):
             if isinstance(self.button_structure[self.position][button_name], str): # has a submenu
-                self.button_instances_now[button_name] = gui_components.button(button_name,
+                self.button_instances_now[button_name] = button.button(button_name,
                                                     self.action_surface,
                                                     self.go_to_submenu,
                                                     function_parameter = self.button_structure[self.position][button_name],
@@ -83,7 +87,7 @@ class file_window():
                                                     topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1])
                                                     )
             else: # has a subfunction
-                self.button_instances_now[button_name] = gui_components.button(button_name,
+                self.button_instances_now[button_name] = button.button(button_name,
                                                     self.action_surface,
                                                     self.button_structure[self.position][button_name],
                                                     function_parameter = None,
@@ -138,7 +142,7 @@ class file_window():
         
         self.button_list_now = ["Empty space","Name box","Ok"]
         self.button_instances_now = {}
-        self.button_instances_now["Name box"] = gui_components.entry(self.action_surface, 
+        self.button_instances_now["Name box"] = entry.entry(self.action_surface, 
                              topleft = (10 + self.rect[0], 10 + 40 + self.rect[1]), 
                              width = self.rect[2] - 20, 
                              max_letters = global_variables.max_letters_in_company_names)
@@ -146,7 +150,7 @@ class file_window():
         self.text_receiver = self.button_instances_now["Name box"]
         self.button_instances_now["Name box"].active = True 
         
-        self.button_instances_now["Ok"] = gui_components.button(
+        self.button_instances_now["Ok"] = button.button(
                                     "Ok",
                                     self.action_surface,
                                     self.effectuate_save,
@@ -165,7 +169,7 @@ class file_window():
 
     def select_game_to_load(self, label, function_parameter):
         self.position = "Load menu"
-        load_window = gui_components.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
+        load_window = fast_list.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
         self.distribute_click_to_subwindow = load_window
                                                     
 
@@ -205,7 +209,7 @@ class file_window():
             for i, button_name in enumerate(button_names):
                 self.button_list_now.append(button_name)
                 
-                self.button_instances_now[button_name] = gui_components.togglebutton(button_name,
+                self.button_instances_now[button_name] = togglebutton.togglebutton(button_name,
                                                           self.action_surface,
                                                           self.change_automation,
                                                           function_parameter = button_name,
@@ -216,7 +220,7 @@ class file_window():
             
             
             self.button_list_now.append("Decision variables")
-            self.button_instances_now["Decision variables"] = gui_components.button(
+            self.button_instances_now["Decision variables"] = button.button(
                                                                            "Decision variables",
                    self.action_surface,
                    self.decision_variables,
@@ -256,7 +260,7 @@ class file_window():
                 self.solarSystem().messages.append(print_dict)
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
-            decision_variables_window = gui_components.fast_list(self.action_surface, 
+            decision_variables_window = fast_list.fast_list(self.action_surface, 
                                                                  self.solarSystem().current_player.company_database.keys(),
                                                                  rect = self.rect)
 
@@ -331,7 +335,7 @@ class file_window():
         for i, button_name in enumerate(button_names):
             self.button_list_now.append(button_name)
             
-            self.button_instances_now[button_name] = gui_components.togglebutton(button_name,
+            self.button_instances_now[button_name] = togglebutton.togglebutton(button_name,
                                                       self.action_surface,
                                                       self.change_message_setting,
                                                       function_parameter = button_name,
@@ -393,7 +397,7 @@ class file_window():
             game_speed = self.distribute_click_to_subwindow.position / 30
             self.solarSystem().step_delay_time = self.distribute_click_to_subwindow.position
         
-        self.distribute_click_to_subwindow = gui_components.vscrollbar (self.action_surface,
+        self.distribute_click_to_subwindow = vscrollbar.vscrollbar (self.action_surface,
                                                 execute,
                                                 topleft = (self.rect[0] + 10, self.rect[1] + 30),
                                                 length_of_bar_in_pixel = self.rect[3] - 60,

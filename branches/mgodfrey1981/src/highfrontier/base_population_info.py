@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -60,7 +60,7 @@ class base_population_info():
                 base_population_dict["Trade routes"] = {"info":trade_route_list}
             
 
-            self.fast_list = gui_components.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
+            self.fast_list = fast_list.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
         else:
             if self.solarSystem().message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Base selected was None","type":"debugging"} 

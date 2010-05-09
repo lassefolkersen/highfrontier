@@ -8,7 +8,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -67,7 +66,7 @@ class firm_process_info():
                          process_and_stock_dict[resource]["current stock"] = firm_selected.stock_dict[resource]
                          process_and_stock_dict[resource]["rate"] = firm_selected.input_output_dict[direction][resource]
         
-            self.fast_list = gui_components.fast_list(self.action_surface, process_and_stock_dict, rect = self.rect,column_order = ["rownames","direction","rate","current stock"])
+            self.fast_list = fast_list.fast_list(self.action_surface, process_and_stock_dict, rect = self.rect,column_order = ["rownames","direction","rate","current stock"])
         
             
 

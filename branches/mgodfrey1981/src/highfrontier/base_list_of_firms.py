@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -61,7 +61,7 @@ class base_list_of_firms():
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
         
-        self.fast_list = gui_components.fast_list(self.action_surface, 
+        self.fast_list = fast_list.fast_list(self.action_surface, 
                                                   firm_data, 
                                                   rect = self.rect,
                                                   column_order = ["rownames","owner","stock size","last profit"]

@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -45,7 +45,7 @@ class company_window():
         
         column_order = ["rownames","capital","owned firms","home cities"]
         
-        self.fast_list = gui_components.fast_list(self.action_surface, company_data, rect = self.rect, column_order = column_order)
+        self.fast_list = fast_list.fast_list(self.action_surface, company_data, rect = self.rect, column_order = column_order)
 
                 
 

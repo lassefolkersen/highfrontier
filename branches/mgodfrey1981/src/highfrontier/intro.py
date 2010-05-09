@@ -1,3 +1,7 @@
+import radiobuttons
+import fast_list
+import entry
+import button
 from pygame.locals import *
 import pygame
 import solarsystem
@@ -6,7 +10,6 @@ import global_variables
 import os
 import sys
 import datetime
-import gui_components
 import main
 import time
 import primitives
@@ -77,9 +80,9 @@ class IntroGui:
         if self.gui_rect.collidepoint(event.pos) == 1:
             for button in self.buttons.values():
                 if button.rect.collidepoint(event.pos) == 1:
-                    if isinstance(button, gui_components.fast_list):
+                    if isinstance(button, fast_list.fast_list):
                         button.receive_click(event)
-                    elif isinstance(button, gui_components.radiobuttons):
+                    elif isinstance(button, radiobuttons.radiobuttons):
                         
                         button.activate(event.pos)
                     else:
@@ -220,16 +223,16 @@ class IntroGui:
     def load_callback(self, label, function_parameter):
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
-        load_window = gui_components.fast_list(self.window, os.listdir("savegames"), rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
+        load_window = fast_list.fast_list(self.window, os.listdir("savegames"), rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
         self.buttons = {}
         self.buttons["load_window"] = load_window
-        self.buttons["ok"] = gui_components.button("ok", 
+        self.buttons["ok"] = button.button("ok", 
                               self.window, 
                               self.load_game, 
                               function_parameter = load_window, 
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
                               fixed_size = None)
-        self.buttons["cancel"] = gui_components.button("cancel", 
+        self.buttons["cancel"] = button.button("cancel", 
                               self.window, 
                               self.create_intro_gui, 
                               function_parameter = None, 
@@ -252,7 +255,7 @@ class IntroGui:
         button_functions = [self.ask_company_type,self.load_callback,self.game_settings_callback,self.quit_callback]
         self.buttons = {}
         for i, button_name in enumerate(button_names):
-            self.buttons[button_name] = gui_components.button(button_name, 
+            self.buttons[button_name] = button.button(button_name, 
                                   self.window, 
                                   button_functions[i], 
                                   function_parameter = None, 
@@ -265,20 +268,20 @@ class IntroGui:
         def dummy_function_for_radiobuttons(label, function_parameter):
             pass
         self.buttons = {}
-        self.buttons["type_selector"] = gui_components.radiobuttons(
+        self.buttons["type_selector"] = radiobuttons.radiobuttons(
                                     ["Private company","Country"],
                                     surface = self.window, 
                                     function = dummy_function_for_radiobuttons,
                                     function_parameter = None, 
                                     topleft = (self.gui_rect[0] + 10, self.gui_rect[1] + 40), 
                                     selected = None)
-        self.buttons["ok"] = gui_components.button("ok", 
+        self.buttons["ok"] = button.button("ok", 
                               self.window, 
                               self.decide_company_type, 
                               function_parameter = None, 
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
                               fixed_size = None)
-        self.buttons["cancel"] = gui_components.button("cancel", 
+        self.buttons["cancel"] = button.button("cancel", 
                               self.window, 
                               self.create_intro_gui, 
                               function_parameter = None, 
@@ -307,16 +310,16 @@ class IntroGui:
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
 
-        country_window = gui_components.fast_list(self.window, self.countries, rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
+        country_window = fast_list.fast_list(self.window, self.countries, rect = pygame.Rect(self.gui_rect[0], self.gui_rect[1], self.gui_rect[2], self.gui_rect[3] - 50))
         self.buttons = {}
         self.buttons["country_window"] = country_window
-        self.buttons["ok"] = gui_components.button("ok", 
+        self.buttons["ok"] = button.button("ok", 
                               self.window, 
                               self.ask_company_capital, 
                               function_parameter = None, 
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
                               fixed_size = None)
-        self.buttons["cancel"] = gui_components.button("cancel", 
+        self.buttons["cancel"] = button.button("cancel", 
                               self.window, 
                               self.create_intro_gui, 
                               function_parameter = None, 
@@ -326,18 +329,18 @@ class IntroGui:
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         title = global_variables.standard_font.render("Name of company:",True,(0,0,0))
         self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
-        self.text_receiver = gui_components.entry(self.window, 
+        self.text_receiver = entry.entry(self.window, 
                              (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
                              self.gui_rect[2] - 20, 
                              global_variables.max_letters_in_company_names)
         self.buttons = {}
-        self.buttons["ok"] = gui_components.button("ok", 
+        self.buttons["ok"] = button.button("ok", 
                               self.window, 
                               self.ask_company_capital, 
                               function_parameter = None, 
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
                               fixed_size = None)
-        self.buttons["cancel"] = gui_components.button("cancel", 
+        self.buttons["cancel"] = button.button("cancel", 
                               self.window, 
                               self.create_intro_gui, 
                               function_parameter = None, 
@@ -365,19 +368,19 @@ class IntroGui:
             pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
             title = global_variables.standard_font.render("Starting capital:",True,(0,0,0))
             self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
-            self.text_receiver = gui_components.entry(self.window, 
+            self.text_receiver = entry.entry(self.window, 
                                  (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
                                  self.gui_rect[2] - 20, 
                                  global_variables.max_letters_in_company_names,
                                  starting_text = "10000000")
             self.buttons = {}
-            self.buttons["ok"] = gui_components.button("ok", 
+            self.buttons["ok"] = button.button("ok", 
                                   self.window, 
                                   self.start_new_game, 
                                   function_parameter = None, 
                                   topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
                                   fixed_size = None)
-            self.buttons["cancel"] = gui_components.button("cancel", 
+            self.buttons["cancel"] = button.button("cancel", 
                                   self.window, 
                                   self.create_intro_gui, 
                                   function_parameter = None, 

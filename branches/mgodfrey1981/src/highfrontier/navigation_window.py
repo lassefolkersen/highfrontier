@@ -1,3 +1,4 @@
+import button
 import merchant
 import os
 import global_variables
@@ -8,7 +9,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -71,10 +71,10 @@ class navigation_window():
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0] + self.rect[2], self.rect[1]))
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
         
-        self.button_north = gui_components.button("N", self.action_surface, self.rotate_north, topleft = (self.rect[0] + 70, self.rect[1] + 10),fixed_size = (50,30))
-        self.button_west = gui_components.button("W", self.action_surface, self.rotate_west, topleft = (self.rect[0] + 20, self.rect[1] + 40),fixed_size = (50,30))
-        self.button_south = gui_components.button("S", self.action_surface, self.rotate_south, topleft = (self.rect[0] + 70, self.rect[1] + 70),fixed_size = (50,30))
-        self.button_east = gui_components.button("E", self.action_surface, self.rotate_east, topleft = (self.rect[0] + 120, self.rect[1] + 40),fixed_size = (50,30))
+        self.button_north = button.button("N", self.action_surface, self.rotate_north, topleft = (self.rect[0] + 70, self.rect[1] + 10),fixed_size = (50,30))
+        self.button_west = button.button("W", self.action_surface, self.rotate_west, topleft = (self.rect[0] + 20, self.rect[1] + 40),fixed_size = (50,30))
+        self.button_south = button.button("S", self.action_surface, self.rotate_south, topleft = (self.rect[0] + 70, self.rect[1] + 70),fixed_size = (50,30))
+        self.button_east = button.button("E", self.action_surface, self.rotate_east, topleft = (self.rect[0] + 120, self.rect[1] + 40),fixed_size = (50,30))
 
-        self.button_zoom_in = gui_components.button("Zoom in", self.action_surface, self.zoom_in, topleft = (self.rect[0] + 10, self.rect[1] + 120),fixed_size = (80,30))
-        self.button_zoom_out = gui_components.button("Zoom out", self.action_surface, self.zoom_out, topleft = (self.rect[0] + 100, self.rect[1] + 120),fixed_size = (80,30))        
+        self.button_zoom_in = button.button("Zoom in", self.action_surface, self.zoom_in, topleft = (self.rect[0] + 10, self.rect[1] + 120),fixed_size = (80,30))
+        self.button_zoom_out = button.button("Zoom out", self.action_surface, self.zoom_out, topleft = (self.rect[0] + 100, self.rect[1] + 120),fixed_size = (80,30))        

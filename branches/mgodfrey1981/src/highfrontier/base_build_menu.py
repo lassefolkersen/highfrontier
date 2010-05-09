@@ -1,3 +1,7 @@
+import fast_list
+import entry
+import button
+import vscrollbar
 import merchant
 import os
 import global_variables
@@ -8,7 +12,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -76,7 +79,7 @@ class base_build_menu():
         buildoption_data["population transfer"] = {}
         buildoption_data["population transfer"]["input and output"] = "To existing or new base - costs depends on distance"
         
-        self.fast_list = gui_components.fast_list(self.action_surface, buildoption_data, rect = self.rect)
+        self.fast_list = fast_list.fast_list(self.action_surface, buildoption_data, rect = self.rect)
 
 
     def receive_click(self,event):
@@ -140,7 +143,7 @@ class base_build_menu():
             destination_data[destination_name]["distance"] = destination["distance"]
             destination_data[destination_name]["type"] = destination["transport_type"]
 
-        self.fast_list = gui_components.fast_list(self.action_surface, destination_data, rect = self.rect)
+        self.fast_list = fast_list.fast_list(self.action_surface, destination_data, rect = self.rect)
 
             
             
@@ -185,7 +188,7 @@ class base_build_menu():
                 resource_data[resource]["Best sell price"] = cheapest_sell_price
                 resource_data[resource]["Best buy price"] = best_buy_price
             
-        self.fast_list = gui_components.fast_list(self.action_surface, resource_data, rect = self.rect)    
+        self.fast_list = fast_list.fast_list(self.action_surface, resource_data, rect = self.rect)    
         
         
         
@@ -239,13 +242,13 @@ class base_build_menu():
                 self.action_surface.blit(warning, (self.rect[0] + 10, self.rect[1] + 50))
                 
                 
-            self.text_receiver = gui_components.entry(self.action_surface, 
+            self.text_receiver = entry.entry(self.action_surface, 
                                  topleft = (self.rect[0] + 10, self.rect[1] + 90), 
                                  width = self.rect[3] - 20, 
                                  max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
     
-            self.ok_button = gui_components.button("ok", 
+            self.ok_button = button.button("ok", 
                                                     self.action_surface,
                                                     self.merchant_build, 
                                                     function_parameter = None, 
@@ -362,7 +365,7 @@ class base_build_menu():
             start_value = 1
             existing_firm_rendered_text = global_variables.standard_font.render("Choose name of firm:",True,(0,0,0))
             self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 90, self.rect[1] + 70))
-            self.text_receiver = gui_components.entry(self.action_surface, 
+            self.text_receiver = entry.entry(self.action_surface, 
                      topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150), 
                      width = 300, 
                      max_letters = global_variables.max_letters_in_company_names)
@@ -428,7 +431,7 @@ class base_build_menu():
 
             
             
-            self.ok_button = gui_components.button("ok", 
+            self.ok_button = button.button("ok", 
                                         self.action_surface,
                                         self.commodity_build_firm, 
                                         function_parameter = existing_firm, 
@@ -444,7 +447,7 @@ class base_build_menu():
             print firm_type
             raise Exception("This has been observed before. See printout")
         
-        self.slider = gui_components.vscrollbar (self.action_surface,
+        self.slider = vscrollbar.vscrollbar (self.action_surface,
                                                 execute,
                                                 topleft = (self.rect[0] + 10, self.rect[1] + 30),
                                                 length_of_bar_in_pixel = self.rect[3] - 60,

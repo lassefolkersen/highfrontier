@@ -1,3 +1,7 @@
+import togglebutton
+import hscrollbar
+import radiobuttons
+import button
 import merchant
 import os
 import global_variables
@@ -8,7 +12,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
@@ -88,7 +91,7 @@ class base_and_firm_market_window():
             self.resource_selected = resource_button_names[0]
 
         #for each resource to be displayed we make a radio button
-        self.resource_buttons = gui_components.radiobuttons(
+        self.resource_buttons = radiobuttons.radiobuttons(
                                                         resource_button_names, 
                                                         self.action_surface, 
                                                         function = self.trade_resource_set_callback, 
@@ -97,7 +100,7 @@ class base_and_firm_market_window():
                                                         selected = self.resource_selected)
         
         
-        self.graph_buttons = gui_components.radiobuttons(
+        self.graph_buttons = radiobuttons.radiobuttons(
                                                         ["history","market bids"], 
                                                         self.action_surface, 
                                                         function = self.graph_mode_callback, 
@@ -111,7 +114,7 @@ class base_and_firm_market_window():
         if self.solarSystem().display_mode == "firm":
             firm_selected = self.solarSystem().firm_selected
             if firm_selected.isMerchant():
-                self.market_selection_buttons = gui_components.radiobuttons(
+                self.market_selection_buttons = radiobuttons.radiobuttons(
                                                         ["From: " + firm_selected.from_location.name,"To: " + firm_selected.to_location.name], 
                                                         self.action_surface, 
                                                         function = self.market_selection_callback, 
@@ -137,7 +140,7 @@ class base_and_firm_market_window():
         else:   update_button_topleft = (self.rect[0] + 10, self.market_selection_buttons.rect[1]+ self.market_selection_buttons.rect[3] + 20)   
 
         
-        self.update_button = gui_components.button("Update",
+        self.update_button = button.button("Update",
                                                    self.action_surface,
                                                    function = self.update_data,
                                                    function_parameter = None, 
@@ -149,7 +152,7 @@ class base_and_firm_market_window():
         
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
         if firm_selected.name in self.solarSystem().current_player.owned_firms.keys():
-            self.bid_button = gui_components.togglebutton("Make market bid",
+            self.bid_button = togglebutton.togglebutton("Make market bid",
                                            self.action_surface,
                                            function = self.place_bid_callback,
                                            function_parameter = None, 
@@ -563,7 +566,7 @@ class base_and_firm_market_window():
             raise Exception("This has been observed before... check print outs")
         
         
-        self.price_bar = gui_components.hscrollbar(self.action_surface, 
+        self.price_bar = hscrollbar.hscrollbar(self.action_surface, 
                                   price_execute, 
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-20, 
@@ -590,7 +593,7 @@ class base_and_firm_market_window():
             self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
             pygame.display.update(quantity_rect)
 
-        self.quantity_bar = gui_components.hscrollbar(self.action_surface, 
+        self.quantity_bar = hscrollbar.hscrollbar(self.action_surface, 
                                   quantity_execute, 
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20), 
                                   self.graph_rect[2]-10, 
@@ -614,7 +617,7 @@ class base_and_firm_market_window():
             pass
             
         
-        self.direction_buttons = gui_components.radiobuttons(["buy","sell"],
+        self.direction_buttons = radiobuttons.radiobuttons(["buy","sell"],
                                    self.action_surface, 
                                    direction_execute,
                                    function_parameter = None, 
@@ -625,7 +628,7 @@ class base_and_firm_market_window():
      
 
         #effectuate buttons
-        self.ok_button = gui_components.button("ok", 
+        self.ok_button = button.button("ok", 
                                                 self.action_surface,
                                                 self.effectuate_market_bid, 
                                                 function_parameter = market, 

@@ -8,7 +8,6 @@ import datetime
 import math
 import company
 import primitives
-import gui_components
 import random
 import time
 
