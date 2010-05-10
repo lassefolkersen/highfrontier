@@ -1,0 +1,6 @@
+#organize all files source files in a folder data. Run:
+dh_make -e lassefolkersen@gmail.com -c GLP -f highfrontier-0.9.6
+#press s for single
+
+#replace all files in the created debian folder the files in this debian folder. Make sure highfrontier and highfrontier.desktop is present in the root. Run:
+sudo dpkg-buildpackage
