@@ -1,3 +1,4 @@
+import signaller
 import button
 import entry
 import fast_list
@@ -14,13 +15,13 @@ import primitives
 import random
 import time
 
+
 class trade_window():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     This windows shows an overview of all assets (bases and firms) and tech that is for sale, ie. all non-location specific offers.
     """
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(25,50,825,500)
         self.action_surface = action_surface
         self.text_receiver = None
@@ -37,7 +38,7 @@ class trade_window():
         self.selections = {}
         
         asset_and_tech_data = {}
-        for planet_instance in self.solarSystem().planets.values():
+        for planet_instance in self.solar_system_object_link.planets.values():
             for base_instance in planet_instance.bases.values():
                 if base_instance.for_sale:
                     
@@ -45,10 +46,10 @@ class trade_window():
 
                     asset_and_tech_data[base_instance.name] = data_here
                 
-        #for company_instance in self.solarSystem().companies.values():
+        #for company_instance in self.solar_system_object_link.companies.values():
             #pass #FIXME add firms for sale here, whenever that is implemented
         
-        for technology in self.solarSystem().technology_tree.vertex_dict.values():
+        for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
             if len(technology["for_sale_by"]) > 0:
                 prices = technology["for_sale_by"].values()
                 prices.sort()
@@ -60,7 +61,7 @@ class trade_window():
                     for_sale_by = str(len(technology["for_sale_by"])) + " companies"
                 for_sale_by_link = technology["for_sale_by"].keys()
                 
-                check_result = self.solarSystem().technology_tree.check_technology_bid(self.solarSystem().current_player.known_technologies,technology)
+                check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.solar_system_object_link.current_player.known_technologies,technology)
                 if check_result != "already known": #only include if we don't already know it
                     if check_result is not "ok": #include it as a sales-piece if too advaned, but not possible to buy
                         type = "advanced tech."
@@ -92,7 +93,7 @@ class trade_window():
         elif self.menu_position == "pick_seller":
             self.fast_list.receive_click(event)            
         elif self.menu_position == "base bidding":
-            if self.bid_button.rect.collidepoint(event.pos) == 1:
+            if self.bid_button.rect().collidepoint(event.pos) == 1:
                 return self.bid_button.activate(event)
         else:
             raise Exception("Unknown menu_position: " + str(self.menu_position))
@@ -121,11 +122,11 @@ class trade_window():
         self.selections["bid_on"] = bid_on
         
         if self.selections["type"] in ["technology","advanced tech."]:
-            current_player_tech = self.solarSystem().current_player.known_technologies
-            check_result = self.solarSystem().technology_tree.check_technology_bid(current_player_tech,self.selections["sale_object"] )
+            current_player_tech = self.solar_system_object_link.current_player.known_technologies
+            check_result = self.solar_system_object_link.technology_tree.check_technology_bid(current_player_tech,self.selections["sale_object"] )
             if check_result != "ok":
                 print_dict = {"text":"Can not bid for " + self.selections["bid_on"] + " because it is " + check_result,"type":"general gameplay info"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
                 return None
 
         
@@ -151,13 +152,13 @@ class trade_window():
         """
         Function that allows the player to bid on an asset or technology
         """
-        if chosen_seller_name not in self.solarSystem().companies.keys():
+        if chosen_seller_name not in self.solar_system_object_link.companies.keys():
             print_dict = {"text": str(chosen_seller_name) + " was not found - perhaps it was shut down recently.","type":"general gameplay info"}
-            self.solarSystem().messages.append(print_dict)
+            self.solar_system_object_link.messages.append(print_dict)
 #            print "We had an instance of an unknown name: " + str(chosen_seller_name)
         else:
-            chosen_seller = self.solarSystem().companies[chosen_seller_name]
-            current_player = self.solarSystem().current_player
+            chosen_seller = self.solar_system_object_link.companies[chosen_seller_name]
+            current_player = self.solar_system_object_link.current_player
             
             
             
@@ -190,9 +191,9 @@ class trade_window():
                             neighbour = trade_route["endpoint_links"][1]
                         try: neighbour.market["buy_offers"][resource]
                         except: 
-                            if self.solarSystem().message_printing["debugging"]:
+                            if self.solar_system_object_link.message_printing["debugging"]:
                                 print_dict = {"text":"DEBUGGING: When calculating bid, we did not find a market in neighbour " + str(neighbour.name),"type":"debugging"}
-                                self.solarSystem().messages.append(print_dict)
+                                self.solar_system_object_link.messages.append(print_dict)
                         else:
                             if len(neighbour.market["buy_offers"][resource]) > 0:
                                 price_of_resource.append(neighbour.market["buy_offers"][resource][0]["price"])
@@ -215,25 +216,24 @@ class trade_window():
                 self.bid_button = button.button(
                                     "Bid",
                                     self.action_surface,
-                                    self.effectuate_base_bid,
-                                    function_parameter = None,
                                     topleft = (self.rect[0] + 10, self.rect[1] + 100)
                                     )
+                signaller.connect(self.bid_button,"signal__clicked",self.effectuate_base_bid)
                 return None
                 
             
             if current_player.capital > self.selections["price"]:
                 if self.selections["type"] in ["technology","advanced tech."]:
-                        self.solarSystem().current_player.known_technologies[self.selections["bid_on"]] = self.selections["sale_object"] 
+                        self.solar_system_object_link.current_player.known_technologies[self.selections["bid_on"]] = self.selections["sale_object"] 
                         current_player.capital = current_player.capital - self.selections["price"]
                         chosen_seller.capital = chosen_seller.capital + self.selections["price"]
                         print_dict = {"text":str(self.selections["bid_on"]) + " was bought for " + str(self.selections["price"]) + " from " + str(chosen_seller.name),"type":"general gameplay info"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
                          
                         
                 elif self.selections["type"] == "base":
                         print_dict = {"text":"base buying not implemented yet","type":"general gameplay info"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
         
                 else:
                     raise Exception("Unknown type: " + str(self.selections["type"]) + " asked for in the asset sales GUI")
@@ -241,44 +241,46 @@ class trade_window():
                     
             else:
                 print_dict = {"text":current_player.name + " has a capital of " + str(current_player.capital) + " and can't bid " + str(self.selections["price"]),"type":"general gameplay info"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
         
         return "clear"     
     
     
-    def effectuate_base_bid(self, label, function_parameters):
+    def effectuate_base_bid(self):
         
         price_string = self.text_receiver.text
         try: int(price_string)
         except:
             print_dict = {"text":"The bid: " + str(price_string) + " was not a number","type":"general gameplay info"}
-            self.solarSystem().messages.append(print_dict)
+            self.solar_system_object_link.messages.append(print_dict)
             return None
         else:
             price = int(price_string)
 
-        if 3 * price > self.solarSystem().current_player.capital: 
+        if 3 * price > self.solar_system_object_link.current_player.capital: 
             print_dict = {"text":"The bid: " + str(price_string) + " was too expensive - more than 3 times capital is required","type":"general gameplay info"}
-            self.solarSystem().messages.append(print_dict)
+            self.solar_system_object_link.messages.append(print_dict)
             return None
 #        else:
 #            print str(price) + " is ok within capital"
 
         
         if self.selections["sale_object"].for_sale_deadline is not None:
-            if self.selections["sale_object"].for_sale_deadline <= self.solarSystem().current_date:
+            if self.selections["sale_object"].for_sale_deadline <= self.solar_system_object_link.current_date:
                 print_dict = {"text":"You are too late for the bidding deadline, which was " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
                 return "clear"
 #            else:
 #                print str(self.selections["sale_object"].for_sale_deadline) + " is ok within time-limit"        
         else:
             print_dict = {"text":"You are too late for the bidding deadline","type":"general gameplay info"}
-            self.solarSystem().messages.append(print_dict)
+            self.solar_system_object_link.messages.append(print_dict)
             return "clear"
 
             
-        self.selections["sale_object"].for_sale_bids[self.solarSystem().current_player] = price
+        self.selections["sale_object"].for_sale_bids[self.solar_system_object_link.current_player] = price
         print_dict = {"text":"You have bid " + str(price) + " for " + str(self.selections["bid_on"]) + " - the auction will run till: " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
-        self.solarSystem().messages.append(print_dict)
+        self.solar_system_object_link.messages.append(print_dict)
         return "clear"
+    
+

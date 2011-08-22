@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -11,14 +12,14 @@ import primitives
 import random
 import time
 
+
 class firm_process_info():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     Subview of the firm view. Shows a list of the resources of interest for the firm. Both the stock and the production rate is shown.
     """
 
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -34,12 +35,12 @@ class firm_process_info():
         The creation function.  
         """
         
-        firm_selected = self.solarSystem().firm_selected
+        firm_selected = self.solar_system_object_link.firm_selected
         
         
         if firm_selected is not None:
             
-            if firm_selected.isMerchant():
+            if isinstance(firm_selected, company.merchant):
                 process_and_stock_dict = {}
                 for direction_name in ["destination","origin"]:
                     if direction_name == "destination":
@@ -69,7 +70,6 @@ class firm_process_info():
             self.fast_list = fast_list.fast_list(self.action_surface, process_and_stock_dict, rect = self.rect,column_order = ["rownames","direction","rate","current stock"])
         
             
-
 
 
 

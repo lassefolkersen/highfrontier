@@ -7,7 +7,24 @@ import time
 import random
 
 class vscrollbar():
+    def setRect(self,r):
+        self._rect=r
+        return
+    def rect(self):
+        return self._rect
     def __init__(self,surface, function, topleft, length_of_bar_in_pixel, range_of_values, range_seen = None, start_position = 0, function_parameter=None):
+        """
+        Draws a scroll bar
+        
+        length_of_bar_in_pixel       An integer with the length of the bar in pixels
+        range_of_values              A tuple giving the values at each end of the bar
+        range_seen                   Optional integer giving how much of the range_of_values is seen at a given time (eg. the number
+                                        of entries in a scrolled list visible). Default to None, which is equal to a square
+                                        slider (for time-settings etc).
+        
+        
+        """ 
+        
         if not isinstance(length_of_bar_in_pixel, int):
             raise Exception("length_of_bar_in_pixel must be an integer")
 
@@ -60,7 +77,7 @@ class vscrollbar():
         self.function_parameter = function_parameter
         self.position = start_position
         
-        self.rect = pygame.Rect(self.topleft[0],self.topleft[1],self.width,self.length_of_bar_in_pixel)
+        self.setRect(pygame.Rect(self.topleft[0],self.topleft[1],self.width,self.length_of_bar_in_pixel))
 #        print self.calculate_extent_of_slider()
         
         self.draw()
@@ -100,8 +117,9 @@ class vscrollbar():
     
     def draw(self):
         #draw frame
-        pygame.draw.rect(self.surface,(212,212,212),self.rect)
-        pygame.draw.rect(self.surface,(0,0,0),self.rect,1)
+        r=self.rect()
+        pygame.draw.rect(self.surface,(212,212,212),r)
+        pygame.draw.rect(self.surface,(0,0,0),r,1)
         
         #draw slider
         extent_of_slider = self.calculate_extent_of_slider()
@@ -163,7 +181,6 @@ class vscrollbar():
             self.function(self.position,self.function_parameter)
         
             
-
 
 
 
