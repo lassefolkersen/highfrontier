@@ -7,6 +7,11 @@ import time
 import random
 
 class hscrollbar():
+    def setRect(self,r):
+        self._rect=r
+        return
+    def rect(self):
+        return self._rect
     def __init__(self,surface, function, topleft, length_of_bar_in_pixel, range_of_values, range_seen = None, start_position = 0, function_parameter=None):
         """
         Draws a scroll bar
@@ -72,7 +77,7 @@ class hscrollbar():
         self.function_parameter = function_parameter
         self.position = start_position
         
-        self.rect = pygame.Rect(self.topleft[0],self.topleft[1],self.length_of_bar_in_pixel,self.width)
+        self.setRect(pygame.Rect(self.topleft[0],self.topleft[1],self.length_of_bar_in_pixel,self.width))
 
         
         self.draw()
@@ -113,8 +118,9 @@ class hscrollbar():
     
     def draw(self):
         #draw frame
-        pygame.draw.rect(self.surface,(212,212,212),self.rect)
-        pygame.draw.rect(self.surface,(0,0,0),self.rect,1)
+        r=self.rect()
+        pygame.draw.rect(self.surface,(212,212,212),r)
+        pygame.draw.rect(self.surface,(0,0,0),r,1)
         
         #draw slider
         extent_of_slider = self.calculate_extent_of_slider()
@@ -176,7 +182,6 @@ class hscrollbar():
             self.function(self.position,self.function_parameter)
             
             
-
 
 
 

@@ -12,14 +12,14 @@ import primitives
 import random
 import time
 
+
 class base_population_info():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     Subview of the base view. Shows miscellanous information about a base, such as stock, trade routes and population.
     """
 
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -30,7 +30,7 @@ class base_population_info():
         """
         The creation function.  
         """
-        base_selected = self.solarSystem().current_planet.current_base
+        base_selected = self.solar_system_object_link.current_planet.current_base
         if base_selected is not None:
             base_population_dict= {}
             base_population_dict["Owner"] = {"info":base_selected.owner.name}
@@ -62,6 +62,12 @@ class base_population_info():
 
             self.fast_list = fast_list.fast_list(self.action_surface, base_population_dict, rect = self.rect, column_order = ["rownames","info"])
         else:
-            if self.solarSystem().message_printing["debugging"]:
+            if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Base selected was None","type":"debugging"} 
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
+
+            
+
+
+
+

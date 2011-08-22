@@ -1,3 +1,4 @@
+import signaller
 import button
 import merchant
 import os
@@ -13,12 +14,11 @@ import random
 import time
 
 class navigation_window():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     The navigation window. Is controlled by a togglebutton in the commandbox. When visible it can be used for zooming and rotating.
     """
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(500,50,190,170)
         self.action_surface = action_surface
         
@@ -78,3 +78,6 @@ class navigation_window():
 
         self.button_zoom_in = button.button("Zoom in", self.action_surface, self.zoom_in, topleft = (self.rect[0] + 10, self.rect[1] + 120),fixed_size = (80,30))
         self.button_zoom_out = button.button("Zoom out", self.action_surface, self.zoom_out, topleft = (self.rect[0] + 100, self.rect[1] + 120),fixed_size = (80,30))        
+
+
+

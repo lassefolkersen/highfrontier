@@ -1,4 +1,3 @@
-import base
 import primitives
 import pygame, sys,os
 from pygame.locals import *
@@ -12,10 +11,148 @@ import os
 import global_variables
 import company
 import random
+import quat # quaternions are good for spherical rotations
 
 class planet:
-    def solarSystem(self):
-        return global_variables.solar_system
+    def sphere_to_plane_total(self,sphere_coordinates,eastern_inclination,northern_inclination,projection_scaling):
+        projection_coordinates = []
+        # the following may or may not be a good mapping from sphere to ortho
+        # grabbed the equations from http://www.uwgb.edu/dutchs/structge/sphproj.htm
+        if(self.projection_scaling <= 360):
+            for s in sphere_coordinates:
+                (x_sphere,y_sphere)=s
+                # adjust to inclination
+                x_sphere=x_sphere
+                y_sphere=-y_sphere
+                # degrees -> radians
+                raddegs = 2.0*math.pi/360.0
+                x_sphere=raddegs * x_sphere
+                y_sphere=raddegs * y_sphere
+                north = -raddegs * northern_inclination
+                east  = -raddegs * eastern_inclination
+                # perform orthographic projection
+                x_ortho=math.sin(x_sphere)*math.cos(y_sphere)
+                y_ortho=math.sin(y_sphere)
+                z_ortho=math.cos(x_sphere)*math.cos(y_sphere)
+                v_in = (x_ortho, y_ortho, z_ortho)
+                evec=(0.0,1.0,0.0) # north-pointing vector
+                nvec=(1.0,0.0,0.0) # east-pointing vector
+                v_out = quat.rotateH(v_in,north,nvec)
+                evec = quat.rotateH(evec,north,nvec) # gimball the east vector
+                v_out = quat.rotateH(v_out,east,evec)
+                (x_ortho,y_ortho,z_ortho)=v_out
+                if(z_ortho<0): # "skip" negative z values
+                    projection_coordinates.append((0,0))
+                    continue
+                # scale to window coordinates
+                xout=x_ortho * 0.5 * projection_scaling + projection_scaling * 0.5
+                yout=y_ortho * 0.5 * projection_scaling + projection_scaling * 0.5
+                projection_coordinates.append((xout,yout))
+        else: #planar map projection
+            window_size = global_variables.window_size
+            west_border = self.flat_image_borders["west_border"]
+            east_border = self.flat_image_borders["east_border"]
+            south_border = self.flat_image_borders["south_border"]
+            north_border = self.flat_image_borders["north_border"]
+            east_west_span = float(east_border - west_border) #114
+            north_south_span = float(north_border - south_border)
+#            sphere_hit_locations = []
+            for sphere_coordinate in sphere_coordinates:
+                if (west_border < sphere_coordinate[0] < east_border) and (south_border < sphere_coordinate[1] < north_border):
+                    x_proj_position = (( sphere_coordinate[0] - west_border) / east_west_span ) * window_size[0]
+                    y_proj_position = window_size[1] - ((( sphere_coordinate[1] - south_border ) / north_south_span ) * window_size[1])
+                    
+                    projection_coordinates.append((int(x_proj_position),int(y_proj_position)))
+                else:
+                    projection_coordinates.append("Not seen")
+
+        
+        return projection_coordinates
+    def calculate_base_positions(self,eastern_inclination,northern_inclination,projection_scaling):
+        """
+        checks if base positions have been stored already and loads them if they have
+        if not, they are calculated.
+        Returns a dictionary with base names as key, and the position or ["Not seen",edge_position] as values.
+        """
+        angle=(northern_inclination,eastern_inclination,projection_scaling)
+        if angle in self.base_positions.keys() and sorted(self.base_positions[angle].keys()) == sorted(self.bases.keys()):
+            base_positions_here = self.base_positions[angle]
+        else:
+            base_positions_here = {}
+            size_of_target = projection_scaling / 20
+            window_size = global_variables.window_size
+            areas_of_interest_here = {}
+
+            if projection_scaling <= 360: #for the round world projection
+                sphere_coordinates = []
+                reverse_sphere_coordinates = []
+                base_names = []
+                for base in self.bases:
+                    if self.bases[base].terrain_type == "Space": #for space stations
+                        base_positions_here[base] = ["Space",None]
+                    else:
+                        x=self.bases[base].position_coordinate[0]
+                        y=self.bases[base].position_coordinate[1]
+                        sphere_position = (x,y)
+                        sphere_coordinates.append(sphere_position)
+                        
+                        if sphere_position[0] < 0:
+                            reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
+                        else:
+                            reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
+                        reverse_sphere_coordinates.append(reverse_sphere_position)
+                        base_names.append(base)
+                (e,n,p)=(eastern_inclination,northern_inclination,projection_scaling)
+                plane_coordinates = self.sphere_to_plane_total(sphere_coordinates, e,n,p)
+                reverse_plane_coordinates = self.sphere_to_plane_total(reverse_sphere_coordinates, e,n,p)
+                for i in range(0,len(base_names)):
+                    if len(plane_coordinates) > i and plane_coordinates[i] != "Not seen":
+                        base_positions_here[base_names[i]] = (int(plane_coordinates[i][0] ),int(plane_coordinates[i][1]))
+                        x=plane_coordinates[i][0]+(window_size[0]/2)-(projection_scaling/2)
+                        y=plane_coordinates[i][1]+(window_size[1]/2)-(projection_scaling/2)
+                        absolute_position = (x,y)
+                        areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
+                    else:
+                        if(i < len(plane_coordinates)):
+                            # calculation the edge position for a base below the edge (for use in trade_network drawing)
+                            reverse_x =  - ( int(reverse_plane_coordinates[i][0]) - 0.5 * projection_scaling )
+                            reverse_y =  int(reverse_plane_coordinates[i][1]) - 0.5 * projection_scaling
+                            angle = math.atan2(reverse_y,reverse_x)
+                            x=0.5*projection_scaling * ( 1 + math.cos(angle) )
+                            y=projection_scaling - 0.5 * projection_scaling *( 1 + math.sin(angle))
+                            edge_position = (x, )  
+                            base_positions_here[base_names[i]] = ["Not seen",edge_position]
+                
+            else: #if zoomed all the way in to the flat world
+                window_size = global_variables.window_size
+                west_border = self.flat_image_borders["west_border"]
+                east_border = self.flat_image_borders["east_border"]
+                south_border = self.flat_image_borders["south_border"]
+                north_border = self.flat_image_borders["north_border"]
+                east_west_span = east_border - west_border
+                north_south_span = north_border - south_border
+                for base in self.bases:
+                    if self.bases[base].terrain_type != "Space":
+                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
+                        if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
+                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
+                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
+                            base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
+                            areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
+                        else:
+                            #calculation the edge position for a base over the edge (for use in trade_network drawing)
+                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
+                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
+                            #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
+                            
+                            
+                            base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
+                        
+                        
+                        
+            self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)] = base_positions_here
+            self.areas_of_interest[(northern_inclination,eastern_inclination,projection_scaling)] = areas_of_interest_here
+        return base_positions_here
     """
     The class that holds all methods of the planets
     And instance of class planet also holds all the base instances within.
@@ -23,6 +160,7 @@ class planet:
     
     def __init__(self,planet_name,solar_system_object_link,planet_data):
         planet_file_name = planet_name + ".jpg"
+        self.solar_system_object_link = solar_system_object_link
         self.planet_data = planet_data
         self.planet_diameter_km = planet_data["diameter_km"]
         self.planet_type = planet_data["type"]
@@ -93,8 +231,8 @@ class planet:
         ton_per_pa_on_earth = ton_carbondioxide_on_earth_2008 / pascal_carbondioxide_on_earth_2008
         
         #we then take surface area and gravity of the planet in account and calculate a useful factor
-        surface_area_ratio = self.solarSystem().planets["earth"].surface_area / self.surface_area
-        gravity_at_surface_ratio = self.solarSystem().planets["earth"].gravity_at_surface / self.gravity_at_surface
+        surface_area_ratio = self.solar_system_object_link.planets["earth"].surface_area / self.surface_area
+        gravity_at_surface_ratio = self.solar_system_object_link.planets["earth"].gravity_at_surface / self.gravity_at_surface
         
         ton_per_pa_here = ton_per_pa_on_earth * gravity_at_surface_ratio / surface_area_ratio 
         
@@ -105,7 +243,7 @@ class planet:
             before = getattr(self, "athmospheric_" + gas)
             setattr(self, "athmospheric_" + gas, before + (ton / ton_per_pa_here))
             print_dict = {"text":"added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str((before)) + " to " + str(getattr(self, "athmospheric_" + gas)),"type":"climate"}
-            self.solarSystem().messages.append(print_dict)
+            self.solar_system_object_link.messages.append(print_dict)
         else:
             raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys()))   
     
@@ -125,7 +263,7 @@ class planet:
              before = self.water_level
              self.change_water_level(self.water_level + 0.5)
              print_dict = {"text":"The waters are rising on" + self.name + "!","type":"general gameplay info"}
-             self.solarSystem().messages.append(print_dict)
+             self.solar_system_object_link.messages.append(print_dict)
 
     
         
@@ -142,10 +280,11 @@ class planet:
             class Placeholder():
                 pass
             placeholder = Placeholder()
+            placeholder.solar_system_object_link = self.solar_system_object_link
             
             for base_name in read_base_database: 
                 
-                base_instance = base.base(self.solarSystem(),base_name,self,read_base_database[base_name],placeholder)
+                base_instance = company.base(self.solar_system_object_link,base_name,self,read_base_database[base_name],placeholder)
                 
                 base_database[base_name] = base_instance
             self.bases = base_database
@@ -165,9 +304,9 @@ class planet:
         between the two in kilometers based on the diameter_km entry in planet_data
         """
         if len(position_a) != len(position_b):
-            if self.solarSystem().message_printing["debugging"]:
+            if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"WARNING: The two lists given in calculate_distance() are not the same length","type":"debugging"} 
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
             
         
         result = []
@@ -372,9 +511,9 @@ class planet:
                 self.image = Image.open(os.path.join("images","planet","placeholder.jpg"))
             self.projection_dim = (self.projection_scaling,self.projection_scaling)
             if((self.image.size[0]/self.image.size[1])!=2):
-                if self.solarSystem().message_printing["debugging"]:
+                if self.solar_system_object_link.message_printing["debugging"]:
                     print_dict = {"text":"oh no! The map file is not twice as wide as it is high","type":"debugging"} 
-                    self.solarSystem().messages.append(print_dict)
+                    self.solar_system_object_link.messages.append(print_dict)
 
                 self.image = self.image.resize((self.image.size[0],self.image.size[0]/2))
             
@@ -520,9 +659,9 @@ class planet:
         
         if new_water_level > len(table_of_topology):
             new_water_level = len(table_of_topology)
-            if self.solarSystem().message_printing["debugging"]:
+            if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"The planet " + str(self.planet_name) + " has reached its max water level of " + str(len(table_of_topology)),"type":"debugging"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
 
         
 
@@ -655,90 +794,6 @@ class planet:
         
     
  
-    def sphere_to_plane_total(self,sphere_coordinates,eastern_inclination,northern_inclination,projection_scaling):
-        """
-        Function to translate a list of single sphere_coordinates into projection coordinates with only one
-        query to the proj program. Takes a list of tuples with sphere_coordinates.
-        This is much faster than the old sphere_to_plane() 
-        
-        General notes on maps:
-                Three map coordinate types:
-        Sphere... nothing is ever rendered like this. It is a tuple with (range(-180,180),range(-90,90), 
-        which corresponds to degrees. The first longitude / x / east-west, the second is latitude / y / north_south.
-        
-        Map.... the source map. It has map_coordinates that correspond to the size of the map (range(0, width(map))
-        , range(0,height(map))). The map_coordinates are directly translatable to sphere_coordinates and are of course
-        (east/west,north/south)
-
-        Projection.... the main rendition of the planet projection. It has projection_coordinates (range(0,1*scale),range(0,1*scale))
-        which corresponds to the location on the screen (top left is (0,0), further east is (1,0), and further
-        south is (0,1). Pixels outside of the globe-projection are black. An important concept is the rotation
-        which is the amount of turning the planet has seen relative to the 0 N, 0 W position. This is 
-        given as rotation_coordinates (range(-180,180),range(-90,90))
-        
-        
-        The idea is to draw the projection by taking each pixel in the rendition, looking up its translation
-        to sphere_coordinates and then paint the corresponding projection_coordinate. 
-
-        """
-        projection_coordinates = []
-        if self.projection_scaling <= 360: #for the round world projection
-            #Creating the string that goes into the proj command
-            communication_string = ""
-            for i in range(0,len(sphere_coordinates)):
-                #projection_coordinates.append((i-(i/projection_dim[0])*projection_dim[0],i / projection_dim[1]))             
-                x_sphere = sphere_coordinates[i][0]
-                y_sphere = sphere_coordinates[i][1]
-                communication_string = communication_string + (str(x_sphere) + " " + str(y_sphere) + "\n")
-            
-            startup_string = "proj +proj=ortho +ellps=sphere +lon_0=" + str(eastern_inclination) + " +lat_0=" + str(northern_inclination)
-            try:    proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE, shell = True)
-            except:
-                raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
-            else:
-                pass
-            stdout_text = proj.communicate(communication_string)
-            stdout_text = stdout_text[0].split("\n")
-    
-            for i in range(0,len(stdout_text)):
-                if stdout_text[i].find("*") != -1:
-                    projection_coordinates.append("Not seen")
-                elif len(stdout_text[i]) < 5: #to remove empty lines
-                    pass
-                else:
-                    
-                    splitting = stdout_text[i].partition("\t")
-                    x_raw = splitting[0]
-                    y_raw = splitting[2]
-        
-                    x_raw = float(x_raw.rstrip("\r"))
-                    y_raw = float(y_raw.rstrip("\r"))
-                    
-                    x_proj = ( x_raw / 6370997 ) * (projection_scaling * 0.5) + (projection_scaling * 0.5)  #where 6370997 is the constant of the proj program 
-                    y_proj = -( y_raw / 5986778 ) * (projection_scaling * 0.5) + (projection_scaling * 0.5)
-                    
-                    projection_coordinates.append((x_proj,y_proj))
-            
-        else: #planar map projection
-            window_size = global_variables.window_size
-            west_border = self.flat_image_borders["west_border"]
-            east_border = self.flat_image_borders["east_border"]
-            south_border = self.flat_image_borders["south_border"]
-            north_border = self.flat_image_borders["north_border"]
-            east_west_span = float(east_border - west_border) #114
-            north_south_span = float(north_border - south_border)
-#            sphere_hit_locations = []
-            for sphere_coordinate in sphere_coordinates:
-                if (west_border < sphere_coordinate[0] < east_border) and (south_border < sphere_coordinate[1] < north_border):
-                    x_proj_position = (( sphere_coordinate[0] - west_border) / east_west_span ) * window_size[0]
-                    y_proj_position = window_size[1] - ((( sphere_coordinate[1] - south_border ) / north_south_span ) * window_size[1])
-                    
-                    projection_coordinates.append((int(x_proj_position),int(y_proj_position)))
-                else:
-                    projection_coordinates.append("Not seen")
-
-        
-        return projection_coordinates
 
     
     
@@ -971,15 +1026,15 @@ class planet:
         """
         Function that gives the actual surface for use with pysurface, of a planet the zoom/rotation parameters.
         Optional arguments
-            fast_rendering    boolean, False per default. If set to true the projection scaling will be halved for spherical
-                    projections and the surface will be doubled before returning. This gives much faster calculation 
-                    times
-            
-            image   an image can be fed to the function (such as for example a topographical map) and then this
-                    will be projected instead. If not the function will use the self.image (fixme delete and self.image_string)
-            
-            plane_to_sphere    The output from plane_to_sphere_total() given for special renditions. If not given it will load from the standard
-                                calculations (ie. all lat/long's divisible by 30)
+        fast_rendering    boolean, False per default. If set to true the projection scaling will be halved for spherical
+        projections and the surface will be doubled before returning. This gives much faster calculation 
+        times
+        
+        image   an image can be fed to the function (such as for example a topographical map) and then this
+        will be projected instead. If not the function will use the self.image (fixme delete and self.image_string)
+        
+        plane_to_sphere    The output from plane_to_sphere_total() given for special renditions. If not given it will load from the standard
+        calculations (ie. all lat/long's divisible by 30)
             
         """
         if image != None:
@@ -1120,6 +1175,7 @@ class planet:
     
 
     def draw_entire_planet(self,eastern_inclination,northern_inclination,projection_scaling,fast_rendering=True):
+        print "Planet::draw_entire_planet()";
         """
         Function that gives the actual surface for use with pysurface, of a planet, when given the flat 
         image-string, and the zoom/rotation parameters.
@@ -1184,85 +1240,6 @@ class planet:
     
     
     
-    def calculate_base_positions(self,eastern_inclination,northern_inclination,projection_scaling):
-        """
-        checks if base positions have been stored already and loads them if they have
-        if not, they are calculated.
-        Returns a dictionary with base names as key, and the position or ["Not seen",edge_position] as values.
-        """
-        if (northern_inclination,eastern_inclination,projection_scaling) in self.base_positions.keys() and sorted(self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)].keys()) == sorted(self.bases.keys()):
-            base_positions_here = self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)]
-        else:
-            base_positions_here = {}
-            size_of_target = projection_scaling / 20
-            window_size = global_variables.window_size
-            areas_of_interest_here = {}
-
-            if projection_scaling <= 360: #for the round world projection
-                sphere_coordinates = []
-                reverse_sphere_coordinates = []
-                base_names = []
-                for base in self.bases:
-                    if self.bases[base].terrain_type == "Space": #for space stations
-                        base_positions_here[base] = ["Space",None]
-                    else:
-                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                        sphere_coordinates.append(sphere_position)
-                        
-                        if sphere_position[0] < 0:
-                            reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
-                        else:
-                            reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
-                        reverse_sphere_coordinates.append(reverse_sphere_position)
-                        base_names.append(base)
-                
-                plane_coordinates = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
-                reverse_plane_coordinates = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
-                
-                for i in range(0,len(base_names)):
-                    if plane_coordinates[i] != "Not seen":
-                        base_positions_here[base_names[i]] = (int(plane_coordinates[i][0] ),int(plane_coordinates[i][1]))
-                        absolute_position = (plane_coordinates[i][0] + (window_size[0]/2) - (projection_scaling/2), plane_coordinates[i][1] + ( window_size[1] /2) - (projection_scaling/2))
-                        areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
-                    else:
-                        #calculation the edge position for a base below the edge (for use in trade_network drawing)
-                        reverse_x =  - ( int(reverse_plane_coordinates[i][0]) - 0.5 * projection_scaling )
-                        reverse_y =  int(reverse_plane_coordinates[i][1]) - 0.5 * projection_scaling
-                        angle = math.atan2(reverse_y,reverse_x)
-                        edge_position = (0.5*projection_scaling * ( 1 + math.cos(angle) ), projection_scaling - 0.5 * projection_scaling *( 1 + math.sin(angle)))  
-                        #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
-                        base_positions_here[base_names[i]] = ["Not seen",edge_position]
-                
-            else: #if zoomed all the way in to the flat world
-                window_size = global_variables.window_size
-                west_border = self.flat_image_borders["west_border"]
-                east_border = self.flat_image_borders["east_border"]
-                south_border = self.flat_image_borders["south_border"]
-                north_border = self.flat_image_borders["north_border"]
-                east_west_span = east_border - west_border
-                north_south_span = north_border - south_border
-                for base in self.bases:
-                    if self.bases[base].terrain_type != "Space":
-                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                        if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
-                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                            base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
-                            areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
-                        else:
-                            #calculation the edge position for a base over the edge (for use in trade_network drawing)
-                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                            #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
-                            
-                            
-                            base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
-                        
-                        
-                        
-            self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)] = base_positions_here
-            self.areas_of_interest[(northern_inclination,eastern_inclination,projection_scaling)] = areas_of_interest_here
-        return base_positions_here
             
             
     def kill_a_base(self,base_name):
@@ -1286,17 +1263,17 @@ class planet:
 
 
             firms_to_delete = {}
-            for company_instance in self.solarSystem().companies.values():
+            for company_instance in self.solar_system_object_link.companies.values():
                 for firm_name in company_instance.owned_firms:
                     firm_instance = company_instance.owned_firms[firm_name]
-                    if not firm_instance.isMerchant():
-                        if firm_instance.location == self.solarSystem().current_planet.current_base:
+                    if not isinstance(firm_instance, company.merchant):
+                        if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
 #                            print "deleting " + firm_instance.name + " owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
                             
                     else:
-                        if firm_instance.from_location == self.solarSystem().current_planet.current_base or firm_instance.to_location == self.solarSystem().current_planet.current_base:
+                        if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
 #                            print "deleting " + firm_instance.name + " merchant owned by " + company_instance.name + " in " + str(dying_base.name)
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
@@ -1371,7 +1348,7 @@ class planet:
                             distance = self.calculate_distance(base_instance.position_coordinate, sphere_coordinates)
                             if distance[0] < radius_size:
                                 print_dict = {"text":"The new position is less than " + str(radius_size) + " km to " + base_instance.name + " it is " + str(distance[0]),"type":"general gameplay info"}
-                                self.solarSystem().messages.append(print_dict)
+                                self.solar_system_object_link.messages.append(print_dict)
                                 not_too_close = False
                             
                 
@@ -1387,7 +1364,7 @@ class planet:
                         return sphere_coordinates
                     else:
                         print_dict = {"text":"Can't build a base here","type":"general gameplay info"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
                         return "Can't build a base in this terrain"
 
                 else:
@@ -1532,7 +1509,7 @@ class planet:
         hit_locations = []
         
         blast_surface = pygame.image.load(os.path.join("images","blast.png"))
-        ratio = 0.25 *(float(per_hit_intensity) / 100.0) * (float(self.projection_scaling) / 360.0) * (self.solarSystem().planets["earth"].planet_diameter_km / float(self.planet_diameter_km)) 
+        ratio = 0.25 *(float(per_hit_intensity) / 100.0) * (float(self.projection_scaling) / 360.0) * (self.solar_system_object_link.planets["earth"].planet_diameter_km / float(self.planet_diameter_km)) 
 #        print "ratio " + str(ratio)
         large_blast_surface = pygame.transform.scale(blast_surface, (int(blast_surface.get_width() * ratio / 2), int(blast_surface.get_height() * ratio / 2)))
         medium_blast_surface = pygame.transform.scale(blast_surface, (int(blast_surface.get_width() * ratio / 3), int(blast_surface.get_height() * ratio / 3)))
@@ -1608,14 +1585,19 @@ class planet:
                 proj_hit_location_transposed = (int(proj_hit_location[0] - medium_blast_surface.get_width()/2), int(proj_hit_location[1] - medium_blast_surface.get_height()/2))
                 mainscreen.blit(medium_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(100)
                 proj_hit_location_transposed = (int(proj_hit_location[0] - large_blast_surface.get_width()/2), int(proj_hit_location[1] - large_blast_surface.get_height()/2))
                 mainscreen.blit(large_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
+#                mainscreen.set_picture(surface)
+#                renderer.update()
                 pygame.time.delay(100)
                 surface = background.copy()
                 mainscreen.blit(surface,(0,0))
                 pygame.display.flip()
+#                renderer.update()
                 
                 
                 
@@ -1626,6 +1608,32 @@ class planet:
             print "puff"
         
 
+#        
+#        surface = self.draw_entire_planet(self.eastern_inclination,self.northern_inclination,self.projection_scaling)
+#
+#
+#        delay_time = 300 / len(sphere_hit_locations)
+#
+#        for i, sphere_hit_location in enumerate(sphere_hit_locations):
+#            if isinstance(sphere_hit_location, tuple):
+#                size_of_blast = random.choice(["small","medium","large"])
+#                if size_of_blast == "small":
+#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - small_blast_surface.get_width()/2), int(sphere_hit_location[1] - small_blast_surface.get_height()/2))
+#                    surface.blit(small_blast_surface,sphere_hit_location_transposed)
+#                elif size_of_blast == "medium":
+#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - medium_blast_surface.get_width()/2), int(sphere_hit_location[1] - medium_blast_surface.get_height()/2))
+#                    surface.blit(medium_blast_surface,sphere_hit_location_transposed)
+#                elif size_of_blast == "large":
+#                    sphere_hit_location_transposed = (int(sphere_hit_location[0] - large_blast_surface.get_width()/2), int(sphere_hit_location[1] - large_blast_surface.get_height()/2))
+#                    surface.blit(large_blast_surface,sphere_hit_location_transposed)
+#                else:
+#                    raise Exception("Weird")
+#
+#                mainscreen.set_picture(surface)
+#                renderer.update()
+#                pygame.time.delay(delay_time)
+#                
+#                
 
             
             
