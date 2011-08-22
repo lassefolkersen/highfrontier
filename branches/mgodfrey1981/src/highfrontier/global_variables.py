@@ -1,9 +1,11 @@
+
 import datetime
 import pygame
 import time
+import market_decisions
 import os
 pygame.font.init()
-solar_system=None
+
 # variables that are "meta-gamespecific" ie. that should not follow a savegame
 window_size=(1024,768)
 
@@ -20,7 +22,7 @@ standard_font_small= pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),1
 standard_font_small_bold = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
 standard_font_small_bold.set_bold(True)
 max_stepback_history_size = 10 # how many steps back we can use the "back" key
-market_decisions = None
+market_decisions = market_decisions.market_decisions() #this is the class of market decisions that should be globally available. 
 
 
 
@@ -33,7 +35,4 @@ step_delay_time = 100 # 10-500  - how much delay (in miliseconds, I think) there
 technology_research_cost = 1000 #a variable specifying how much technology costs (in fact it is conversion factor for distance in the technology tree to research points) (100000 is pretty fast)
 gas_change_multiplier = 100.0 # (100.0)a variable modifying how much a given gas emmision changes atmospheric gas pressure. It divides with the ton_per_pa_here, so a higher number means faster atmosphere change with less emission
 mineral_deposit_size_multiplier = 100.0 # (100.0) a variable modifying how much a given mining intensity modifies mineral reserves. It is divided by the calculated deposit reduction, so a higher number means more deposits and slower reduction
-
-
-
-
+solar_system=None

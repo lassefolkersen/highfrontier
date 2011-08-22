@@ -1,4 +1,3 @@
-import merchant
 import global_variables
 import datetime
 import primitives
@@ -10,36 +9,6 @@ import company
 
 
 class market_decisions:
-    def solarSystem(self):
-        return global_variables.solar_system
-    def calculate_demand_reaction_03(market_decision_class,self):
-        """
-        Function that will decide if a "buy" offer should be emitted, and at what price and quantity
-        """
-        market = self.location.market
-        current_date = self.solarSystem().current_date
-        for resource in self.input_output_dict["input"]:
-                prices = []
-                for transaction in market["transactions"][resource]:
-                    prices.append(transaction["price"])
-                price = random.random() * (max(prices)-min(prices)) + min(prices)
-                
-
-                if not self.isBaseConstruction():
-                    quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
-                else:
-                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
-                
-                if quantity_wanted > 1:
-                    if quantity_wanted * price <= self.owner.capital:
-                        if quantity_wanted < 0:
-                            if self.solarSystem().message_printing["debugging"]:
-                                print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_03 quantity_is negative. VERY WEIRD","type":"debugging"}
-                                self.solarSystem().messages.append(print_dict)
-
-                        
-                        buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
-                        self.make_market_bid(market,buy_offer)
     """
     Class that holds all the algorithms pertaining to market decision.
     The class consists of self dictionaries, organized by theme:
@@ -97,27 +66,27 @@ class market_decisions:
         """
         if len(self.known_technologies) == 0:
 #            print 
-            if self.solarSystem().message_printing["debugging"]:
+            if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"WARNING: the " + str(self.name) + " does not know any technologies to begin with. This must be a mistake","type":"debugging"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)
 
         else:
             destination = None
             i = 0
             while destination is None:
                 chosen_origination_point_name = random.choice(self.known_technologies.keys())
-                chosen_origination_point = self.solarSystem().technology_tree.vertex_dict[chosen_origination_point_name]
-                destination = self.solarSystem().technology_tree.get_research_project(chosen_origination_point_name,self.known_technologies)
+                chosen_origination_point = self.solar_system_object_link.technology_tree.vertex_dict[chosen_origination_point_name]
+                destination = self.solar_system_object_link.technology_tree.get_research_project(chosen_origination_point_name,self.known_technologies)
                 i = i +1
                 if i > 50:
-                    if self.solarSystem().message_printing["debugging"]:
+                    if self.solar_system_object_link.message_printing["debugging"]:
                         print_dict = {"text":"WARNING: It does not seem like there are any technologies left to research for " + str(self.name) + " perhaps use the implode_and_expand function?","type":"debugging"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
 
                     break
             if destination is not None:
                 self.target_technology = destination["target_technology"]
-                self.target_technology_cost = int(destination["distance"] * self.solarSystem().technology_research_cost)
+                self.target_technology_cost = int(destination["distance"] * self.solar_system_object_link.technology_research_cost)
     
     
     def start_research_firms_01(market_decision_class,self):
@@ -133,7 +102,7 @@ class market_decisions:
         research_volume = 0
         non_research_volume = 0
         for firm_instance in self.owned_firms.values():
-            if firm_instance.isResearch():
+            if isinstance(firm_instance, company.research):
                 research_volume = research_volume + firm_instance.size
                 
             else:
@@ -183,7 +152,7 @@ class market_decisions:
 
 #        available_processes = self.get_available_processes()
         
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         
         
         #first we iterate on all possible goods that can be sold in a given market
@@ -298,7 +267,7 @@ class market_decisions:
         sell_tech = random.randint(1,100) < 4 #FIXME opportunity for tuningparameter ("how often to check for tech sales")
         buy_tech = random.randint(1,100) < 10 #FIXME opportunity for tuningparameter ("how often to check for tech buys")    
         
-#        basic_research_technology = self.solarSystem().technology_tree.vertex_dict["basic research"] #FIXME perhaps one day include a check to see if this is the best research tech
+#        basic_research_technology = self.solar_system_object_link.technology_tree.vertex_dict["basic research"] #FIXME perhaps one day include a check to see if this is the best research tech
 
         if sell_tech:
             #first we calculate the mean price of labor, since this is what the price of the tech is based on 
@@ -331,13 +300,13 @@ class market_decisions:
                         known_by_number = len(technology["known_by"])
                         if known_by_number  > 10:
                             known_by_number  = 10
-                        price = ((mean_labor_price / research_point_per_labor) * (self.solarSystem().technology_research_cost / 1000) ) * ((known_by_number  - 9)**2)
+                        price = ((mean_labor_price / research_point_per_labor) * (self.solar_system_object_link.technology_research_cost / 1000) ) * ((known_by_number  - 9)**2)
                         print_dict = {"text":self.name + " considers selling " + technology_name + " for " + str(price),"type":"tech discovery"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
 
                         technology["for_sale_by"][self] = price
             if buy_tech:
-                for technology in self.solarSystem().technology_tree.vertex_dict.values():
+                for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
 
                     if len(technology["for_sale_by"]) > 0:
                         if technology["technology_name"] not in self.known_technologies.keys():
@@ -350,14 +319,14 @@ class market_decisions:
                             
                                                         
                             if winning_price < self.capital:
-                                check_result = self.solarSystem().technology_tree.check_technology_bid(self.known_technologies,technology)
+                                check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.known_technologies,technology)
                                 if check_result == "ok":
                                     self.known_technologies[technology["technology_name"]] = technology
                                     self.capital = self.capital - winning_price
                                     selling_company.capital = selling_company.capital + winning_price
-                                    if self == self.solarSystem().current_player:
+                                    if self == self.solar_system_object_link.current_player:
                                         print_dict = {"text":str(technology["technology_name"]) + " is not known by " + str(self.name) + ". It was bought from " + selling_company.name + " at a price of " + str(winning_price),"type":"tech discovery"}
-                                        self.solarSystem().messages.append(print_dict)
+                                        self.solar_system_object_link.messages.append(print_dict)
 
 
 
@@ -375,7 +344,7 @@ class market_decisions:
         #first we see what bases are already connected by the merchant firms of the company
         already_connected = []
         for firm_instance in self.owned_firms.values():
-            if firm_instance.isMerchant():
+            if isinstance(firm_instance, company.merchant):
                 existing_pair = [firm_instance.from_location, firm_instance.to_location, firm_instance.resource]
                 already_connected.append(existing_pair)
         
@@ -396,12 +365,12 @@ class market_decisions:
                             if len(transport_prices) > 0:
                                 transport_unit_price = min(transport_prices)
                             else:
-                                transport_unit_price = self.solarSystem().trade_resources[trade_route["transport_type"]]["starting_price"]
+                                transport_unit_price = self.solar_system_object_link.trade_resources[trade_route["transport_type"]]["starting_price"]
                             transportation_cost = (transport_unit_price * trade_route["distance"]) / 1000.0 
 
                             
                             for resource in seller_base.market["sell_offers"].keys():
-                                if self.solarSystem().trade_resources[resource]["transportable"]:
+                                if self.solar_system_object_link.trade_resources[resource]["transportable"]:
                                     connection = [seller_base,buyer_base,resource]
                                     if connection not in already_connected:
                                         if len(seller_base.market["sell_offers"][resource]) > 0 and len(buyer_base.market["buy_offers"][resource]) > 0:
@@ -416,18 +385,18 @@ class market_decisions:
                                                     while name_is_not_unique:
                                                         name_is_not_unique = False
                                                         name = "merchant" + "_" + str(random.randint(10000,99999))
-                                                        for company_instance in self.solarSystem().companies.values():
+                                                        for company_instance in self.solar_system_object_link.companies.values():
                                                             if name in company_instance.owned_firms.keys():
                                                                 name_is_not_unique = True
                                                     owner = self
                                                     input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
                                                     distance = trade_route["distance"]
                                                     transport_type = trade_route["transport_type"]
-                                                    new_merchant_firm = merchant.merchant(self.solarSystem(), seller_base,buyer_base,input_output_dict,owner,name,transport_type,distance,resource)
+                                                    new_merchant_firm = company.merchant(self.solar_system_object_link, seller_base,buyer_base,input_output_dict,owner,name,transport_type,distance,resource)
                                                     self.owned_firms[name] = new_merchant_firm
-                                                    if self == self.solarSystem().current_player:
+                                                    if self == self.solar_system_object_link.current_player:
                                                         print_dict = {"text":self.name + " started up a merchant between " + str(seller_base.name) + " and " + str(buyer_base.name),"type":"tech discovery"}
-                                                        self.solarSystem().messages.append(print_dict)
+                                                        self.solar_system_object_link.messages.append(print_dict)
 
     
     
@@ -438,7 +407,7 @@ class market_decisions:
         """
         
         if random.randint(0,10) == 1:
-            new_home_city = self.expand_home_cities(self.solarSystem())
+            new_home_city = self.expand_home_cities(self.solar_system_object_link)
             if new_home_city == None:
                 pass
             else:
@@ -458,9 +427,9 @@ class market_decisions:
         
         for firm_name in self.owned_firms:
             firm_instance = self.owned_firms[firm_name]
-            if not firm_instance.isMerchant():
+            if not isinstance(firm_instance,company.research): #do not close research firms here, since they will always give negative results (this is done in the start_research_firms function
 
-                if firm_instance.isBase():
+                if isinstance(firm_instance,company.base):
                     #checking what to do with the base
                     if self.company_database["Target_bitterness_of_base"] < firm_instance.bitternes_of_base:
                         firm_instance.wages = firm_instance.wages * 1.1  
@@ -474,7 +443,7 @@ class market_decisions:
                     close_these_firms.append(firm_name)
         
         for firm_to_close in close_these_firms:
-            if not self.owned_firms[firm_to_close].isBase():
+            if not isinstance(self.owned_firms[firm_to_close], company.base):
                 self.owned_firms[firm_to_close].close_firm()
                 del self.owned_firms[firm_to_close]
                 
@@ -482,7 +451,7 @@ class market_decisions:
             else:
                 #BASESALEPLACE
                 self.owned_firms[firm_to_close].for_sale = True
-                self.owned_firms[firm_to_close].for_sale_deadline = datetime.timedelta(30*6)+self.solarSystem().current_date
+                self.owned_firms[firm_to_close].for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
         
     
     
@@ -496,13 +465,13 @@ class market_decisions:
         Function that will decide if a "buy" offer should be emitted, and at what price and quantity
         """
         market = self.location.market
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         timeframe_considered = int(self.input_output_dict["timeframe"] * (self.owner.company_database["timeframe_considered"] / 20.0)) 
         
         
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
-                if not self.isBaseConstruction():
+                if not isinstance(self, company.base_construction):
                     quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
@@ -522,7 +491,7 @@ class market_decisions:
         """
         market = self.location.market
         timeframe_considered = int(self.input_output_dict["timeframe"] * (self.owner.company_database["timeframe_considered"] / 20.0))
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         for resource in self.input_output_dict["input"]:
             try: self.urgency
             except:
@@ -539,7 +508,7 @@ class market_decisions:
                 price = float(price * self.urgency[resource])
                 self.urgency[resource] = self.urgency[resource] * 1.5
                 
-                if not self.isBaseConstruction():
+                if not isinstance(self, company.base_construction):
                     quantity_wanted = int(self.input_output_dict["input"][resource]) * timeframe_considered 
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
@@ -552,15 +521,15 @@ class market_decisions:
                 if quantity_wanted > 1:
                     if quantity_wanted * price <= self.owner.capital:
                         if not (isinstance(quantity_wanted,int) or isinstance(quantity_wanted,long)):
-                            if self.solarSystem().message_printing["debugging"]:
+                            if self.solar_system_object_link.message_printing["debugging"]:
                                 print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_02 quantity_wanted: " + str(quantity_wanted),"type":"debugging"}
-                                self.solarSystem().messages.append(print_dict)
+                                self.solar_system_object_link.messages.append(print_dict)
 
                             
                         if quantity_wanted < 0:
-                            if self.solarSystem().message_printing["debugging"]:
+                            if self.solar_system_object_link.message_printing["debugging"]:
                                 print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_02 quantity_is negative. VERY WEIRD","type":"debugging"}
-                                self.solarSystem().messages.append(print_dict)
+                                self.solar_system_object_link.messages.append(print_dict)
 
                         
                         buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
@@ -570,6 +539,34 @@ class market_decisions:
                 self.urgency[resource] = 1
     
     
+    def calculate_demand_reaction_03(market_decision_class,self):
+        """
+        Function that will decide if a "buy" offer should be emitted, and at what price and quantity
+        """
+        market = self.location.market
+        current_date = self.solar_system_object_link.current_date
+        for resource in self.input_output_dict["input"]:
+                prices = []
+                for transaction in market["transactions"][resource]:
+                    prices.append(transaction["price"])
+                price = random.random() * (max(prices)-min(prices)) + min(prices)
+                
+
+                if not isinstance(self, company.base_construction):
+                    quantity_wanted = int(self.input_output_dict["input"][resource] * (random.random()*2.0 + 0.5))    
+                else:
+                    quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource]
+                
+                if quantity_wanted > 1:
+                    if quantity_wanted * price <= self.owner.capital:
+                        if quantity_wanted < 0:
+                            if self.solar_system_object_link.message_printing["debugging"]:
+                                print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_03 quantity_is negative. VERY WEIRD","type":"debugging"}
+                                self.solar_system_object_link.messages.append(print_dict)
+
+                        
+                        buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
+                        self.make_market_bid(market,buy_offer)
     
                     
     def calculate_demand_reaction_04(market_decision_class,self):
@@ -579,7 +576,7 @@ class market_decisions:
         This flavor pays the price of a good in relation to how its much its output can be sold for
         """
         market = self.location.market
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         timeframe_considered = int(self.input_output_dict["timeframe"] * (self.owner.company_database["timeframe_considered"] / 20.0)) 
         
         
@@ -609,7 +606,7 @@ class market_decisions:
         for resource in self.input_output_dict["input"]:
             if self.input_output_dict["input"][resource]*timeframe_considered > self.stock_dict[resource]:
                 
-                if not self.isBaseConstruction():
+                if not isinstance(self, company.base_construction):
                     quantity_wanted = int(self.input_output_dict["input"][resource]*timeframe_considered - self.stock_dict[resource] ) + 1
                 else:
                     quantity_wanted = self.input_output_dict["input"][resource] - self.stock_dict[resource] 
@@ -640,7 +637,7 @@ class market_decisions:
         
         from_market = self.from_location.market
         to_market = self.to_location.market
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         resources = [self.resource, self.transport_type]
         
         for resource in resources:
@@ -657,22 +654,22 @@ class market_decisions:
             else: #transportation
                 transportation_needed = int((self.from_stock_dict[self.resource] * self.distance) / 1000.0)
                 quantity_wanted = transportation_needed - self.from_stock_dict[self.transport_type]
-                if self.owner == self.solarSystem().current_player:
+                if self.owner == self.solar_system_object_link.current_player:
                     print_dict = {"text":"the transport quantity wanted was " + str(quantity_wanted) + " and self.from_stock_dict[self.resource] was " + str(self.from_stock_dict[self.resource]),"type":"firm info"}
-                    self.solarSystem().messages.append(print_dict)
+                    self.solar_system_object_link.messages.append(print_dict)
             
             if quantity_wanted > 1:
                 if quantity_wanted * price <= self.owner.capital:
                     if quantity_wanted < 0:
-                        if self.solarSystem().message_printing["debugging"]:
+                        if self.solar_system_object_link.message_printing["debugging"]:
                             print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_03 quantity_is negative. VERY WEIRD","type":"debugging"}
-                            self.solarSystem().messages.append(print_dict)
+                            self.solar_system_object_link.messages.append(print_dict)
 
                     buy_offer = {"resource":resource,"price":float(price),"buyer":self,"name":self.name,"quantity":int(quantity_wanted),"date":current_date}
                     self.make_market_bid(from_market,buy_offer)
-                    if self.owner == self.solarSystem().current_player:
+                    if self.owner == self.solar_system_object_link.current_player:
                         print_dict = {"text":self.name + " is buying " + resource + " at " + self.from_location.name + " at price " + str(int(price)) + " and qt " + str(quantity_wanted),"type":"firm info"}
-                        self.solarSystem().messages.append(print_dict)
+                        self.solar_system_object_link.messages.append(print_dict)
     
 
 
@@ -691,7 +688,7 @@ class market_decisions:
         tendency_to_sell_expensive = ((self.owner.company_database["tendency_to_sell_expensive"] - 50) / 100.0 ) + 1
         tendency_to_focus_on_history = ((self.owner.company_database["tendency_to_focus_on_history"] - 50) / 100.0) + 1
         
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         for resource in self.input_output_dict["output"]:
             resource_level = self.stock_dict[resource]
             production_level = self.input_output_dict["output"][resource] 
@@ -747,7 +744,7 @@ class market_decisions:
         tendency_to_decrease_price_fast = (self.owner.company_database["tendency_to_decrease_price_fast"] / 30.0) + 1
         #        
     
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         try: self.urgency
         except: self.urgency = {}
         
@@ -791,7 +788,7 @@ class market_decisions:
         This flavour just cells at a random price between zero and 1.2 times the previously highest price
         """
         market = self.location.market
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         for resource in self.input_output_dict["output"]:
                 prices = []
                 for transaction in market["transactions"][resource]:
@@ -815,7 +812,7 @@ class market_decisions:
 
         
         market = self.to_location.market
-        current_date = self.solarSystem().current_date
+        current_date = self.solar_system_object_link.current_date
         resource = self.resource
         prices = []
         for transaction in market["transactions"][resource]:
@@ -825,6 +822,6 @@ class market_decisions:
         if quantity_offered > 1 and price > 0:
             sell_offer = {"resource":resource,"price":float(price),"seller":self,"name":self.name,"quantity":int(quantity_offered),"date":current_date}
             self.make_market_bid(market,sell_offer)
-            if self.owner == self.solarSystem().current_player:
+            if self.owner == self.solar_system_object_link.current_player:
                 print_dict = {"text":self.name + " is selling " + resource + " at " + self.to_location.name + " at price " + str(int(price)) + " and qt " + str(quantity_offered),"type":"firm info"}
-                self.solarSystem().messages.append(print_dict)
+                self.solar_system_object_link.messages.append(print_dict)

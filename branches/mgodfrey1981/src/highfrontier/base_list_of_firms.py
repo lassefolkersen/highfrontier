@@ -13,13 +13,12 @@ import random
 import time
 
 class base_list_of_firms():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     Subview of the base view. Shows a list of all firms operating in the base. Shortcut button to zoom in on one of these firms.
     """
 
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -34,13 +33,13 @@ class base_list_of_firms():
         The creation function.  
         """
         list_of_firms_in_base = []
-        for company_instance in self.solarSystem().companies.values():
+        for company_instance in self.solar_system_object_link.companies.values():
             for firm_instance in company_instance.owned_firms.values():
-                if not firm_instance.isMerchant():
-                    if firm_instance.location == self.solarSystem().current_planet.current_base:
+                if not isinstance(firm_instance, company.merchant):
+                    if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                         list_of_firms_in_base.append(firm_instance)
                 else:
-                    if firm_instance.from_location == self.solarSystem().current_planet.current_base or firm_instance.to_location == self.solarSystem().current_planet.current_base:
+                    if firm_instance.from_location == self.solar_system_object_link.current_planet.current_base or firm_instance.to_location == self.solar_system_object_link.current_planet.current_base:
                         list_of_firms_in_base.append(firm_instance)
 #        print list_of_firms_in_base
         firm_data = {}
@@ -72,9 +71,12 @@ class base_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = self.links[self.fast_list.selected_name]
-            if firm_selected.isBase():
+            if isinstance(firm_selected, company.base): #in this case we are already in the base, so we do nothing.
                 return "clear"
             else:
-                self.solarSystem().display_mode = "firm"
-                self.solarSystem().firm_selected = firm_selected
+                self.solar_system_object_link.display_mode = "firm"
+                self.solar_system_object_link.firm_selected = firm_selected
                 return "clear"
+
+
+

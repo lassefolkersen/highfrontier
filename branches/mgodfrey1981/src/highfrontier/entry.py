@@ -25,9 +25,13 @@ class entry():
 
     def receive_text(self,event):
         if self.active:
+#            print event
             if event.unicode == "\x08":
                 self.text = self.text[0:(len(self.text)-1)]
                 self.draw()
+#            elif event.key == 13:
+#                print "enter"
+#                return "enter"
             else:
                 if self.restrict_input_to is not None:
                     if event.unicode not in self.restrict_input_to:
@@ -53,7 +57,6 @@ class entry():
         
         
         
-
 
 
 

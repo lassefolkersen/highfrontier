@@ -1,3 +1,4 @@
+import fast_list
 import merchant
 import os
 import global_variables
@@ -12,12 +13,11 @@ import random
 import time
 
 class firm_trade_partners_info():
-    def solarSystem(self):
-        return global_variables.solar_system
     """
     Subview of the firm view. Shows a list of past trading transactions for the firm.
     """
     def __init__(self,solar_system_object,action_surface):
+        self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
         
@@ -28,8 +28,8 @@ class firm_trade_partners_info():
         The creation function. Doesn't return anything, but saves self.window_transactions variable and renders using the self.renderer. 
         """
         
-        firm_selected = self.solarSystem().firm_selected
-        if firm_selected.isMerchant():
+        firm_selected = self.solar_system_object_link.firm_selected
+        if isinstance(firm_selected,company.merchant):
             location_list = [firm_selected.from_location, firm_selected.to_location]
             
         else:
@@ -67,15 +67,13 @@ class firm_trade_partners_info():
 #        print "transaction keys " + str(transactions.keys())
 #        print "transactions: " + str(transactions)
         self.fast_list = fast_list.fast_list(
-                                                  self.action_surface, 
-                                                  transactions, 
-                                                  rect = self.rect,
-                                                  sort_by = "date",
-                                                  column_order = ["date","buyer","seller","price","quantity"])
-
+            self.action_surface, 
+            transactions, 
+            rect = self.rect,
+            sort_by = "date",
+            column_order = ["date","buyer","seller","price","quantity"])
     def receive_click(self,event):
         self.fast_list.receive_click(event)
 
         
         
-
