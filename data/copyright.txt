@@ -1,0 +1,8 @@
+Planet data is from wikipedia
+
+List of companies for mashing into new names have been downloaded from New York Stock Exchange, TOkyo Stock Exchange and London Stock Exchange
+
+Earth city names, position and population from the www.world-gazetteer.com
+
+GNP per capita per country from www.imf.org
+
