@@ -11,5 +11,28 @@ The game is currently somewhat playable. Working features include:
 
 ## Installation
 
-This game was last known to work in 2009. If you have a windows computer, these [compiled python-binaries](https://sourceforge.net/projects/highfrontier/files/?source=navbar) may actually work still. At least the intro runs on my 2017 windows 10 machine (file intro.exe). The rest, not so much. There's also an ubuntu debian image there.
-Running from source is more difficult, since a lot of the packages have been updated since. I'm working on an update to fix this.
+These pre-[compiled python-binaries](https://sourceforge.net/projects/highfrontier/files/?source=navbar) will show the intro, but don't work much further than that. There's also an ubuntu debian image there, that I didn't test.
+
+Setting up from source is possible however. On windows it was a matter of finding and installing:
+* [Python 2.7](https://www.python.org/downloads/)
+* [Pygame](http://www.pygame.org/download.shtml), just the latest version - I used the one called pygame-1.9.1.win32-py2.7.msi.
+* Python Image Module: [PIL](http://www.pythonware.com/products/pil/), just the latest version - I used the one called Python Imaging Library 1.1.7 for Python 2.7
+
+
+On ubuntu it was also possible. These were the needed steps:
+* [Python 2.7](https://www.python.org/downloads/) - but came pre-installed of course.
+* Pygame:
+```
+wget http://www.pygame.org/ftp/pygame-1.9.1release.tar.gz
+tar -zxvf pygame-1.9.1release.tar.gz
+python setup.py
+```
+Then I had some problems with a video-link that [stack-overflow](https://stackoverflow.com/a/14026861) solved for me.
+* PIL - just using 
+```
+sudo apt-get install python-imaging
+```
+
+
+
+
