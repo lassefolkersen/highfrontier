@@ -44,7 +44,7 @@ These pre-[compiled python-binaries](https://sourceforge.net/projects/highfronti
 
 Setting up from source is possible however. 
 
-###Windows
+### Windows
 On windows it was a matter of finding and installing:
 * [Python 2.7](https://www.python.org/downloads/)
 * [Pygame](http://www.pygame.org/download.shtml), just the latest version - I used the one called pygame-1.9.1.win32-py2.7.msi.
@@ -52,7 +52,7 @@ On windows it was a matter of finding and installing:
 
 Then run by starting the intro.py file.
 
-###Linux
+### Linux
 On ubuntu it was also possible. These were the needed steps:
 * [Python 2.7](https://www.python.org/downloads/) - but came pre-installed of course.
 * Pygame:
@@ -75,12 +75,18 @@ python intro.py
 
 
 
-##Screenshots
+## Screenshots
 
 ![View of the main starting planet](screenshots/earth.jpg)
+View of the main starting planet
 
 ![City view](screenshots/city.jpg)
+City view, showing the local labor market price development
+
 
 ![Orbital view of different planets](screenshots/planets.jpg)
+Orbital view of different planets, zoomable and with accurate orbital mechanics
+
 
 ![Illustrating the trade-network overlay](screenshots/earth_network.jpg)
+These go on land, but space-based connections are also implemented
