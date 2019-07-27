@@ -236,7 +236,7 @@ class IntroGui:
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
                               fixed_size = None)
     def load_game(self, label, load_window):
-        self.main.start_loop(load_previous_game = os.path.join("savegames",load_window.selected_name))
+        self.main.start_loop(loadPreviousGame = os.path.join("savegames",load_window.selected_name))
     def game_settings_callback(self, label, function_parameter):
         pass
     def quit_callback(self, label, function_parameter):
