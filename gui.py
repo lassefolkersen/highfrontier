@@ -443,7 +443,7 @@ class gui():
 
         # creating the env string
         if self.solar_system_object_link.display_mode == "solar_system":
-            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
+            env_string = "Solar system -" + self.solar_system_object_link.current_planet.planet_name.upper()
         elif self.solar_system_object_link.display_mode == "planetary":
             if self.solar_system_object_link.current_planet.current_base == None:
                 env_string = self.solar_system_object_link.current_planet.planet_name

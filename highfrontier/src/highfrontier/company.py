@@ -545,8 +545,7 @@ class company:
 
 					splitline = []
 					for singleword in old_splitline:
-						singleword = string.capitalize(singleword)
-						splitline.append(singleword)
+						splitline.append(singleword.upper())
 
 					if len(splitline) > 1:
 						if len(splitline) == 2:

@@ -526,7 +526,7 @@ class gui():
 
         # creating the env string
         if self.sol().display_mode == "solar_system":
-            env_string = "Solar system -" + string.capitalize(self.sol().current_planet.planet_name)
+            env_string = "Solar system -" + self.sol().current_planet.planet_name.upper()
         elif self.sol().display_mode == "planetary":
             if self.sol().current_planet.current_base == None:
                 env_string = self.sol().current_planet.planet_name
