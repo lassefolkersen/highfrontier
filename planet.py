@@ -1,8 +1,8 @@
 import primitives
 import pygame, sys,os
 from pygame.locals import *
-#from ocempgui.widgets import ImageLabel
-import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
+#from ocempgui.widgets from PIL import ImageLabel
+from PIL import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
 import math
 import pickle
 import subprocess

@@ -7,7 +7,7 @@ import string
 import math
 import time
 
-import Image, ImageChops
+from PIL import Image, ImageChops
 import pygame
 
 

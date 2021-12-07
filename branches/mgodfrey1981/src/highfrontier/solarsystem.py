@@ -1,7 +1,7 @@
 import SimThread
 import os
 import math
-import Image
+from PIL import Image
 import pygame
 import random
 import datetime
@@ -12,7 +12,7 @@ import global_variables
 import primitives
 import technology
 import pickle
-import Image
+from PIL import Image
 class solarsystem:
     def launchThread(self):
         self.simThread=SimThread.SimThread(self)

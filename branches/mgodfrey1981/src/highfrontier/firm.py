@@ -1,5 +1,5 @@
 import primitives
-import Image, ImageChops
+from PIL import Image, ImageChops
 import pygame
 import random
 import os
