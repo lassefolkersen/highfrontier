@@ -72,7 +72,7 @@ class solarsystem:
                         richness_database[self.companies[companyName].capital] = self.companies[companyName]
                     richness_list = list(richness_database.keys())
                     richness_list.sort()
-                    richness_list = richness_list[(len(richness_list) * 2 / 3):len(richness_list)] #"This is the richest 1/3 of all companies"
+                    richness_list = richness_list[int(len(richness_list) * 2 / 3):len(richness_list)] #"This is the richest 1/3 of all companies"
                     list_of_model_companies = []
                     for key in richness_list:
                         list_of_model_companies.append(richness_database[key])

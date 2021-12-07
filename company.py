@@ -1971,7 +1971,7 @@ class base(firm):
 		base_area_mask = Image.new("L",overlay_image.size,0)
 		for distance in distance_matrix_here:
 			for pixels in distance_matrix_here[distance]:
-				colour = 255-(155* float(distance) / max(distance_matrix_here.keys()))
+				colour = int(255-(155* float(distance) / max(distance_matrix_here.keys())))
 				pixel_transposed = (eastern_loc_px + pixels[0], pixels[1])
 				if not 0 < pixel_transposed[0] < overlay_image.size[0]:
 					if 0 > pixel_transposed[0]:
