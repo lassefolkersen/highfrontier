@@ -225,9 +225,9 @@ class planet:
 
         if os.access(os.path.join("pickledmiscellanous","distances"),os.R_OK):
             #print "Found distance_matrix. Loading..."
-            file = open(os.path.join("pickledmiscellanous","distances"),"r")
-            distance_data = pickle.load(file)
-            file.close()
+            with open(os.path.join("pickledmiscellanous","distances"),"rb") as file:
+                print(file)
+                distance_data = pickle.load(file)
             #print "done"
             #print distance_matrix
 #

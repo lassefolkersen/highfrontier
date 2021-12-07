@@ -27,10 +27,11 @@ class entry():
         self.draw()
 
 
-    def receive_text(self,event):
+    def receive_text(self, event):
+        print(event)
         if self.active:
 #            print event
-            if event.str == "\x08":
+            if event.unicode == "\x08":
                 self.text = self.text[0:(len(self.text)-1)]
                 self.draw()
 #            elif event.key == 13:
@@ -38,10 +39,10 @@ class entry():
 #                return "enter"
             else:
                 if self.restrict_input_to is not None:
-                    if event.str not in self.restrict_input_to:
+                    if event.unicode not in self.restrict_input_to:
                         return
                 if len(self.text) < self.max_letters:
-                    self.text = self.text + event.str
+                    self.text = self.text + event.unicode
                     self.draw()
 
     def activate(self,position):
@@ -660,7 +661,7 @@ class fast_list():
 
 
 
-            index_selected = (event.pos[1] - 20 - self.rect[1] - self.top_frame_width) / self.text_height + self.interval[0]
+            index_selected = int((event.pos[1] - 20 - self.rect[1] - self.top_frame_width) / self.text_height + self.interval[0])
 
 #            print "clicked at relative y_pos: " + str(event.pos[1] - self.rect[1] - self.top_frame_width) + " which is index: " + str(index_selected)
             if 0 <= index_selected and index_selected < len(self.data):

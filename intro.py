@@ -35,7 +35,7 @@ class IntroGui:
             self.ask_company_capital(None, None, give_warning=True)
     def __init__(self):
         self.main=main.Game()
-        self.stepsize = 50
+        self.stepsize = 5
         self.company_capital = None
         self.company_name = None
         self.save_game_to_load = None
@@ -67,13 +67,14 @@ class IntroGui:
             for event in events:
                 if event.type == QUIT:
                     sys.exit(0)
-                if event.type == 5: #mouse down event
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     self.receive_click(event)
 
-                if event.type == 2: #key down event
+                if event.type == pygame.KEYDOWN:
                     if self.text_receiver is not None:
                         self.text_receiver.receive_text(event)
     def receive_click(self, event):
+        print(event)
         if self.gui_rect.collidepoint(event.pos) == 1:
             for button in list(self.buttons.values()):
                 if button.rect.collidepoint(event.pos) == 1:
