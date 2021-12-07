@@ -25,7 +25,7 @@ The constants for the theme objects live in pyui/locals.py
 Themes have a default font that is used for any widgets that dont specify a font.
 """
 
-import locals
+from . import locals
 import pyui
 from pyui.desktop import getRenderer, getDesktop
 

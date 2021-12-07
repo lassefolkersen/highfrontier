@@ -1,6 +1,6 @@
-import global_variables
+from . import global_variables
 import datetime
-import primitives
+from . import primitives
 import os
 import random
 import string
@@ -108,7 +108,7 @@ class company:
 		new_company_database = {}
 		for headers in global_variables.company_database_headers:
 			if global_variables.company_database_headers[headers] == "int":
-				if headers in model_company_database.keys():
+				if headers in list(model_company_database.keys()):
 					if standard_deviation == 0:
 						new_company_database[headers] = model_company_database[headers]
 					else:
@@ -122,7 +122,7 @@ class company:
 					new_company_database[headers] = random.randint(1,100)
 
 			elif global_variables.company_database_headers[headers] == "string":
-				if headers in model_company_database.keys():
+				if headers in list(model_company_database.keys()):
 					new_company_database[headers] = model_company_database[headers]
 				else:
 					new_company_database[headers] = None
@@ -282,20 +282,20 @@ class company:
 		
 		if len(self.home_cities)==0:
 			potential_bases = []
-			for planet in solar_system_object.planets.values():
+			for planet in list(solar_system_object.planets.values()):
 				for base_names in planet.bases:
 					potential_bases.append(base_names)
 			new_home_city_name = random.choice(potential_bases)
 #			print "made a list of " + str(len(potential_bases)) + " and picked from this " + str(new_home_city_name)
 		else:
 			potential_base_names = []
-			for planet in solar_system_object.planets.values():
-				for base in planet.bases.values():
+			for planet in list(solar_system_object.planets.values()):
+				for base in list(planet.bases.values()):
 					if base.base_name in self.home_cities:
 						if len(base.trade_routes) > 0:
-							potential_base_names = potential_base_names + base.trade_routes.keys()
+							potential_base_names = potential_base_names + list(base.trade_routes.keys())
 			
-			for existing_home_base_name in self.home_cities.keys():
+			for existing_home_base_name in list(self.home_cities.keys()):
 				if existing_home_base_name in potential_base_names:
 					i = potential_base_names.index(existing_home_base_name)
 					del potential_base_names[i]
@@ -312,8 +312,8 @@ class company:
 		if new_home_city_name is None:
 			new_home_city = None
 		else:
-			for planet in solar_system_object.planets.values():
-				for base in planet.bases.values():
+			for planet in list(solar_system_object.planets.values()):
+				for base in list(planet.bases.values()):
 					if base.base_name == new_home_city_name:
 						new_home_city = base
 			
@@ -409,10 +409,10 @@ class company:
 
 
 		#checking if any firms are for sale, if their bid_deadline is crossed and if so effectuates the sale
-		for firm_instance in self.owned_firms.values():
+		for firm_instance in list(self.owned_firms.values()):
 			if firm_instance.for_sale:
 				if firm_instance.for_sale_deadline > self.solar_system_object_link.current_date:
-					bids = firm_instance.for_sale_bids.values()
+					bids = list(firm_instance.for_sale_bids.values())
 					bids.sort()
 					inverted_bids = primitives.invert_dict(firm_instance.for_sale_bids)
 					funding_not_ok = True
@@ -482,7 +482,7 @@ class company:
 				self.evaluate_market()
 				
 			#stock change evaluation - always done
-			for firm_instance in self.owned_firms.values():
+			for firm_instance in list(self.owned_firms.values()):
 				firm_instance.execute_stock_change(self.solar_system_object_link.current_date)
 
 			
@@ -492,7 +492,7 @@ class company:
 				time_limit_of_supply_evaluation = int(((101 - self.company_database["evaluate_supply_often"])/100.0) * (max_time_supply_and_demand - min_time_supply_and_demand) + min_time_supply_and_demand)
 				if (self.solar_system_object_link.current_date - self.last_supply_evaluation).days >  time_limit_of_supply_evaluation:
 					self.last_supply_evaluation = self.solar_system_object_link.current_date
-					for firm_instance in self.owned_firms.values():
+					for firm_instance in list(self.owned_firms.values()):
 						firm_instance.calculate_supply_reaction()
 
 			
@@ -501,7 +501,7 @@ class company:
 				time_limit_of_demand_evaluation = int(((101 - self.company_database["evaluate_demand_often"])/100.0) * (max_time_supply_and_demand - min_time_supply_and_demand) + min_time_supply_and_demand)
 				if (self.solar_system_object_link.current_date - self.last_demand_evaluation).days >  time_limit_of_demand_evaluation:
 					self.last_demand_evaluation = self.solar_system_object_link.current_date
-					for firm_instance in self.owned_firms.values():
+					for firm_instance in list(self.owned_firms.values()):
 						firm_instance.calculate_demand_reaction()
 
 
@@ -625,11 +625,11 @@ class company:
 				print_dict = {"text":"DEBUGGING: change_firm_size received a float " + str(size) + " -- correct this","type":"debugging"}
 				self.solar_system_object_link.messages.append(print_dict)
 			size = int(size)
-		elif isinstance(size,int) or isinstance(size,long):
+		elif isinstance(size,int) or isinstance(size,int):
 			pass
 		else:
-			print self.name
-			print size
+			print(self.name)
+			print(size)
 			raise Exception("Did not recognize the type of size given")
 		if size < 0:
 			raise Exception("Received a negative size for a firm. This is not allowed")
@@ -654,7 +654,7 @@ class company:
 		else:
 			#first checking if it already exists:
 			existing_firm = None
-			for firm_instance in self.owned_firms.values():
+			for firm_instance in list(self.owned_firms.values()):
 				 if firm_instance.location == location:
 					if firm_instance.technology_name == technology_name:
 						existing_firm = firm_instance
@@ -668,8 +668,8 @@ class company:
 						while name_is_not_unique:
 							name_is_not_unique = False
 							firm_name = technology_name + "_" + str(random.randint(10000,99999))
-							for company_instance in self.solar_system_object_link.companies.values():
-								if firm_name in company_instance.owned_firms.keys():
+							for company_instance in list(self.solar_system_object_link.companies.values()):
+								if firm_name in list(company_instance.owned_firms.keys()):
 									name_is_not_unique = True
 					else:
 				   		firm_name = name
@@ -682,9 +682,9 @@ class company:
 				
 				#if it is not we search for the process requested
 				else:
-					if technology_name not in self.known_technologies.keys():
-						print technology_name
-						print self.known_technologies.keys()
+					if technology_name not in list(self.known_technologies.keys()):
+						print(technology_name)
+						print(list(self.known_technologies.keys()))
 						raise Exception("The requested technology was not found")
 
 					firm_specific_process = {}
@@ -692,7 +692,7 @@ class company:
 						firm_specific_process[direction] = {}
 						for resource_processed in self.known_technologies[technology_name]["input_output_dict"][direction]:
 							firm_specific_process[direction][resource_processed] = self.known_technologies[technology_name]["input_output_dict"][direction][resource_processed] * size
-					for other_keys in self.known_technologies[technology_name]["input_output_dict"].keys(): #to include whatever might have been in the input_output_dict
+					for other_keys in list(self.known_technologies[technology_name]["input_output_dict"].keys()): #to include whatever might have been in the input_output_dict
 						if other_keys not in ["input","output"]:
 							 firm_specific_process[other_keys] = self.known_technologies[technology_name]["input_output_dict"][other_keys]
 					
@@ -701,8 +701,8 @@ class company:
 						while name_is_not_unique:
 							name_is_not_unique = False
 							firm_name = technology_name + "_" + str(random.randint(10000,99999))
-							for company_instance in self.solar_system_object_link.companies.values():
-								if firm_name in company_instance.owned_firms.keys():
+							for company_instance in list(self.solar_system_object_link.companies.values()):
+								if firm_name in list(company_instance.owned_firms.keys()):
 									name_is_not_unique = True
 					else:
 						firm_name = name
@@ -881,10 +881,10 @@ class firm():
 					for resource in [self.resource, self.transport_type]:
 						delete_these = []
 						for i, offer in enumerate(location.market[offer_type][resource]):
-							if "buyer" in offer.keys():
+							if "buyer" in list(offer.keys()):
 								if self.name in offer["buyer"].name:
 									delete_these.append(i)
-							if "seller" in offer.keys():
+							if "seller" in list(offer.keys()):
 								if self.name in offer["seller"].name:
 									delete_these.append(i)
 						delete_these.reverse()
@@ -897,10 +897,10 @@ class firm():
 				for resource in self.location.market[offer_type]:
 					delete_these = []
 					for i, offer in enumerate(self.location.market[offer_type][resource]):
-						if "buyer" in offer.keys():
+						if "buyer" in list(offer.keys()):
 							if self.name in offer["buyer"].name:
 								delete_these.append(i)
-						if "seller" in offer.keys():
+						if "seller" in list(offer.keys()):
 							if self.name in offer["seller"].name:
 								delete_these.append(i)
 					delete_these.reverse()
@@ -959,9 +959,9 @@ class firm():
 		
 		#if self is a merchant we first need to assign the correct stock_dict 
 		if isinstance(self, merchant): 
-			if "seller" in own_offer.keys():
+			if "seller" in list(own_offer.keys()):
 				self.stock_dict = self.to_stock_dict
-			elif "buyer" in own_offer.keys():
+			elif "buyer" in list(own_offer.keys()):
 				self.stock_dict = self.from_stock_dict
 			else:
 				raise Exception('unknown offer type')
@@ -973,7 +973,7 @@ class firm():
 		
 		
 		#defining basics and checking if the offer is valid
-		if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],long)):
+		if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],int)):
 			own_offer["quantity"] = int(own_offer["quantity"])
 			if self.solar_system_object_link.message_printing["debugging"]: 
 				print_dict = {"text":"DEBUGGING: The quantity given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not an integer. Try to keep it as integers","type":"debugging"}
@@ -988,7 +988,7 @@ class firm():
 		
 			 
 		
-		if "seller" in own_offer.keys():
+		if "seller" in list(own_offer.keys()):
 			type = "sell_offer"
 			opposite_bids = market["buy_offers"][resource]
 			competing_bids = market["sell_offers"][resource]
@@ -1000,7 +1000,7 @@ class firm():
 
 
 				
-		elif "buyer" in own_offer.keys():
+		elif "buyer" in list(own_offer.keys()):
 			type = "buy_offer"
 			opposite_bids = market["sell_offers"][resource]
 			competing_bids = market["buy_offers"][resource]
@@ -1012,7 +1012,7 @@ class firm():
 
 					   
 		else:
-			print "Unknown offer type in make_market_bid() function"
+			print("Unknown offer type in make_market_bid() function")
 			raise Exception('unknown offer type')
 
 		if own_offer["quantity"] < 0:
@@ -1042,9 +1042,9 @@ class firm():
 
 			#if counterpart is a merchant we first need to assign the correct stock_dict 
 			if isinstance(counterpart, merchant): 
-				if "seller" in own_offer.keys():
+				if "seller" in list(own_offer.keys()):
 					counterpart.stock_dict = counterpart.from_stock_dict
-				elif "buyer" in own_offer.keys():
+				elif "buyer" in list(own_offer.keys()):
 					counterpart.stock_dict = counterpart.to_stock_dict
 				else:
 					raise Exception('unknown offer type')
@@ -1469,7 +1469,7 @@ class base(firm):
 		
 		#The bitterness of a base is the cumulative demand 
 		bitternes_of_base = 0
-		for demand_level_here in base_demand_dict.values():
+		for demand_level_here in list(base_demand_dict.values()):
 			bitternes_of_base = bitternes_of_base + demand_level_here 
 		self.bitternes_of_base = bitternes_of_base
 		
@@ -1748,11 +1748,11 @@ class base(firm):
 				search_length = search_length + search_increment
 				if search_length > 180:
 					break
-				for other_base in planet.bases.values():
+				for other_base in list(planet.bases.values()):
 					if other_base.base_name != self.base_name:
 						position_two = (other_base.position_coordinate[0],other_base.position_coordinate[1])
 						if position_one[0] - search_length < position_two[0] < position_one[0] + search_length and position_one[1] - search_length < position_two[1] < position_one[1] + search_length:
-							if not other_base.base_name in self.trade_routes.keys():
+							if not other_base.base_name in list(self.trade_routes.keys()):
 								
 								if len(other_base.trade_routes) < int(math.log10(other_base.population)):
 									distance = planet.calculate_distance(position_one,position_two)
@@ -1765,7 +1765,7 @@ class base(firm):
 									other_base.trade_routes[self.base_name] = trade_route
 		else: #space station trade route
 			possible_space_ports = []
-			for other_base in planet.bases.values():
+			for other_base in list(planet.bases.values()):
 				if other_base.terrain_type != "Space": #don't connect to other space stations
 					if other_base.original_country == self.original_country:
 						possible_space_ports.append(other_base)

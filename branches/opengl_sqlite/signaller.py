@@ -1,23 +1,23 @@
 # for passing signals around
 handlers={}
 def connect(objectFrom,signalName,method):
-    if(not handlers.has_key(signalName)):
+    if(signalName not in handlers):
         handlers[signalName]={}
-    if(not handlers[signalName].has_key(objectFrom)):
+    if(objectFrom not in handlers[signalName]):
         handlers[signalName][objectFrom]=[]
     handlers[signalName][objectFrom].append(method)
     pass
            
 def emit(objectFrom,signalName,params=None):
-    if(handlers.has_key(signalName)):
+    if(signalName in handlers):
         originDict=handlers[signalName]
-        if(originDict.has_key(objectFrom)):
+        if(objectFrom in originDict):
             handlerList=originDict[objectFrom]
             for slot in handlerList:
                 slot(objectFrom,params)
                 pass
             pass
-        if(originDict.has_key(None)):
+        if(None in originDict):
             handlerList=originDict[None]
             for slot in handlerList:
                 slot(objectFrom,params)

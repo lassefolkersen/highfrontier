@@ -3,9 +3,9 @@ import random
 import pygame
 from xml.dom import minidom
 import os
-import global_variables
-import primitives
-import Tree
+from . import global_variables
+from . import primitives
+from . import Tree
 
 class Backbone_Tree(Tree.Tree):
 	"""
@@ -240,19 +240,19 @@ class Backbone_Tree(Tree.Tree):
 			cartesian_list = []
 			for i, time_unit in enumerate(time_intervals):
 				
-				if time_unit not in total_theta_dict[vertex["technology_name"]].keys(): #when the curve should not be drawn anymore
+				if time_unit not in list(total_theta_dict[vertex["technology_name"]].keys()): #when the curve should not be drawn anymore
 					#most of the time this will be true
 					theta = None
 					
 					#but we check if it is a an end of line
 					if i != 0:
 						previous_time_unit = time_intervals[i-1]
-						if previous_time_unit in total_theta_dict[vertex["technology_name"]].keys():
+						if previous_time_unit in list(total_theta_dict[vertex["technology_name"]].keys()):
 							new_order_of_coretech = self.order_of_core_techs[(vertex_id+1):len(self.order_of_core_techs)] + self.order_of_core_techs[0:vertex_id]
 							for potential_neighbour in new_order_of_coretech:
 #								print "previous_time_unit: " + str(previous_time_unit)
 #								print "potential_neighbour: " + str(potential_neighbour)
-								if previous_time_unit in total_theta_dict[potential_neighbour].keys():
+								if previous_time_unit in list(total_theta_dict[potential_neighbour].keys()):
 									neighbour = potential_neighbour
 									break
 							theta = total_theta_dict[neighbour][previous_time_unit]
@@ -294,14 +294,14 @@ class Backbone_Tree(Tree.Tree):
 	
 				
 				# if the band appears after the end
-				elif time_value_at_edge not in total_theta_dict[vertex].keys():
+				elif time_value_at_edge not in list(total_theta_dict[vertex].keys()):
 					pass
 				#if not - we just put the between the two lines at the edge
 				else:
 					neighbour = None
 					new_order_of_coretech = self.order_of_core_techs[(i+1):len(self.order_of_core_techs)] + self.order_of_core_techs[0:i]
 					for potential_neighbour in new_order_of_coretech:
-						if time_value_at_edge in total_theta_dict[potential_neighbour].keys():
+						if time_value_at_edge in list(total_theta_dict[potential_neighbour].keys()):
 							neighbour = potential_neighbour
 							break
 					
@@ -363,9 +363,9 @@ class Backbone_Tree(Tree.Tree):
 			raise Exception("process_dict must be dict, not a " + str(process_dict.__class__))
 		abstract_process_dict_keys = ["input","output"]
 		for abstract_process_dict_key in abstract_process_dict_keys: 
-			if abstract_process_dict_key not in abstract_process_dict.keys():
+			if abstract_process_dict_key not in list(abstract_process_dict.keys()):
 				raise Exception("The given abstract_process_dict must have the following keys: " + str(abstract_process_dict_keys) + " - did not find " + str(abstract_process_dict_key))
-		for abstract_process_dict_key in abstract_process_dict.keys(): 
+		for abstract_process_dict_key in list(abstract_process_dict.keys()): 
 			if not isinstance(abstract_process_dict[abstract_process_dict_key],list):
 				raise Exception("All values of the abstract_process_dict must be given as lists")
 			if abstract_process_dict_key not in abstract_process_dict_keys:
@@ -376,12 +376,12 @@ class Backbone_Tree(Tree.Tree):
 			raise Exception("co_descriptors must be dict, not a " + str(co_descriptors.__class__))
 		co_descriptors_keys = ["connecting_word","adjective","noun"]
 		for co_descriptors_key in co_descriptors_keys: 
-			if co_descriptors_key not in co_descriptors.keys():
+			if co_descriptors_key not in list(co_descriptors.keys()):
 				raise Exception("The given co_descriptors must have the following keys: " + str(co_descriptors_keys) + " - did not find " + str(co_descriptors_key))
-		for co_descriptors_key in co_descriptors.keys(): 
+		for co_descriptors_key in list(co_descriptors.keys()): 
 			if co_descriptors_key not in co_descriptors_keys:
 				raise Exception("The given co_descriptors must only have the following keys: " + str(co_descriptors_keys) + " - no place for " + str(co_descriptors_key))
-		for co_descriptors_values in co_descriptors.values(): 
+		for co_descriptors_values in list(co_descriptors.values()): 
 			if not isinstance(co_descriptors_values,list):
 				raise Exception("The co_descriptor dictionary values must all be lists")
 			else:
@@ -428,7 +428,7 @@ class Backbone_Tree(Tree.Tree):
 				crossover_value = vertex["crossover_dict"][crossover_target]
 				crossover_target_list = [crossover_target,vertex["technology_name"]]
 				crossover_target_list.sort()	 
-				if crossover_value in crossoverdict.keys():
+				if crossover_value in list(crossoverdict.keys()):
 					if crossover_target_list not in crossoverdict[crossover_value]:
 						crossoverdict[crossover_value].append(crossover_target_list)
 				else:
@@ -437,7 +437,7 @@ class Backbone_Tree(Tree.Tree):
 		
 		#starting from the highest valued pairings each tech is assigned up to (but not more than) two neighbours-
 		order_of_techs = []
-		crossoverdict_keys = crossoverdict.keys()
+		crossoverdict_keys = list(crossoverdict.keys())
 		crossoverdict_keys.sort(reverse=True)
 		for crossoverdict_key in crossoverdict_keys:
 			for crossover_target_list in crossoverdict[crossoverdict_key]:
@@ -452,9 +452,9 @@ class Backbone_Tree(Tree.Tree):
 						index = order_of_techs.index(crossover_target_list[0])
 						order_of_techs.insert(index,crossover_target_list[1])
 					else:
-						print order_of_techs
-						print neighbour_dict
-						print crossover_target_list
+						print(order_of_techs)
+						print(neighbour_dict)
+						print(crossover_target_list)
 						raise Exception("problem for " + str(crossover_target_list) + " this has been observed before if crossoverdicts are not equal")
 					neighbour_dict[crossover_target_list[0]].append(crossover_target_list[1])
 					neighbour_dict[crossover_target_list[1]].append(crossover_target_list[0])

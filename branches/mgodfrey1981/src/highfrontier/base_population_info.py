@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -54,7 +54,7 @@ class base_population_info():
             base_population_dict["Trade routes, number of"] = {"info":str(len(base_selected.trade_routes))}
             if 0 < len(base_selected.trade_routes) < 6:
                 trade_route_list = ""
-                for trade_route in base_selected.trade_routes.keys():
+                for trade_route in list(base_selected.trade_routes.keys()):
                     trade_route_list = trade_route_list + trade_route + ", "
                 trade_route_list = trade_route_list.rstrip(", ")
                 base_population_dict["Trade routes"] = {"info":trade_route_list}

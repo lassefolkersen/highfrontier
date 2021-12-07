@@ -24,7 +24,7 @@ class MarketBidModel:
     def createInstance(self):
         return {'company_id':None, 'amount':None,'market_order_id':None}
     def save(self,market_bid={}):
-        if(market_bid.has_key('market_bid_id')):
+        if('market_bid_id' in market_bid):
             return self.update(market_bid)
         return self.insert(market_bid)
     def load(self,market_bid_id):

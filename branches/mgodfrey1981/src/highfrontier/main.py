@@ -3,15 +3,16 @@ import pygame
 from pygame.locals import *
 import time
 import os, sys
-import planet
-import company
-import solarsystem
+from . import planet
+from . import company
+from . import solarsystem
 import datetime
-import primitives
-import global_variables
-import gui
+from . import primitives
+from . import global_variables
+from . import gui
 import random
-reload(sys)
+import importlib
+importlib.reload(sys)
 if hasattr(sys,"setdefaultencoding"):
     sys.setdefaultencoding("latin-1")
 
@@ -81,14 +82,14 @@ class Game:
                 "Pick research (pick research automatically)":False,
                 "Expand area of operation (search for new home cities)":False
                 }
-            if companyName in self.sol().companies.keys():
+            if companyName in list(self.sol().companies.keys()):
                 self.sol().current_player = self.sol().companies[companyName]
                 self.sol().current_player.automation_dict = automation_dict
                 self.sol().current_player.automation_dict["Demand bidding (initiate buying bids)"] = True
                 self.sol().current_player.automation_dict["Supply bidding (initiate selling bids)"] = True
                 self.sol().current_player.capital = companyCapital
             else:
-                model_companyName = random.choice(self.sol().companies.keys())
+                model_companyName = random.choice(list(self.sol().companies.keys()))
                 model_company = self.sol().companies[model_companyName]
                 new_company = company.company(self.sol(),
                                               model_company.company_database,
@@ -99,9 +100,9 @@ class Game:
                 new_company.automation_dict = automation_dict
                 self.sol().current_player = new_company
         #loading planets that are often used:
-        print "loading earth"
+        print("loading earth")
         self.sol().planets["earth"].pickle_all_projections()
-        print "finished loading"
+        print("finished loading")
         #divide the surface in action and non-action
         action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
         right_side_rect = pygame.Rect(global_variables.window_size[0] - 150, 0, 150, global_variables.window_size[1])
@@ -140,7 +141,7 @@ class Game:
         self._guiInstance=g
         return
     def __init__(self):
-        print "init Game"
+        print("init Game")
         return
     def sol(self):
         return self._solar_system

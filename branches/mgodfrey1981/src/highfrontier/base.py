@@ -1,9 +1,9 @@
-import market_decisions
-import research
-import firm
-import global_variables
+from . import market_decisions
+from . import research
+from . import firm
+from . import global_variables
 import datetime
-import primitives
+from . import primitives
 import os
 import random
 import string
@@ -16,11 +16,11 @@ import pygame
 
 import Image
 import os
-import firm
+from . import firm
 import random
 import datetime
 import math
-import global_variables
+from . import global_variables
 
 
 class base(firm.firm):
@@ -191,7 +191,7 @@ class base(firm.firm):
 		
 		#The bitterness of a base is the cumulative demand 
 		bitternes_of_base = 0
-		for demand_level_here in base_demand_dict.values():
+		for demand_level_here in list(base_demand_dict.values()):
 			bitternes_of_base = bitternes_of_base + demand_level_here 
 		self.bitternes_of_base = bitternes_of_base
 		
@@ -466,11 +466,11 @@ class base(firm.firm):
 				search_length = search_length + search_increment
 				if search_length > 180:
 					break
-				for other_base in planet.bases.values():
+				for other_base in list(planet.bases.values()):
 					if other_base.base_name != self.base_name:
 						position_two = (other_base.position_coordinate[0],other_base.position_coordinate[1])
 						if position_one[0] - search_length < position_two[0] < position_one[0] + search_length and position_one[1] - search_length < position_two[1] < position_one[1] + search_length:
-							if not other_base.base_name in self.trade_routes.keys():
+							if not other_base.base_name in list(self.trade_routes.keys()):
 								
 								if len(other_base.trade_routes) < int(math.log10(other_base.population)):
 									distance = planet.calculate_distance(position_one,position_two)
@@ -483,7 +483,7 @@ class base(firm.firm):
 									other_base.trade_routes[self.base_name] = trade_route
 		else: #space station trade route
 			possible_space_ports = []
-			for other_base in planet.bases.values():
+			for other_base in list(planet.bases.values()):
 				if other_base.terrain_type != "Space": #don't connect to other space stations
 					if other_base.original_country == self.original_country:
 						possible_space_ports.append(other_base)

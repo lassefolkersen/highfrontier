@@ -1,9 +1,9 @@
-import primitives
+from . import primitives
 import Image, ImageChops
 import pygame
 import random
 import os
-import global_variables
+from . import global_variables
 import math
 import datetime
 
@@ -20,14 +20,14 @@ class firm:
 
             #if self is a merchant we first need to assign the correct stock_dict 
             if self.isMerchant():
-                    if "seller" in own_offer.keys():
+                    if "seller" in list(own_offer.keys()):
                             self.stock_dict = self.to_stock_dict
-                    elif "buyer" in own_offer.keys():
+                    elif "buyer" in list(own_offer.keys()):
                             self.stock_dict = self.from_stock_dict
                     else:
                             raise Exception('unknown offer type')
             #defining basics and checking if the offer is valid
-            if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],long)):
+            if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],int)):
                     own_offer["quantity"] = int(own_offer["quantity"])
                     if self.solarSystem().message_printing["debugging"]: 
                             print_dict = {"text":"DEBUGGING: The quantity given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not an integer. Try to keep it as integers","type":"debugging"}
@@ -38,7 +38,7 @@ class firm:
                             self.solarSystem().messages.append(print_dict)
                             own_offer["price"] = float(own_offer["price"])
             resource = own_offer["resource"]
-            if "seller" in own_offer.keys():
+            if "seller" in list(own_offer.keys()):
                     type = "sell_offer"
                     opposite_bids = market["buy_offers"][resource]
                     competing_bids = market["sell_offers"][resource]
@@ -47,7 +47,7 @@ class firm:
                             if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: adjusted " + resource + " sell offer from " + str(self.name) + " to " + str(own_offer["quantity"]) + " because of lack of resources  - you should try to correct this from the calculate_supply functions","type":"debugging"}
                                     self.solarSystem().messages.append(print_dict)
-            elif "buyer" in own_offer.keys():
+            elif "buyer" in list(own_offer.keys()):
                     type = "buy_offer"
                     opposite_bids = market["sell_offers"][resource]
                     competing_bids = market["buy_offers"][resource]
@@ -57,7 +57,7 @@ class firm:
                                     print_dict = {"text":"DEBUGGING WARNING: adjusted buy offer from " + str(self.name) + " to " + str(own_offer["quantity"]) +" because of lack of capital - you should try to correct this from the calculate_demand functions. The original price was " + str(own_offer["price"]) + " and the capital was " + str(self.owner.capital),"type":"debugging"}
                                     self.solarSystem().messages.append(print_dict)
             else:
-                    print "Unknown offer type in make_market_bid() function"
+                    print("Unknown offer type in make_market_bid() function")
                     raise Exception('unknown offer type')
             if own_offer["quantity"] < 0:
                     if self.solarSystem().message_printing["debugging"]:
@@ -82,9 +82,9 @@ class firm:
                             raise Exception('unknown offer type')
                     #if counterpart is a merchant we first need to assign the correct stock_dict 
                     if counterpart.isMerchant():
-                            if "seller" in own_offer.keys():
+                            if "seller" in list(own_offer.keys()):
                                     counterpart.stock_dict = counterpart.from_stock_dict
-                            elif "buyer" in own_offer.keys():
+                            elif "buyer" in list(own_offer.keys()):
                                     counterpart.stock_dict = counterpart.to_stock_dict
                             else:
                                     raise Exception('unknown offer type')
@@ -360,10 +360,10 @@ class firm:
                                     for resource in [self.resource, self.transport_type]:
                                             delete_these = []
                                             for i, offer in enumerate(location.market[offer_type][resource]):
-                                                    if "buyer" in offer.keys():
+                                                    if "buyer" in list(offer.keys()):
                                                             if self.name in offer["buyer"].name:
                                                                     delete_these.append(i)
-                                                    if "seller" in offer.keys():
+                                                    if "seller" in list(offer.keys()):
                                                             if self.name in offer["seller"].name:
                                                                     delete_these.append(i)
                                             delete_these.reverse()
@@ -376,10 +376,10 @@ class firm:
                             for resource in self.location.market[offer_type]:
                                     delete_these = []
                                     for i, offer in enumerate(self.location.market[offer_type][resource]):
-                                            if "buyer" in offer.keys():
+                                            if "buyer" in list(offer.keys()):
                                                     if self.name in offer["buyer"].name:
                                                             delete_these.append(i)
-                                            if "seller" in offer.keys():
+                                            if "seller" in list(offer.keys()):
                                                     if self.name in offer["seller"].name:
                                                             delete_these.append(i)
                                     delete_these.reverse()

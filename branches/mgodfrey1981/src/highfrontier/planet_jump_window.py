@@ -1,15 +1,15 @@
 import signaller
-import button
-import merchant
+from . import button
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -47,7 +47,7 @@ class planet_jump_window():
             signaller.connect(b,"signal__clicked",lambda: self.planet_jump(b.label()))
 
     def planet_jump(self,planet_name):
-        print "planet_jump_window::planet_jump(",planet_name,")"
+        print("planet_jump_window::planet_jump(",planet_name,")")
         planet = self.solar_system_object_link.planets[planet_name] 
         self.solar_system_object_link.current_planet = planet
         planet.load_for_drawing()
@@ -76,7 +76,7 @@ class planet_jump_window():
         index = (offset - 5) // 30
         if 0 <= index < len(self.button_labels):
             selection = self.buttons[self.button_labels[index]].activate(event.pos)
-            if selection in self.solar_system_object_link.planets.keys():
+            if selection in list(self.solar_system_object_link.planets.keys()):
                 return self.solar_system_object_link.planets[selection]
             else:
                 if self.solar_system_object_link.message_printing["debugging"]:

@@ -49,7 +49,7 @@ class GridPanel(pyui.widgets.Panel):
         self.pack()
 
     def resize(self, w, h):
-        print "Resizing GridPanel", w, h
+        print("Resizing GridPanel", w, h)
         pyui.widgets.Panel.resize(self, w, h)
 
     def setColumnName(self, columnNum, name):
@@ -108,7 +108,7 @@ class CellPanel(pyui.widgets.Panel):
         self.setupAllCells()
         
     def setupAllCells(self):
-        for key in self.cells.keys():
+        for key in list(self.cells.keys()):
             if key[1] >= self.scrollPos and key[1] < self.scrollPos + self.vHeight:
                 self.setupCell( self.cells[key], key[0], key[1])
                 self.cells[key].setShow(1)
@@ -132,8 +132,8 @@ class CellPanel(pyui.widgets.Panel):
             self.removeCellAt( cell.gridPosition[0], cell.gridPosition[1] )
             
     def putCellAt(self, widget, x, y):
-        if self.cells.has_key( (x,y) ):
-            print "Error: already a widget at (%s,%s)" % (x,y)
+        if (x,y) in self.cells:
+            print("Error: already a widget at (%s,%s)" % (x,y))
             return 0
         self.addChild(widget)
         self.cells[ (x,y) ] = widget
@@ -182,7 +182,7 @@ class CellPanel(pyui.widgets.Panel):
     def draw(self, renderer):
         """only draw the visible widgets.
         """
-        for key in self.cells.keys():
+        for key in list(self.cells.keys()):
             if key[1] >= self.scrollPos and key[1] < self.scrollPos + self.vHeight:
                 self.cells[key].draw(renderer)
         xpos = self.windowRect[0]

@@ -24,7 +24,7 @@ All handler methods for widgets are prefixed with "_pyui" so that they
 never conflict with a user defined event handler method.
 
 """
-import layouts
+from . import layouts
 import pyui
 
 from pyui.desktop import getDesktop, getTheme, getRenderer
@@ -1203,11 +1203,11 @@ class TabbedPanel(Panel):
         for i in range(0,len(self.children)):
             if self.children[i] == self.activePanel:
                 if i == len(self.children)-1:
-                    print "activating" , 0, self.children[0]                    
+                    print("activating" , 0, self.children[0])                    
                     self.activatePanel(self.children[0])
                     break
                 else:
-                    print "activating" , i, self.children[i+1]
+                    print("activating" , i, self.children[i+1])
                     self.activatePanel(self.children[i+1])
                     break
                        
@@ -1231,7 +1231,7 @@ class TabbedPanel(Panel):
             return 0
         if self.activePanel.handleEvent(event):
             return 1
-        if self.eventMap.has_key(event.type):
+        if event.type in self.eventMap:
             if self.eventMap[event.type](event):
                 return 1
         return 0
@@ -1572,7 +1572,7 @@ class ViewPanel(Panel):
         getRenderer().describeWindow(windowHandle, [primView,])
 
     def destroy(self):
-        print "Destroying view:", self.viewHandle
+        print("Destroying view:", self.viewHandle)
         self.windowHandle = None
         getRenderer().destroyView(self.viewHandle)
         Panel.destroy(self)        
@@ -1746,7 +1746,7 @@ class Frame(Window):
         self._panel.resize(self.innerWidth, self.innerHeight)
 
     def _pyuiCloseButton(self):
-        print "Destroying window", self
+        print("Destroying window", self)
         self.destroy()
         return 1            
         
@@ -1851,7 +1851,7 @@ class Menu(Window):
             return 1
         if not item.canActivate:
             return 1
-        print "picked menu item:", item.text
+        print("picked menu item:", item.text)
         if item.handler:
             item.handler(item)
         #e = self.postEvent(item.eventType)

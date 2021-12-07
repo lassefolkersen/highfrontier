@@ -1,5 +1,5 @@
-import firm
-import global_variables
+from . import firm
+from . import global_variables
 class base_construction(firm.firm):
         def isBaseConstruction(self):
 		return True

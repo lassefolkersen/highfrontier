@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -25,8 +25,8 @@ class base_window():
         The creation function. ' 
         """
         base_data = {}
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
+        for planet_instance in list(self.solar_system_object_link.planets.values()):
+            for base_instance in list(planet_instance.bases.values()):
                 if base_instance.for_sale:
                     for_sale = "For sale"
                 else:
@@ -39,8 +39,8 @@ class base_window():
         self.fast_list.receive_click(event)
         if event.button == 3:
             base_selected = None
-            for planet_instance in self.solar_system_object_link.planets.values():
-                for base_instance in planet_instance.bases.values():
+            for planet_instance in list(self.solar_system_object_link.planets.values()):
+                for base_instance in list(planet_instance.bases.values()):
                     if base_instance.name == self.fast_list.selected_name:
                         base_selected = base_instance
             if base_selected is None:

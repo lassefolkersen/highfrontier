@@ -1,4 +1,4 @@
-import SimThread
+from . import SimThread
 import os
 import math
 import Image
@@ -6,12 +6,12 @@ import pygame
 import random
 import datetime
 import time
-import planet
-import company
-import global_variables
-import primitives
-import technology
-import cPickle
+from . import planet
+from . import company
+from . import global_variables
+from . import primitives
+from . import technology
+import pickle
 import Image
 class solarsystem:
     def launchThread(self):
@@ -39,8 +39,8 @@ class solarsystem:
                 print_dict = {"text":"running the " + str(self.current_date.year) + " yearly part of evaluate_each_game_step","type":"general gameplay info"}
                 self.messages.append(print_dict)
                 self.bitterness_of_world = (None,None)
-                for planet in self.planets.values():
-                    for base in planet.bases.values():
+                for planet in list(self.planets.values()):
+                    for base in list(planet.bases.values()):
                         if self.bitterness_of_world[0] is None or self.bitterness_of_world[1] is None:
                             self.bitterness_of_world = (base.bitternes_of_base, base.bitternes_of_base) 
                         if base.bitternes_of_base > self.bitterness_of_world[1]:
@@ -48,9 +48,9 @@ class solarsystem:
                         if base.bitternes_of_base < self.bitterness_of_world[0]:
                             self.bitterness_of_world = (base.bitternes_of_base, self.bitterness_of_world[1])
                 #emigration, growth, emission and climate change
-                for planet in self.planets.values():
+                for planet in list(self.planets.values()):
                     planet.check_gas_in_atmosphere()
-                    for base in planet.bases.values():
+                    for base in list(planet.bases.values()):
                         base.calculate_emigration()
                         base.calculate_growth_and_deaths()
                         base.calculate_emissions()
@@ -58,8 +58,8 @@ class solarsystem:
                             for resource in self.mineral_resources:
                                 base.get_mining_opportunities(base.home_planet, resource)
                 people = 0
-                for planet in self.planets.values():
-                    for base in planet.bases.values():
+                for planet in list(self.planets.values()):
+                    for base in list(planet.bases.values()):
                         people = people + base.population
                 number_of_companies = people / global_variables.persons_per_company 
                 if number_of_companies > global_variables.max_number_of_companies:
@@ -70,7 +70,7 @@ class solarsystem:
                     richness_database = {}
                     for companyName in self.companies:
                         richness_database[self.companies[companyName].capital] = self.companies[companyName] 
-                    richness_list = richness_database.keys()
+                    richness_list = list(richness_database.keys())
                     richness_list.sort()
                     richness_list = richness_list[(len(richness_list) * 2 / 3):len(richness_list)] #"This is the richest 1/3 of all companies"
                     list_of_model_companies = []
@@ -131,17 +131,17 @@ class solarsystem:
             self.company_selected = None
             self.firm_selected = None
             self.go_to_planetary_mode = False
-            print "initializing planets"
+            print("initializing planets")
             self.planets = self.initialize_planets()
-            print "done initializing planets"
-            print "initializing tech tree"
+            print("done initializing planets")
+            print("initializing tech tree")
             backbone_tree_here = technology.Backbone_Tree()
             self.technology_tree = technology.Tree(backbone_tree_here,self)
             self.technology_tree.implode_and_expand()
-            print "done initializing tech tree"
-            print "initializing companies"
+            print("done initializing tech tree")
+            print("initializing companies")
             self.companies = self.initialize_companies()
-            print "done initializing companies"
+            print("done initializing companies")
             self.current_planet = self.planets["sun"]
             global_variables.solar_system=self # set the global
     def close_company(self,companyName):
@@ -159,15 +159,15 @@ class solarsystem:
             except: global_variables.distance_data = planet_instance.calculate_all_distances()
             planet_database[planet_name] = planet_instance
         #checking that all projections exist
-        random_planet_name = random.choice(planet_database.keys())
+        random_planet_name = random.choice(list(planet_database.keys()))
         random_planet = planet_database[random_planet_name]
         random_planet.pickle_all_projection_calculations()
         return planet_database
     def initialize_companies(self):
         base_to_country_list = {} 
         base_to_GNP_list = {}
-        for planet in self.planets.values():
-            for base in planet.bases.values():
+        for planet in list(self.planets.values()):
+            for base in list(planet.bases.values()):
                 base_to_country_list[base.base_name] = base.original_country
                 base_to_GNP_list[base.base_name] = base.GDP
         country_to_base_list = primitives.invert_dict(base_to_country_list)
@@ -180,7 +180,7 @@ class solarsystem:
         ### Start up countries from companies.txt in data/economy
         data_file_name = os.path.join("data","economy","companies.txt")
         read_company_database = primitives.import_datasheet(data_file_name)
-        random_companyName = random.choice(read_company_database.keys())
+        random_companyName = random.choice(list(read_company_database.keys()))
         for key in read_company_database[random_companyName]:
             if len(key) > global_variables.max_letters_in_company_names:
                 raise Exception(key + " is " + str(len(key)) + " - maximum is " + str(global_variables.max_letters_in_company_names))
@@ -188,8 +188,8 @@ class solarsystem:
         company_database = {}
         for companyName in read_company_database: 
             company_instance = company.company(self,companyName=companyName,model_company_database=read_company_database[companyName],capital = country_to_GNP_list[companyName]) #creating the company instance
-            for planet in self.planets.values():
-                for base in planet.bases.values(): 
+            for planet in list(self.planets.values()):
+                for base in list(planet.bases.values()): 
                     if base.base_name in country_to_base_list[companyName]:
                         company_instance.owned_firms[base.base_name] = base
                         company_instance.home_cities[base.base_name] = base
@@ -203,8 +203,8 @@ class solarsystem:
                 company_instance = company.company(self,model_company_database=model_company_data,companyName=companyName,capital = country_to_GNP_list[companyName]) #creating the company instance
                 #company_instance.calculate_company_database(model_company_data, 10)
                 company_instance.company_database["type"] = "country"
-                for planet in self.planets.values():
-                    for base in planet.bases.values(): 
+                for planet in list(self.planets.values()):
+                    for base in list(planet.bases.values()): 
                         if base.base_name in country_to_base_list[companyName]:
                             company_instance.owned_firms[base.base_name] = base
                             company_instance.home_cities[base.base_name] = base
@@ -212,8 +212,8 @@ class solarsystem:
                 company_database[companyName] = company_instance
         #### Start up misc private companies
         people = []
-        for planet in self.planets.values():
-            for base in planet.bases.values():
+        for planet in list(self.planets.values()):
+            for base in list(planet.bases.values()):
                 people.append(base.population)
         number_of_companies = sum(people) / global_variables.persons_per_company 
         if number_of_companies > global_variables.max_number_of_companies:
@@ -225,35 +225,35 @@ class solarsystem:
                 GWP = self.planets[planet].bases[base].GDP + GWP
         mean_capital_per_company = GWP / number_of_companies
         all_bases = {}
-        for planet in self.planets.values():
-            for base in planet.bases.values():
+        for planet in list(self.planets.values()):
+            for base in list(planet.bases.values()):
                 all_bases[base.base_name] = base
         for i in range(0,number_of_companies):
             #print "starting another company"
             capital = random.gauss(mean_capital_per_company,mean_capital_per_company/4)
             if capital < 1000:
                 capital = 1000
-            home_city = all_bases.keys()[random.randint(0,len(all_bases)-1)]
+            home_city = list(all_bases.keys())[random.randint(0,len(all_bases)-1)]
             company_instance = company.company(self,capital=capital)
             company_instance.company_database["type"] = "private company"
             company_instance.home_cities[home_city] = all_bases[home_city]
             company_database[company_instance.companyName] = company_instance
         #Setting base-ownership for all bases and calculating mining values (this is done now, because all necessary components first are ready now)
-        for planet in self.planets.values():
-            for base in planet.bases.values():
+        for planet in list(self.planets.values()):
+            for base in list(planet.bases.values()):
                 base_owner_name = base.original_country
                 base.owner = company_database[base_owner_name]
                 for resource in self.mineral_resources + ["food"]:
                     base.get_mining_opportunities(planet,resource)
         #add one of each firm of everything that is known
-        for company_instance in company_database.values():
+        for company_instance in list(company_database.values()):
             for technology in company_instance.known_technologies:
                 if technology != "common knowledge":
 #                    if random.randint(1,3) == 1:
                     if True:
                         start_up_name = technology + " "+ str(random.randint(1000,9999))
                         size_chosen = random.randint(1, all_bases[home_city].population)
-                        location_name = company_instance.home_cities.keys()[0]
+                        location_name = list(company_instance.home_cities.keys())[0]
                         location = company_instance.home_cities[location_name]
                         company_instance.change_firm_size(
                                                location,
@@ -288,30 +288,30 @@ class solarsystem:
                         
                         sub_entry = getattr(entry, sub_entry_name)
                         if isinstance(sub_entry, instancemethod):
-                            print "found the culprit!"
-                            print sub_entry_name
-                            print sub_entry
+                            print("found the culprit!")
+                            print(sub_entry_name)
+                            print(sub_entry)
                         if isinstance(sub_entry, pygame.Surface):
-                            print str(sub_entry_name) + " is a surface"
+                            print(str(sub_entry_name) + " is a surface")
                         try:    sub_entry.__class__
                         except: pass
                         else:
                             if issubclass(sub_entry.__class__, Image.Image):
-                                print "The entry_name " + str(sub_entry_name) + " is a " + str(sub_entry.__class__) + " it is found at " + str(before) 
+                                print("The entry_name " + str(sub_entry_name) + " is a " + str(sub_entry.__class__) + " it is found at " + str(before)) 
                         before = before + " - " + sub_entry_name
                         get_sub_entry(sub_entry,i,before)
         if prepare_scenario:
-            print self
-            print self.current_player
+            print(self)
+            print(self.current_player)
             try:    self.current_player.name
             except:
-                print "Preparing for scenario"
+                print("Preparing for scenario")
             else:
                 raise Exception("Don't prepare for scenario when a player has been started up")
             self.current_date = datetime.date(time.localtime()[0],time.localtime()[1],time.localtime()[2]) #this is just for use when creating start out games
             self.step_delay_time = global_variables.step_delay_time 
             #resetting the technologies
-            for company_instance in self.companies.values():
+            for company_instance in list(self.companies.values()):
                 company_instance.known_technologies = {}
                 company_instance.pick_research()
                 company_instance.research = 0
@@ -322,7 +322,7 @@ class solarsystem:
         #removing pre-drawn surfaces and stringifiyng resource_maps        
         backup_up_pre_drawn_surfaces = {}
         known_planet_images = ["wet_areas","topo_image"] #this can be tested with above commented out block - also remember to change accordingly in the load function
-        for planet_instance in self.planets.values():
+        for planet_instance in list(self.planets.values()):
             planet_instance.unload_from_drawing()
             for known_planet_image in known_planet_images:
                 try:    getattr(planet_instance, known_planet_image)
@@ -348,18 +348,18 @@ class solarsystem:
                     image_string = image.tostring()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
         file = open(filename,"w")
-        try:  cPickle.dump(self,file)
+        try:  pickle.dump(self,file)
         except MemoryError:
-            print "DEBUGGING: cPickle failed, likely because of memory issue. Switching to regular pickle. Regular pickle is slower but less memory intensive."
+            print("DEBUGGING: cPickle failed, likely because of memory issue. Switching to regular pickle. Regular pickle is slower but less memory intensive.")
             import pickle
             try:    pickle.dump(self,file)
-            except: print "DEBUGGING: regular pickle also failed. The game was NOT saved"
-            else:   print "game saved"
+            except: print("DEBUGGING: regular pickle also failed. The game was NOT saved")
+            else:   print("game saved")
         except: 
-            print "some weird error with cPickle - shown here:"
-            cPickle.dump(self,file)
+            print("some weird error with cPickle - shown here:")
+            pickle.dump(self,file)
         else:
-            print "game saved"
+            print("game saved")
         file.close()
         #here we restore the pre_drawn surfaces
         for planet_name in backup_up_pre_drawn_surfaces:
@@ -368,7 +368,7 @@ class solarsystem:
                  pre_drawn_surface = backup_up_pre_drawn_surfaces[planet_name][pre_drawn_surface_key]
                  planet_instance.pre_drawn_surfaces[pre_drawn_surface_key] = pre_drawn_surface
         #here we de-stringify the resource maps and other known images
-        for planet_instance in self.planets.values():
+        for planet_instance in list(self.planets.values()):
             for known_planet_image in known_planet_images:
                 if hasattr(planet_instance, known_planet_image):
                     image_parts = getattr(planet_instance, known_planet_image)
@@ -384,18 +384,18 @@ class solarsystem:
         Function that loads the solar system
         """
         file = open(filename,"r")
-        try:    new_solar_system = cPickle.load(file)
-        except EOFError, error:
+        try:    new_solar_system = pickle.load(file)
+        except EOFError as error:
             print_dict = {"text":"Un-loadable file: " + str(filename) + " - no load performed","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
             return "clear"
         except error:
-            print error
+            print(error)
             raise Exception("An error of type: " + str(error) + " was found")
         file.close()
         #here we de-stringify the resource maps and other known planet images
         known_planet_images = ["wet_areas","topo_image"] 
-        for planet_instance in new_solar_system.planets.values():
+        for planet_instance in list(new_solar_system.planets.values()):
             for known_planet_image in known_planet_images:
                 if hasattr(planet_instance, known_planet_image):
                     image_parts = getattr(planet_instance, known_planet_image)
@@ -414,11 +414,11 @@ class solarsystem:
             entry = getattr(new_solar_system, entry_name)
             setattr(self,entry_name, entry)
         #updating all solar_system_object_links (this is actually rather weird that it has to be done)
-        for company_instance in self.companies.values():
+        for company_instance in list(self.companies.values()):
             company_instance.solar_system_object_link = self
-            for owned_firm_instance in company_instance.owned_firms.values():
+            for owned_firm_instance in list(company_instance.owned_firms.values()):
                 owned_firm_instance.solar_system_object_link = self
-        for planet_instance in self.planets.values():
+        for planet_instance in list(self.planets.values()):
             planet_instance.solars_system_object_link = self
         self.technology_tree.solar_system_object_link = self
     def get_satellite_to_center_position(self,object,zoom_level,date_variable):

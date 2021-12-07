@@ -1,13 +1,13 @@
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
-import gui_components
+from . import company
+from . import primitives
+from . import gui_components
 import random
 import time
 
@@ -89,13 +89,13 @@ class gui():
 
         #Checking where the click is located
         if self.command_rect.collidepoint(event.pos) == 1:
-            for button in self.command_buttons.values():
+            for button in list(self.command_buttons.values()):
                 if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], event.pos[1] - self.command_rect[1])) == 1:
                     button.activate(None)
                     return 
 
         if self.subcommand_rect.collidepoint(event.pos) == 1:
-            for button in self.subcommand_buttons.values():
+            for button in list(self.subcommand_buttons.values()):
                 if button.rect.collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], event.pos[1] - self.subcommand_rect[1])) == 1:
                     button.activate(None)
                     return 
@@ -819,7 +819,7 @@ class message_bar():
 
         messages = []
         
-        range_here = range(0,len(self.solar_system_object_link.messages))
+        range_here = list(range(0,len(self.solar_system_object_link.messages)))
         range_here.reverse()
 
         for i in range_here:
@@ -999,7 +999,7 @@ class planet_jump_window():
         index = (offset - 5) // 30
         if 0 <= index < len(self.button_labels):
             selection = self.buttons[self.button_labels[index]].activate(event.pos)
-            if selection in self.solar_system_object_link.planets.keys():
+            if selection in list(self.solar_system_object_link.planets.keys()):
                 return self.solar_system_object_link.planets[selection]
             else:
                 if self.solar_system_object_link.message_printing["debugging"]:
@@ -1074,8 +1074,8 @@ class base_window():
         """
         
         base_data = {}
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
+        for planet_instance in list(self.solar_system_object_link.planets.values()):
+            for base_instance in list(planet_instance.bases.values()):
                 
                 if base_instance.for_sale:
                     for_sale = "For sale"
@@ -1094,8 +1094,8 @@ class base_window():
         self.fast_list.receive_click(event)
         if event.button == 3:
             base_selected = None
-            for planet_instance in self.solar_system_object_link.planets.values():
-                for base_instance in planet_instance.bases.values():
+            for planet_instance in list(self.solar_system_object_link.planets.values()):
+                for base_instance in list(planet_instance.bases.values()):
                     if base_instance.name == self.fast_list.selected_name:
                         base_selected = base_instance
                         
@@ -1133,8 +1133,8 @@ class trade_window():
         self.selections = {}
         
         asset_and_tech_data = {}
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
+        for planet_instance in list(self.solar_system_object_link.planets.values()):
+            for base_instance in list(planet_instance.bases.values()):
                 if base_instance.for_sale:
                     
                     data_here = {"Type":"base","Best price":"for auction (pop: " + str(base_instance.population) + ")","For sale by":base_instance.owner.name,"for_sale_by_link":[base_instance.owner],"object":base_instance}
@@ -1144,17 +1144,17 @@ class trade_window():
         #for company_instance in self.solar_system_object_link.companies.values():
             #pass #FIXME add firms for sale here, whenever that is implemented
         
-        for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
+        for technology in list(self.solar_system_object_link.technology_tree.vertex_dict.values()):
             if len(technology["for_sale_by"]) > 0:
-                prices = technology["for_sale_by"].values()
+                prices = list(technology["for_sale_by"].values())
                 prices.sort()
                 best_price = prices[0]
                 
                 if len(technology["for_sale_by"]) == 1:
-                    for_sale_by = str(technology["for_sale_by"].keys()[0].name)
+                    for_sale_by = str(list(technology["for_sale_by"].keys())[0].name)
                 else:
                     for_sale_by = str(len(technology["for_sale_by"])) + " companies"
-                for_sale_by_link = technology["for_sale_by"].keys()
+                for_sale_by_link = list(technology["for_sale_by"].keys())
                 
                 check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.solar_system_object_link.current_player.known_technologies,technology)
                 if check_result != "already known": #only include if we don't already know it
@@ -1247,7 +1247,7 @@ class trade_window():
         """
         Function that allows the player to bid on an asset or technology
         """
-        if chosen_seller_name not in self.solar_system_object_link.companies.keys():
+        if chosen_seller_name not in list(self.solar_system_object_link.companies.keys()):
             print_dict = {"text": str(chosen_seller_name) + " was not found - perhaps it was shut down recently.","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 #            print "We had an instance of an unknown name: " + str(chosen_seller_name)
@@ -1279,7 +1279,7 @@ class trade_window():
                 for resource in potential_base.mining_opportunities:
                     mining_opportunity = potential_base.mining_opportunities[resource]
                     price_of_resource = []
-                    for trade_route in potential_base.trade_routes.values():
+                    for trade_route in list(potential_base.trade_routes.values()):
                         if trade_route["endpoint_links"].index(potential_base) == 1:
                             neighbour = trade_route["endpoint_links"][0]
                         else:
@@ -1421,7 +1421,7 @@ class company_window():
         self.fast_list.receive_click(event)
         if event.button == 3:
 
-            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+            if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
                 self.solar_system_object_link.display_mode = "company"
                 self.solar_system_object_link.company_selected = selected_company
@@ -1499,7 +1499,7 @@ class file_window():
         self.button_instances_now = {}
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
         
-        self.button_list_now = self.button_structure[self.position].keys()
+        self.button_list_now = list(self.button_structure[self.position].keys())
         self.button_list_now.sort()
         
         for i, button_name in enumerate(self.button_list_now):
@@ -1629,7 +1629,7 @@ class file_window():
             self.button_instances_now = {}
             self.button_list_now = []
 
-            button_names = self.solar_system_object_link.current_player.automation_dict.keys()
+            button_names = list(self.solar_system_object_link.current_player.automation_dict.keys())
 
             for i, button_name in enumerate(button_names):
                 self.button_list_now.append(button_name)
@@ -1663,7 +1663,7 @@ class file_window():
         """
         if self.solar_system_object_link.current_player is None:
             raise Exception("No player selected")
-        if function_parameter not in self.solar_system_object_link.current_player.automation_dict.keys():
+        if function_parameter not in list(self.solar_system_object_link.current_player.automation_dict.keys()):
             raise Exception("The automation_type " + str(function_parameter) + " was not found in the automation_dict")
         previous_setting = self.solar_system_object_link.current_player.automation_dict[function_parameter]
         self.solar_system_object_link.current_player.automation_dict[function_parameter] = not previous_setting
@@ -1686,7 +1686,7 @@ class file_window():
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
             decision_variables_window = gui_components.fast_list(self.action_surface, 
-                                                                 self.solar_system_object_link.current_player.company_database.keys(),
+                                                                 list(self.solar_system_object_link.current_player.company_database.keys()),
                                                                  rect = self.rect)
 
             self.distribute_click_to_subwindow = decision_variables_window                                            
@@ -1752,7 +1752,7 @@ class file_window():
         """
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = list(self.solar_system_object_link.message_printing.keys())
 
         self.button_instances_now = {}
         self.button_list_now = []
@@ -1774,7 +1774,7 @@ class file_window():
         """
         Function that will effectuate the change of message settings
         """
-        if function_parameter not in self.solar_system_object_link.message_printing.keys():
+        if function_parameter not in list(self.solar_system_object_link.message_printing.keys()):
             raise Exception("The message type " + str(function_parameter) + " was not found in the message_printing dict")
         previous_setting = self.solar_system_object_link.message_printing[function_parameter]
         self.solar_system_object_link.message_printing[function_parameter] = not previous_setting
@@ -1808,7 +1808,7 @@ class file_window():
 
         old_game_speed = self.solar_system_object_link.step_delay_time
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = list(self.solar_system_object_link.message_printing.keys())
         
         
         fastest = global_variables.standard_font.render("Fastest",True,(0,0,0))
@@ -1973,7 +1973,7 @@ class base_population_info():
             base_population_dict["Trade routes, number of"] = {"info":str(len(base_selected.trade_routes))}
             if 0 < len(base_selected.trade_routes) < 6:
                 trade_route_list = ""
-                for trade_route in base_selected.trade_routes.keys():
+                for trade_route in list(base_selected.trade_routes.keys()):
                     trade_route_list = trade_route_list + trade_route + ", "
                 trade_route_list = trade_route_list.rstrip(", ")
                 base_population_dict["Trade routes"] = {"info":trade_route_list}
@@ -2006,7 +2006,7 @@ class base_list_of_companies():
         self.fast_list.receive_click(event)
         if event.button == 3:
             
-            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+            if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
                 self.solar_system_object_link.display_mode = "company"
                 self.solar_system_object_link.company_selected = selected_company
@@ -2026,13 +2026,13 @@ class base_list_of_companies():
         """
 
         company_data = {}
-        for company_instance in self.solar_system_object_link.companies.values():
-            if self.solar_system_object_link.current_planet.current_base.name in company_instance.home_cities.keys():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            if self.solar_system_object_link.current_planet.current_base.name in list(company_instance.home_cities.keys()):
                 company_data[company_instance.name] = {}
                 company_data[company_instance.name]["capital"] = company_instance.capital
                 
                 owned_firms_here = 0
-                for firm_instance in company_instance.owned_firms.values():
+                for firm_instance in list(company_instance.owned_firms.values()):
                     if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                          owned_firms_here = owned_firms_here + 1
                          
@@ -2064,8 +2064,8 @@ class base_list_of_firms():
         The creation function.  
         """
         list_of_firms_in_base = []
-        for company_instance in self.solar_system_object_link.companies.values():
-            for firm_instance in company_instance.owned_firms.values():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            for firm_instance in list(company_instance.owned_firms.values()):
                 if not isinstance(firm_instance, company.merchant):
                     if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                         list_of_firms_in_base.append(firm_instance)
@@ -2087,7 +2087,7 @@ class base_list_of_firms():
             self.links[firm_instance.name] = firm_instance
             
             stock_amount = 0
-            for stock_item in firm_instance.stock_dict.values():
+            for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
         
@@ -2126,7 +2126,7 @@ class base_and_firm_market_window():
         self.action_surface = action_surface
         
 
-        self.resource_selected = self.solar_system_object_link.trade_resources.keys()[0]
+        self.resource_selected = list(self.solar_system_object_link.trade_resources.keys())[0]
         self.graph_rect = pygame.Rect(200,100,400,400)
 
 
@@ -2170,7 +2170,7 @@ class base_and_firm_market_window():
         
         #first making a list of the resources that should be displayed
         if self.solar_system_object_link.display_mode == "base":
-            resource_button_names = self.solar_system_object_link.trade_resources.keys()
+            resource_button_names = list(self.solar_system_object_link.trade_resources.keys())
         elif self.solar_system_object_link.display_mode == "firm":
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
@@ -2247,7 +2247,7 @@ class base_and_firm_market_window():
 
         
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
-        if firm_selected.name in self.solar_system_object_link.current_player.owned_firms.keys():
+        if firm_selected.name in list(self.solar_system_object_link.current_player.owned_firms.keys()):
             self.bid_button = gui_components.togglebutton("Make market bid",
                                            self.action_surface,
                                            function = self.place_bid_callback,
@@ -2281,10 +2281,10 @@ class base_and_firm_market_window():
             raise Exception("Unknown graph type " + self.graph_selected)
 
         if not isinstance(surface,pygame.Surface):
-            print self.graph_selected
-            print surface
-            print self.update_data_history()
-            print self.update_data_market_bids()
+            print(self.graph_selected)
+            print(surface)
+            print(self.update_data_history())
+            print(self.update_data_market_bids())
             raise Exception("The surface returned in the market window was not recognised")
         
         self.action_surface.blit(surface, (self.graph_rect[0],self.graph_rect[1]))
@@ -2328,9 +2328,9 @@ class base_and_firm_market_window():
                 for offer in offers:
                     quantities.append(offer["quantity"])
                     prices.append(offer["price"])
-                    if "seller" in offer.keys():
+                    if "seller" in list(offer.keys()):
                         provider.append(offer["seller"])
-                    elif "buyer" in offer.keys():
+                    elif "buyer" in list(offer.keys()):
                         provider.append(offer["buyer"])
                     else:
                         raise Exception("An offer was found in which there was neither seller nor buyer")
@@ -2555,9 +2555,9 @@ class base_and_firm_market_window():
                 direction = "sell"
         elif isinstance(firm_selected, company.base_construction):
             direction = "buy"
-        elif resource in firm_selected.input_output_dict["input"].keys():
+        elif resource in list(firm_selected.input_output_dict["input"].keys()):
             direction = "buy"
-        elif resource in firm_selected.input_output_dict["output"].keys():
+        elif resource in list(firm_selected.input_output_dict["output"].keys()):
             direction = "sell"
         else:
             raise Exception("Oddly the resource " + str(resource) + " was neither found in the input or output of " + str(firm_selected.name)) 
@@ -2657,8 +2657,8 @@ class base_and_firm_market_window():
             pygame.display.update(price_rect)
             
         if price_range[0] > int(initial_price) or int(initial_price) > price_range[1]:
-            print int(max_price)
-            print price_range
+            print(int(max_price))
+            print(price_range)
             raise Exception("This has been observed before... check print outs")
         
         
@@ -2841,7 +2841,7 @@ class base_and_firm_market_window():
                     x_relative_position =  (position[0] - self.rect[0] - 150) / float(self.graph_rect[2])
                     if 0 < x_relative_position < 1:
                         if 0 < y_relative_position < 1:
-                            if "price" in self.positional_database["bidding_mode"].keys():
+                            if "price" in list(self.positional_database["bidding_mode"].keys()):
                                 min_price = self.positional_database["bidding_mode"]["price"][0]
                                 max_price = self.positional_database["bidding_mode"]["price"][1]
                                 price = y_relative_position * (max_price - min_price) + min_price
@@ -2854,7 +2854,7 @@ class base_and_firm_market_window():
                             else:
                                 price = None
                                 
-                            if "quantity" in self.positional_database["bidding_mode"].keys():
+                            if "quantity" in list(self.positional_database["bidding_mode"].keys()):
                                 max_qt = self.positional_database["bidding_mode"]["quantity"][1]
                                 try:    math.log10(max_qt)
                                 except: 
@@ -2982,7 +2982,7 @@ class base_build_menu():
                 for put in ["input","output"]:
                     if put == "output":
                         nice_input_output_line = nice_input_output_line + "-> "
-                    for resource in technology["input_output_dict"][put].keys():
+                    for resource in list(technology["input_output_dict"][put].keys()):
                         value = technology["input_output_dict"][put][resource]
                         nice_input_output_line = nice_input_output_line + resource + ": " + str(value) + " "
                         
@@ -3085,7 +3085,7 @@ class base_build_menu():
         
         #prepare resource data
         resource_data = {}
-        for resource in self.solar_system_object_link.trade_resources.keys():
+        for resource in list(self.solar_system_object_link.trade_resources.keys()):
             if self.solar_system_object_link.trade_resources[resource]["transportable"]:
                 resource_data[resource] = {}
                 
@@ -3134,7 +3134,7 @@ class base_build_menu():
 
         #check that this does not already exist
         exists = False
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+        for firm_instance in list(self.solar_system_object_link.current_player.owned_firms.values()):
             if isinstance(firm_instance, company.merchant):
                 if firm_instance.from_location == self.selections["from_location"]:
                     if firm_instance.to_location == self.selections["to_location"]:
@@ -3186,7 +3186,7 @@ class base_build_menu():
         Function to build the merchant
         """ 
         for test in ["to_location","from_location","trade_route_selected","resource"]:
-            if test not in self.selections.keys():
+            if test not in list(self.selections.keys()):
                 raise Exception("The " + test + " was not properly selected")
         
         resource = self.selections["resource"]
@@ -3196,8 +3196,8 @@ class base_build_menu():
 
         #test if name is unique
         unique = True
-        for company_instance in self.solar_system_object_link.companies.values():
-            if name in company_instance.owned_firms.keys():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            if name in list(company_instance.owned_firms.keys()):
                 unique = False
         
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
@@ -3253,7 +3253,7 @@ class base_build_menu():
         
         
         #calculate the range allowed
-        for input in technology["input_output_dict"]["input"].values():
+        for input in list(technology["input_output_dict"]["input"].values()):
             input_size = input_size + input
         if input_size < 2: 
             input_size = 2
@@ -3265,7 +3265,7 @@ class base_build_menu():
         
         #check if the current_player already owns a company of that technology in the current base
         existing_firm = None
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+        for firm_instance in list(self.solar_system_object_link.current_player.owned_firms.values()):
             if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                 if firm_instance.technology_name == firm_type:
                     existing_firm = firm_instance
@@ -3330,7 +3330,7 @@ class base_build_menu():
                 direction_info = global_variables.standard_font_small.render(put+":",True,(0,0,0))
                 self.action_surface.blit(direction_info, (self.rect[0] + 130, self.rect[1] + 170 + lineno * 20))
 #                print technology.keys()
-                for resource in technology["input_output_dict"][put].keys():
+                for resource in list(technology["input_output_dict"][put].keys()):
                     lineno = lineno + 1
                     if resource in self.solar_system_object_link.mineral_resources + ["food"] and put == "output":
                         mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource)
@@ -3362,9 +3362,9 @@ class base_build_menu():
             pygame.display.flip()
         
         if 1 >  start_value or max_size < start_value:
-            print start_value
-            print max_size
-            print firm_type
+            print(start_value)
+            print(max_size)
+            print(firm_type)
             raise Exception("This has been observed before. See printout")
         
         self.slider = gui_components.vscrollbar (self.action_surface,
@@ -3432,8 +3432,8 @@ class base_build_menu():
         if existing_firm is None:
             name = self.text_receiver.text
             unique = True
-            for company_instance in self.solar_system_object_link.companies.values():
-                if name in company_instance.owned_firms.keys():
+            for company_instance in list(self.solar_system_object_link.companies.values()):
+                if name in list(company_instance.owned_firms.keys()):
                     unique = False
         
             if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
@@ -3453,13 +3453,13 @@ class base_build_menu():
         size = self.slider.position
         
         owner.change_firm_size(location,size,technology["technology_name"], name)
-        if isinstance(name, str) or isinstance(name, unicode):
+        if isinstance(name, str) or isinstance(name, str):
             print_dict = {"text":str(name) + ", a " + self.selections["firm_type"] + " firm of size " + str(size) + " was built at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 
         else:
-            print name
-            print name.__class__
+            print(name)
+            print(name.__class__)
             raise Exception("The name used: " + str(name) + " was of class " + str(name.__class__) + " but should have been a string")
         return "clear"
 
@@ -3503,7 +3503,7 @@ class company_ownership_info():
            
             company_ownership_dict["home cities, number of"] = {"info":str(len(company_selected.home_cities))}
             if 0 < len(company_selected.home_cities) < 4:
-                list_value = str(company_selected.home_cities.keys())
+                list_value = str(list(company_selected.home_cities.keys()))
                 list_value = list_value.rstrip("]")
                 list_value = list_value.lstrip("[")
                 company_ownership_dict["home cities"] = {"info":list_value}
@@ -3629,7 +3629,7 @@ class company_list_of_firms():
             raise Exception("A list of firms was requested, but no company was selected")
         
         firm_data = {}
-        for firm_instance in company_selected.owned_firms.values():
+        for firm_instance in list(company_selected.owned_firms.values()):
             firm_data[firm_instance.name] = {}
             try: firm_instance.last_profit
             except: 
@@ -3640,7 +3640,7 @@ class company_list_of_firms():
             firm_data[firm_instance.name]["location"] = firm_instance.location.name
             
             stock_amount = 0
-            for stock_item in firm_instance.stock_dict.values():
+            for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
         self.fast_list = gui_components.fast_list(self.action_surface, firm_data, rect = self.rect)
@@ -3650,7 +3650,7 @@ class company_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = None
-            for firm in self.solar_system_object_link.company_selected.owned_firms.values():
+            for firm in list(self.solar_system_object_link.company_selected.owned_firms.values()):
                 if firm.name == self.fast_list.selected_name:
                     firm_selected = firm
             if firm_selected is None:
@@ -3852,7 +3852,7 @@ class construct_base_menu():
             return
         
         if sphere_coordinates[0:19] == "transfer population":
-            if sphere_coordinates[23:] in self.solar_system_object_link.current_planet.bases.keys():
+            if sphere_coordinates[23:] in list(self.solar_system_object_link.current_planet.bases.keys()):
                 destination_base = self.solar_system_object_link.current_planet.bases[sphere_coordinates[23:]]
                 sphere_coordinates = destination_base.position_coordinate
                 if self.solar_system_object_link.current_player != destination_base.owner:
@@ -4042,8 +4042,8 @@ class construct_base_menu():
         #test if name is unique
         unique = True
         if destination_base is None:
-            for planet_instance in self.solar_system_object_link.planets.values():
-                if name in planet_instance.bases.keys():
+            for planet_instance in list(self.solar_system_object_link.planets.values()):
+                if name in list(planet_instance.bases.keys()):
                     unique = False
         
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:

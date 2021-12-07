@@ -1,17 +1,17 @@
 import signaller
-import button
-import entry
-import fast_list
-import merchant
+from . import button
+from . import entry
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -38,8 +38,8 @@ class trade_window():
         self.selections = {}
         
         asset_and_tech_data = {}
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
+        for planet_instance in list(self.solar_system_object_link.planets.values()):
+            for base_instance in list(planet_instance.bases.values()):
                 if base_instance.for_sale:
                     
                     data_here = {"Type":"base","Best price":"for auction (pop: " + str(base_instance.population) + ")","For sale by":base_instance.owner.name,"for_sale_by_link":[base_instance.owner],"object":base_instance}
@@ -49,17 +49,17 @@ class trade_window():
         #for company_instance in self.solar_system_object_link.companies.values():
             #pass #FIXME add firms for sale here, whenever that is implemented
         
-        for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
+        for technology in list(self.solar_system_object_link.technology_tree.vertex_dict.values()):
             if len(technology["for_sale_by"]) > 0:
-                prices = technology["for_sale_by"].values()
+                prices = list(technology["for_sale_by"].values())
                 prices.sort()
                 best_price = prices[0]
                 
                 if len(technology["for_sale_by"]) == 1:
-                    for_sale_by = str(technology["for_sale_by"].keys()[0].name)
+                    for_sale_by = str(list(technology["for_sale_by"].keys())[0].name)
                 else:
                     for_sale_by = str(len(technology["for_sale_by"])) + " companies"
-                for_sale_by_link = technology["for_sale_by"].keys()
+                for_sale_by_link = list(technology["for_sale_by"].keys())
                 
                 check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.solar_system_object_link.current_player.known_technologies,technology)
                 if check_result != "already known": #only include if we don't already know it
@@ -152,7 +152,7 @@ class trade_window():
         """
         Function that allows the player to bid on an asset or technology
         """
-        if chosen_seller_name not in self.solar_system_object_link.companies.keys():
+        if chosen_seller_name not in list(self.solar_system_object_link.companies.keys()):
             print_dict = {"text": str(chosen_seller_name) + " was not found - perhaps it was shut down recently.","type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
 #            print "We had an instance of an unknown name: " + str(chosen_seller_name)
@@ -184,7 +184,7 @@ class trade_window():
                 for resource in potential_base.mining_opportunities:
                     mining_opportunity = potential_base.mining_opportunities[resource]
                     price_of_resource = []
-                    for trade_route in potential_base.trade_routes.values():
+                    for trade_route in list(potential_base.trade_routes.values()):
                         if trade_route["endpoint_links"].index(potential_base) == 1:
                             neighbour = trade_route["endpoint_links"][0]
                         else:

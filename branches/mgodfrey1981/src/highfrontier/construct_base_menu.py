@@ -1,18 +1,18 @@
 import signaller
-import entry
-import hscrollbar
-import button
-import base_construction
-import merchant
+from . import entry
+from . import hscrollbar
+from . import button
+from . import base_construction
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -59,7 +59,7 @@ class construct_base_menu():
             return
         
         if sphere_coordinates[0:19] == "transfer population":
-            if sphere_coordinates[23:] in self.solar_system_object_link.current_planet.bases.keys():
+            if sphere_coordinates[23:] in list(self.solar_system_object_link.current_planet.bases.keys()):
                 destination_base = self.solar_system_object_link.current_planet.bases[sphere_coordinates[23:]]
                 sphere_coordinates = destination_base.position_coordinate
                 if self.solar_system_object_link.current_player != destination_base.owner:
@@ -250,8 +250,8 @@ class construct_base_menu():
         #test if name is unique
         unique = True
         if destination_base is None:
-            for planet_instance in self.solar_system_object_link.planets.values():
-                if name in planet_instance.bases.keys():
+            for planet_instance in list(self.solar_system_object_link.planets.values()):
+                if name in list(planet_instance.bases.keys()):
                     unique = False
         
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:

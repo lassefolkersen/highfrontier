@@ -1,15 +1,15 @@
-import primitives
+from . import primitives
 import pygame, sys,os
 from pygame.locals import *
 #from ocempgui.widgets import ImageLabel
 import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
 import math
-import cPickle
+import pickle
 import subprocess
 import time
 import os
-import global_variables
-import company
+from . import global_variables
+from . import company
 import random
 
 
@@ -65,7 +65,7 @@ class planet:
         else:
             self.water_level = 0
         self.bases = self.read_pre_base_file(planet_name)
-        for base in self.bases.values():
+        for base in list(self.bases.values()):
             base.calculate_trade_routes(self)
             
         self.co2_emissions = 0
@@ -106,13 +106,13 @@ class planet:
         
         ton_per_pa_here = ton_per_pa_here / (global_variables.gas_change_multiplier * 100000) # for fine tuning in global variables. The number is to try to keep 100.0 a standard value.
         
-        if str("athmospheric_" + gas) in self.planet_data.keys():
+        if str("athmospheric_" + gas) in list(self.planet_data.keys()):
             before = getattr(self, "athmospheric_" + gas)
             setattr(self, "athmospheric_" + gas, before + (ton / ton_per_pa_here))
             print_dict = {"text":"added " + str(ton) + " " + str(gas) + " to " + self.name + " which made the partial pressure change from " + str((before)) + " to " + str(getattr(self, "athmospheric_" + gas)),"type":"climate"}
             self.solar_system_object_link.messages.append(print_dict)
         else:
-            raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(self.planet_data.keys()))   
+            raise Exception(self.name + " did not have a " + str("athmospheric_" + gas) + " entry in the athmospheric_ - only " + str(list(self.planet_data.keys())))   
     
         
         
@@ -226,7 +226,7 @@ class planet:
         if os.access(os.path.join("pickledmiscellanous","distances"),os.R_OK):
             #print "Found distance_matrix. Loading..."
             file = open(os.path.join("pickledmiscellanous","distances"),"r")
-            distance_data = cPickle.load(file)
+            distance_data = pickle.load(file)
             file.close()
             #print "done"
             #print distance_matrix
@@ -249,7 +249,7 @@ class planet:
                         distance_km = self.calculate_distance(((x1*4)-180,(y1*4)-90),((x2*4)-180,(y2*4)-90))
                         distance_degrees = (360 * distance_km[0]) / planet_circumference
                         degree_rounding = int(distance_degrees / step_size) * step_size
-                        if degree_rounding in distance_matrix[(x1,y1)].keys():
+                        if degree_rounding in list(distance_matrix[(x1,y1)].keys()):
                             distance_matrix[(x1,y1)][degree_rounding].append((x2,y2))
 
 #                        if x1 == 0 and y1 == 14 and x2 == 0 and y2 == 15:
@@ -262,11 +262,11 @@ class planet:
         
         
             file = open(os.path.join("pickledmiscellanous","distances"),"w")
-            cPickle.dump(distance_data,file)
+            pickle.dump(distance_data,file)
             file.close()
             
             
-            print "Did not find calculate_all_distances file. Performed calculations and saved them as distances in folder pickledmiscellanous"
+            print("Did not find calculate_all_distances file. Performed calculations and saved them as distances in folder pickledmiscellanous")
             
         return distance_data        
                         
@@ -324,12 +324,12 @@ class planet:
 #                     print file_name + " found."
                      pass
                  else:
-                     print file_name + " not found. Doing calculations."
+                     print(file_name + " not found. Doing calculations.")
                      plane_to_sphere_list = self.plane_to_sphere_total(0,northern_inclination,projection_scaling)
                      file = open(os.path.join("pickledprojections",file_name),"w")
-                     cPickle.dump(plane_to_sphere_list,file)
+                     pickle.dump(plane_to_sphere_list,file)
                      file.close()
-                     print "Saved calculations as " + file_name +" in folder pickledprojections"
+                     print("Saved calculations as " + file_name +" in folder pickledprojections")
                      #print plane_to_sphere_list
                  
 
@@ -351,7 +351,7 @@ class planet:
                     if os.access(pickle_file_name_and_path,os.R_OK):
                         surface = pygame.image.load(pickle_file_name_and_path)
                     else:                                        
-                        print str((eastern_inclination, northern_inclination, projection_scaling)) +" was not found - calculating"
+                        print(str((eastern_inclination, northern_inclination, projection_scaling)) +" was not found - calculating")
                         self.load_for_drawing()
                         surface = self.draw_image(eastern_inclination, northern_inclination, projection_scaling)
                         #draw_image(self,eastern_inclination,northern_inclination,projection_scaling,fast_rendering=False,image=None):
@@ -904,7 +904,7 @@ class planet:
                 try: self.planet_data[resource_type_in_database]
                 except:
                     resource_level = 1
-                    print "The resource_level for " + str(resource_type_in_database) + " was not found in planet_database so the background value was set to 1" 
+                    print("The resource_level for " + str(resource_type_in_database) + " was not found in planet_database so the background value was set to 1") 
                 else:
                     resource_level = self.planet_data[resource_type_in_database]
                 #print (x_offset,x_skewing,x_band_clearness,y_offset,y_skewing,y_band_clearness)
@@ -1009,7 +1009,7 @@ class planet:
         
 
         if projection_scaling <= 360:
-            if (northern_inclination,eastern_inclination,projection_scaling) in self.pre_drawn_surfaces.keys() and check_memory:
+            if (northern_inclination,eastern_inclination,projection_scaling) in list(self.pre_drawn_surfaces.keys()) and check_memory:
                 #loading a pre_drawn_surface at
 #                print "loading a pre-drawn surface" 
                 surface = self.pre_drawn_surfaces[(northern_inclination,eastern_inclination,projection_scaling)]
@@ -1025,7 +1025,7 @@ class planet:
                 if plane_to_sphere is None: #in this case we load the standard translation maps 
                     file_name = "projection_" + str(-northern_inclination) + "_NS_" + str(projection_scaling) + "_zoom"
                     file = open(os.path.join("pickledprojections",file_name),"r")
-                    plane_to_sphere = cPickle.load(file)
+                    plane_to_sphere = pickle.load(file)
                     file.close()
                 for projection_coordinate in sorted(plane_to_sphere):
                     
@@ -1053,11 +1053,11 @@ class planet:
                     if len(new_image_string) < (projection_scaling**2)*index: #too short
                         missing = (projection_scaling**2)*index - len(new_image_string)
                         if missing > 5:
-                            print "There are " + str(missing) + " pixels missing. They have been added to the end of the image"
+                            print("There are " + str(missing) + " pixels missing. They have been added to the end of the image")
                         for i in range(0,missing):
                             new_image_string=new_image_string+"\x00"
                     if len(new_image_string) > (projection_scaling**2)*index: #too long
-                        print "the image string in the make_image_string function is too long!" #perhaps a better error handling should be added
+                        print("the image string in the make_image_string function is too long!") #perhaps a better error handling should be added
                 
                 surface = pygame.image.fromstring(new_image_string , (projection_scaling,projection_scaling), mode)
                 
@@ -1196,7 +1196,7 @@ class planet:
         if not, they are calculated.
         Returns a dictionary with base names as key, and the position or ["Not seen",edge_position] as values.
         """
-        if (northern_inclination,eastern_inclination,projection_scaling) in self.base_positions.keys() and sorted(self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)].keys()) == sorted(self.bases.keys()):
+        if (northern_inclination,eastern_inclination,projection_scaling) in list(self.base_positions.keys()) and sorted(self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)].keys()) == sorted(self.bases.keys()):
             base_positions_here = self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)]
         else:
             base_positions_here = {}
@@ -1274,7 +1274,7 @@ class planet:
     def kill_a_base(self,base_name):
         try: self.bases[base_name]
         except:
-            print "the base " + str(base_name) + " is already removed"
+            print("the base " + str(base_name) + " is already removed")
         else:
             if self.current_base is not None:
                 if self.current_base.name == base_name:
@@ -1292,7 +1292,7 @@ class planet:
 
 
             firms_to_delete = {}
-            for company_instance in self.solar_system_object_link.companies.values():
+            for company_instance in list(self.solar_system_object_link.companies.values()):
                 for firm_name in company_instance.owned_firms:
                     firm_instance = company_instance.owned_firms[firm_name]
                     if not isinstance(firm_instance, company.merchant):
@@ -1307,7 +1307,7 @@ class planet:
                             firm_instance.close_firm()
                             firms_to_delete[firm_name] = company_instance
             
-                if dying_base.name in company_instance.home_cities.keys():
+                if dying_base.name in list(company_instance.home_cities.keys()):
                     del company_instance.home_cities[dying_base.name]
 #                    print "deleted " + dying_base.name + " from " + company_instance.name + "'s list of home_cities"
             
@@ -1315,13 +1315,13 @@ class planet:
                 del firms_to_delete[firm_to_delete].owned_firms[firm_to_delete]
             
             try:    dying_base.owner.owned_firms[base_name]
-            except: print "Didn't find " + base_name + " in owned firms of " + str(dying_base.owner.name)
+            except: print("Didn't find " + base_name + " in owned firms of " + str(dying_base.owner.name))
             else:   
                 del dying_base.owner.owned_firms[base_name]
 #                print "Found and deleted " + base_name + " in owned firms of " + str(dying_base.owner.name)
 
             try:    self.bases[base_name]
-            except: print "Didn't find " + base_name + " in bases of " + str(self.name)
+            except: print("Didn't find " + base_name + " in bases of " + str(self.name))
             else:   
                 del self.bases[base_name]
 #                print "Found and deleted " + base_name + " in bases of " + str(self.name)
@@ -1371,7 +1371,7 @@ class planet:
 #                print "self.planet_diameter_km " + str(self.planet_diameter_km)
                 radius_size = 100 #this is the circular radius within wich the bases are disqualified for being to near
                 not_too_close = True
-                for base_instance in self.bases.values():
+                for base_instance in list(self.bases.values()):
                     if base_instance.terrain_type != "Space":
                         if abs(base_instance.position_coordinate[0] - sphere_coordinates[0]) < square_size_degrees and abs(base_instance.position_coordinate[1] - sphere_coordinates[1]) < square_size_degrees:
                             distance = self.calculate_distance(base_instance.position_coordinate, sphere_coordinates)
@@ -1441,7 +1441,7 @@ class planet:
         for base in base_positions:
             if base_positions[base][0] not in ["Space", "Not seen"]:
                 for other_base in self.bases[base].trade_routes:
-                    if other_base in base_positions.keys():
+                    if other_base in list(base_positions.keys()):
                         if base_positions[other_base][0] == "Not seen":
                             pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
                         elif base_positions[other_base][0] == "Space":
@@ -1551,7 +1551,7 @@ class planet:
         else:
             base_positions = []
             
-            for base_instance in bases_involved.values():
+            for base_instance in list(bases_involved.values()):
                 base_pos = base_instance.position_coordinate
                 base_positions.append(base_pos)
                 try:    edges
@@ -1634,7 +1634,7 @@ class planet:
             
             
         else:
-            print "puff"
+            print("puff")
         
 
 #        

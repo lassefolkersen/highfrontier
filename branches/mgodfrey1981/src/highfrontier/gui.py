@@ -1,34 +1,34 @@
 import signaller
-import button
-import construct_base_menu
-import firm_process_info
-import firm_trade_partners_info
-import company_list_of_firms
-import company_financial_info
-import company_ownership_info
-import base_build_menu
-import base_and_firm_market_window
-import base_list_of_firms
-import base_list_of_companies
-import base_population_info
-import file_window
-import company_window
-import trade_window
-import base_window
-import tech_window
-import planet_jump_window
-import overlay_window
-import navigation_window
-import message_bar
+from . import button
+from . import construct_base_menu
+from . import firm_process_info
+from . import firm_trade_partners_info
+from . import company_list_of_firms
+from . import company_financial_info
+from . import company_ownership_info
+from . import base_build_menu
+from . import base_and_firm_market_window
+from . import base_list_of_firms
+from . import base_list_of_companies
+from . import base_population_info
+from . import file_window
+from . import company_window
+from . import trade_window
+from . import base_window
+from . import tech_window
+from . import planet_jump_window
+from . import overlay_window
+from . import navigation_window
+from . import message_bar
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -74,7 +74,7 @@ class gui():
         """
         #Checking where the click is located
         if self.command_rect.collidepoint(event.pos) == 1:
-            for button in self.command_buttons.values():
+            for button in list(self.command_buttons.values()):
                 if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], 
                                                event.pos[1] - self.command_rect[1])) == 1:
                     button.activate(None)
@@ -832,8 +832,8 @@ class gui():
                                                                                self.actionSurface())
         return self._basePopulationInfo
     def subcommand_rect_clicked(self,event):
-        print 'gui::subcommand_rect_clicked()'
-        for button in self.subcommand_buttons.values():
+        print('gui::subcommand_rect_clicked()')
+        for button in list(self.subcommand_buttons.values()):
             if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], 
                                            event.pos[1] - self.subcommand_rect[1])) == 1:
                 button.activate(None)

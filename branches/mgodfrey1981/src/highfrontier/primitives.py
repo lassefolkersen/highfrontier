@@ -1,5 +1,5 @@
 import pygame
-import global_variables
+from . import global_variables
 import datetime
 #from ocempgui.widgets import *
 #from ocempgui.widgets.Constants import *
@@ -7,14 +7,14 @@ import datetime
 
 
 def sort_dict(dict):
-    items = dict.items()
+    items = list(dict.items())
     items.sort()
     return [value for key, value in items]
 
 
 def invert_dict(d):
     inv = {}
-    for k,v in d.iteritems():
+    for k,v in d.items():
         keys = inv.setdefault(v, [])
         keys.append(k)
     return inv
@@ -163,7 +163,7 @@ def import_datasheet(data_file_name):
                     elif splitline[i] == "False":
                         single_entry_data[headers[i]] = False
                     else:
-                        print "Problem with: "  + str(headers[i])
+                        print("Problem with: "  + str(headers[i]))
 
                 elif data_types[i] == "tuple":
                         if splitline[i] == "NA":
@@ -176,7 +176,7 @@ def import_datasheet(data_file_name):
                             tuple_read = tuple(split_read)
                             single_entry_data[headers[i]] = tuple_read
                 else:
-                    print "Problem with: "  + str(headers[i])
+                    print("Problem with: "  + str(headers[i]))
                 
                 database[splitline[0]] = single_entry_data 
         data_file.close()
@@ -212,11 +212,11 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         column_order     a list. If given the columns will appear in this order. Use 'rownames' to refer to the rownames. Omitted entries will not be in the list.
     """
     
-    print "1"
+    print("1")
     
     #checking that the column_order is correct
     collection = ListItemCollection()
-    original_columns = ["rownames"] + data[data.keys()[0]].keys()
+    original_columns = ["rownames"] + list(data[list(data.keys())[0]].keys())
     if column_order is None:
         column_order = original_columns 
     else:
@@ -224,7 +224,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
             if column_name not in original_columns:
                 raise Exception("Recieved a column_order entry that was not located in data columns")
     
-    print "2"
+    print("2")
     #determining the max number of letters in each column
     max_letters_per_column = {"rownames":0}
     for column_name in column_order:
@@ -238,7 +238,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
             max_letters_per_column[column_name] = max(max_letters_per_column[column_name],len(entry))
     for max_letters_per_column_entry in max_letters_per_column:
         max_letters_per_column[max_letters_per_column_entry] = max_letters_per_column[max_letters_per_column_entry] + 2
-    print "3"
+    print("3")
     
 
     #creating the sorting buttons - this is a time lag thing. 
@@ -257,13 +257,13 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         
 
         
-    print "4"
+    print("4")
     #sorting the rows according to sort_by
     if sort_by not in column_order:
-        print column_order
+        print(column_order)
         raise Exception("The sort_by variable was not found in the column_order. Remember the rownames must also be present if needed") 
     if sort_by == "rownames":
-        sorting_list = data.keys()
+        sorting_list = list(data.keys())
         sorting_list.sort()
     else:
         temp_dict = {}
@@ -274,7 +274,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         def sorter(x, y):
             return cmp(x[1],y[1])
 
-        i = temp_dict.items()
+        i = list(temp_dict.items())
         i.sort(sorter)
         sorting_list = []
         for i_entry in i:
@@ -283,7 +283,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
     
     if reverse_sort:
         sorting_list.reverse()
-    print "5"
+    print("5")
     create_cutoff_buttons = False
     if interval[0] < 0:
         raise Exception("Can't give an interval below zero")
@@ -291,7 +291,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         pass
     else:
         create_cutoff_buttons = True
-        print "set create_cutoff_buttons true because interval[0] was above 0"
+        print("set create_cutoff_buttons true because interval[0] was above 0")
     
     if len(sorting_list) < interval[1]:
         interval = (interval[0],len(sorting_list))
@@ -299,8 +299,8 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         pass
     else:
         create_cutoff_buttons = True
-        print "set create_cutoff_buttons true because interval[1] was less than len(sorting_list)"
-    print "6"   
+        print("set create_cutoff_buttons true because interval[1] was less than len(sorting_list)")
+    print("6")   
     #cutoff_buttons:
     if create_cutoff_buttons:
         up_button = Button("Previous page")
@@ -317,7 +317,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         
     
     
-    print "7"
+    print("7")
     for rowname in sorting_list:
         rowstring = ""
         for column_entry in column_order:
@@ -335,15 +335,15 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
         #rowlistitem = TextListItem(rowstring)
         #rowlistitem.get_style()['font']['name'] = "Courier"
         collection.append(rowstring)
-    print "8"
+    print("8")
     list = fast_list()
-    print "8.1"
+    print("8.1")
     #list.set_selectionmode()
-    print "8.2"
+    print("8.2")
     #print collection
     #list.items = collection 
     
-    print "9"
+    print("9")
     
     
     
@@ -358,7 +358,7 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
     super_frame.add_child(sorting_button_frame,list)
     if create_cutoff_buttons:
         super_frame.add_child(cutoff_frame)
-    print "10"
+    print("10")
     return super_frame
 #    
 
@@ -416,7 +416,7 @@ def nicefy_numbers(number):
     """
     Takes a number and returns a string that has had added billion or trillion or whatever
     """
-    if not (isinstance(number,int) or isinstance(number,long) or isinstance(number,float)):
+    if not (isinstance(number,int) or isinstance(number,int) or isinstance(number,float)):
         raise Exception("The received number was not of required class int, long or float")
 
     if isinstance(number,float):
@@ -425,7 +425,7 @@ def nicefy_numbers(number):
         else:
             number = "%.4g" % number
     
-    if isinstance(number,int) or isinstance(number,long):
+    if isinstance(number,int) or isinstance(number,int):
         if abs(number) > 1000*1000*1000*1000*1000*3:
             number = "%.4g" % number
         elif abs(number) > 1000*1000*1000*1000*3:

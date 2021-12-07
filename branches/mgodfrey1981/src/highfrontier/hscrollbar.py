@@ -1,7 +1,7 @@
 import math
-import global_variables
+from . import global_variables
 import pygame
-import primitives
+from . import primitives
 
 import time
 import random
@@ -39,10 +39,10 @@ class hscrollbar():
         if range_of_values[0] < 0 or range_of_values[1] < 0:
             raise Exception("range_of_values cannot contain negative entries: " + str(range_of_values))
         
-        if not (isinstance(range_of_values[0], int) or isinstance(range_of_values[0], long)): 
+        if not (isinstance(range_of_values[0], int) or isinstance(range_of_values[0], int)): 
             raise Exception("range_of_values[0] must be an integer. It was " + str(range_of_values[0]))
         
-        if not (isinstance(range_of_values[1], int) or isinstance(range_of_values[1], long)):
+        if not (isinstance(range_of_values[1], int) or isinstance(range_of_values[1], int)):
             raise Exception("range_of_values[1] must be an integer. It was " + str(range_of_values[1]))
         
         if start_position < range_of_values[0] or start_position > range_of_values[1]:

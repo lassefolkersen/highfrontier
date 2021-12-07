@@ -1,7 +1,7 @@
 import math
-import global_variables
+from . import global_variables
 import pygame
-import primitives
+from . import primitives
 
 import time
 import random
@@ -26,7 +26,7 @@ class entry():
     def receive_text(self,event):
         if self.active:
 #            print event
-            if event.unicode == "\x08":
+            if event.str == "\x08":
                 self.text = self.text[0:(len(self.text)-1)]
                 self.draw()
 #            elif event.key == 13:
@@ -34,10 +34,10 @@ class entry():
 #                return "enter"
             else:
                 if self.restrict_input_to is not None:
-                    if event.unicode not in self.restrict_input_to:
+                    if event.str not in self.restrict_input_to:
                         return 
                 if len(self.text) < self.max_letters:
-                    self.text = self.text + event.unicode
+                    self.text = self.text + event.str
                     self.draw()
     
     def activate(self,position):

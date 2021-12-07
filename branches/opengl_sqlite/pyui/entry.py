@@ -126,7 +126,7 @@ class Entry(pyui.widgets.Base):
         grid_width, grid_height = self.getGrid()
         self.vscroll.setNumItems( self.text.count('\n') + 1, grid_height )
         self.vscroll.scrollToItem( self.scroll[1] )
-        self.hscroll.setNumItems( max( map( len, self.text.split('\n') ) ), grid_width )
+        self.hscroll.setNumItems( max( list(map( len, self.text.split('\n') )) ), grid_width )
         self.hscroll.scrollToItem( self.scroll[0] )
     
     def scrollToCursor(self):

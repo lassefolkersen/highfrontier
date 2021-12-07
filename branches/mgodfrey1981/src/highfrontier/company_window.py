@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -52,7 +52,7 @@ class company_window():
         self.fast_list.receive_click(event)
         if event.button == 3:
 
-            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+            if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
                 self.solar_system_object_link.display_mode = "company"
                 self.solar_system_object_link.company_selected = selected_company

@@ -1,19 +1,19 @@
 import signaller
-import entry
-import button
-import fast_list
-import togglebutton
-import vscrollbar
-import merchant
+from . import entry
+from . import button
+from . import fast_list
+from . import togglebutton
+from . import vscrollbar
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -56,7 +56,7 @@ class file_window():
     def draw(self):
         self.button_instances_now = {}
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
-        self.button_list_now = self.button_structure[self.position].keys()
+        self.button_list_now = list(self.button_structure[self.position].keys())
         self.button_list_now.sort()
         for i, button_name in enumerate(self.button_list_now):
             if isinstance(self.button_structure[self.position][button_name], str): # has a submenu
@@ -215,7 +215,7 @@ class file_window():
             self.button_instances_now = {}
             self.button_list_now = []
 
-            button_names = self.solar_system_object_link.current_player.automation_dict.keys()
+            button_names = list(self.solar_system_object_link.current_player.automation_dict.keys())
 
             for i, button_name in enumerate(button_names):
                 self.button_list_now.append(button_name)
@@ -249,7 +249,7 @@ class file_window():
         """
         if self.solar_system_object_link.current_player is None:
             raise Exception("No player selected")
-        if function_parameter not in self.solar_system_object_link.current_player.automation_dict.keys():
+        if function_parameter not in list(self.solar_system_object_link.current_player.automation_dict.keys()):
             raise Exception("The automation_type " + str(function_parameter) + " was not found in the automation_dict")
         previous_setting = self.solar_system_object_link.current_player.automation_dict[function_parameter]
         self.solar_system_object_link.current_player.automation_dict[function_parameter] = not previous_setting
@@ -272,7 +272,7 @@ class file_window():
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
             decision_variables_window = fast_list.fast_list(self.action_surface, 
-                                                                 self.solar_system_object_link.current_player.company_database.keys(),
+                                                                 list(self.solar_system_object_link.current_player.company_database.keys()),
                                                                  rect = self.rect)
 
             self.distribute_click_to_subwindow = decision_variables_window                                            
@@ -338,7 +338,7 @@ class file_window():
         """
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = list(self.solar_system_object_link.message_printing.keys())
 
         self.button_instances_now = {}
         self.button_list_now = []
@@ -360,7 +360,7 @@ class file_window():
         """
         Function that will effectuate the change of message settings
         """
-        if function_parameter not in self.solar_system_object_link.message_printing.keys():
+        if function_parameter not in list(self.solar_system_object_link.message_printing.keys()):
             raise Exception("The message type " + str(function_parameter) + " was not found in the message_printing dict")
         previous_setting = self.solar_system_object_link.message_printing[function_parameter]
         self.solar_system_object_link.message_printing[function_parameter] = not previous_setting
@@ -394,7 +394,7 @@ class file_window():
 
         old_game_speed = self.solar_system_object_link.step_delay_time
 
-        button_names = self.solar_system_object_link.message_printing.keys()
+        button_names = list(self.solar_system_object_link.message_printing.keys())
         
         
         fastest = global_variables.standard_font.render("Fastest",True,(0,0,0))

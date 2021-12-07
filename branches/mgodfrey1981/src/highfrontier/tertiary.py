@@ -1,4 +1,4 @@
-import firm
+from . import firm
 
 class tertiary(firm.firm):
 	def isTertiary(self):

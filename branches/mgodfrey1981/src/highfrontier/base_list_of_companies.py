@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -27,7 +27,7 @@ class base_list_of_companies():
         self.fast_list.receive_click(event)
         if event.button == 3:
             
-            if self.fast_list.selected_name in self.solar_system_object_link.companies.keys():
+            if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
                 self.solar_system_object_link.display_mode = "company"
                 self.solar_system_object_link.company_selected = selected_company
@@ -47,13 +47,13 @@ class base_list_of_companies():
         """
 
         company_data = {}
-        for company_instance in self.solar_system_object_link.companies.values():
-            if self.solar_system_object_link.current_planet.current_base.name in company_instance.home_cities.keys():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            if self.solar_system_object_link.current_planet.current_base.name in list(company_instance.home_cities.keys()):
                 company_data[company_instance.name] = {}
                 company_data[company_instance.name]["capital"] = company_instance.capital
                 
                 owned_firms_here = 0
-                for firm_instance in company_instance.owned_firms.values():
+                for firm_instance in list(company_instance.owned_firms.values()):
                     if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                          owned_firms_here = owned_firms_here + 1
                          

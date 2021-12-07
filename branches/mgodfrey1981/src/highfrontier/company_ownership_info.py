@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -49,7 +49,7 @@ class company_ownership_info():
            
             company_ownership_dict["home cities, number of"] = {"info":str(len(company_selected.home_cities))}
             if 0 < len(company_selected.home_cities) < 4:
-                list_value = str(company_selected.home_cities.keys())
+                list_value = str(list(company_selected.home_cities.keys()))
                 list_value = list_value.rstrip("]")
                 list_value = list_value.lstrip("[")
                 company_ownership_dict["home cities"] = {"info":list_value}

@@ -1,7 +1,7 @@
-import global_variables
+from . import global_variables
 import datetime
 
-import tertiary
+from . import tertiary
 
 class research(tertiary.tertiary):
 	def solarSystem(self):

@@ -1,9 +1,9 @@
 import signaller
-import vscrollbar
+from . import vscrollbar
 import math
-import global_variables
+from . import global_variables
 import pygame
-import primitives
+from . import primitives
 
 import time
 import random
@@ -42,7 +42,7 @@ class fast_list():
         pygame.draw.rect(self.surface, (234,228,223), self.rect_for_main_list)
         #in the case where data can fit on screen
         if self.lines_visible >= len(self.data):
-            self.interval = range(0,len(self.data))
+            self.interval = list(range(0,len(self.data)))
             for i in range(0,len(self.data)):
                 if self.data[i] == self.selected:
                     rendered_dataline = global_variables.courier_font.render(self.data[i],True,(255,0,0))
@@ -57,7 +57,7 @@ class fast_list():
             a=self.vscrollbar.position
             percentage_position = float(a)/float(self.vscrollbar.range_of_values[1]-self.vscrollbar.range_of_values[0])
             per_entry_position = int(percentage_position * (len(self.data)-self.lines_visible))
-            self.interval = range(int(per_entry_position),int(per_entry_position) + self.lines_visible)
+            self.interval = list(range(int(per_entry_position),int(per_entry_position) + self.lines_visible))
             for j, i in enumerate(self.interval):
                 if self.data[i] == self.selected:
                     rendered_dataline = global_variables.courier_font.render(self.data[i],True,(255,0,0))
@@ -103,7 +103,7 @@ class fast_list():
             if self.title is not None:
                 r=self.rect()
                 if event.pos[1] < r[1] + self.text_height:
-                    for key in self.title["entry_span"].keys():
+                    for key in list(self.title["entry_span"].keys()):
                         if key[0] < event.pos[0] and event.pos[0] < key[1]:
                             sort_by_this_column = self.title["entry_span"][key]
                     if self.sorted_by_this_column == sort_by_this_column:
@@ -157,11 +157,11 @@ class fast_list():
                 self.original_tabular_data = data
                 self.sorted_by_this_column = sort_by
                 self.original_column_order = column_order
-                try: data[data.keys()[0]].keys()
+                try: list(data[list(data.keys())[0]].keys())
                 except:
-                    print data
+                    print(data)
                     raise Exception("The data given to fast_list did not follow standards. It has been printed above")
-                original_columns = ["rownames"] + data[data.keys()[0]].keys()
+                original_columns = ["rownames"] + list(data[list(data.keys())[0]].keys())
                 if column_order is None:
                     column_order = original_columns 
                 else:
@@ -178,7 +178,7 @@ class fast_list():
                             entry = str(row)
                         else:
                             entry = data[row][column_name]
-                        if isinstance(entry,int) or isinstance(entry,long) or isinstance(entry,float):
+                        if isinstance(entry,int) or isinstance(entry,int) or isinstance(entry,float):
                             entry_length = 13 
                         else:
                             entry_length = len(str(entry))
@@ -189,10 +189,10 @@ class fast_list():
                     max_letters_per_column[max_letters_per_column_entry] = max_letters_per_column[max_letters_per_column_entry] + 2
                 #sorting the rows according to sort_by
                 if sort_by not in column_order:
-                    print column_order
+                    print(column_order)
                     raise Exception("The sort_by variable was not found in the column_order. Remember the rownames must also be present if needed") 
                 if sort_by == "rownames":
-                    sorting_list = data.keys()
+                    sorting_list = list(data.keys())
                     sorting_list.sort()
                 else:
                     temp_dict = {}
@@ -201,7 +201,7 @@ class fast_list():
                         temp_dict[row] = data[row][sort_by]
                     def sorter(x, y):
                         return cmp(x[1],y[1])
-                    i = temp_dict.items()
+                    i = list(temp_dict.items())
                     i.sort(sorter)
                     sorting_list = []
                     for i_entry in i:
@@ -215,13 +215,13 @@ class fast_list():
                             data_point_here = rowname
                         else:
                             data_point_here = data[rowname][column_entry]
-                        if isinstance(data_point_here,int) or isinstance(data_point_here,long) or isinstance(data_point_here,float):
+                        if isinstance(data_point_here,int) or isinstance(data_point_here,int) or isinstance(data_point_here,float):
                             if isinstance(data_point_here,float):
                                 if abs(data_point_here) > 1000:
                                     data_point_here = int(data_point_here)
                                 else:
                                     data_point_here = "%.4g" % data_point_here
-                            if isinstance(data_point_here,int) or isinstance(data_point_here,long):
+                            if isinstance(data_point_here,int) or isinstance(data_point_here,int):
                                 if abs(data_point_here) > 1000*1000*1000*1000*1000*3:
                                     data_point_here = "%.4g" % data_point_here
                                 elif abs(data_point_here) > 1000*1000*1000*1000*3:
@@ -261,5 +261,5 @@ class fast_list():
                     self.title["text"] = self.title["text"] + column_title + seperator
                 self.data = collection
         else:
-            print data
+            print(data)
             raise Exception("The data passed to the fast_list was not recognised")

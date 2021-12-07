@@ -1,9 +1,9 @@
-import global_variables
+from . import global_variables
 import datetime
-import primitives
+from . import primitives
 import random
 import string
-import company
+from . import company
 
 
 
@@ -74,7 +74,7 @@ class market_decisions:
             destination = None
             i = 0
             while destination is None:
-                chosen_origination_point_name = random.choice(self.known_technologies.keys())
+                chosen_origination_point_name = random.choice(list(self.known_technologies.keys()))
                 chosen_origination_point = self.solar_system_object_link.technology_tree.vertex_dict[chosen_origination_point_name]
                 destination = self.solar_system_object_link.technology_tree.get_research_project(chosen_origination_point_name,self.known_technologies)
                 i = i +1
@@ -101,7 +101,7 @@ class market_decisions:
         #determining if research is ok:
         research_volume = 0
         non_research_volume = 0
-        for firm_instance in self.owned_firms.values():
+        for firm_instance in list(self.owned_firms.values()):
             if isinstance(firm_instance, company.research):
                 research_volume = research_volume + firm_instance.size
                 
@@ -116,12 +116,12 @@ class market_decisions:
              
         if research_ratio < self.company_database["desired_research"]:
             #determine location (this can be expanded a lot)
-            home_city_names = self.home_cities.keys()
+            home_city_names = list(self.home_cities.keys())
             
             try:    location_choice_name = random.choice(home_city_names)
             except: 
-                print self.name
-                print self.home_cities
+                print(self.name)
+                print(self.home_cities)
                 raise Exception("This bug has been observed before and probably results from a company not having any home_cities")
             
             location_choice = self.home_cities[location_choice_name]
@@ -130,7 +130,7 @@ class market_decisions:
             desired_research_size_increase = (int(desired_research_size) - research_volume) / 100
             
             if desired_research_size_increase < 0:
-                print desired_research_size_increase
+                print(desired_research_size_increase)
                 raise Exception("The desired_research_size_increase is negative")
             elif desired_research_size_increase == 0:
                 #do nothing
@@ -156,12 +156,12 @@ class market_decisions:
         
         
         #first we iterate on all possible goods that can be sold in a given market
-        for base in self.home_cities.values():
+        for base in list(self.home_cities.values()):
             for resource in base.market["buy_offers"]:
                 useful_processes = {}
                 for process_name in self.known_technologies:
                     process = self.known_technologies[process_name]["input_output_dict"]
-                    if resource in process["output"].keys():
+                    if resource in list(process["output"].keys()):
                         output_volume = 0
                         for resource_here in process["output"]:
                             output_volume = process["output"][resource_here] + output_volume
@@ -173,7 +173,7 @@ class market_decisions:
                 
                 #if any useful processes are found, we prioritize them and select the one with highest input / output ratio
                 if len(useful_processes) > 0:
-                    useful_processes_keys = useful_processes.keys() 
+                    useful_processes_keys = list(useful_processes.keys()) 
                     useful_processes_keys.sort()
                     chosen_process_name = useful_processes[useful_processes_keys[-1]]
                     process_here = self.known_technologies[chosen_process_name]["input_output_dict"]
@@ -200,10 +200,10 @@ class market_decisions:
         """
         
         neighbours = []
-        for home_city_instance in self.home_cities.values():
+        for home_city_instance in list(self.home_cities.values()):
             if home_city_instance not in neighbours:
                 neighbours.append(home_city_instance)
-            for trade_route in home_city_instance.trade_routes.values():
+            for trade_route in list(home_city_instance.trade_routes.values()):
                 for endpoint_instance in trade_route["endpoint_links"]:
                     if endpoint_instance != home_city_instance:
                         if endpoint_instance not in neighbours:
@@ -272,7 +272,7 @@ class market_decisions:
         if sell_tech:
             #first we calculate the mean price of labor, since this is what the price of the tech is based on 
             labor_prices = []
-            for base_instance in self.home_cities.values():
+            for base_instance in list(self.home_cities.values()):
                 labor_price_here = None
                 try:    base_instance.market["sell_offers"]["labor"]
                 except: pass 
@@ -306,11 +306,11 @@ class market_decisions:
 
                         technology["for_sale_by"][self] = price
             if buy_tech:
-                for technology in self.solar_system_object_link.technology_tree.vertex_dict.values():
+                for technology in list(self.solar_system_object_link.technology_tree.vertex_dict.values()):
 
                     if len(technology["for_sale_by"]) > 0:
-                        if technology["technology_name"] not in self.known_technologies.keys():
-                            prices = technology["for_sale_by"].values()
+                        if technology["technology_name"] not in list(self.known_technologies.keys()):
+                            prices = list(technology["for_sale_by"].values())
                             prices.sort()
                             winning_price = prices[-1]
                             inverted_prices = primitives.invert_dict(technology["for_sale_by"])
@@ -343,7 +343,7 @@ class market_decisions:
 
         #first we see what bases are already connected by the merchant firms of the company
         already_connected = []
-        for firm_instance in self.owned_firms.values():
+        for firm_instance in list(self.owned_firms.values()):
             if isinstance(firm_instance, company.merchant):
                 existing_pair = [firm_instance.from_location, firm_instance.to_location, firm_instance.resource]
                 already_connected.append(existing_pair)
@@ -355,7 +355,7 @@ class market_decisions:
                 trade_route = seller_base.trade_routes[trade_route_name]
                 for buyer_base in trade_route["endpoint_links"]:
                     if buyer_base != seller_base: #just makes sure that the non-"home"-base is chosen
-                        if buyer_base.name in self.home_cities.keys(): #ok this proves that it is within the network of the company
+                        if buyer_base.name in list(self.home_cities.keys()): #ok this proves that it is within the network of the company
                             
                             #finding out what the transportation costs are
                             transport_prices = []
@@ -369,7 +369,7 @@ class market_decisions:
                             transportation_cost = (transport_unit_price * trade_route["distance"]) / 1000.0 
 
                             
-                            for resource in seller_base.market["sell_offers"].keys():
+                            for resource in list(seller_base.market["sell_offers"].keys()):
                                 if self.solar_system_object_link.trade_resources[resource]["transportable"]:
                                     connection = [seller_base,buyer_base,resource]
                                     if connection not in already_connected:
@@ -385,8 +385,8 @@ class market_decisions:
                                                     while name_is_not_unique:
                                                         name_is_not_unique = False
                                                         name = "merchant" + "_" + str(random.randint(10000,99999))
-                                                        for company_instance in self.solar_system_object_link.companies.values():
-                                                            if name in company_instance.owned_firms.keys():
+                                                        for company_instance in list(self.solar_system_object_link.companies.values()):
+                                                            if name in list(company_instance.owned_firms.keys()):
                                                                 name_is_not_unique = True
                                                     owner = self
                                                     input_output_dict = {"input":{},"output":{},"timeframe":30,"byproducts":{}}
@@ -520,7 +520,7 @@ class market_decisions:
                 
                 if quantity_wanted > 1:
                     if quantity_wanted * price <= self.owner.capital:
-                        if not (isinstance(quantity_wanted,int) or isinstance(quantity_wanted,long)):
+                        if not (isinstance(quantity_wanted,int) or isinstance(quantity_wanted,int)):
                             if self.solar_system_object_link.message_printing["debugging"]:
                                 print_dict = {"text":"DEBUGGING WARNING: in calculate_demand_reaction_02 quantity_wanted: " + str(quantity_wanted),"type":"debugging"}
                                 self.solar_system_object_link.messages.append(print_dict)
@@ -596,9 +596,9 @@ class market_decisions:
             input_volume = self.input_output_dict["input"][resource] + input_volume
         
         if input_volume <= 0:
-            print input_volume
-            print self.name
-            print self.input_output_dict
+            print(input_volume)
+            print(self.name)
+            print(self.input_output_dict)
             raise Exception("Somehow the cumulative input of a process managed to be 0 or less")
         
         chosen_price_of_input_per_unit = chosen_price_of_input_total / input_volume

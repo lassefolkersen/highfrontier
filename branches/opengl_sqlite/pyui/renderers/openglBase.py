@@ -35,7 +35,7 @@ if USE_TRUETYPE_FONTS:
     try:
         import win32ui
     except:
-        print "UNABLE TO IMPORT win32ui. Using GLUT text renderering"
+        print("UNABLE TO IMPORT win32ui. Using GLUT text renderering")
         USE_TRUETYPE_FONTS = 0
     
 
@@ -129,11 +129,11 @@ class OpenGLBase(Renderer3DBase):
             }
 
         if not USE_TRUETYPE_FONTS or sys.platform != "win32":
-            print "Using GLUT fonts"
+            print("Using GLUT fonts")
             self.createFont = self.createFont_OLD
             self.getTextSize = self.getTextSize_OLD
         else:
-            print "Using True-Type fonts"
+            print("Using True-Type fonts")
 
         self.drawBackMethod = self.clear
         
@@ -184,7 +184,7 @@ class OpenGLBase(Renderer3DBase):
         """Draws an image at a position."""
         textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
 
-        if not self.textures.has_key(filename):
+        if filename not in self.textures:
             self.loadTexture(filename)
         texture = self.textures[filename]
 
@@ -221,7 +221,7 @@ class OpenGLBase(Renderer3DBase):
         else:
             textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
 
-        if not self.textures.has_key(filename):
+        if filename not in self.textures:
             self.loadTexture(filename)
 
         texture = self.textures[filename]
@@ -270,7 +270,7 @@ class OpenGLBase(Renderer3DBase):
 
         if len( self.clip_stack ) and self.clip_stack[-1][2] > 0 and self.clip_stack[-1][3] > 0:
             glEnable(GL_SCISSOR_TEST)
-            apply( glScissor, self.clip_stack[-1] )
+            glScissor(*self.clip_stack[-1])
         else:
             glDisable(GL_SCISSOR_TEST)
         pass
@@ -418,7 +418,7 @@ class OpenGLBase(Renderer3DBase):
         old = pdc.SelectObject(pf)
         result = wglUseFontBitmaps(hdc , 0, 255, handle)
         if not result:
-            print "ERROR!"
+            print("ERROR!")
         pdc.SelectObject(old)
 
         self.fonts[handle] = (fontName, fontSize, flags)

@@ -1,8 +1,8 @@
 import signaller
 import math
-import global_variables
+from . import global_variables
 import pygame
-import primitives
+from . import primitives
 
 import time
 import random

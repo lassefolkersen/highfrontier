@@ -19,13 +19,13 @@ import time
 import pyui.locals
 from pyui.themes import comic, future, green, win2k
 
-import colors
+from . import colors
 import string
 import os
 
-from desktop import Desktop, readTimer
-from rendererBase import RendererBase
-from renderer3d import Renderer3DBase
+from .desktop import Desktop, readTimer
+from .rendererBase import RendererBase
+from .renderer3d import Renderer3DBase
 
 ###########################################################
 # Section: Globals
@@ -54,23 +54,23 @@ def init(w, h, renderer = "p3d", fullscreen = 0, title=""):
         gRenderer = Renderer3DBase(w, h, fullscreen, title)
         
     elif renderer == "2d":
-        from renderers.pygame2D import Pygame2D
+        from .renderers.pygame2D import Pygame2D
         gRenderer = Pygame2D(w, h, fullscreen, title)
         
     elif renderer == "gl":
-        from renderers.openglGlut import OpenGLGlut
+        from .renderers.openglGlut import OpenGLGlut
         gRenderer = OpenGLGlut(w, h, fullscreen, title)
 
     elif renderer == "p3d":
-        from renderers.openglPygame import OpenGLPygame
+        from .renderers.openglPygame import OpenGLPygame
         gRenderer = OpenGLPygame(w, h, fullscreen, title)
         
     elif renderer == "dx":
-        from renderers import unseen
+        from .renderers import unseen
         gRenderer = unseen.Unseen(w, h, fullscreen, title)
 
     elif renderer == "nebula":
-        from renderers import nebula
+        from .renderers import nebula
         gRenderer = nebula.RendererNeb(w, h, fullscreen)
     
     else:

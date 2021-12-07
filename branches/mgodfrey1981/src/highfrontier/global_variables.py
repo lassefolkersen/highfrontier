@@ -2,7 +2,7 @@
 import datetime
 import pygame
 import time
-import market_decisions
+from . import market_decisions
 import os
 pygame.font.init()
 

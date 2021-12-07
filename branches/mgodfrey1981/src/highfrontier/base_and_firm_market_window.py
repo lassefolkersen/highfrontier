@@ -1,26 +1,26 @@
 import signaller
-import togglebutton
-import hscrollbar
-import radiobuttons
-import button
-import merchant
+from . import togglebutton
+from . import hscrollbar
+from . import radiobuttons
+from . import button
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
 class base_and_firm_market_window():
     def unit(self):
         resource=self.resourceSelected()
-        if(self.sol().trade_resources.has_key(resource)):
-            if(self.sol().trade_resources[resource].has_key('unit of measurement')):
+        if(resource in self.sol().trade_resources):
+            if('unit of measurement' in self.sol().trade_resources[resource]):
                 return self.sol().trade_resources[resource]['unit_of_measurement']
         return '';
         
@@ -85,7 +85,7 @@ class base_and_firm_market_window():
                          (self.rect[0], self.rect[1] + self.rect[3]))
         #first making a list of the resources that should be displayed
         if self.sol().display_mode == "base":
-            resource_button_names = self.sol().trade_resources.keys()
+            resource_button_names = list(self.sol().trade_resources.keys())
         elif self.sol().display_mode == "firm":
             firm_selected = self.sol().firm_selected
             if isinstance(firm_selected, company.merchant):
@@ -151,7 +151,7 @@ class base_and_firm_market_window():
                                            fixed_size = None)
         signaller.connect(self.update_button,"signal__clicked",self.update_data)
         #Finally, in case the firm selected is owned by the player, we add a "make market bid button"
-        if firm_selected.name in self.sol().current_player.owned_firms.keys():
+        if firm_selected.name in list(self.sol().current_player.owned_firms.keys()):
             self.bid_button = togglebutton.togglebutton("Make market bid",
                                            self.action_surface,
                                            function = self.place_bid_callback,
@@ -178,7 +178,7 @@ class base_and_firm_market_window():
         self.action_surface = action_surface
         
 
-        self.setResourceSelected(self.sol().trade_resources.keys()[0])
+        self.setResourceSelected(list(self.sol().trade_resources.keys())[0])
         self.graph_rect = pygame.Rect(200,100,400,400)
 
 
@@ -226,10 +226,10 @@ class base_and_firm_market_window():
             raise Exception("Unknown graph type " + self.graph_selected)
 
         if not isinstance(surface,pygame.Surface):
-            print self.graph_selected
-            print surface
-            print self.update_data_history()
-            print self.update_data_market_bids()
+            print(self.graph_selected)
+            print(surface)
+            print(self.update_data_history())
+            print(self.update_data_market_bids())
             raise Exception("The surface returned in the market window was not recognised")
         
         self.action_surface.blit(surface, (self.graph_rect[0],self.graph_rect[1]))
@@ -273,9 +273,9 @@ class base_and_firm_market_window():
                 for offer in offers:
                     quantities.append(offer["quantity"])
                     prices.append(offer["price"])
-                    if "seller" in offer.keys():
+                    if "seller" in list(offer.keys()):
                         provider.append(offer["seller"])
-                    elif "buyer" in offer.keys():
+                    elif "buyer" in list(offer.keys()):
                         provider.append(offer["buyer"])
                     else:
                         raise Exception("An offer was found in which there was neither seller nor buyer")
@@ -500,9 +500,9 @@ class base_and_firm_market_window():
                 direction = "sell"
         elif isinstance(firm_selected, company.base_construction):
             direction = "buy"
-        elif resource in firm_selected.input_output_dict["input"].keys():
+        elif resource in list(firm_selected.input_output_dict["input"].keys()):
             direction = "buy"
-        elif resource in firm_selected.input_output_dict["output"].keys():
+        elif resource in list(firm_selected.input_output_dict["output"].keys()):
             direction = "sell"
         else:
             raise Exception("Oddly the resource " + str(resource) + " was neither found in the input or output of " + str(firm_selected.name)) 
@@ -602,8 +602,8 @@ class base_and_firm_market_window():
             pygame.display.update(price_rect)
             
         if price_range[0] > int(initial_price) or int(initial_price) > price_range[1]:
-            print int(max_price)
-            print price_range
+            print(int(max_price))
+            print(price_range)
             raise Exception("This has been observed before... check print outs")
         
         
@@ -728,7 +728,7 @@ class base_and_firm_market_window():
                     x_relative_position =  (position[0] - self.rect[0] - 150) / float(self.graph_rect[2])
                     if 0 < x_relative_position < 1:
                         if 0 < y_relative_position < 1:
-                            if "price" in self.positional_database["bidding_mode"].keys():
+                            if "price" in list(self.positional_database["bidding_mode"].keys()):
                                 min_price = self.positional_database["bidding_mode"]["price"][0]
                                 max_price = self.positional_database["bidding_mode"]["price"][1]
                                 price = y_relative_position * (max_price - min_price) + min_price
@@ -741,7 +741,7 @@ class base_and_firm_market_window():
                             else:
                                 price = None
                                 
-                            if "quantity" in self.positional_database["bidding_mode"].keys():
+                            if "quantity" in list(self.positional_database["bidding_mode"].keys()):
                                 max_qt = self.positional_database["bidding_mode"]["quantity"][1]
                                 try:    math.log10(max_qt)
                                 except: 

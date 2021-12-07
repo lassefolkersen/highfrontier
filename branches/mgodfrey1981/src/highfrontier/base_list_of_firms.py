@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -33,8 +33,8 @@ class base_list_of_firms():
         The creation function.  
         """
         list_of_firms_in_base = []
-        for company_instance in self.solar_system_object_link.companies.values():
-            for firm_instance in company_instance.owned_firms.values():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            for firm_instance in list(company_instance.owned_firms.values()):
                 if not isinstance(firm_instance, company.merchant):
                     if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                         list_of_firms_in_base.append(firm_instance)
@@ -56,7 +56,7 @@ class base_list_of_firms():
             self.links[firm_instance.name] = firm_instance
             
             stock_amount = 0
-            for stock_item in firm_instance.stock_dict.values():
+            for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
         

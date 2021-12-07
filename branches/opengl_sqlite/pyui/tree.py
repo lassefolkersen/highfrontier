@@ -86,7 +86,7 @@ class Tree(pyui.widgets.Base):
         # find the node clicked on.
         (x,y) = (event.pos[0] - self.rect[0], event.pos[1] - self.rect[1])        
         node = self.findNode(y)
-        print "got node", node
+        print("got node", node)
         if node:
             if x < node.posX:
                 return 0

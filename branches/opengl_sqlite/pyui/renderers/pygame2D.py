@@ -74,7 +74,7 @@ class Pygame2D(pyui.core.RendererBase):
         try:
             self.font = pygame.font.Font("font.ttf", 14)
         except:
-            print "Couldn't find arial.ttf - resorting to default font"
+            print("Couldn't find arial.ttf - resorting to default font")
             self.font = pygame.font.Font(None, 12)
         pyui.locals.TEXT_HEIGHT = self.font.get_height()
         self.lastID = 1000
@@ -95,12 +95,12 @@ class Pygame2D(pyui.core.RendererBase):
         if self.drawBackMethod:
             self.windowPos = (0,0)
             self.drawList = []
-            apply(self.drawBackMethod, self.drawBackArgs)
+            self.drawBackMethod(*self.drawBackArgs)
             for command in self.drawList:
                 self.doDrawCommand(command)
             self.drawList = []
             
-        for i in xrange(len(windows)-1, -1, -1):
+        for i in range(len(windows)-1, -1, -1):
             w = windows[i]
             w.setDirty(1)
             n =  w.drawWindow(self)
@@ -136,7 +136,7 @@ class Pygame2D(pyui.core.RendererBase):
 
     def drawImage(self, rect, filename, pieceRect = None):
         """Draws an image at a position"""
-        if not self.images.has_key(filename):
+        if filename not in self.images:
             self.loadImage(filename)
         self.drawList.append( (pyui.locals.IMAGE, rect, filename) )
 
@@ -224,7 +224,7 @@ class Pygame2D(pyui.core.RendererBase):
                 getDesktop().postUserEvent(pyui.locals.MOUSEMOVE, event.pos[0], event.pos[1])
 
             elif event.type == KEYDOWN:
-                character = event.unicode
+                character = event.str
                 code = 0
                 if len(character) > 0:
                     code = ord(character)
@@ -241,7 +241,7 @@ class Pygame2D(pyui.core.RendererBase):
                 try:
                     getDesktop().postUserEvent(event.type)
                 except:
-                    print "Error handling event %s" % repr(event)
+                    print("Error handling event %s" % repr(event))
             event = pygame.event.poll()
 
 

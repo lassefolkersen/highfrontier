@@ -1,15 +1,15 @@
 from pygame.locals import *
 import pygame
-import solarsystem
-import planet
-import global_variables
+from . import solarsystem
+from . import planet
+from . import global_variables
 import os
 import sys
 import datetime
-import gui_components
-import main
+from . import gui_components
+from . import main
 import time
-import primitives
+from . import primitives
 
 class IntroGui:
     def start_new_game(self, label, function_parameter):
@@ -23,7 +23,7 @@ class IntroGui:
                 all_ok = False
         if all_ok:
             self.company_capital = int(company_capital)
-            print str(self.company_name)
+            print(str(self.company_name))
             if(self.company_name is not None):
                 cn=str(self.company_name)
             else:
@@ -75,7 +75,7 @@ class IntroGui:
                         self.text_receiver.receive_text(event)
     def receive_click(self, event):
         if self.gui_rect.collidepoint(event.pos) == 1:
-            for button in self.buttons.values():
+            for button in list(self.buttons.values()):
                 if button.rect.collidepoint(event.pos) == 1:
                     if isinstance(button, gui_components.fast_list):
                         button.receive_click(event)
@@ -97,8 +97,8 @@ class IntroGui:
     def set_eccentricity(self,solar_system_instance, new_eccentricity):
         if new_eccentricity >= 1:
             raise Exception("Too high eccentricity")
-        for planet_instance in solar_system_instance.planets.values():
-            if ["original eccentricity"] not in planet_instance.planet_data.keys():
+        for planet_instance in list(solar_system_instance.planets.values()):
+            if ["original eccentricity"] not in list(planet_instance.planet_data.keys()):
                 eccentricity = planet_instance.planet_data["eccentricity"]
                 if planet_instance.name != "sun":
                     planet_instance.planet_data["original eccentricity"] = eccentricity
@@ -113,12 +113,12 @@ class IntroGui:
             if not os.access(path,os.R_OK):
                 all_ok = False
         if not all_ok:
-            print "WARNING: Some files were missing from the intro directory. It will be recreated. This will take time."
+            print("WARNING: Some files were missing from the intro directory. It will be recreated. This will take time.")
             self.sol = solarsystem.solarsystem(global_variables.start_date)
             for i in range(self.steps_system):
                 eccentricity = 1 - (((i+1) / float(500)) ** 2)
                 zoom = (1.2 ** (i+1)) / 100
-                print "at i = " + str(i) + " eccentricity: " + str(eccentricity) + " zoom: " + str(zoom)
+                print("at i = " + str(i) + " eccentricity: " + str(eccentricity) + " zoom: " + str(zoom))
                 
                 self.set_eccentricity(self.sol,eccentricity)
                 surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
@@ -139,7 +139,7 @@ class IntroGui:
                 
                 surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
                 surface.blit(pygame.Surface((projection_scaling*4,projection_scaling*4)),(global_variables.window_size[0] / 2 - projection_scaling*2, global_variables.window_size[1] / 2 - projection_scaling*2))
-                print " at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling)
+                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
                 projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
                 planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
                 surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
@@ -151,7 +151,7 @@ class IntroGui:
                 projection_scaling = 43 + (i+1) * 6
                 if eastern_inclination >= 180:
                     eastern_inclination = eastern_inclination - 360
-                print " at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling)
+                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
                 projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
                 planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
                 surface = pygame.Surface(global_variables.window_size)
@@ -180,7 +180,7 @@ class IntroGui:
                 projection_scaling = projection_scaling_start
                 if eastern_inclination >= 180:
                     eastern_inclination = eastern_inclination - 360
-                print " at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling)
+                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
                 projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
                 planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
                 surface = pygame.Surface(global_variables.window_size)
@@ -291,7 +291,7 @@ class IntroGui:
         else:
             raise Exception("The intro script couldn't access:" + str(data_file_name))
         self.countries = []
-        for entry in read_base_database.values():
+        for entry in list(read_base_database.values()):
             if entry["country"] not in self.countries:
                 self.countries.append(entry["country"])
         self.countries.sort()

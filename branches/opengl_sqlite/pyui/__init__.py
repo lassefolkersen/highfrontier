@@ -15,16 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## imports of publis interface from core
-from core import init
-from core import quit
-from core import update
-from core import draw
-from core import run
+from .core import init
+from .core import quit
+from .core import update
+from .core import draw
+from .core import run
 
 ## imports of all modules
-import core, locals, desktop, base, widgets, layouts, dialogs, viewer, tree, grid, entry, sheet
+from . import core, locals, desktop, base, widgets, layouts, dialogs, viewer, tree, grid, entry, sheet
 
-from core import gRenderer
+from .core import gRenderer
 
 readTimer = desktop.readTimer
 

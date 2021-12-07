@@ -1,6 +1,6 @@
-import global_variables
+from . import global_variables
 import math
-import tertiary
+from . import tertiary
 
 class merchant(tertiary.tertiary):
 	def solarSystem(self):

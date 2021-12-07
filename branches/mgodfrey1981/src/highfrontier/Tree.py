@@ -3,8 +3,8 @@ import random
 import pygame
 from xml.dom import minidom
 import os
-import global_variables
-import primitives
+from . import global_variables
+from . import primitives
 
 
 class Tree():
@@ -241,13 +241,13 @@ class Tree():
 		Returns "already known", "ok", or "too advanced".
 		"""
 		
-		if technology["technology_name"] in known_technologies.keys():
+		if technology["technology_name"] in list(known_technologies.keys()):
 			return "already known"
 		
 		
 		
 		for neighbour in technology["neighbours"]:
-			if neighbour["technology_name"] in known_technologies.keys():
+			if neighbour["technology_name"] in list(known_technologies.keys()):
 				return "ok"
 			
 		return "too advanced"
@@ -461,7 +461,7 @@ class Tree():
 			all_distances[distance_to_here] = vertex_name
 			all_cartesian_positions[vertex["cartesian_coordinates"]] = vertex_name
 			all_polar_positions[vertex["polar_coordinates"]] = vertex_name
-		distance_list = all_distances.keys()
+		distance_list = list(all_distances.keys())
 		distance_list.sort()
 		if distance_list[0] < 1:
 #			print "A vertex is at distance " + str(distance_list[0]) + " to the one being built - nothing was added. The polar coordinates were: " + str(polar_coordinates) + " and the distance_list was of length: " + str(len(distance_list))
@@ -489,7 +489,7 @@ class Tree():
 					potential_parents_distances[distance] = all_distances[distance]
 																				
 			
-			parent_distance_list = potential_parents_distances.keys()
+			parent_distance_list = list(potential_parents_distances.keys())
 			parent_distance_list.sort()
 			number_of_potential_parents = int(len(parent_distance_list)*self.tendency_to_choose_forward_parents)
 			if number_of_potential_parents >len(parent_distance_list):
@@ -512,7 +512,7 @@ class Tree():
 			#determine the type of technology 
 			direction_dict = self.coretree.calculate_technology_web(polar_coordinates[0])
 			inverted_direction_dict = primitives.invert_dict(direction_dict)
-			inverted_direction_dict_keys = inverted_direction_dict.keys()
+			inverted_direction_dict_keys = list(inverted_direction_dict.keys())
 			inverted_direction_dict_keys.sort()
 			for inverted_direction_dict_key in inverted_direction_dict_keys:
 				if inverted_direction_dict_key > polar_coordinates[1]:
@@ -535,7 +535,7 @@ class Tree():
 			tries = 0
 			while not_unique:
 				technology_name = self.get_name_for_vertex(subject_vertex)
-				if technology_name not in self.vertex_dict.keys():
+				if technology_name not in list(self.vertex_dict.keys()):
 					not_unique = False
 				else:
 					if tries > 50:
@@ -607,8 +607,8 @@ class Tree():
 				for resource in subject_vertex["abstract_process_dict"][put]:
 					value_here = int(total_value[put] + ((random.random() - 0.5) * 2 * percent_randomness * total_value[put]))
 					if value_here < 0:
-						print advancedness
-						print total_value
+						print(advancedness)
+						print(total_value)
 						raise Exception("Somehow the calculated value managed to become " + str(value_here) + " which is less than zero. Weird")
 					elif value_here == 0:
 						value_here = 1
@@ -625,7 +625,7 @@ class Tree():
 			
 			# rule 1: the CO2 emission from everything that has fossil fuel as input is proportional to the coal input +/- X % randomness
 			percent_randomness = 0.2 # how many percent of ideal value, the final value can differ per resource - don't put more than 1.
-			if "fossil fuel" in input_output_dict["input"].keys():
+			if "fossil fuel" in list(input_output_dict["input"].keys()):
 				fossil_fuel_input = input_output_dict["input"]["fossil fuel"]
 				co2_emission = int(fossil_fuel_input + ((random.random() - 0.5) * 2 * percent_randomness * fossil_fuel_input))
 				new_technology["input_output_dict"]["byproducts"]["carbondioxide"] = co2_emission
@@ -633,7 +633,7 @@ class Tree():
 			 
 			# rule 2: the radioactive waste from everything that has fission source as input is proportional to the coal input +/- X % randomness (where X is high, to reflect the many various fission technologies)
 			percent_randomness = 0.8 # how many percent of ideal value, the final value can differ per resource - don't put more than 1.
-			if "fission source" in input_output_dict["input"].keys():
+			if "fission source" in list(input_output_dict["input"].keys()):
 				fission_source_input = input_output_dict["input"]["fission source"]
 				radioactive_waste_emission = int(fission_source_input + ((random.random() - 0.5) * 2 * percent_randomness * fission_source_input))
 				new_technology["input_output_dict"]["byproducts"]["radioactive waste"] = radioactive_waste_emission 
@@ -667,13 +667,13 @@ class Tree():
 			# getting the correct theta for each
 			for vertex in self.coretree.subject_list:
 				if vertex["importance_function"] is not None:
-					if vertex["technology_name"] in technology_web.keys():
+					if vertex["technology_name"] in list(technology_web.keys()):
 						left_theta = technology_web[vertex["technology_name"]]
 						position_in_sorted_keys = sorted_keys.index(vertex["technology_name"])
 						neighbour = None
 						new_order_of_sorted_keys = sorted_keys[(position_in_sorted_keys+1):len(sorted_keys)] + sorted_keys[0:position_in_sorted_keys]
 						for potential_neighbour in new_order_of_sorted_keys:
-							if potential_neighbour in technology_web.keys():
+							if potential_neighbour in list(technology_web.keys()):
 								neighbour = potential_neighbour
 								break
 						right_theta =  technology_web[neighbour]

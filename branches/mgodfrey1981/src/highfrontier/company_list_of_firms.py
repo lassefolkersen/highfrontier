@@ -1,14 +1,14 @@
-import fast_list
-import merchant
+from . import fast_list
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -33,7 +33,7 @@ class company_list_of_firms():
             raise Exception("A list of firms was requested, but no company was selected")
         
         firm_data = {}
-        for firm_instance in company_selected.owned_firms.values():
+        for firm_instance in list(company_selected.owned_firms.values()):
             firm_data[firm_instance.name] = {}
             try: firm_instance.last_profit
             except: 
@@ -44,7 +44,7 @@ class company_list_of_firms():
             firm_data[firm_instance.name]["location"] = firm_instance.location.name
             
             stock_amount = 0
-            for stock_item in firm_instance.stock_dict.values():
+            for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
         self.fast_list = fast_list.fast_list(self.action_surface, firm_data, rect = self.rect)
@@ -54,7 +54,7 @@ class company_list_of_firms():
         self.fast_list.receive_click(event)
         if event.button == 3:
             firm_selected = None
-            for firm in self.solar_system_object_link.company_selected.owned_firms.values():
+            for firm in list(self.solar_system_object_link.company_selected.owned_firms.values()):
                 if firm.name == self.fast_list.selected_name:
                     firm_selected = firm
             if firm_selected is None:

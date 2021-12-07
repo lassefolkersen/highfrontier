@@ -340,7 +340,7 @@ class Unseen(Renderer3DBase):
         #skip empty rects
         if rect[2] == 0 or rect[3] == 0:
             return
-        if not self.images.has_key(filename):
+        if filename not in self.images:
             self.loadImage(filename)
         if not pieceRect:
             pieceRect = (0,0,1,1)
@@ -352,7 +352,7 @@ class Unseen(Renderer3DBase):
         #skip empty rects
         if rect[2] == 0 or rect[3] == 0:
             return
-        if not self.images.has_key(filename):
+        if filename not in self.images:
             self.loadImage(filename)
         self.drawList.append( (pyui.locals.IMAGE, rect[0], rect[1], rect[2], rect[3], self.images[filename], rotation) )
 
@@ -383,10 +383,10 @@ class Unseen(Renderer3DBase):
         pass
     
     def quit(self):
-        print "PyUnseen Quitting."
+        print("PyUnseen Quitting.")
         PyUnseen.destroyFont(self.font1)
         PyUnseen.destroyFont(self.fixedFont)
-        for filename in self.images.keys():
+        for filename in list(self.images.keys()):
             handle = self.images[filename]
             PyUnseen.destroyTexture(handle)
         self.dumpCache()        
@@ -606,6 +606,6 @@ class Unseen(Renderer3DBase):
         return PyUnseen.setEffectParameters(effect, parms)
 
     def dumpCache(self):
-        print "====== DUMPING PYUNSEEN CACHE ======"
-        for k in self.cache.keys():
-            print "%s> %s" % (k, self.cache[k])
+        print("====== DUMPING PYUNSEEN CACHE ======")
+        for k in list(self.cache.keys()):
+            print("%s> %s" % (k, self.cache[k]))

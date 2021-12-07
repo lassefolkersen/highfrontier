@@ -1,13 +1,13 @@
-import merchant
+from . import merchant
 import os
-import global_variables
+from . import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-import company
-import primitives
+from . import company
+from . import primitives
 import random
 import time
 
@@ -54,7 +54,7 @@ class message_bar():
 
         messages = []
         
-        range_here = range(0,len(self.solarSystem().messages))
+        range_here = list(range(0,len(self.solarSystem().messages)))
         range_here.reverse()
 
         for i in range_here:

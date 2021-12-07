@@ -1,9 +1,9 @@
 import pyui
 import copy
 
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
-from htmlElements import *
+from .htmlElements import *
 
 class PyuiHTMLParser(HTMLParser):
 
@@ -156,7 +156,7 @@ class HTMLPanel(pyui.base.Panel):
         self.currentToken.addChild(newToken)
 
     def handle_charref(self, name):
-        print "handling charref: <%s>" % name
+        print("handling charref: <%s>" % name)
 
     def handle_entityref(self, name):
         #print "handling entityref: <%s>" % name
@@ -199,14 +199,14 @@ class HTMLPanel(pyui.base.Panel):
 
         for line in self.areas[0].lines:
             if len(line.primatives):
-                print line.primatives[0].text
+                print(line.primatives[0].text)
                 if isinstance(line.primatives[0], PrimativeTable):
                     for l2 in line.primatives[0].lines:
                         for p in l2.primatives:
-                            print "    ", p.text
+                            print("    ", p.text)
                         
             else:
-                print "empty"
+                print("empty")
 
     def expandToken(self, token):
         """This does the work of constructing lines and primatives from
@@ -221,7 +221,7 @@ class HTMLPanel(pyui.base.Panel):
                 self.formatStack.append(formatElement)
                 self.attrsStack.append(token.attrs)
                 if formatElement.newLineBefore:
-                    print "new element", formatElement.name
+                    print("new element", formatElement.name)
                     self.areas[-1].newLine()
                 self.pushCurrentFormat()
 
@@ -230,7 +230,7 @@ class HTMLPanel(pyui.base.Panel):
             if visibleElement:
                 newPrim = visibleElement.instanceClass(token.attrs, self.width)
                 if token.tag == 'table':
-                    print "TABLE OPEN"
+                    print("TABLE OPEN")
                     self.areas.append(newPrim)
                 else:
                     self.areas[-1].addPrimative(newPrim)
@@ -246,7 +246,7 @@ class HTMLPanel(pyui.base.Panel):
                 if current.tag == token.tag:
                     formatElement = self.formatStack.pop(-1)
                     if formatElement.newLineAfter:
-                        print "end tag", formatElement.name
+                        print("end tag", formatElement.name)
                         self.areas[-1].newLine()
                     self.attrsStack.pop(-1)
                     self.popCurrentFormat()
@@ -255,7 +255,7 @@ class HTMLPanel(pyui.base.Panel):
                     pass
             if token.tag == 'table':
                 table = self.areas.pop(-1)                
-                print "TABLE CLOSE height is ", table.height
+                print("TABLE CLOSE height is ", table.height)
 
                 self.areas[-1].addPrimative(table)
                 
@@ -265,8 +265,8 @@ class HTMLPanel(pyui.base.Panel):
                 attrs = self.attrsStack[-1]
                 #print self.formatStateStack
 
-                print "STATE:", self.formatStateStack[-1].name, self.formatStateStack[-1].face, self.formatStateStack[-1].face, self.formatStateStack[-1].size, self.formatStateStack[-1].color, self.formatStateStack[-1].bold
-                print "DATA:", token.data            
+                print("STATE:", self.formatStateStack[-1].name, self.formatStateStack[-1].face, self.formatStateStack[-1].face, self.formatStateStack[-1].size, self.formatStateStack[-1].color, self.formatStateStack[-1].bold)
+                print("DATA:", token.data)            
                 if format.tag == 'li':
                     constructSingleLine(self, token, self.formatStateStack[-1]) #format, attrs)
                 elif format.tag == 'pre':
