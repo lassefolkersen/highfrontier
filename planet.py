@@ -1004,12 +1004,13 @@ class planet:
         mode = image.mode
         image_string = image.tobytes()
 
+
         if mode == "RGBA":
             index = 4
         else:
             index = 3
 
-
+        projection_scaling = int(projection_scaling)
         if projection_scaling <= 360:
             if (northern_inclination,eastern_inclination,projection_scaling) in list(self.pre_drawn_surfaces.keys()) and check_memory:
                 #loading a pre_drawn_surface at
@@ -1019,26 +1020,34 @@ class planet:
                 resize_after_fast_rendering = False
                 if fast_rendering:
                     if projection_scaling > 45:
-                        projection_scaling = projection_scaling / 2
+                        projection_scaling = int(projection_scaling / 2)
                         resize_after_fast_rendering = True
-                new_image_string=""
+                new_image=bytes()
 
 
                 if plane_to_sphere is None: #in this case we load the standard translation maps
                     file_name = "projection_" + str(-northern_inclination) + "_NS_" + str(projection_scaling) + "_zoom"
-                    file = open(os.path.join("pickledprojections",file_name),"r")
-                    plane_to_sphere = pickle.load(file)
-                    file.close()
+
+                    with open(os.path.join("pickledprojections",file_name), "rb") as file:
+                        try:
+                            plane_to_sphere = pickle.load(file)
+                        except Exception as e:
+                            print("problem with file ", file_name)
+                            raise e
+
                 for projection_coordinate in sorted(plane_to_sphere):
 
                     sphere_coordinate = plane_to_sphere[projection_coordinate]
 
                     if(sphere_coordinate == "space"):
-                        new_image_string=new_image_string+"\x00"
-                        new_image_string=new_image_string+"\x00"
-                        new_image_string=new_image_string+"\x00"
+                        new_image=new_image+bytes('\x00', 'utf-8')
+                        new_image=new_image+bytes('\x00', 'utf-8')
+                        new_image=new_image+bytes('\x00', 'utf-8')
+
+
                         if mode == "RGBA":
-                            new_image_string=new_image_string+"\x00"
+                            new_image=new_image+bytes('\x00', 'utf-8')
+
 
                     else:
                         if eastern_inclination != 0:
@@ -1049,19 +1058,19 @@ class planet:
 
                         image_coordinate = ((sphere_coordinate[0]*image.size[0]+image.size[0]*180)/360 , (sphere_coordinate[1]*image.size[1]+image.size[1]*90)/180)
                         index_first = int(math.floor(image_coordinate[0]))*index + int(math.floor(image_coordinate[1]))*image.size[0]*index
-                        new_image_string=new_image_string + image_string[index_first:(index_first+index)]
+                        new_image=new_image + image_string[index_first:(index_first+index)]
 
-                if len(new_image_string) != (projection_scaling**2)*index:
-                    if len(new_image_string) < (projection_scaling**2)*index: #too short
-                        missing = (projection_scaling**2)*index - len(new_image_string)
+                if len(new_image) != (projection_scaling**2)*index:
+                    if len(new_image) < (projection_scaling**2)*index: #too short
+                        missing = (projection_scaling**2)*index - len(new_image)
                         if missing > 5:
                             print("There are " + str(missing) + " pixels missing. They have been added to the end of the image")
                         for i in range(0,missing):
-                            new_image_string=new_image_string+"\x00"
-                    if len(new_image_string) > (projection_scaling**2)*index: #too long
+                            new_image=new_image+bytes('\x00', 'utf-8')
+                    if len(new_image) > (projection_scaling**2)*index: #too long
                         print("the image string in the make_image_string function is too long!") #perhaps a better error handling should be added
 
-                surface = pygame.image.fromstring(new_image_string , (projection_scaling,projection_scaling), mode)
+                surface = pygame.image.frombuffer(new_image , (projection_scaling,projection_scaling), mode)
 
 
                 surface = pygame.transform.rotate(surface,90)

@@ -168,16 +168,16 @@ class gui():
         self.clear_screen()
         sol = self.solar_system_object_link
         if sol.display_mode == "solar_system":
-            sol.solar_system_zoom = sol.solar_system_zoom * 2
+            sol.solar_system_zoom = int(sol.solar_system_zoom * 2)
             surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
             if surface == "planetary_mode":
-                sol.solar_system_zoom = sol.solar_system_zoom / 2
+                sol.solar_system_zoom = int(sol.solar_system_zoom / 2)
                 sol.display_mode = "planetary"
                 sol.current_planet.load_for_drawing()
                 surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         elif sol.display_mode == "planetary":
             if sol.current_planet.projection_scaling < 720:
-                sol.current_planet.projection_scaling = sol.current_planet.projection_scaling * 2
+                sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling * 2)
                 surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
             else:
                 if sol.current_planet.current_base is not None: #if a base is selected on this planet, we'll zoom in on it
@@ -204,14 +204,14 @@ class gui():
         sol = self.solar_system_object_link
         if sol.display_mode == "solar_system":
             if sol.solar_system_zoom >= 2:
-                sol.solar_system_zoom = sol.solar_system_zoom / 2
+                sol.solar_system_zoom = int(sol.solar_system_zoom / 2)
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
             else:
                 return
 
         elif sol.display_mode == "planetary":
             if sol.current_planet.projection_scaling >= 90:
-                sol.current_planet.projection_scaling = sol.current_planet.projection_scaling / 2
+                sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling / 2)
                 surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
             else:
                 sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000)

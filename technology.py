@@ -115,7 +115,7 @@ class Tree():
 					self.solar_system_object_link.messages.append(print_dict)
 
 			else:
-				raise Exception("DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. This should not be able to happen")
+				raise print("DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. This should not be able to happen")
 
 		image = self.plot_total_tree(self.vertex_dict,zoomlevel=self.zoomlevel,center=self.center)
 
