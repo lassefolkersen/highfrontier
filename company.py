@@ -400,7 +400,7 @@ class company:
 		if self.target_technology is None:
 			if self.automation_dict["Pick research (pick research automatically)"]:
 			 	self.pick_research()
- 			else: #FIXME
+			else:  # TODO: Fix that
 				if self.research > 0:
 					print_dict = {"text":self.name + " needs to pick a technology. Go to the technology window","type":"general gameplay info"}
 					self.solar_system_object_link.messages.append(print_dict)
@@ -655,7 +655,7 @@ class company:
 			#first checking if it already exists:
 			existing_firm = None
 			for firm_instance in list(self.owned_firms.values()):
-				 if firm_instance.location == location:
+				if firm_instance.location == location:
 					if firm_instance.technology_name == technology_name:
 						existing_firm = firm_instance
 						break
@@ -1153,15 +1153,15 @@ class firm():
 		for i, opposite_bid in enumerate(opposite_bids):
 			if type == "sell_offer":
 				if opposite_bid["buyer"].name in counterparts_list:
-				   if offers_of_interest[-1]["buyer"].name == opposite_bid["buyer"].name and not need_to_find_more:
+					if offers_of_interest[-1]["buyer"].name == opposite_bid["buyer"].name and not need_to_find_more:
 						offers_of_interest[-1]["quantity"] = balance_of_findings
-				   else:
+					else:
 					   remove_these.append(i)
 			if type == "buy_offer":
 				if opposite_bid["seller"].name in counterparts_list:
-				   if offers_of_interest[-1]["seller"].name == opposite_bid["seller"].name and not need_to_find_more:
+					if offers_of_interest[-1]["seller"].name == opposite_bid["seller"].name and not need_to_find_more:
 						offers_of_interest[-1]["quantity"] = balance_of_findings
-				   else:
+					else:
 					   remove_these.append(i)
 		if len(remove_these) > 0:
 			remove_these.reverse()

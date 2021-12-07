@@ -954,7 +954,7 @@ class planet:
         The resolution of the surface will be automatically decreased as proper for the displaytype (topo/resource)
         """
         #image_string = image.tostring()
-        if resource_type is "topographical":
+        if resource_type == "topographical":
             #retrieve the topographical map.
             self.calculate_topography()
             overlay_image = self.topo_image

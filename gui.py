@@ -1158,7 +1158,7 @@ class trade_window():
 
                 check_result = self.solar_system_object_link.technology_tree.check_technology_bid(self.solar_system_object_link.current_player.known_technologies,technology)
                 if check_result != "already known": #only include if we don't already know it
-                    if check_result is not "ok": #include it as a sales-piece if too advaned, but not possible to buy
+                    if not check_result == "ok": #include it as a sales-piece if too advaned, but not possible to buy
                         type = "advanced tech."
                     else:
                         type = "technology"

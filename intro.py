@@ -161,7 +161,7 @@ class IntroGui:
         northern_inclination_start = -30 + (self.steps_planet+1) / 2
         eastern_inclination_start = (self.steps_planet+1) * 5
         projection_scaling_start = 43 + (self.steps_planet+1) * 6
-        self.steps_loop = 360 / 5 #because we tilt 5 each step
+        self.steps_loop = int(360 / 5) #because we tilt 5 each step
         all_ok = True
         for i in range(self.steps_loop):
             path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
