@@ -121,19 +121,26 @@ class Game:
                                 gui_instance.zoom_in(event)
                             case  pygame.K_PAGEDOWN:
                                 gui_instance.zoom_out(event)
-                            case  pygame.K_LEFT:
+                            case  pygame.K_LEFT | pygame.K_a:
                                 gui_instance.go_left(event)
-                            case  pygame.K_RIGHT:
+                            case  pygame.K_RIGHT| pygame.K_d:
                                 gui_instance.go_right(event)
-                            case  pygame.K_UP:
+                            case  pygame.K_UP | pygame.K_w:
                                 gui_instance.go_up(event)
-                            case  pygame.K_DOWN:
+                            case  pygame.K_DOWN | pygame.K_s:
                                 gui_instance.go_down(event)
                         pygame.display.flip()
-                    case pygame.BUTTON_WHEELUP:
-                        gui_instance.zoom_in(event)
-                    case pygame.BUTTON_WHEELDOWN:
-                        gui_instance.zoom_out(event)
+                    case pygame.MOUSEWHEEL:
+                        if event.y > 0:
+                            gui_instance.zoom_in(event)
+                        if event.y < 0:
+                            gui_instance.zoom_out(event)
+                        if event.x > 0:
+                            gui_instance.go_right(event)
+                        if event.x < 0:
+                            gui_instance.go_left(event)
+
+
             i = 0
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
