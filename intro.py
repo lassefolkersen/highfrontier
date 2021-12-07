@@ -23,7 +23,6 @@ class IntroGui:
                 all_ok = False
         if all_ok:
             self.company_capital = int(company_capital)
-            print(str(self.company_name))
             if(self.company_name is not None):
                 cn=str(self.company_name)
             else:
@@ -35,7 +34,7 @@ class IntroGui:
             self.ask_company_capital(None, None, give_warning=True)
     def __init__(self):
         self.main=main.Game()
-        self.stepsize = 5
+        self.stepsize = 1
         self.company_capital = None
         self.company_name = None
         self.save_game_to_load = None

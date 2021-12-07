@@ -87,21 +87,19 @@ class company:
 
 		try: global_variables.company_database_headers
 		except:
-			company_database_headers_file = file(os.path.join("data","economy","companies.txt"))
-			company_database_headers = company_database_headers_file.readline()
-			company_database_headers = company_database_headers.split("\t")
-			explanation = company_database_headers_file.readline()
-			company_database_header_type = company_database_headers_file.readline()
-			company_database_header_type = company_database_header_type.split("\t")
-			for i, header in enumerate(company_database_headers):
-				company_database_headers[i] = header.rstrip("\n")
-			for i, type in enumerate(company_database_header_type):
-				company_database_header_type[i] = type.rstrip("\n")
-			global_variables.company_database_headers = {}
-			for i, header in enumerate(company_database_headers):
-				global_variables.company_database_headers[header] = company_database_header_type[i]
-			company_database_headers_file.close()
-
+			with open(os.path.join("data","economy","companies.txt")) as company_database_headers_file:
+				company_database_headers = company_database_headers_file.readline()
+				company_database_headers = company_database_headers.split("\t")
+				explanation = company_database_headers_file.readline()
+				company_database_header_type = company_database_headers_file.readline()
+				company_database_header_type = company_database_header_type.split("\t")
+				for i, header in enumerate(company_database_headers):
+					company_database_headers[i] = header.rstrip("\n")
+				for i, type in enumerate(company_database_header_type):
+					company_database_header_type[i] = type.rstrip("\n")
+				global_variables.company_database_headers = {}
+				for i, header in enumerate(company_database_headers):
+					global_variables.company_database_headers[header] = company_database_header_type[i]
 
 		if model_company_database is None:
 			model_company_database = {}
@@ -545,7 +543,7 @@ class company:
 
 					splitline = []
 					for singleword in old_splitline:
-						singleword = string.capitalize(singleword)
+						singleword = singleword.upper()
 						splitline.append(singleword)
 
 					if len(splitline) > 1:

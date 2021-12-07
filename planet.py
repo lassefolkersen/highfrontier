@@ -703,7 +703,9 @@ class planet:
                 raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
             else:
                 pass
-            stdout_text = proj.communicate(communication_string)
+            stdout_tuple = proj.communicate(bytes(communication_string, 'utf-8'))
+            stdout_text = [None  if stdout is None else bytes.decode(stdout, 'utf-8') for stdout in stdout_tuple ]
+
             stdout_text = stdout_text[0].split("\n")
 
             for i in range(0,len(stdout_text)):
@@ -827,7 +829,7 @@ class planet:
                 pass
 
 
-            stdout_text = proj.communicate(communication_string)
+            stdout_text = proj.communicate(bytes(communication_string, 'utf-8'))
             stdout_text = stdout_text[0].split("\n")
             #print "stdout_text: " + str(stdout_text)
             for i in range(0,len(stdout_text)-1):
@@ -1000,7 +1002,7 @@ class planet:
             check_memory = True #should only save images to memory when they are not resource/topographical overlays
 
         mode = image.mode
-        image_string = image.tostring()
+        image_string = image.tobytes()
 
         if mode == "RGBA":
             index = 4
@@ -1117,9 +1119,9 @@ class planet:
             #print self.flat_image_borders
 
             image = image.crop((west_border,north_border,east_border,south_border))
-            image_string = image.tostring()
+            image_bmp = image.tobitmap()
 
-            surface = pygame.image.fromstring(image_string , (window_size[0],window_size[1]), mode)
+            surface = pygame.image.frombuffer(image_bmp , (window_size[0],window_size[1]), mode)
 
             self.projection_dim =(window_size[0],window_size[1])
         return surface

@@ -1,4 +1,5 @@
 from datetime import datetime
+import math
 import pygame
 from pygame.locals import *
 import time
@@ -102,32 +103,37 @@ class Game:
         i = 0
         sol.launchThread()
         while True:
-#            print "Game running another gui cycle"
             events = pygame.event.get()
             for event in events:
-                if event.type == QUIT:
-                    sys.exit(0)
-                if event.type == 5: #mouse down event
-                    gui_instance.receive_click(event)
-                    pygame.display.flip()
-                if event.type == 2: #key down event
-                    if "text_receiver" in dir(gui_instance.active_window):
-                        if gui_instance.active_window.text_receiver is not None:
-                            gui_instance.active_window.text_receiver.receive_text(event)
-                            break
-                    if event.key == 280: #pgup
+                match event.type:
+                    case pygame.QUIT:
+                        sys.exit(0)
+                    case pygame.MOUSEBUTTONDOWN:
+                        gui_instance.receive_click(event)
+                        pygame.display.flip()
+                    case pygame.KEYDOWN:
+                        if "text_receiver" in dir(gui_instance.active_window):
+                            if gui_instance.active_window.text_receiver is not None:
+                                gui_instance.active_window.text_receiver.receive_text(event)
+                                break
+                        match event.key:
+                            case  pygame.K_PAGEUP:
+                                gui_instance.zoom_in(event)
+                            case  pygame.K_PAGEDOWN:
+                                gui_instance.zoom_out(event)
+                            case  pygame.K_LEFT:
+                                gui_instance.go_left(event)
+                            case  pygame.K_RIGHT:
+                                gui_instance.go_right(event)
+                            case  pygame.K_UP:
+                                gui_instance.go_up(event)
+                            case  pygame.K_DOWN:
+                                gui_instance.go_down(event)
+                        pygame.display.flip()
+                    case pygame.BUTTON_WHEELUP:
                         gui_instance.zoom_in(event)
-                    if event.key == 281: #pgdown
+                    case pygame.BUTTON_WHEELDOWN:
                         gui_instance.zoom_out(event)
-                    if event.key == 276: #left
-                        gui_instance.go_left(event)
-                    if event.key == 275: #right
-                        gui_instance.go_right(event)
-                    if event.key == 273: #up
-                        gui_instance.go_up(event)
-                    if event.key == 274: #down
-                        gui_instance.go_down(event)
-                    pygame.display.flip()
             i = 0
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
@@ -146,3 +152,10 @@ class Game:
                 else:
                     action_surface.blit(surface,(0,0))
             pygame.display.flip()
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.start_loop(companyName = "asdf",
+                        companyCapital =  1000000,
+                        loadPreviousGame = None)
