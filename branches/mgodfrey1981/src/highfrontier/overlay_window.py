@@ -1,15 +1,15 @@
 import signaller
-from . import radiobuttons
-from . import merchant
+import radiobuttons
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -35,25 +35,25 @@ class overlay_window():
         self.action_surface = action_surface
     def create(self):
         """
-        The creation function. Doesn't return anything. 
+        The creation function. Doesn't return anything.
         """
         pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
         pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
         pygame.draw.line(
-            self.action_surface, 
-            (255,255,255), 
-            (self.rect[0], self.rect[1]), 
+            self.action_surface,
+            (255,255,255),
+            (self.rect[0], self.rect[1]),
             (self.rect[0] + self.rect[2], self.rect[1]))
         pygame.draw.line(
-            self.action_surface, 
-            (255,255,255), 
-            (self.rect[0], self.rect[1]), 
+            self.action_surface,
+            (255,255,255),
+            (self.rect[0], self.rect[1]),
             (self.rect[0], self.rect[1] + self.rect[3]))
         labels = ["visible light","trade network","topographical"] + self.solar_system_object_link.mineral_resources
         self.radiobuttons = radiobuttons.radiobuttons(
-            labels, 
-            self.action_surface, 
-            topleft = (self.rect[0] + 10 , self.rect[1] + 10), 
+            labels,
+            self.action_surface,
+            topleft = (self.rect[0] + 10 , self.rect[1] + 10),
             selected = self.solar_system_object_link.current_planet.planet_display_mode)
         signaller.connect(self.radiobuttons,"signal__change",self.slot__radioButtonsChanged)
         return

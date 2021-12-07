@@ -1,21 +1,21 @@
 # PyUI
 # Copyright (C) 2001-2002 Sean C. Riley
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of version 2.1 of the GNU Lesser General Public
 # License as published by the Free Software Foundation.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Widgets in the pyui library. Widgets are smaller GUI objects that can be contained in
-windows.  
+windows.
 
 Widgets dont do any actual drawing. Widgets maintain all the state and provide behaviour, but
 use themes for drawing.
@@ -24,7 +24,7 @@ All handler methods for widgets are prefixed with "_pyui" so that they
 never conflict with a user defined event handler method.
 
 """
-from . import layouts
+import layouts
 import pyui
 
 from pyui.desktop import getDesktop, getTheme, getRenderer
@@ -37,8 +37,8 @@ class Label(Base):
     widgetLabel = "Label"
     LEFT   = 0
     RIGHT  = 1
-    CENTER = 2    
-    
+    CENTER = 2
+
     def __init__(self,text, color = None, font = None, shadow=0, align=0):
         Base.__init__(self)
         self.font = font
@@ -68,7 +68,7 @@ class Label(Base):
             self.color = self.fgColor
         else:
             self.color = color
-            
+
         self.setDirty()
 
 class Picture(Base):
@@ -96,7 +96,7 @@ class Picture(Base):
     def setFilename(self, filename):
         self.filename = filename
         self.setDirty(1)
-        
+
     def setPiece(self, x, y, w, h):
         self.pieceRect = (x, y, w, h)
         self.setDirty(1)
@@ -109,8 +109,8 @@ class Button(Base):
     ROLLOVER = 1
     DOWN = 2
 
-    canTab = 1    
-    
+    canTab = 1
+
     def __init__(self, text, handler = None, font=None, shadow=0, fgColor=None, bgColor=None, roColor=None):
         Base.__init__(self)
         self.handler = handler
@@ -136,7 +136,7 @@ class Button(Base):
         if self.show:
             getTheme().drawButton(self.windowRect, self.text, self.hasFocus(), self.status, self.enabled, self.font,
                                   self.shadow, self.fgColor, self.bgColor, self.roColor)
-        
+
     def setText(self, text, dontResize=0):
         """Pass 1 to dontResize if you dont want the button to resize itself to the
         text passed in.
@@ -157,7 +157,7 @@ class Button(Base):
 
     def getText(self):
         return self.text
-    
+
     def _pyuiClicked(self, event):
         if event.id == self.id and self.handler:
             self.handler(self)
@@ -188,7 +188,7 @@ class Button(Base):
                 self.status = Button.IDLE
                 self.setDirty()
                 return 0
-        return 0            
+        return 0
 
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
@@ -228,7 +228,7 @@ class Button(Base):
             self.status = Button.IDLE
             self.setDirty()
             return 1
-        return 0 
+        return 0
 
     def enable(self):
         self.enabled = 1
@@ -241,7 +241,7 @@ class Button(Base):
 class ImageButton(Button):
     """Same as regular button except it has an image instead of text.
     """
-    widgetLabel = "ImageButton"    
+    widgetLabel = "ImageButton"
     def __init__(self, filename, handler, text = "", ghostFilename = ""):
         Button.__init__(self, text, handler)
         self.filename = filename
@@ -257,18 +257,18 @@ class ImageButton(Button):
     def setFilename(self, filename):
         self.filename = filename
         self.setDirty(1)
-        
+
 class Edit(Base):
     """Edit box. accepts input from user. some emacs-like editing functionality.
     """
-    canTab = 1     
-    widgetLabel = "Edit"       
+    canTab = 1
+    widgetLabel = "Edit"
     def __init__(self,text, max, handler):
         Base.__init__(self)
         self.handler = handler
         self.caretPos = None
         self.selectPos = None
-        self.setText(text)        
+        self.setText(text)
         self.dragging = 0
         self.max = max
         self.resize(self.width, int(getTheme().defaultTextHeight*1.5))
@@ -281,8 +281,8 @@ class Edit(Base):
         self.registerEvent(pyui.locals.CLICKED, self._pyuiClicked)
 
     def draw(self, renderer):
-        getTheme().drawEdit(self.windowRect,self.text, self.hasFocus(), self.caretPos, self.selectPos) 
-            
+        getTheme().drawEdit(self.windowRect,self.text, self.hasFocus(), self.caretPos, self.selectPos)
+
     def setText(self, text):
         """external function to set the text and move the caret to the end"""
         if not text:
@@ -309,7 +309,7 @@ class Edit(Base):
         # put hit position in window relative coords
         x = pos[0] - self.rect[0]
         y = pos[1] - self.rect[1]
-                
+
         # find the horizontal position within the text by binary search
         l,r = 0, len(self.text)
         c = 0
@@ -325,8 +325,8 @@ class Edit(Base):
                         l = l + 1
                     break
                 r = c
-        return l                
-        
+        return l
+
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
             return 0
@@ -447,9 +447,9 @@ class Edit(Base):
             self.caretPos += 1
             self.selectPos = self.caretPos
             self.setDirty()
-            
+
             return 1
-        
+
         return 0
 
     def _pyuiChar(self, event):
@@ -482,11 +482,11 @@ class NumberEdit(Edit):
 
         self.allowDecimels = allowDecimels
         self.getValue()   # just check the initial data to see if it's legal
-        
+
     def _pyuiChar(self, event):
         if not self.hasFocus():
             return 0
-                
+
         ordValue = ord(event.key)
         if ordValue < 45 or ordValue == 47 or ordValue > 57:
             return 0
@@ -497,20 +497,20 @@ class NumberEdit(Edit):
         if ordValue == 46:  # only one decimel point allowed.
             if self.allowDecimels == 0:
                 return 0
-            
+
             for char in self.text:
                 if char == '.':
                     return 0
 
-        return Edit._pyuiChar(self, event)    
+        return Edit._pyuiChar(self, event)
 
     def getValue(self):
         """Returns the integer or real version of this data.
         """
         if self.text == "":
             self.text = "0"
-            self.setDirty()            
-        
+            self.setDirty()
+
         try:
             if self.allowDecimels:
                 return float(self.text)
@@ -525,19 +525,19 @@ class NumberEdit(Edit):
             self.setText(str(value))
         except:
             raise 'NumberEdit could not convert value to string'
-    
+
 
 class Password(Edit):
-    widgetLabel = "Password"       
+    widgetLabel = "Password"
     def draw(self, renderer):
         hidden = len(self.text) * "*"
-        getTheme().drawEdit(self.windowRect, hidden, self.hasFocus(), self.caretPos, self.selectPos)        
+        getTheme().drawEdit(self.windowRect, hidden, self.hasFocus(), self.caretPos, self.selectPos)
 
 
 class Scroll(Base):
     """Base scroll bar.
     """
-    widgetLabel = "Scroll"           
+    widgetLabel = "Scroll"
     def __init__(self):
         self.scrollPos = 0 # pixel position of scroll bar
         self.currentItem = 0
@@ -564,23 +564,23 @@ class Scroll(Base):
         self.setupBar()
         self.setupPos()
         self.setDirty(1)
-        
+
     def setupBar(self):
         if self.alignment == 'v':
             self.barSpace = self.height - (getTheme().getScrollerSize()*2 + 2)
         else:
             self.barSpace = self.width - (getTheme().getScrollerSize()*2 + 2)
-	
+
         if self.barSpace < 1:
             self.barSpace = 1
-	
+
         if self.numItems < self.numVisible:
             self.barSize = self.barSpace
         else:
             self.barSize = self.barSpace * self.numVisible / self.numItems
         if self.barSize < 5:
             self.barSize = 5
-	
+
         if self.scrollPos > self.barSpace - self.barSize:
             self.scrollPos = max( self.barSpace - self.barSize, 0 )
 
@@ -601,7 +601,7 @@ class Scroll(Base):
     def draw(self, renderer):
         if not self.show:
             return
-            
+
         theme = getTheme()
         theme.drawScrollBack(self.windowRect)
         if self.alignment == 'v':
@@ -612,20 +612,20 @@ class Scroll(Base):
             theme.drawScrollButtonUp((self.windowRect[0],self.windowRect[1],getTheme().getScrollerSize(),self.height) )
             theme.drawScrollButtonDown((self.windowRect[0]+self.width-getTheme().getScrollerSize(),self.windowRect[1],getTheme().getScrollerSize(),self.height))
             theme.drawScrollBar((self.windowRect[0]+self.pos, self.windowRect[1], self.barSize, self.height))
-        
+
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
             self.status = 0
             return 0
         localpos = (event.pos[0] - self.rect[0], event.pos[1] - self.rect[1])
-        
+
 	if self.alignment == 'v':
             p = localpos[1]
             extent = self.height
 	else:
             p = localpos[0]
             extent = self.width
-        
+
 	if p < getTheme().getScrollerSize():     # up button scroll
             if self.currentItem > 0: self.scrollToItem( self.currentItem - 1 )
             return 1
@@ -650,20 +650,20 @@ class Scroll(Base):
             return 1
 
     def _pyuiMouseUp(self, event):
-        if not self.hit(event.pos):        
+        if not self.hit(event.pos):
             self.status = 0
             return 0
         self.status = 0
 
     def _pyuiMouseMotion(self, event):
         if self.status:
-            localpos = (event.pos[0] - self.rect[0], event.pos[1] - self.rect[1])            
-	
+            localpos = (event.pos[0] - self.rect[0], event.pos[1] - self.rect[1])
+
 	    if self.alignment == 'v':
                 p = localpos[1]
 	    else:
                 p = localpos[0]
-        
+
             diff = p - self.start
             self.scrollPos = self.scrollPos + diff
             if self.scrollPos < 0:
@@ -679,7 +679,7 @@ class Scroll(Base):
         Base.resize(self, w, h)
         self.setupBar()
         self.setupPos()
-        
+
     def calcSize(self):
         Base.calcSize(self)
         self.setupBar()
@@ -709,7 +709,7 @@ class HScroll(Scroll):
         self.alignment = 'h'
         Scroll.__init__(self)
 
-        
+
 class ListBoxItem:
     """Used by ListBox to track items.
     """
@@ -722,8 +722,8 @@ class ListBox(Base):
     """List Box has a scrollable list of selectable items.
        List box behavior should incorporate the right mouse button -BrianU 10-31-02
     """
-    canTab = 1    
-    widgetLabel = "ListBox"               
+    canTab = 1
+    widgetLabel = "ListBox"
     def __init__(self, onSelected = None, onDouble = None):
         Base.__init__(self)
         self.items = []
@@ -742,7 +742,7 @@ class ListBox(Base):
 
         self.registerEvent(pyui.locals.LIST_SELECTED, self._pyuiSelectEvent)
         self.registerEvent(pyui.locals.LIST_DBLCLICK, self._pyuiDoubleEvent)
-        
+
         self.resize(100,100)
 
         self.selectHandler = onSelected
@@ -754,12 +754,12 @@ class ListBox(Base):
         self.numItems = 0
         self.topItem = 0
         self.selected = -1
-        
+
     def populateList(self, items):
     	for item in items:
-    		self.addItem(item, None)    		
+    		self.addItem(item, None)
     	self.sortByName()
-    
+
     def addItem(self, itemText, itemData, color = None):
         """add an item to the list box. the data value is stored for the item
         and will be available when events occur on that item.
@@ -786,7 +786,7 @@ class ListBox(Base):
         self.numItems = len(self.items)
         self.vscroll.setNumItems(self.numItems, self.numVisible)
         self.setDirty()
-            
+
     def removeItemByData(self, itemData):
         i = 0
         for item in self.items:
@@ -823,10 +823,10 @@ class ListBox(Base):
                                                      self.windowRect[1]+2 + (i-self.topItem) * getTheme().defaultTextHeight,
                                                      self.width - getTheme().getScrollerSize(),
                                                      getTheme().defaultTextHeight-2),
-                                                    item.name, 0, item.color)                    
+                                                    item.name, 0, item.color)
                 i = i + 1
             self.vscroll.draw(renderer)
-        
+
     def _pyuiScrollPos(self, event):
         if event.id == self.vscroll.id:
             self.topItem = event.pos
@@ -852,7 +852,7 @@ class ListBox(Base):
         self.postEvent(pyui.locals.LIST_DBLCLICK)
         self.setDirty()
         return 1
-        
+
     def getSelectedItem(self):
         if self.selected > -1 and self.selected < len(self.items):
             return self.items[self.selected]
@@ -866,7 +866,7 @@ class ListBox(Base):
                 self.setDirty()
                 break
             i = i + 1
-            
+
     def resize(self, w, h):
         Base.resize(self, w, h)
         self.numVisible = int (self.height / getTheme().defaultTextHeight )
@@ -877,7 +877,7 @@ class ListBox(Base):
     def clearSelection(self):
         self.selected = -1
         self.setDirty()
-    
+
     def clear(self):
         self.items = []
         self.numItems = 0
@@ -906,13 +906,13 @@ class ListBox(Base):
     def sortByData(self):
         self.items.sort(self.itemCompareByData)
         self.setDirty()
-        
+
     def itemCompareByName(self, item1, item2):
         return cmp(item1.name, item2.name)
 
     def itemCompareByData(self, item1, item2):
         return cmp(item1.data, item2.data)
-    
+
 class DropDownBox(Base):
     """A drop-down selection box. Pass the number of lines to be visible in the drop-down
     list to the constructor.
@@ -926,9 +926,9 @@ class DropDownBox(Base):
         self.addChild(self.selectionList)
         self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown)
         self.selectHandler = onSelected
-        
+
     ## pass-through methods to the list box
-        
+
     def addItem(self, itemText, itemData, color = None):
         self.selectionList.addItem(itemText, itemData, color)
         self.selectionList.selected = len(self.selectionList.items) -1
@@ -944,7 +944,7 @@ class DropDownBox(Base):
 
     def clear(self):
         self.selectionList.clear()
-        
+
     def draw(self, renderer):
         """Draw the selected item at all times, and draw the list when expanded.
         """
@@ -971,7 +971,7 @@ class DropDownBox(Base):
         y = event.pos[1] - self.rect[1]
         if x > self.width - self.BUTTON_WIDTH and x < self.width:
             if self.selectionList.show == 0:
-                self.positionSelectionList()            
+                self.positionSelectionList()
                 self.selectionList.setShow(1)
             else:
                 self.selectionList.setShow(0)
@@ -987,7 +987,7 @@ class DropDownBox(Base):
             self.selectHandler(self.item)
         self.selectionList.setShow(0)
         return 1
-    
+
     def resize(self, width, height):
         Base.resize(self, width, height)
         self.positionSelectionList()
@@ -1028,7 +1028,7 @@ class CheckBox(Base):
 
     def draw(self, renderer):
         getTheme().drawCheckBox(self.windowRect, self.text, self.checkState)
-        
+
 class SliderBar(Base):
     """A horizontal slider bar. Has a slider handle that the user can drag to change its value.
     the onSlide method will be called when the value of the slider changes.
@@ -1049,7 +1049,7 @@ class SliderBar(Base):
     def resize(self, w, h):
         Base.resize(self,w,h)
         self.stepInterval = (float(self.width) - self.BARWIDTH) / self.range
-        
+
     def draw(self, renderer):
         getTheme().drawSliderBar(self.windowRect, self.range, self.position, self.BARWIDTH)
 
@@ -1058,7 +1058,7 @@ class SliderBar(Base):
             return
         self.position = newValue
         self.setDirty(1)
-        
+
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
             return 0
@@ -1081,8 +1081,8 @@ class SliderBar(Base):
     def _pyuiMouseMotion(self, event):
         if not self.sliding:
             return 0
-        x = event.pos[0] - self.rect[0]            
-        diff = x - self.slidePos 
+        x = event.pos[0] - self.rect[0]
+        diff = x - self.slidePos
         newPosition = ((self.position * self.stepInterval) + diff) / self.stepInterval
         realdiff = newPosition - self.position
         if abs(realdiff) > 1:
@@ -1100,21 +1100,21 @@ class SliderBar(Base):
         return 0
 
 
-        
+
 class TabbedPanel(Panel):
     """A panel with multiple panels that are activated by tabs along the top of the panel.
     The inner panels can be created by this panel or existing panels can be added in.
     """
     #tabsHeight = getTheme().defaultTextHeight + 8
-    
+
     def __init__(self):
         Panel.__init__(self)
         self.activePanel = None
-        self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown) 
+        self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown)
         self.tabPanels = {}             # mapping of titles to panels
         self.activePanel = None
         self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown)
-        self.registerEvent(pyui.locals.KEYDOWN, self._pyuiKeyDown)        
+        self.registerEvent(pyui.locals.KEYDOWN, self._pyuiKeyDown)
 
     def removePanel(self, title):
         """Remove an existing panel by its name.
@@ -1132,7 +1132,7 @@ class TabbedPanel(Panel):
         panel.moveto(0, getTheme().getTabsHeight())
         panel.resize(self.width, self.height-getTheme().getTabsHeight())
         panel.calcSize()
-        
+
         panel.tabTitle = title
         self.tabPanels[title] = panel
         if not self.activePanel:
@@ -1142,7 +1142,7 @@ class TabbedPanel(Panel):
 
     def getPanel(self, number):
         return self.children[number]
-    
+
     def resize(self, w, h):
         """Only resize the current tab. other tabs are resized when switched to later if it is required."""
         #print "tabbed panel resizing ", w, h, self
@@ -1203,14 +1203,14 @@ class TabbedPanel(Panel):
         for i in range(0,len(self.children)):
             if self.children[i] == self.activePanel:
                 if i == len(self.children)-1:
-                    print("activating" , 0, self.children[0])                    
+                    print("activating" , 0, self.children[0])
                     self.activatePanel(self.children[0])
                     break
                 else:
                     print("activating" , i, self.children[i+1])
                     self.activatePanel(self.children[i+1])
                     break
-                       
+
     def _pyuiKeyDown(self, event):
         if event.mods & pyui.locals.MOD_CONTROL:
             if event.key == pyui.locals.K_TAB:
@@ -1221,9 +1221,9 @@ class TabbedPanel(Panel):
                 if number < len(self.children):
                     self.activatePanel(self.children[number])
                     return 1
-                    
+
         return 0
-    
+
     def handleEvent(self, event):
         if not self.show:
             return
@@ -1248,7 +1248,7 @@ class TabbedPanel(Panel):
            pos[0] < self.rect[0] + self.rect[2] and \
            pos[1] > self.rect[1] and \
            pos[1] < self.rect[1] + self.rect[3]:
-        
+
             result = self.activePanel.checkHit(pos)
             if result:
                 return result
@@ -1272,7 +1272,7 @@ class SplitterPanel(Panel):
     PERCENTAGE = 1
 
     PADDING = 2
-    
+
     def __init__(self, direction = VERTICAL, method = PERCENTAGE, ratio = 50 ):
         self.direction = direction  # vertical/horizontal
         self.method = method        # pixels/percentage
@@ -1327,15 +1327,15 @@ class SplitterPanel(Panel):
             getTheme().drawSplitter(
                                  (self.windowRect[0], self.windowRect[1]+self.splitPos-self.PADDING, self.width, self.PADDING*2))
         else:
-            getTheme().drawSplitter(            
+            getTheme().drawSplitter(
                                  (self.windowRect[0]+self.splitPos-self.PADDING, self.windowRect[1], 2*self.PADDING, self.height))
-            
+
         self.panel2.draw(renderer)
-        
+
     def pack(self):
         self.panel1.pack()
         self.panel2.pack()
-        
+
     def getFirstPanel(self):
         """ returns the left or top panel
         """
@@ -1355,7 +1355,7 @@ class SplitterPanel(Panel):
         self.addChild(panel)
         self.panel1 = panel
         self.resize(self.width, self.height)
-        
+
     def replaceSecondPanel(self, panel):
         panel.moveto(self.panel2.posX, self.panel2.posY)
         for c in self.children:
@@ -1389,7 +1389,7 @@ class FormPanel(Panel):
         "dropdownlist",
         "label"
         ]
-    
+
     def __init__(self, fieldList):
         self.fieldList = fieldList
         Panel.__init__(self)
@@ -1400,7 +1400,7 @@ class FormPanel(Panel):
         span = 0
         for t, n, l, vspan, d in fieldList:
             span = span + vspan
-            
+
         self.setLayout(pyui.layouts.TableLayoutManager( 3, span))
         for fieldType, fieldName, fieldLabel, fieldSpan, fieldData in fieldList:
             newLabel = Label(fieldLabel)
@@ -1410,7 +1410,7 @@ class FormPanel(Panel):
 
             self.__dict__["label_%s" % fieldName] = newLabel
             self.__dict__["widget_%s" % fieldName] = newWidget
-            
+
             num = num + fieldSpan
         self.pack()
 
@@ -1431,7 +1431,7 @@ class FormPanel(Panel):
         for fieldType, fieldName, fieldLabel, fieldSpan, fieldData in self.fieldList:
             formWidget = self.__dict__["widget_%s" % fieldName]
             self.processFormWidget(fieldType, fieldName, formWidget)
-        
+
     def createFormWidget(self, fieldType, fieldData):
         """Create the right kind of widget based on the fieldType.
         """
@@ -1456,9 +1456,9 @@ class FormPanel(Panel):
         if not processMethod:
             raise "No process method for %s" % fieldType
         return processMethod(formWidget, fieldName)
-    
+
     ##### Widget Creation Methods. #####
-    
+
     def create_string(self, size):
         return Edit("", size, self._pyuiEdit)
 
@@ -1477,7 +1477,7 @@ class FormPanel(Panel):
 
     def create_checkbox(self, title):
         return CheckBox(title, self._pyuiCheck)
-    
+
     def create_list(self, dummy):
         return ListBox()
 
@@ -1486,7 +1486,7 @@ class FormPanel(Panel):
 
     def create_label(self, dummy):
         return Label("")
-    
+
     ###### Widget Populate Methods. #######
 
     def populate_string(self, formWidget, value):
@@ -1499,13 +1499,13 @@ class FormPanel(Panel):
     populate_int = populate_string
     populate_text = populate_string
     populate_label = populate_string
-    
+
     def populate_slider(self, formWidget, value):
         formWidget.position = value
 
     def populate_checkbox(self, formWidget, value):
         formWidget.setCheck(value)
-        
+
     def populate_list(self, formWidget, items):
         #TODO: make a way to get a text value for an item
         formWidget.clear()
@@ -1535,16 +1535,16 @@ class FormPanel(Panel):
 
     def process_checkbox(self, formWidget, fieldName):
         setattr(self.object, fieldName, formWidget.checkState)
-        
+
     def process_int(self, formWidget, fieldName):
         setattr(self.object, fieldName, int(formWidget.text) )
-        
+
     ##### Widget handler methods ######
-    
+
     def _pyuiSlide(self, value):
         #print "slid to ", value
         pass
-            
+
     def _pyuiEdit(self, edit):
         #print "changing value for ", edit
         return 1
@@ -1552,7 +1552,7 @@ class FormPanel(Panel):
     def _pyuiCheck(self, value):
         #print "checkbox hit"
         pass
-            
+
 class ViewPanel(Panel):
     """A rectangle intended as a viewport into a 3D world. The implementation of worlds is very renderer
     specific. The only real constraint placed by PyUI is that the world lifetime is controlled by
@@ -1575,7 +1575,7 @@ class ViewPanel(Panel):
         print("Destroying view:", self.viewHandle)
         self.windowHandle = None
         getRenderer().destroyView(self.viewHandle)
-        Panel.destroy(self)        
+        Panel.destroy(self)
 
     def draw(self, renderer):
         renderer.drawView(self.windowRect, self.viewHandle)
@@ -1583,7 +1583,7 @@ class ViewPanel(Panel):
     def setEffect(self, effectName):
         getRenderer().setWindowEffect(self.windowHandle, effectName)
 
-    
+
 class Frame(Window):
     """A frame is a window that has a titlebar and borders. it is resizable and movable by dragging the titlebar.
     """
@@ -1596,20 +1596,20 @@ class Frame(Window):
         self.panelOffsetLeft = 0
         self.panelOffsetTop = 0
         self.panelOffsetRight = 0
-        self.panelOffsetBottom = 0            
-        
+        self.panelOffsetBottom = 0
+
         Window.__init__(self, x, y, w, h, topmost)
         self.setTitle(self.title)
-        
+
         self.panelOffsetLeft = self.theme.getFrameBorderLeft()
         self.panelOffsetTop = self.theme.getFrameBorderTop()
         self.panelOffsetRight = self.theme.getFrameBorderRight()
-        self.panelOffsetBottom = self.theme.getFrameBorderBottom()            
-            
+        self.panelOffsetBottom = self.theme.getFrameBorderBottom()
+
         self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
         w += self.panelOffsetLeft + self.panelOffsetRight
         h += self.panelOffsetTop + self.panelOffsetBottom
-            
+
         self.resize(w, h)
         self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown)
         self.registerEvent(pyui.locals.LMOUSEBUTTONUP, self._pyuiMouseUp)
@@ -1625,22 +1625,22 @@ class Frame(Window):
 
     def addMenuBar(self, menuBar):
         self.menuBar = menuBar
-        
+
     def setTitle(self, title):
         self.title = title
 
     def setBackImage(self, filename):
         self.backImage = filename
         #getRenderer().loadImage(filename)
-        
+
     def draw(self, renderer):
         """Draws to the actual frame if the renderer requires it.
         """
         if not self.show:
             return
         self.hitList = getTheme().drawFrame( (0,0,self.width, self.height), self.title, self.backImage)
-        Window.draw(self, renderer)        
-        
+        Window.draw(self, renderer)
+
     def replacePanel(self, panel):
         Window.replacePanel(self, panel)
         self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
@@ -1652,7 +1652,7 @@ class Frame(Window):
         x = pos[0] - self.rect[0]
         y = pos[1] - self.rect[1]
 
-        # scan through hit regions        
+        # scan through hit regions
         for (regionId, rect) in self.hitList:
             if x >= rect[0] and y >= rect[1] and x < rect[0]+rect[2] and y < rect[1]+rect[3]:
                 return regionId
@@ -1681,36 +1681,36 @@ class Frame(Window):
             self.theme.setResizeCursor()
         elif self.resizingCursor:
             self.resizingCursor=0
-            self.theme.setArrowCursor()            
-        
+            self.theme.setArrowCursor()
+
         if not self.hit(event.pos):
             if self.resizingCursor and not self.resizing:
                 self.resizingCursor=0
-                self.theme.setArrowCursor()                            
+                self.theme.setArrowCursor()
             return 0
         else:
             return 1
-        
+
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
             return 0
 
         self.getFocus()
         regionId = self.hitFrameRegion(event.pos)
-        
-        # check for closing            
+
+        # check for closing
         if regionId == pyui.locals.HIT_FRAME_CLOSE:
             if hasattr(self, "onCloseButton"):
                 return self.onCloseButton()
             return self._pyuiCloseButton()
-        
+
         # check for moving
         if regionId == pyui.locals.HIT_FRAME_MOVE:
             self.moving  = 1
             self.startX = event.pos[0] - self.posX
             self.startY = event.pos[1] - self.posY
             return 1
-        
+
         # check for resizing
         if regionId == pyui.locals.HIT_FRAME_RESIZE_BOTTOM_RIGHT:
             self.resizing = 1
@@ -1729,7 +1729,7 @@ class Frame(Window):
             return 1
         if self.resizingCursor:
             self.resizingCursor=0
-            self.theme.setArrowCursor()                                        
+            self.theme.setArrowCursor()
         if not self.hit(event.pos):
             return 0
         return 1
@@ -1748,8 +1748,8 @@ class Frame(Window):
     def _pyuiCloseButton(self):
         print("Destroying window", self)
         self.destroy()
-        return 1            
-        
+        return 1
+
 
 class MenuItem:
     """Used by menu widget to track items. Can have an icon 16x16 in size.
@@ -1807,12 +1807,12 @@ class Menu(Window):
             return
         if self.subActive:
             self.subActive.setShow(0)
-            
+
         # can't use menu items without an event attached
         if item and not item.canActivate:
             self.active = None
             return
-        
+
         self.active = item
         if item:
             self.subActive = item.subMenu
@@ -1876,7 +1876,7 @@ class Menu(Window):
                 raise "No room for submenu!"
         item.subMenu.moveto(x, y)
         item.subMenu.setShow(1)
-        
+
     def addItem(self, title, handler = None, subMenu = None):
         """Add an item to the menu.
         """
@@ -1901,8 +1901,8 @@ class Menu(Window):
                 item.handler = newHandler
                 self.setDirty(1)
                 break
-        
-            
+
+
     def findItem(self, pos):
         if not self.hit(pos):
             return None
@@ -1914,7 +1914,7 @@ class Menu(Window):
             if x >= item.rect[0] and y >= item.rect[1] and x < item.rect[0]+item.rect[2] and y < item.rect[1]+item.rect[3]:
                 return item
         return None
-    
+
 
 class MenuPopup(Menu):
     """Menu that can be floating or attached to a menuBar.
@@ -1942,14 +1942,14 @@ class MenuPopup(Menu):
         if self.show:
             return Menu._pyuiMouseMotion(self, event)
         return 0
-                
+
     def _pyuiMouseDown(self, event):
         if self.show:
             if Menu._pyuiMouseDown(self, event):
                 return 1
             self.setShow(0)
         return 0
-    
+
     def _pyuiMouseUp(self, event):
         if self.show:
             if Menu._pyuiMouseUp(self, event):
@@ -1962,7 +1962,7 @@ class MenuBar(Window):
     """
     border = 1
     def __init__(self):
-        w = getDesktop().width        
+        w = getDesktop().width
         Window.__init__(self, 0,0, w, getTheme().defaultTextHeight + 4, topmost = 1)
         self.setShow(1)
         self.menus = []
@@ -1986,7 +1986,7 @@ class MenuBar(Window):
                 menu.moveto(self.posX + rect[0] - self.border, self.posY + self.height)
                 self.hitList.append((menu, rect))
                 x += rect[2]
-        
+
     def addMenu(self, menu):
         self.menus.append(menu)
 
@@ -2018,7 +2018,7 @@ class MenuBar(Window):
                 self.highlight = menu
                 self.setDirty()
         return 0
-                
+
     def _pyuiMouseDown(self, event):
         # give active child first chance
         if self.active and self.active._pyuiMouseDown(event):
@@ -2043,7 +2043,7 @@ class MenuBar(Window):
         Base.setParent(self, parent)
 
     def findMenu(self, pos):
-        if not self.hit(pos):                             
+        if not self.hit(pos):
             return None
 
         # put hit position in window relative coords
@@ -2080,7 +2080,7 @@ class TooltipWindow(Window):
         self.setLayout(pyui.layouts.BorderLayoutManager())
         self.text = ""
         self.setShow(0)
-        
+
     def activate(self, text, rect):
         #print "Enabling", self, rect
         self.text = text
@@ -2107,7 +2107,7 @@ class Desktop3DWindow(Window):
         getTheme().setArrowCursor()
         self.drawCommands = []
         self.drawLastCallbacks = []
-        
+
         # this is different.. use the desktop
         self.handle = getRenderer().getDesktopWindow()
         self.moveto(0, 0)
@@ -2136,7 +2136,7 @@ class AttachedWindow(Window):
         self.nodeName = nodeName
         self.xoffset = xoffset
         self.yoffset = yoffset
-        
+
     def destroy(self):
         getRenderer().detachController(self.objectHandle, self.controllerHandle)
         self.controllerHandle = None
@@ -2172,7 +2172,7 @@ class MenuBarWidget(Base):
 	                 self.rect[1] + self.windowRect[3] )
             self.hitList.append((menu, rect))
             x += rect[2]
-        
+
     def addMenu(self, menu):
         self.menus.append(menu)
 
@@ -2204,7 +2204,7 @@ class MenuBarWidget(Base):
                 self.highlight = menu
                 self.setDirty(1)
         return 0
-                
+
     def _pyuiMouseDown(self, event):
         # give active child first chance
         if self.active and self.active._pyuiMouseDown(event):
@@ -2229,7 +2229,7 @@ class MenuBarWidget(Base):
         Base.setParent(self, parent)
 
     def findMenu(self, pos):
-        if not self.hit(pos):                             
+        if not self.hit(pos):
             return None
 
         # put hit position in window relative coords

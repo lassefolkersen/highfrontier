@@ -1,13 +1,13 @@
-from . import merchant
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -21,7 +21,7 @@ class tech_window():
         self.action_surface = action_surface
         self.display_mode_before = "planetary"
         self.rect = pygame.Rect(0,0,0,0)
-        
+
 
     def create(self):
         sol = self.solar_system_object_link
@@ -29,7 +29,7 @@ class tech_window():
         surface = sol.technology_tree.plot_total_tree(sol.technology_tree.vertex_dict,sol.technology_tree.zoomlevel,center = sol.technology_tree.center)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
-        
+
     def receive_click(self,event):
         if self.solar_system_object_link.message_printing["debugging"]:
             print_dict = {"text":"DEBUGGING: tech window received a direct click. This should not be possible","type":"debugging"}

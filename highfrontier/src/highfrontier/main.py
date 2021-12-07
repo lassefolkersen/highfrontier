@@ -3,13 +3,13 @@ import pygame
 from pygame.locals import *
 import time
 import os, sys
-from . import planet
-from . import company
-from . import solarsystem
+import planet
+import company
+import solarsystem
 import datetime
-from . import primitives
-from . import global_variables
-from . import gui
+import primitives
+import global_variables
+import gui
 import random
 import importlib
 importlib.reload(sys)
@@ -29,11 +29,11 @@ class Game:
         window_size = global_variables.window_size
         pygame.init()
         if global_variables.fullscreen:
-            window = pygame.display.set_mode(window_size,FULLSCREEN) 
+            window = pygame.display.set_mode(window_size,FULLSCREEN)
         else:
             window = pygame.display.set_mode(window_size)
         icon = pygame.image.load(os.path.join("images","window_icon.png"))
-        pygame.display.set_icon(icon) 
+        pygame.display.set_icon(icon)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         #initializing the world - depends on if a previous game should be loaded
         if loadPreviousGame is not None:
@@ -82,7 +82,7 @@ class Game:
         right_side_surface = window.subsurface(right_side_rect)
         message_surface = window.subsurface(message_rect)
         #switch to determine planetary mode or solarsystem mode from beginning
-        mode_before_change = sol.display_mode 
+        mode_before_change = sol.display_mode
         if sol.display_mode == "solar_system":
             surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
         if sol.display_mode == "planetary":
@@ -104,8 +104,8 @@ class Game:
         while True:
 #            print "Game running another gui cycle"
             events = pygame.event.get()
-            for event in events: 
-                if event.type == QUIT: 
+            for event in events:
+                if event.type == QUIT:
                     sys.exit(0)
                 if event.type == 5: #mouse down event
                     gui_instance.receive_click(event)

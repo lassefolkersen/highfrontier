@@ -1,19 +1,19 @@
 import signaller
-from . import entry
-from . import button
-from . import fast_list
-from . import togglebutton
-from . import vscrollbar
-from . import merchant
+import entry
+import button
+import fast_list
+import togglebutton
+import vscrollbar
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -52,7 +52,7 @@ class file_window():
             )
         signaller.connect(b,"signal__clicked",lambda: self.go_to_submenu(parameter))
         return b
-    
+
     def draw(self):
         self.button_instances_now = {}
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
@@ -80,7 +80,7 @@ class file_window():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,400,500)
         self.action_surface = action_surface
-        self.text_receiver = None 
+        self.text_receiver = None
         self.distribute_click_to_subwindow = None
         self.button_structure = {
             "File menu":{
@@ -112,7 +112,7 @@ class file_window():
 
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
         self.button_instances_now = {}
         self.button_list_now = []
@@ -130,8 +130,8 @@ class file_window():
         self.position = function_parameter
         self.draw()
 
-    
-    
+
+
 
 
 
@@ -139,28 +139,28 @@ class file_window():
         sys.exit(0)
 
 
-    
-            
+
+
 
     def select_save_name(self, function_parameter=[]):
         """
         Prompts the player to input the name of the savegame file
         """
-        
+
         pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
         description = global_variables.standard_font.render("Enter savegame name:",True,(0,0,0))
         self.action_surface.blit(description, (10 + self.rect[0], 10 + self.rect[1]))
-        
+
         self.button_list_now = ["Empty space","Name box","Ok"]
         self.button_instances_now = {}
-        self.button_instances_now["Name box"] = entry.entry(self.action_surface, 
-                             topleft = (10 + self.rect[0], 10 + 40 + self.rect[1]), 
-                             width = self.rect[2] - 20, 
+        self.button_instances_now["Name box"] = entry.entry(self.action_surface,
+                             topleft = (10 + self.rect[0], 10 + 40 + self.rect[1]),
+                             width = self.rect[2] - 20,
                              max_letters = global_variables.max_letters_in_company_names)
 
         self.text_receiver = self.button_instances_now["Name box"]
-        self.button_instances_now["Name box"].active = True 
-        
+        self.button_instances_now["Name box"].active = True
+
         self.button_instances_now["Ok"] = button.button(
                                     "Ok",
                                     self.action_surface,
@@ -169,24 +169,24 @@ class file_window():
                                     fixed_size = (self.rect[2] - 20, 35),
                                     topleft = (10 + self.rect[0], 80 + 10 + self.rect[1])
                                     )
-        pygame.display.flip() 
-        
-        
+        pygame.display.flip()
+
+
     def effectuate_save(self,function_parameter=[]):
         save_game_name = self.button_instances_now["Name box"].text
         self.solar_system_object_link.save_solar_system(os.path.join("savegames",save_game_name))
         self.create()
-        
+
 
     def select_game_to_load(self, function_parameter=[]):
         self.position = "Load menu"
         load_window = fast_list.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
         self.distribute_click_to_subwindow = load_window
-                                                    
+
 
 #    def effectuate_load(self):
 
-        
+
 
     def new_game(self,  function_parameter=[]):
         raise Exception("should start new game, but this has not been implemented yet FIXME")
@@ -202,16 +202,16 @@ class file_window():
         The window that is shown when asking for automation_settings.
         First destroys the previous file window
         """
-        
-        
-        
+
+
+
         if self.solar_system_object_link.current_player is None:
             if self.solar_system_object_link.message_printing["debugging"]:
                 print_dict = {"text":"DEBUGGING: Game is in simulation mode so no changes can be made","type":"debugging"}
                 self.solar_system_object_link.messages.append(print_dict)
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
-            
+
             self.button_instances_now = {}
             self.button_list_now = []
 
@@ -219,7 +219,7 @@ class file_window():
 
             for i, button_name in enumerate(button_names):
                 self.button_list_now.append(button_name)
-                
+
                 self.button_instances_now[button_name] = togglebutton.togglebutton(button_name,
                                                           self.action_surface,
                                                           self.change_automation,
@@ -228,8 +228,8 @@ class file_window():
                                                           topleft = (10 + self.rect[0], i * 40 + 10 + self.rect[1]),
                                                           pressed = self.solar_system_object_link.current_player.automation_dict[button_name]
                                                     )
-            
-            
+
+
             self.button_list_now.append("Decision variables")
             self.button_instances_now["Decision variables"] = button.button(
                                                                            "Decision variables",
@@ -239,9 +239,9 @@ class file_window():
                    fixed_size = (self.rect[2] - 20, 35),
                    topleft = (10 + self.rect[0], (i + 1) * 40 + 10 + self.rect[1]),
                    )
-            
-            
-            
+
+
+
 
     def change_automation(self,function_parameter=[]):
         """
@@ -257,8 +257,8 @@ class file_window():
         print_dict = {"text":"For " + self.solar_system_object_link.current_player.name + " the " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general company info"}
         self.solar_system_object_link.messages.append(print_dict)
 #        self.manager.emit("update_infobox", None)
-        
-        
+
+
 
     def decision_variables(self,function_parameter=[]):
         """
@@ -271,14 +271,14 @@ class file_window():
                 self.solar_system_object_link.messages.append(print_dict)
         else:
             pygame.draw.rect(self.action_surface, (150,150,150), self.rect)
-            decision_variables_window = fast_list.fast_list(self.action_surface, 
+            decision_variables_window = fast_list.fast_list(self.action_surface,
                                                                  list(self.solar_system_object_link.current_player.company_database.keys()),
                                                                  rect = self.rect)
 
-            self.distribute_click_to_subwindow = decision_variables_window                                            
+            self.distribute_click_to_subwindow = decision_variables_window
 
-            
-        
+
+
 
 
     def check_and_save_decision_variables(self):
@@ -286,7 +286,7 @@ class file_window():
         Function that checks that all variables in the entry boxes of the automation settings are integers between 1-100,
         and saves them if this is correct
         """
-        
+
 #        table = self.window
         all_passed_check = True
         for column_offset in [0,2]:
@@ -295,17 +295,17 @@ class file_window():
                     name = self.window.grid[(row_index, column_offset)].text
                     value = self.window.grid[(row_index, column_offset + 1)].text
                     try:    int(value)
-                    except: 
+                    except:
                         print_dict = {"text":"The value " + str(value) + " at " + str(name) + " is not integer","type":"general gameplay info"}
                         self.solar_system_object_link.messages.append(print_dict)
                         self.manager.emit("update_infobox", None)
                         all_passed_check = False
                         break
-                    else:   
+                    else:
                         pass
-                    
+
                     value_as_int = int(value)
-                    
+
                     if 1 <= value_as_int <= 100:
                         pass
                     else:
@@ -314,7 +314,7 @@ class file_window():
                         self.manager.emit("update_infobox", None)
                         all_passed_check = False
                         break
- 
+
         if all_passed_check:
             print_dict = {"text":"The decision matrix has been updated for " + self.solar_system_object_link.current_player.name,"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
@@ -325,11 +325,11 @@ class file_window():
                         name = self.window.grid[(row_index, column_offset)].text
                         value = self.window.grid[(row_index, column_offset + 1)].text
                         value_as_int = int(value)
-                        
+
                         self.solar_system_object_link.current_player.company_database[name] = value_as_int
-            
+
             self.exit(True)
-            
+
 
 
     def message_settings(self,  function_parameter=[]):
@@ -345,7 +345,7 @@ class file_window():
 
         for i, button_name in enumerate(button_names):
             self.button_list_now.append(button_name)
-            
+
             self.button_instances_now[button_name] = togglebutton.togglebutton(button_name,
                                                       self.action_surface,
                                                       self.change_message_setting,
@@ -356,7 +356,7 @@ class file_window():
                                                 )
 
 
-    def change_message_setting(self,  function_parameter=[]):                        
+    def change_message_setting(self,  function_parameter=[]):
         """
         Function that will effectuate the change of message settings
         """
@@ -368,22 +368,22 @@ class file_window():
         print_dict = {"text":"The show-settings for " + str(function_parameter) + " was changed from " + str(previous_setting) + " to " + str(not previous_setting),"type":"general gameplay info"}
         self.solar_system_object_link.messages.append(print_dict)
 #        self.manager.emit("update_infobox", None)
-                        
-    
-        
 
-    
 
-        
+
+
+
+
+
     def game_speed_settings(self,  function_parameter=[]):
         """
         The window that is shown when asking for time delay settings
         Time delay settings is defined as a value between 0 and 100 with 100 being the fastest.
         It translates into the self.solar_system_object_link.step_delay_time
         which is a value between 0 (perform game-iteration at every loop-iteration) and infinity (but then the game will stop)
-        a loop-iteration is the time it takes to react to clicks etc + 15 milliseconds (but check value pygame.time.delay in main 
+        a loop-iteration is the time it takes to react to clicks etc + 15 milliseconds (but check value pygame.time.delay in main
         document to be sure). A game-iteration is all the movement of planets, thinking of companies etc.
-        
+
         We here define the range of self.solar_system_object_link.step_delay_time as given in step_delay_time_range. This is certainly up to testing.
         In any case it means that the lowest value of step_delay_time_range equals time delays settings of 100 (max speed) and the highest
         value of step_delay_time_range equals time delay settings of 0 (slowest speed)
@@ -395,19 +395,19 @@ class file_window():
         old_game_speed = self.solar_system_object_link.step_delay_time
 
         button_names = list(self.solar_system_object_link.message_printing.keys())
-        
-        
+
+
         fastest = global_variables.standard_font.render("Fastest",True,(0,0,0))
         self.action_surface.blit(fastest, (self.rect[0] + 50, self.rect[1] + 40))
 
         slowest = global_variables.standard_font.render("Slowest",True,(0,0,0))
         self.action_surface.blit(slowest, (self.rect[0] + 50, self.rect[1] + self.rect[3]-  50))
-        
-        
+
+
         def execute( function_parameter=[]):
             game_speed = self.distribute_click_to_subwindow.position / 30
             self.solar_system_object_link.step_delay_time = self.distribute_click_to_subwindow.position
-        
+
         self.distribute_click_to_subwindow = vscrollbar.vscrollbar (self.action_surface,
                                                 execute,
                                                 topleft = (self.rect[0] + 10, self.rect[1] + 30),
@@ -436,7 +436,7 @@ class file_window():
         sol = self.solar_system_object_link
 
         if sol.display_mode == "planetary":
-            sol.current_planet.change_water_level(sol.current_planet.water_level - 0.5)                        
+            sol.current_planet.change_water_level(sol.current_planet.water_level - 0.5)
             surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         else:
             return
@@ -456,7 +456,7 @@ class file_window():
         else:
             return
 
-        
+
 
     def quit_dialog(self):
         """
@@ -478,7 +478,7 @@ class file_window():
         dialog.topleft = 30, 30
         dialog.depth = 1
         return dialog
-    
+
 
 
 

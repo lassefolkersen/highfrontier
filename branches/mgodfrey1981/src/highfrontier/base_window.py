@@ -1,14 +1,14 @@
-from . import fast_list
-from . import merchant
+import fast_list
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -22,7 +22,7 @@ class base_window():
         self.action_surface = action_surface
     def create(self):
         """
-        The creation function. ' 
+        The creation function. '
         """
         base_data = {}
         for planet_instance in list(self.solar_system_object_link.planets.values()):

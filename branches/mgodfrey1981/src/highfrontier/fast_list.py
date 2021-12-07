@@ -1,9 +1,9 @@
 import signaller
-from . import vscrollbar
+import vscrollbar
 import math
-from . import global_variables
+import global_variables
 import pygame
-from . import primitives
+import primitives
 
 import time
 import random
@@ -13,7 +13,7 @@ class fast_list():
     """
     A list similar to the ScrolledList, but faster
     """
-    def __init__(self, surface, tabular_data, rect, column_order = None, 
+    def __init__(self, surface, tabular_data, rect, column_order = None,
                  sort_by = "rownames"):
         self.surface = surface
         self.setRect(rect)
@@ -22,10 +22,10 @@ class fast_list():
         self.text_height = global_variables.courier_font.size("abcdefghijklmnopqrstuvxysABCDEFGHIJKLMNOPQRSTU")[1]
         self.left_list_frame = 5 # how much the text in the list is indented
         self.top_frame_width = 5 # this is a guesstimate of how much the Frame is filling
-        """ either None (in which case it can't be rendered" or else a dictionary with key "text", containing a 
-        string with the text to write, and key "entry_span" containing another dictionary with the column names 
+        """ either None (in which case it can't be rendered" or else a dictionary with key "text", containing a
+        string with the text to write, and key "entry_span" containing another dictionary with the column names
         as values and their length in pixels as keys """
-        self.title = None 
+        self.title = None
         self.original_tabular_data = tabular_data
         self.receive_data(tabular_data,column_order = column_order, sort_by = sort_by)
         self.selected = None
@@ -35,7 +35,7 @@ class fast_list():
     def update_fast_list(self):
         """
         Function to update the fast list. Changes the look of the surface "self.list_surface", sets it as picture in the
-        self.list_surface_label and calls renderer.update. Adds scrollbar if necessary. 
+        self.list_surface_label and calls renderer.update. Adds scrollbar if necessary.
         """
         if(len(set(self.data)) != len(self.data)):
             raise Exception("The fast_list contains non-unique values!")
@@ -49,7 +49,7 @@ class fast_list():
                 else:
                     rendered_dataline = global_variables.courier_font.render(self.data[i],True,(0,0,0))
                 self.surface.blit(rendered_dataline,
-                                  (self.rect_for_main_list[0] + self.left_list_frame, 
+                                  (self.rect_for_main_list[0] + self.left_list_frame,
                                    self.rect_for_main_list[1] + i*self.text_height + self.top_frame_width))
                 pygame.display.flip()
         #in the case where data can't fit on screen
@@ -64,12 +64,12 @@ class fast_list():
                 else:
                     rendered_dataline = global_variables.courier_font.render(self.data[i],True,(0,0,0))
                 self.surface.blit(rendered_dataline,
-                                  (self.rect_for_main_list[0] + self.left_list_frame, 
+                                  (self.rect_for_main_list[0] + self.left_list_frame,
                                    self.rect_for_main_list[1] + j*self.text_height + self.top_frame_width))
     def create_fast_list(self):
         """
         The creation function. Doesn't return anything, but saves self.list_frame variable and renders using the
-        self.renderer. Needs to have something saved to self.data first 
+        self.renderer. Needs to have something saved to self.data first
         """
         r=self.rect()
         title_surface = pygame.Surface((r[2],20))
@@ -81,13 +81,13 @@ class fast_list():
         r=self.rect()
         self.lines_visible = int( math.floor( r[3] / self.text_height) - 1)
         r=self.rect()
-        self.vscrollbar = vscrollbar.vscrollbar(self.surface, 
-                                                self.scrolling, 
-                                                (r[0] + r[2] - 20, r[1]), 
-                                                r[3], 
-                                                (0,len(self.data)), 
-                                                range_seen = self.lines_visible, 
-                                                start_position = 0, 
+        self.vscrollbar = vscrollbar.vscrollbar(self.surface,
+                                                self.scrolling,
+                                                (r[0] + r[2] - 20, r[1]),
+                                                r[3],
+                                                (0,len(self.data)),
+                                                range_seen = self.lines_visible,
+                                                start_position = 0,
                                                 function_parameter=None)
         self.update_fast_list()
         pygame.display.flip()
@@ -110,11 +110,11 @@ class fast_list():
                         self.reverse_sorting = not self.reverse_sorting
                     else:
                         self.reverse_sorting = self.reverse_sorting
-                    self.receive_data(self.original_tabular_data, 
-                                      sort_by = sort_by_this_column , 
-                                      column_order = self.original_column_order, 
+                    self.receive_data(self.original_tabular_data,
+                                      sort_by = sort_by_this_column ,
+                                      column_order = self.original_column_order,
                                       reverse_sort = self.reverse_sorting)
-                    self.update_fast_list()                    
+                    self.update_fast_list()
                     pygame.display.flip()
                     return
             r=self.rect()
@@ -133,14 +133,14 @@ class fast_list():
 
     def receive_data(self,data,sort_by="rownames",column_order=None,reverse_sort=False):
         """
-        Function that takes tabular data either of the form imported by primitives.import_datasheet (a dictionary with 
-        rows as keys and values being another dictionary were colums are keys and values are data entries) or else as 
+        Function that takes tabular data either of the form imported by primitives.import_datasheet (a dictionary with
+        rows as keys and values being another dictionary were colums are keys and values are data entries) or else as
         a simple list. This is then saved in self.data as a regular list, with the data in flattened and sorted form.
         The first line of the data is the title
         Optional arguments:
             sort_by    A string .If given the table will be sorted by this column name. Defaults to sorting by row-
             title name
-            column_order     a list. If given the columns will appear in this order. Use 'rownames' to refer to the 
+            column_order     a list. If given the columns will appear in this order. Use 'rownames' to refer to the
             rownames. Omitted entries will not be in the list.
         """
         if isinstance(data,list):
@@ -163,7 +163,7 @@ class fast_list():
                     raise Exception("The data given to fast_list did not follow standards. It has been printed above")
                 original_columns = ["rownames"] + list(data[list(data.keys())[0]].keys())
                 if column_order is None:
-                    column_order = original_columns 
+                    column_order = original_columns
                 else:
                     for column_name in column_order:
                         if column_name not in original_columns:
@@ -179,7 +179,7 @@ class fast_list():
                         else:
                             entry = data[row][column_name]
                         if isinstance(entry,int) or isinstance(entry,int) or isinstance(entry,float):
-                            entry_length = 13 
+                            entry_length = 13
                         else:
                             entry_length = len(str(entry))
                         max_letters_per_column[column_name] = max(max_letters_per_column[column_name],entry_length)
@@ -190,7 +190,7 @@ class fast_list():
                 #sorting the rows according to sort_by
                 if sort_by not in column_order:
                     print(column_order)
-                    raise Exception("The sort_by variable was not found in the column_order. Remember the rownames must also be present if needed") 
+                    raise Exception("The sort_by variable was not found in the column_order. Remember the rownames must also be present if needed")
                 if sort_by == "rownames":
                     sorting_list = list(data.keys())
                     sorting_list.sort()
@@ -237,12 +237,12 @@ class fast_list():
                             #data_point_here = "%.3g" % data_point_here
                         else:
                             data_point_here = str(data_point_here)
-                        seperator = "                                                                "        
+                        seperator = "                                                                "
                         seperator = seperator[0:(max_letters_per_column[column_entry] - len(data_point_here))]
                         rowstring = rowstring + data_point_here + seperator
                     collection.append(rowstring)
-                #creating title 
-                #a dictionary with key "text", containing a string with the text to write, and key "entry_span" containing another 
+                #creating title
+                #a dictionary with key "text", containing a string with the text to write, and key "entry_span" containing another
                 #dictionary with the column names as values and their length in pixels as keys
                 self.title = {}
                 self.title["text"] = ""
@@ -253,9 +253,9 @@ class fast_list():
                         column_title = ""
                     else:
                         column_title = column_entry
-                    seperator = "                                                                "        
+                    seperator = "                                                                "
                     seperator = seperator[0:(max_letters_per_column[column_entry] - len(column_title))]
-                    entry_start = entry_end 
+                    entry_start = entry_end
                     entry_end = global_variables.courier_font.size(column_title + seperator)[0] + entry_start
                     self.title["entry_span"][(entry_start,entry_end)] = column_entry
                     self.title["text"] = self.title["text"] + column_title + seperator

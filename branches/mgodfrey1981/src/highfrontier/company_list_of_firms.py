@@ -1,14 +1,14 @@
-from . import fast_list
-from . import merchant
+import fast_list
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -21,28 +21,28 @@ class company_list_of_firms():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-        
+
 
 
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
         company_selected = self.solar_system_object_link.company_selected
         if company_selected is None:
             raise Exception("A list of firms was requested, but no company was selected")
-        
+
         firm_data = {}
         for firm_instance in list(company_selected.owned_firms.values()):
             firm_data[firm_instance.name] = {}
             try: firm_instance.last_profit
-            except: 
+            except:
                 firm_data[firm_instance.name]["last profit"] = "NA"
-            else: 
+            else:
                 firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
-            
+
             firm_data[firm_instance.name]["location"] = firm_instance.location.name
-            
+
             stock_amount = 0
             for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
@@ -61,12 +61,12 @@ class company_list_of_firms():
                 if self.solar_system_object_link.message_printing["debugging"]:
                     print_dict = {"text":"POSSIBLE DEBUGGING: - the firm asked for was of None type","type":"debugging"}
                     self.solar_system_object_link.messages.append(print_dict)
-    
+
             else:
                 if isinstance(firm_selected, company.base):
                     self.solar_system_object_link.display_mode = "base"
                     self.solar_system_object_link.current_planet.current_base = firm_selected
-                    
+
                 else:
                     self.solar_system_object_link.display_mode = "firm"
                     self.solar_system_object_link.firm_selected = firm_selected

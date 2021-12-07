@@ -1,14 +1,14 @@
-from . import fast_list
-from . import merchant
+import fast_list
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -21,16 +21,16 @@ class base_list_of_firms():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-        
 
-        
-    
 
-        
+
+
+
+
 
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
         list_of_firms_in_base = []
         for company_instance in list(self.solar_system_object_link.companies.values()):
@@ -47,26 +47,26 @@ class base_list_of_firms():
         for firm_instance in list_of_firms_in_base:
             firm_data[firm_instance.name] = {}
             try: firm_instance.last_profit
-            except: 
+            except:
                 firm_data[firm_instance.name]["last profit"] = "NA"
-            else: 
+            else:
                 firm_data[firm_instance.name]["last profit"] = firm_instance.last_profit
-            
+
             firm_data[firm_instance.name]["owner"] = firm_instance.owner.name
             self.links[firm_instance.name] = firm_instance
-            
+
             stock_amount = 0
             for stock_item in list(firm_instance.stock_dict.values()):
                 stock_amount = stock_amount + stock_item
             firm_data[firm_instance.name]["stock size"] = stock_amount
-        
-        self.fast_list = fast_list.fast_list(self.action_surface, 
-                                                  firm_data, 
+
+        self.fast_list = fast_list.fast_list(self.action_surface,
+                                                  firm_data,
                                                   rect = self.rect,
                                                   column_order = ["rownames","owner","stock size","last profit"]
                                                   )
-        
-    
+
+
     def receive_click(self,event):
         self.fast_list.receive_click(event)
         if event.button == 3:

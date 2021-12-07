@@ -1,7 +1,7 @@
-from . import global_variables
+import global_variables
 import datetime
 
-from . import tertiary
+import tertiary
 
 class research(tertiary.tertiary):
 	def solarSystem(self):
@@ -24,15 +24,15 @@ class research(tertiary.tertiary):
 		self.last_accounting = self.solarSystem().current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
-		
+
 		self.stock_dict = {}
 		self.technology_name = "research"
 		self.size = 0
-	
+
 		self.for_sale = False #can be set to True when firm is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
 		self.for_sale_deadline = None # a date at which the bidding contest is over
-		
+
 		#self.decision_data = self.process_decision_data(decision_data)
 		for resource in self.solarSystem().trade_resources:
 			self.stock_dict[resource] = 0
@@ -40,7 +40,7 @@ class research(tertiary.tertiary):
 	def execute_stock_change(self,current_date):
 		"""
 		Function to calculate the research. Basically works the same way as the parent execute_stock_exchange functions
-		but instead of having a commodity as output, it adds to the research of the owning company. 
+		but instead of having a commodity as output, it adds to the research of the owning company.
 		"""
 		try: self.last_consumption_date
 		except:
@@ -52,12 +52,12 @@ class research(tertiary.tertiary):
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
 		timeframe = self.input_output_dict["timeframe"]
-		
+
 		if time_span_days > timeframe:
 			number_of_rounds = time_span_days / timeframe
 			keep_calculating = True
 			self.last_consumption_date =  self.last_consumption_date + datetime.timedelta(number_of_rounds * timeframe)
-			
+
 			while keep_calculating:
 				keep_calculating = False
 				new_stock_level = {}
@@ -68,7 +68,7 @@ class research(tertiary.tertiary):
 						keep_calculating = True
 				if keep_calculating:
 					number_of_rounds = new_number_of_rounds
-			
+
 			if number_of_rounds > 0:
 				if self.owner == self.solarSystem().current_player:
 					print_dict = {"text":"for " + self.name + ", " + str(number_of_rounds) + " research rounds were completed adding research to " + self.owner.name,"type":"tech discovery"}
@@ -76,6 +76,6 @@ class research(tertiary.tertiary):
 
 				for input_resource in new_stock_level:
 					self.stock_dict[input_resource] = new_stock_level[input_resource]
-				
+
 				# we give one research point per labor unit used
-				self.owner.research = self.owner.research + number_of_rounds * self.input_output_dict["input"]["labor"] 
+				self.owner.research = self.owner.research + number_of_rounds * self.input_output_dict["input"]["labor"]

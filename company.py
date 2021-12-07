@@ -1,6 +1,6 @@
-from . import global_variables
+import global_variables
 import datetime
-from . import primitives
+import primitives
 import os
 import random
 import string
@@ -16,7 +16,7 @@ class company:
 	"""
 	The class that holds all methods of the companies
 	"""
-	
+
 	def __init__(self,solar_system_object,model_company_database=None,deviation=0,companyName=None,capital=0):
 		"""
 		Starts the company. If no data is given, parameters are made up entirely
@@ -30,7 +30,7 @@ class company:
 			self.companyName = self.make_up_names(self.make_up_wordlist())
 		else:
 			self.companyName = companyName
-		
+
 		self.name = self.companyName
 		self.home_cities = {}
 		self.owned_firms = {}
@@ -43,7 +43,7 @@ class company:
 		self.last_demand_evaluation = self.solar_system_object_link.current_date
 		self.calculate_company_database(model_company_database,deviation)
 		self.company_accounting = []
-		 
+
 		self.research = 0
 		self.target_technology = None
 		self.target_technology_cost = 9999999
@@ -62,15 +62,15 @@ class company:
 							    "Expand area of operation (search for new home cities)":True
 							    }
 
-		
+
 		self.known_technologies = {}
 		for vertex_name in self.solar_system_object_link.technology_tree.vertex_dict:
 			vertex = self.solar_system_object_link.technology_tree.vertex_dict[vertex_name]
 			if vertex["known_by"] == "everybody":
 				self.known_technologies[vertex_name] = vertex
-		
-		
-	  
+
+
+
 	def calculate_company_database(self,model_company_database,standard_deviation=0):
 		"""
 		Takes a dictionary of any kind, and compares its keys with the headers specified in the data/economy/companies.txt
@@ -81,10 +81,10 @@ class company:
 		Optional parameteres:
 			standard_deviation - a measure of how much to modify the values, as given as the standard_deviation in a gauss function
 		"""
-		
-		
-		
-		
+
+
+
+
 		try: global_variables.company_database_headers
 		except:
 			company_database_headers_file = file(os.path.join("data","economy","companies.txt"))
@@ -94,15 +94,15 @@ class company:
 			company_database_header_type = company_database_headers_file.readline()
 			company_database_header_type = company_database_header_type.split("\t")
 			for i, header in enumerate(company_database_headers):
-				company_database_headers[i] = header.rstrip("\n") 
+				company_database_headers[i] = header.rstrip("\n")
 			for i, type in enumerate(company_database_header_type):
-				company_database_header_type[i] = type.rstrip("\n") 
+				company_database_header_type[i] = type.rstrip("\n")
 			global_variables.company_database_headers = {}
 			for i, header in enumerate(company_database_headers):
 				global_variables.company_database_headers[header] = company_database_header_type[i]
 			company_database_headers_file.close()
 
-		
+
 		if model_company_database is None:
 			model_company_database = {}
 		new_company_database = {}
@@ -113,9 +113,9 @@ class company:
 						new_company_database[headers] = model_company_database[headers]
 					else:
 						new_company_database[headers] = int(math.fabs(random.gauss(model_company_database[headers],standard_deviation)))
-						while 1 > new_company_database[headers] or new_company_database[headers] > 100: #to make the deviation correct, even at the ends. I wonder if this is a good idea 
+						while 1 > new_company_database[headers] or new_company_database[headers] > 100: #to make the deviation correct, even at the ends. I wonder if this is a good idea
 							if new_company_database[headers] > 100:
-								new_company_database[headers] = 200 - new_company_database[headers] 
+								new_company_database[headers] = 200 - new_company_database[headers]
 							if new_company_database[headers] < 1:
 								new_company_database[headers] = 2 - new_company_database[headers]
 				else:
@@ -157,28 +157,28 @@ class company:
 			self.picture_file = file_name_and_path
 
 		image = Image.open(file_name_and_path)
-		
+
 		#resizing to fit the window
 		window_size = global_variables.window_size
 		aspect_ratio_needed = float(window_size[0])/float(window_size[1])
 		aspect_ratio_found = float(image.size[0])/float(image.size[1])
 		if aspect_ratio_needed > aspect_ratio_found:
-			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0])) 
+			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0]))
 		elif aspect_ratio_needed < aspect_ratio_found:
-			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed))) 
+			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed)))
 		else:
 			pass
 		image = image.resize(global_variables.window_size)
 		image_string = image.tostring()
 		surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
-		return surface	
-		
+		return surface
+
 	def draw_company_window(self):
 		surface = self.get_company_background()
 		return surface
-		
-		
-		
+
+
+
 	def evaluate_market(self):
 		"""
 		Function that will perform the evaluate_market function specified in the company database
@@ -193,22 +193,22 @@ class company:
 			functions_to_choose_from[function_to_choose](self)
 
 
-		
+
 		#check if commodity firms should be started
 		##############################################
 		if self.automation_dict["Commodities market (start commodity producing firms)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_commodities_market
 			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_commodities_market"] / 100.0)))
 			functions_to_choose_from[function_to_choose](self)
-		
+
 		#check if nearby assets should be bought
 		##############################################
 		if self.automation_dict["Asset market (buy bases and firms)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_asset_market
 			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_asset_market"] / 100.0)))
 			functions_to_choose_from[function_to_choose](self)
-		
-		 
+
+
 		#check what decisions should be made on the tech market
 		##############################################
 		if self.automation_dict["Tech market (buy and sell technology)"]:
@@ -224,7 +224,7 @@ class company:
 			functions_to_choose_from[function_to_choose](self)
 
 
-		
+
 		#check if home_cities should be expanded
 		##############################################
 		if self.automation_dict["Expand area of operation (search for new home cities)"]:
@@ -232,8 +232,8 @@ class company:
 			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_expansion_opportunities"] / 100.0)))
 			functions_to_choose_from[function_to_choose](self)
 
-		
-		 
+
+
 #
 #	def evaluate_firms(self):
 #		"""
@@ -241,11 +241,11 @@ class company:
 #		The database specifies numbers between 1 and 100, so this will have to be normalized
 #		to the number of entries in the databae
 #		"""
-#		
+#
 #		functions_to_choose_from = global_vajhjhksdariables.madadsrket_decisions.evaluate_firms
 #		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_firms"] / 100.0)))
 #		functions_to_choose_from[function_to_choose](self)
-#		
+#
 
 
 	def evaluate_firms(self):
@@ -254,13 +254,13 @@ class company:
 		The database specifies numbers between 1 and 100, so this will have to be normalized
 		to the number of entries in the databae
 		"""
-		
+
 		functions_to_choose_from = global_variables.market_decisions.evaluate_firms
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_firms"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
-		
-		
-		
+
+
+
 
 	def pick_research(self):
 		"""
@@ -272,14 +272,14 @@ class company:
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["pick_research"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
 
-	
+
 
 	def expand_home_cities(self,solar_system_object):
 		"""
 		Function that can be called if the the company still has desire to expand
 		Will return the name of one new home_city which is connected to one of the earlier home_cities
 		"""
-		
+
 		if len(self.home_cities)==0:
 			potential_bases = []
 			for planet in list(solar_system_object.planets.values()):
@@ -294,7 +294,7 @@ class company:
 					if base.base_name in self.home_cities:
 						if len(base.trade_routes) > 0:
 							potential_base_names = potential_base_names + list(base.trade_routes.keys())
-			
+
 			for existing_home_base_name in list(self.home_cities.keys()):
 				if existing_home_base_name in potential_base_names:
 					i = potential_base_names.index(existing_home_base_name)
@@ -308,7 +308,7 @@ class company:
 					self.solar_system_object_link.messages.append(print_dict)
 
 				new_home_city_name = None
-			
+
 		if new_home_city_name is None:
 			new_home_city = None
 		else:
@@ -316,20 +316,20 @@ class company:
 				for base in list(planet.bases.values()):
 					if base.base_name == new_home_city_name:
 						new_home_city = base
-			
+
 		return new_home_city
 
 
 	def close_company(self):
 		"""
 		Function that will take care of anything related to closing companies
-		Most importantly it will close all firms 
+		Most importantly it will close all firms
 		Later expansions might includes rules for selling off of values
 		"""
 		if self.solar_system_object_link.company_selected == self:
 			self.solar_system_object_link.company_selected = None
 
-		
+
 		close_these_firms = []
 		for firm_name in self.owned_firms:
 			firm_instance = self.owned_firms[firm_name]
@@ -342,45 +342,45 @@ class company:
 
 			else:
 				close_these_firms.append(firm_name)
-		
+
 		for firm_to_close in close_these_firms:
 			self.owned_firms[firm_to_close].close_firm()
 			del self.owned_firms[firm_to_close]
 		if len(self.owned_firms) == 0:
-			
+
 			#ok - no firms left. Now we check if for any technologies that it owns and removes it self from them
 			for technology_name in self.solar_system_object_link.technology_tree.vertex_dict:
 				technology = self.solar_system_object_link.technology_tree.vertex_dict[technology_name]
 				if self in technology["for_sale_by"]:
 					del technology["for_sale_by"][self]
-			
+
 			#finally the deletion
 			self.solar_system_object_link.close_company(self.name)
 		else:
 			pass
-		
-		
+
+
 
 
 
 	def evaluate_self(self):
 		"""
-		This is the entry function for almost all of the action going on in the simulation. It will evaluate each company 
+		This is the entry function for almost all of the action going on in the simulation. It will evaluate each company
 		each game step by doing the following steps:
 		It will evaluate research and call necessary functions if applicable, such as when discoveries have been made
 		It will check if any firm auctions are completed and effectuate them
 		It will evaluate company holdings and close it if they are negative
 		and then call the evaluate_firms and evaluate_market functions
-		This function will also save the company capital in self.company_accounting for later plotting 
-		
+		This function will also save the company capital in self.company_accounting for later plotting
+
 		"""
 		#making sure at least one home_city is found
 		if len(self.home_cities) == 0:
 			new_home_city = self.expand_home_cities(self.solar_system_object_link)
 			self.home_cities[new_home_city.name] = new_home_city
-			
-		
-		
+
+
+
 		#checking if research is obtained:
 		if self.research >= self.target_technology_cost and self.target_technology is not None:
 			research_rest = self.research - self.target_technology_cost
@@ -404,8 +404,8 @@ class company:
 				if self.research > 0:
 					print_dict = {"text":self.name + " needs to pick a technology. Go to the technology window","type":"general gameplay info"}
 					self.solar_system_object_link.messages.append(print_dict)
-				
-				
+
+
 
 
 		#checking if any firms are for sale, if their bid_deadline is crossed and if so effectuates the sale
@@ -421,11 +421,11 @@ class company:
 					while funding_not_ok:
 						i = i - 1
 						try: bids[i]
-						except: 
+						except:
 							print_dict = {"text":"Did not find a buyer for base " + firm_instance.name + " - extending deadline with half a year","type":"base sales"}
 							self.solar_system_object_link.messages.append(print_dict)
 
-							
+
 							break
 						else:
 							winning_price = bids[i]
@@ -433,12 +433,12 @@ class company:
 								if potential_winning_company.capital > winning_price:
 									funding_not_ok = False
 									winning_company = potential_winning_company
-							
-					
+
+
 					if winning_company is not None:
 						print_dict = {"text":firm_instance.name + " was for sale but was won by " + winning_company.name + " for the price of " + str(int(winning_price)) + " buying from " + self.name,"type":"base sales"}
 						self.solar_system_object_link.messages.append(print_dict)
-						
+
 						winning_company.capital = winning_company.capital - winning_price
 						self.capital = self.capital - winning_price
 						winning_company.home_cities[firm_instance.name] = firm_instance
@@ -450,9 +450,9 @@ class company:
 						firm_instance.for_sale_bids = {}
 					else:
 						firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
-						
-					
-		
+
+
+
 		max_records_kept_in_account = 500
 		self.company_accounting.append({"capital":self.capital,"date":self.solar_system_object_link.current_date})
 		while len(self.company_accounting) > max_records_kept_in_account:
@@ -463,10 +463,10 @@ class company:
 			#Ok the company is still going check timing
 			max_time_firm_and_market = 5 * 365 #days
 			min_time_firm_and_market = 365 / 2#days
-			
+
 			max_time_supply_and_demand = 300 #days
 			min_time_supply_and_demand = 60 #days
-			
+
 
 			#firm evaluation
 			if self.automation_dict["Evaluate firms (close problematic firms)"]:
@@ -474,18 +474,18 @@ class company:
 				if (self.solar_system_object_link.current_date - self.last_firm_evaluation).days >  time_limit_of_firm_evaluation:
 					self.last_firm_evaluation = self.solar_system_object_link.current_date
 					self.evaluate_firms()
-			
+
 			#market evaluation
 			time_limit_of_market_evaluation = int(((101 - self.company_database["evaluate_market_often"])/100.0) * (max_time_firm_and_market - min_time_firm_and_market) + min_time_firm_and_market)
 			if (self.solar_system_object_link.current_date - self.last_market_evaluation).days >  time_limit_of_market_evaluation:
 				self.last_market_evaluation = self.solar_system_object_link.current_date
 				self.evaluate_market()
-				
+
 			#stock change evaluation - always done
 			for firm_instance in list(self.owned_firms.values()):
 				firm_instance.execute_stock_change(self.solar_system_object_link.current_date)
 
-			
+
 			#supply evaluation
 			#time_limit_of_supply_evaluation = ((101 - self.company_database["evaluate_supply_often"]) * max_time_supply_and_demand) / 100
 			if self.automation_dict["Supply bidding (initiate selling bids)"]:
@@ -495,7 +495,7 @@ class company:
 					for firm_instance in list(self.owned_firms.values()):
 						firm_instance.calculate_supply_reaction()
 
-			
+
 			#demand evaluation
 			if self.automation_dict["Demand bidding (initiate buying bids)"]:
 				time_limit_of_demand_evaluation = int(((101 - self.company_database["evaluate_demand_often"])/100.0) * (max_time_supply_and_demand - min_time_supply_and_demand) + min_time_supply_and_demand)
@@ -505,19 +505,19 @@ class company:
 						firm_instance.calculate_demand_reaction()
 
 
-		
+
 		else:
 			if self != self.solar_system_object_link.current_player:
 				self.close_company()
 			else:
 				raise Exception("Game over - the current player does not have any more money")
-			
 
-			
-			
-		
-		
-	
+
+
+
+
+
+
 	def make_up_wordlist(self,stock_exchanges=["LSE.txt","NYSE.txt","TSE.txt"]):
 		"""
 		Loads the lists of companies on the LSE, NYSE and TSE and creates a word list, which is a dictionary
@@ -530,24 +530,24 @@ class company:
 			second_words = []
 			third_words = []
 			last_words = []
-	
+
 			for stock_exchange in stock_exchanges:
 				file_name = os.path.join("data","company_data",stock_exchange)
-				
+
 				file = open(file_name)
 				raw_read = file.readlines()
 				file.close()
-				
+
 				for line in raw_read:
 					line = line.rstrip("\n")
 					line = line.rstrip()
 					old_splitline = line.split(" ")
-					
+
 					splitline = []
 					for singleword in old_splitline:
 						singleword = string.capitalize(singleword)
 						splitline.append(singleword)
-					
+
 					if len(splitline) > 1:
 						if len(splitline) == 2:
 							first_words.append(splitline[0])
@@ -567,19 +567,19 @@ class company:
 			global_variables.word_list = word_list
 		else:
 			word_list = global_variables.word_list
-		
+
 		return word_list
-		
+
 	def make_up_names(self,wordlist):
 		"""
 		Give this function a word list as seen in make_up_names() and it will mash them into
-		(hopefully) unrecognizable new company names 
+		(hopefully) unrecognizable new company names
 		"""
 		first_words = wordlist["first_words"]
 		second_words = wordlist["second_words"]
 		third_words = wordlist["third_words"]
 		last_words = wordlist["last_words"]
-		
+
 		first_word = first_words[random.randrange(0,len(first_words))]
 		last_word = last_words[random.randrange(0,len(last_words))]
 		number_of_middle_words = random.randrange(1,2)
@@ -587,24 +587,24 @@ class company:
 			middle_words = str(second_words[random.randrange(0,len(second_words))]) + " " + str(third_words[random.randrange(0,len(thirds_words))])
 			word = first_word + " " + middle_words + " " + last_word
 		if number_of_middle_words == 1:
-			all_middle_words = second_words + third_words 
+			all_middle_words = second_words + third_words
 			middle_words = str(all_middle_words[random.randrange(0,len(all_middle_words))])
 			word = first_word + " " + middle_words + " " + last_word
 		else:
 			word = first_word + " " + last_word
-		
+
 		#shortening the length of very long company names.
 		while len(word) > global_variables.max_letters_in_company_names:
 			next_shortest_pos_at_space = word.rfind(" ")
-			if next_shortest_pos_at_space > 10: 
+			if next_shortest_pos_at_space > 10:
 				word = word[0:next_shortest_pos_at_space]
 			else: #for the case where there just is one very long string without spaces as the name.
 				word = word[0:global_variables.max_letters_in_company_names]
-			
-			
+
+
 		return word
-		
-	
+
+
 
 
 	def change_firm_size(self,location,size,technology_name, name = None):
@@ -613,12 +613,12 @@ class company:
 		an integer multiplicator of the process_dict and a location. If the size is zero it closes down any firms owned
 		by the company in that location. Else it sets the size of a firm owned by that company to as specified, creating it
 		from new if required.
-		
+
 		Accepts the special technology_name string of "research" which will instead start a research firm
-		
+
 		The name argument can optionally be given to specify the name. Defaults to a random name based on technology
 		"""
-		
+
 		#first some checking of the size variable we got
 		if isinstance(size,float):
 			if self.solar_system_object_link.message_printing["debugging"]:
@@ -649,7 +649,7 @@ class company:
 							firm_instance.for_sale_deadline = datetime.timedelta(30*6)+self.solar_system_object_link.current_date
 		elif 0 < size and size < 1:
 			raise Exception("Received a size " + str(size) + " - this will risk creating zero input processes")
-		
+
 		#This is the reaction to a size that is not zero - ie. a "build something" or "change the size of something" order
 		else:
 			#first checking if it already exists:
@@ -659,7 +659,7 @@ class company:
 					if firm_instance.technology_name == technology_name:
 						existing_firm = firm_instance
 						break
-			
+
 			if existing_firm is None: #start up a new one
 				#special if it is a research firm which have a more or less fixed input_output_dict
 				if technology_name == "research":
@@ -678,8 +678,8 @@ class company:
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
-					
-				
+
+
 				#if it is not we search for the process requested
 				else:
 					if technology_name not in list(self.known_technologies.keys()):
@@ -695,7 +695,7 @@ class company:
 					for other_keys in list(self.known_technologies[technology_name]["input_output_dict"].keys()): #to include whatever might have been in the input_output_dict
 						if other_keys not in ["input","output"]:
 							 firm_specific_process[other_keys] = self.known_technologies[technology_name]["input_output_dict"][other_keys]
-					
+
 					if name is None:
 						name_is_not_unique = True
 						while name_is_not_unique:
@@ -707,24 +707,24 @@ class company:
 					else:
 						firm_name = name
 					new_firm = firm(self.solar_system_object_link,location,firm_specific_process,self,firm_name,technology_name)
-					
-					
-					
+
+
+
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
-	
+
 					#checking input_output_dict FIXME this check can perhaps be omitted
 					for resource in new_firm.input_output_dict["input"]:
 						if new_firm.input_output_dict["input"][resource] <= 0:
 							raise Exception("The " + firm_name + " just created had an input of " + resource + " of " + str(new_firm.input_output_dict["input"][resource]))
-			
+
 			else: #in the cases where the firm already exists
 				#first we see if it is a research firm in which it is a simple change of the input_output dict
 				if technology_name == "research":
 					existing_firm.size = size
 					existing_firm.input_output_dict["input"]["labor"] = size
-				   
+
 				else:
 					original_size = existing_firm.size
 					for direction in ["input","output"]:
@@ -732,13 +732,13 @@ class company:
 							existing_value = existing_firm.input_output_dict[direction][resource]
 							existing_firm.input_output_dict[direction][resource] = (existing_value * size) / original_size
 							existing_firm.size = size
-							
+
 					#checking input_output_dict
 					for resource in existing_firm.input_output_dict["input"]:
 						if existing_firm.input_output_dict["input"][resource] <= 0:
 							raise Exception("The " + existing_firm.name + " just size-changed had an input of " + resource + " of " + str(existing_firm.input_output_dict["input"][resource]) + " the requested size was " + str(size) + " and the original size was " + str(original_size))
-	
-					
+
+
 
 
 
@@ -758,12 +758,12 @@ class firm():
 		self.stock_dict = {}
 		self.technology_name = technology_name
 		self.size = 0
-	
+
 		self.for_sale = False #can be set to True when firm is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
 		self.for_sale_deadline = None # a date at which the bidding contest is over
-		
-		
+
+
 		#modifying output for mining
 		for resource in input_output_dict["output"]:
 			if resource in self.solar_system_object_link.mineral_resources + ["food"]:
@@ -776,7 +776,7 @@ class firm():
 
 		for resource in self.solar_system_object_link.trade_resources:
 			self.stock_dict[resource] = 0
-		
+
 
 	def get_firm_background(self):
 		"""
@@ -792,7 +792,7 @@ class firm():
 				for found_file in files[2]:
 					if found_file.find(".jpg", len(found_file) - 4, len(found_file)) != -1:
 						file_list.append(found_file)
-				
+
 			number_of_files_to_pick_from = len(file_list)
 			if number_of_files_to_pick_from == 0:
 				if self.solar_system_object_link.message_printing["debugging"]:
@@ -805,22 +805,22 @@ class firm():
 			self.picture_file = file_name_and_path
 
 		image = Image.open(file_name_and_path)
-		
+
 		#resizing to fit the window
 		window_size = global_variables.window_size
 		aspect_ratio_needed = float(window_size[0])/float(window_size[1])
 		aspect_ratio_found = float(image.size[0])/float(image.size[1])
 		if aspect_ratio_needed > aspect_ratio_found:
-			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0])) 
+			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0]))
 		elif aspect_ratio_needed < aspect_ratio_found:
-			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed))) 
+			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed)))
 		else:
 			pass
 		image = image.resize(global_variables.window_size)
 		image_string = image.tostring()
 		surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
-		return surface	
-		
+		return surface
+
 	def draw_firm_window(self):
 		surface = self.get_firm_background()
 		return surface
@@ -833,12 +833,12 @@ class firm():
 		The database specifies numbers between 1 and 100, so this will have to be normalized
 		to the number of entries in the databae
 		"""
-		
+
 		functions_to_choose_from = global_variables.market_decisions.calculate_demand_reaction
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_demand_reaction"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
 
-		
+
 
 	def calculate_supply_reaction(self):
 		"""
@@ -850,9 +850,9 @@ class firm():
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_supply_reaction"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
 
-	
 
-	
+
+
 	def close_firm(self):
 		"""
 		Function that will take care of anything related to closing firms
@@ -861,8 +861,8 @@ class firm():
 		"""
 		if self.solar_system_object_link.firm_selected == self:
 			self.solar_system_object_link.firm_selected = None
-		
-		
+
+
 		if self.owner == self.solar_system_object_link.current_player:
 				print_dict = {"text":"The firm " + self.name + " is up for closing","type":"firm info"}
 				self.solar_system_object_link.messages.append(print_dict)
@@ -875,7 +875,7 @@ class firm():
 				elif place == "to":
 					location = self.to_location
 				else:   raise Exception("weird")
-				
+
 				offer_types = ["sell_offers","buy_offers"]
 				for offer_type in offer_types:
 					for resource in [self.resource, self.transport_type]:
@@ -888,7 +888,7 @@ class firm():
 								if self.name in offer["seller"].name:
 									delete_these.append(i)
 						delete_these.reverse()
-						
+
 						for delete_this in delete_these:
 							del location.market[offer_type][resource][delete_this]
 		else:
@@ -906,10 +906,10 @@ class firm():
 					delete_these.reverse()
 					for delete_this in delete_these:
 						del self.location.market[offer_type][resource][delete_this]
-					
-		
-		
-	
+
+
+
+
 	def update_accounting(self):
 		"""
 		gives the accounting report to the mother company and deletes the contents locally
@@ -917,9 +917,9 @@ class firm():
 		revenue = 0
 		profit = 0
 		timeframe = (self.solar_system_object_link.current_date - self.last_accounting).days
-		
+
 		if len(self.accounting) == 0:
-		
+
 			accounting_report = {"revenue":0,"profit":0,"timeframe":timeframe}
 		else:
 			for transaction_report in self.accounting:
@@ -933,49 +933,49 @@ class firm():
 					raise Exception("Faulty accounting report found")
 			accounting_report = {"revenue":revenue,"profit":profit,"timeframe":timeframe}
 
-		
+
 		self.accounting = []
 		#self.owner.company_accounting.append({"firm":self,"date":self.solar_system_object_link.current_date,"accounting_report":accounting_report})
-		
+
 		self.last_profit = accounting_report["profit"]
 		return accounting_report
-			
-			
-		
-		
-	
-	
-			
 
- 
-	
+
+
+
+
+
+
+
+
+
 	def make_market_bid(self,market,own_offer):
 		"""
 		Function that takes a sell or buy offer (identified if it has "seller" or "buyer" in it
 		and connects to the market to see if a corresponding offer exists. If it does it will connect
 		seller and buyer. If not it will store the offer in market database. If market database is too
-		long it will remove some of the highest price sell offers and the lowest price buy offers 
+		long it will remove some of the highest price sell offers and the lowest price buy offers
 		"""
-		
-		#if self is a merchant we first need to assign the correct stock_dict 
-		if isinstance(self, merchant): 
+
+		#if self is a merchant we first need to assign the correct stock_dict
+		if isinstance(self, merchant):
 			if "seller" in list(own_offer.keys()):
 				self.stock_dict = self.to_stock_dict
 			elif "buyer" in list(own_offer.keys()):
 				self.stock_dict = self.from_stock_dict
 			else:
 				raise Exception('unknown offer type')
-			
-			
 
-		
-		
-		
-		
+
+
+
+
+
+
 		#defining basics and checking if the offer is valid
 		if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],int)):
 			own_offer["quantity"] = int(own_offer["quantity"])
-			if self.solar_system_object_link.message_printing["debugging"]: 
+			if self.solar_system_object_link.message_printing["debugging"]:
 				print_dict = {"text":"DEBUGGING: The quantity given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not an integer. Try to keep it as integers","type":"debugging"}
 				self.solar_system_object_link.messages.append(print_dict)
 
@@ -985,9 +985,9 @@ class firm():
 				self.solar_system_object_link.messages.append(print_dict)
 				own_offer["price"] = float(own_offer["price"])
 		resource = own_offer["resource"]
-		
-			 
-		
+
+
+
 		if "seller" in list(own_offer.keys()):
 			type = "sell_offer"
 			opposite_bids = market["buy_offers"][resource]
@@ -999,7 +999,7 @@ class firm():
 					self.solar_system_object_link.messages.append(print_dict)
 
 
-				
+
 		elif "buyer" in list(own_offer.keys()):
 			type = "buy_offer"
 			opposite_bids = market["sell_offers"][resource]
@@ -1010,7 +1010,7 @@ class firm():
 					print_dict = {"text":"DEBUGGING WARNING: adjusted buy offer from " + str(self.name) + " to " + str(own_offer["quantity"]) +" because of lack of capital - you should try to correct this from the calculate_demand functions. The original price was " + str(own_offer["price"]) + " and the capital was " + str(self.owner.capital),"type":"debugging"}
 					self.solar_system_object_link.messages.append(print_dict)
 
-					   
+
 		else:
 			print("Unknown offer type in make_market_bid() function")
 			raise Exception('unknown offer type')
@@ -1020,13 +1020,13 @@ class firm():
 				print_dict = {"text":"DEBUGGING WARNING: The quantity " + str(own_offer["quantity"]) + " offered by " + str(self.name) + " is not a positive amount. This should be corrected from market_decisions. It was set to 0 as a safeguard","type":"debugging"}
 				self.solar_system_object_link.messages.append(print_dict)
 			own_offer["quantity"] = 0
-			
+
 		#seeing how much resource can be found on market within the whished for price
 		quantity_found = 0
 		i = 0
 		offers_of_interest = []
 		while quantity_found < own_offer["quantity"]:
-			# if there are no more bids available but still a quantity left to fulfill of own_offer 
+			# if there are no more bids available but still a quantity left to fulfill of own_offer
 			if i + 1 > len(opposite_bids):
 				balance_of_findings = - own_offer["quantity"]
 				need_to_find_more = True
@@ -1040,43 +1040,43 @@ class firm():
 			else:
 				raise Exception('unknown offer type')
 
-			#if counterpart is a merchant we first need to assign the correct stock_dict 
-			if isinstance(counterpart, merchant): 
+			#if counterpart is a merchant we first need to assign the correct stock_dict
+			if isinstance(counterpart, merchant):
 				if "seller" in list(own_offer.keys()):
 					counterpart.stock_dict = counterpart.from_stock_dict
 				elif "buyer" in list(own_offer.keys()):
 					counterpart.stock_dict = counterpart.to_stock_dict
 				else:
 					raise Exception('unknown offer type')
-			
+
 
 
 			# if there are bids available at an ok price
 			if (opposite_bids[i]["price"] >= own_offer["price"] and type == "sell_offer") or (opposite_bids[i]["price"] <= own_offer["price"] and type == "buy_offer"):
-				if counterpart.stock_dict[resource] < opposite_bids[i]["quantity"] and type == "buy_offer": 
-					opposite_bids[i]["quantity"] = max(int(counterpart.stock_dict[resource]),0) 
-				if counterpart.owner.capital < (opposite_bids[i]["quantity"] * opposite_bids[i]["price"]) and type == "sell_offer": 
+				if counterpart.stock_dict[resource] < opposite_bids[i]["quantity"] and type == "buy_offer":
+					opposite_bids[i]["quantity"] = max(int(counterpart.stock_dict[resource]),0)
+				if counterpart.owner.capital < (opposite_bids[i]["quantity"] * opposite_bids[i]["price"]) and type == "sell_offer":
 					opposite_bids[i]["quantity"] = max(int(counterpart.owner.capital / opposite_bids[i]["price"]),0)
 
 				if opposite_bids[i]["quantity"]<0:
 					if self.solar_system_object_link.message_printing["debugging"]:
 						print_dict = {"text":"DEBUGGING WARNING: The quantity in an offer from " + counterpart.name + " was changed to " + str(opposite_bids[i]["quantity"]) + " during a " + type +" from " + str(self.name) + " regarding " + resource,"type":"debugging"}
 						self.solar_system_object_link.messages.append(print_dict)
-				
+
 				quantity_found = opposite_bids[i]["quantity"] + quantity_found
 				offers_of_interest.append(opposite_bids[i])
-			 
+
 			#if there are no more bid available at the price
 			else:
 				break
 			i = i + 1
-	
+
 
 
 		#evaluating how much was found to be available on market
 		if quantity_found > own_offer["quantity"]:
 			balance_of_findings = quantity_found - own_offer["quantity"]
-			
+
 			offers_of_interest[-1]["quantity"] = offers_of_interest[-1]["quantity"] - balance_of_findings
 
 			need_to_find_more = False
@@ -1087,7 +1087,7 @@ class firm():
 			balance_of_findings = quantity_found - own_offer["quantity"]
 			need_to_find_more = True
 
-		
+
 		# Effectuating the transactions
 		counterparts_list = []
 		for offer_of_interest in offers_of_interest:
@@ -1104,50 +1104,50 @@ class firm():
 					self.solar_system_object_link.messages.append(print_dict)
 
 			counterparts_list.append(counterpart.name)
-			
+
 			if type == "sell_offer":
 				counterpart = offer_of_interest["buyer"]
-				counterpart.owner.capital = counterpart.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
-				counterpart.stock_dict[resource] = counterpart.stock_dict[resource] + offer_of_interest["quantity"] 
-				self.owner.capital = self.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"] 
-				self.stock_dict[resource] = self.stock_dict[resource] - offer_of_interest["quantity"] 
-				
+				counterpart.owner.capital = counterpart.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"]
+				counterpart.stock_dict[resource] = counterpart.stock_dict[resource] + offer_of_interest["quantity"]
+				self.owner.capital = self.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"]
+				self.stock_dict[resource] = self.stock_dict[resource] - offer_of_interest["quantity"]
+
 				if self.owner == self.solar_system_object_link.current_player or counterpart.owner == self.solar_system_object_link.current_player:
 					print_dict = {"text":self.name + " sold " + str(offer_of_interest["quantity"]) + " units of " + resource + " to " + counterpart.name + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
 					self.solar_system_object_link.messages.append(print_dict)
 
-				
+
 				transaction_report = {"seller":self,"buyer":counterpart,"price":offer_of_interest["price"],"quantity":offer_of_interest["quantity"],"date":own_offer["date"],"resource":resource}
 			elif type == "buy_offer":
 				counterpart = offer_of_interest["seller"]
-				counterpart.owner.capital = counterpart.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"] 
-				counterpart.stock_dict[resource] = counterpart.stock_dict[resource] - offer_of_interest["quantity"] 
-				self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
-				self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"] 
+				counterpart.owner.capital = counterpart.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"]
+				counterpart.stock_dict[resource] = counterpart.stock_dict[resource] - offer_of_interest["quantity"]
+				self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"]
+				self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"]
 				if self.owner == self.solar_system_object_link.current_player or counterpart.owner == self.solar_system_object_link.current_player:
 					print_dict = {"text":str(self.name) + " bought " + str(offer_of_interest["quantity"]) + " units of " + str(resource) + " from " + str(counterpart.name) + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
 					self.solar_system_object_link.messages.append(print_dict)
 
-				
+
 				transaction_report = {"seller":counterpart,"buyer":self,"price":offer_of_interest["price"],"quantity":offer_of_interest["quantity"],"date":own_offer["date"],"resource":resource}
 			else:
 				raise typeError
-			
-			if isinstance(counterpart, merchant):
-				counterpart.stock_dict = {} #to make sure no problems arise in the future 
 
-			
+			if isinstance(counterpart, merchant):
+				counterpart.stock_dict = {} #to make sure no problems arise in the future
+
+
 			transaction_report["seller"].accounting.append(transaction_report)
 			transaction_report["buyer"].accounting.append(transaction_report)
 			market["transactions"][resource].append(transaction_report)
-			
+
 			if transaction_report["quantity"] < 0:
-				#print 
+				#print
 				if self.solar_system_object_link.message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING WARNING: The quantity in a " + type + " of " + resource + " by " + self.name + " was found to be " + str(transaction_report["quantity"]),"type":"debugging"}
 					self.solar_system_object_link.messages.append(print_dict)
- 
-			
+
+
 		#removing bids from the market if they have been effectuated
 		remove_these = []
 		for i, opposite_bid in enumerate(opposite_bids):
@@ -1155,63 +1155,63 @@ class firm():
 				if opposite_bid["buyer"].name in counterparts_list:
 				   if offers_of_interest[-1]["buyer"].name == opposite_bid["buyer"].name and not need_to_find_more:
 						offers_of_interest[-1]["quantity"] = balance_of_findings
-				   else: 
+				   else:
 					   remove_these.append(i)
 			if type == "buy_offer":
 				if opposite_bid["seller"].name in counterparts_list:
 				   if offers_of_interest[-1]["seller"].name == opposite_bid["seller"].name and not need_to_find_more:
 						offers_of_interest[-1]["quantity"] = balance_of_findings
-				   else: 
+				   else:
 					   remove_these.append(i)
 		if len(remove_these) > 0:
 			remove_these.reverse()
 			for remove_this in remove_these:
 				del opposite_bids[remove_this]
-		
-					
+
+
 		#checking to see if the offer was satisfied, and if not, adds it to the market database
 		if need_to_find_more and balance_of_findings != 0:
 			if balance_of_findings >= 0:
 				if self.solar_system_object_link.message_printing["debugging"]:
 					print_dict = {"text":"DEBUGGING MESSAGE: balance_of_findings was thought to be negative but was " + str(balance_of_findings) + " for " + self.name,"type":"debugging"}
 					self.solar_system_object_link.messages.append(print_dict)
-				
-			
+
+
 			own_offer["quantity"] = -balance_of_findings
 			if len(competing_bids) == 0:
 				competing_bids.append(own_offer)
 			else:
 				did_not_pass_price_range = True
 				for i, competing_bid in enumerate(competing_bids):
-					if (type == "sell_offer" and competing_bid["seller"].name == self.name) or (type == "buy_offer" and competing_bid["buyer"].name == self.name): 
+					if (type == "sell_offer" and competing_bid["seller"].name == self.name) or (type == "buy_offer" and competing_bid["buyer"].name == self.name):
 						competing_bids.pop(i)
-					if (competing_bid["price"] > own_offer["price"] and type == "sell_offer" and did_not_pass_price_range) or (competing_bid["price"] < own_offer["price"] and type == "buy_offer" and did_not_pass_price_range):  
+					if (competing_bid["price"] > own_offer["price"] and type == "sell_offer" and did_not_pass_price_range) or (competing_bid["price"] < own_offer["price"] and type == "buy_offer" and did_not_pass_price_range):
 						insert_own_offer_at = i
 						did_not_pass_price_range = False
 				try: insert_own_offer_at
 				except:
 					insert_own_offer_at = len(competing_bids)
 				competing_bids.insert(insert_own_offer_at,own_offer)
-				
+
 				if own_offer["quantity"]<0:
 					if self.solar_system_object_link.message_printing["debugging"]:
 						print_dict = {"text":"DEBUGGING WARNING: The quantity in an offer from " + self.name + " somehow ended up being negative","type":"debugging"}
 						self.solar_system_object_link.messages.append(print_dict)
-				
-		
-		
+
+
+
 		#checking to see if the market database for this resource is getting too long. Deleting the worst offers in that case
 		max_size_of_market = 50
 		while len(competing_bids) > max_size_of_market:
 			competing_bids.pop(-1)
-		
-		if isinstance(self, merchant):
-			self.stock_dict = {} #to make sure no problems arise in the future 
 
-			
-		
-		
-	
+		if isinstance(self, merchant):
+			self.stock_dict = {} #to make sure no problems arise in the future
+
+
+
+
+
 	def execute_stock_change(self,current_date):
 		"""
 		Function to calculate the production based on the input_output_dict.
@@ -1228,17 +1228,17 @@ class firm():
 				if self.solar_system_object_link.message_printing["debugging"]:
 					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solar_system_object_link.start_date was used but this should be corrected at some point","type":"debugging"}
 					self.solar_system_object_link.messages.append(print_dict)
- 
+
 			self.last_consumption_date = self.solar_system_object_link.start_date
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
 		timeframe = self.input_output_dict["timeframe"]
-		
+
 		if time_span_days > timeframe:
 			number_of_rounds = time_span_days / timeframe
 			keep_calculating = True
 			self.last_consumption_date =  self.last_consumption_date + datetime.timedelta(number_of_rounds * timeframe)
-			
+
 			while keep_calculating:
 				keep_calculating = False
 				new_stock_level = {}
@@ -1251,57 +1251,57 @@ class firm():
 						#For bases we need to see that the essentials are met
 						if isinstance(self,base):
 							if input_resource == "food":
-								if self.starving == "No": 
+								if self.starving == "No":
 									self.starving = "A little"
-								if self.starving == "A little": 
+								if self.starving == "A little":
 									self.starving = "A lot"
 							if input_resource == "housing":
-								if self.lacks_housing == "No": 
+								if self.lacks_housing == "No":
 									self.lacks_housing = "A little"
-								if self.lacks_housing == "A little": 
+								if self.lacks_housing == "A little":
 									self.lacks_housing = "A lot"
 
 				if keep_calculating:
 					number_of_rounds = new_number_of_rounds
-					
+
 			if time_span_days / timeframe > number_of_rounds and isinstance(self,base):
 				if self.owner == self.solar_system_object_link.current_player:
 					print_dict = {"text":self.name + " is a base, it is starving, but it will continue to produce","type":"base info"}
 					self.solar_system_object_link.messages.append(print_dict)
 				number_of_rounds = time_span_days / timeframe
-			
+
 			if number_of_rounds > 0:
 				for input_resource in new_stock_level:
 					self.stock_dict[input_resource] = new_stock_level[input_resource]
 				for output_resource in self.input_output_dict["output"]:
 					if not self.solar_system_object_link.trade_resources[output_resource]["storable"]:
 						self.stock_dict[output_resource] = 0
-						
+
 					self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict[output_resource]
 
 				#adding byproducts to the atmosphere
 				for byproduct in self.input_output_dict["byproducts"]:
 					self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct] * number_of_rounds)
-					if self.owner == self.solar_system_object_link.current_player: 
+					if self.owner == self.solar_system_object_link.current_player:
 						print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(self.input_output_dict["byproducts"][byproduct] * number_of_rounds) + " units on " + str(self.location.home_planet.name),"type":"climate"}
 						self.solar_system_object_link.messages.append(print_dict)
-				
+
 				for resource in self.input_output_dict["output"]:
 					if resource in self.solar_system_object_link.mineral_resources:
 						self.location.mining_performed[resource] = self.location.mining_performed[resource] + number_of_rounds * self.input_output_dict["output"][resource]
-						if self.owner == self.solar_system_object_link.current_player: 
+						if self.owner == self.solar_system_object_link.current_player:
 							print_dict = {"text":self.name + " mined " + primitives.nicefy_numbers(int(number_of_rounds * self.input_output_dict["output"][resource])) + " on " + str(self.location.home_planet.name),"type":"mining"}
 							self.solar_system_object_link.messages.append(print_dict)
-						
 
-				
-						
-				
-		
 
-		
 
-		
+
+
+
+
+
+
+
 
 
 class base(firm):
@@ -1311,9 +1311,9 @@ class base(firm):
 	Algorithms exists that will calculate the demand of the people in the base. This is done in a sims-like fashion where different
 	demand-types need to be fulfilled. It is done a little more advanced though, since for example lack of food will make the food demand
 	soar much more than lack of consumer goods for example. See relevant function for details.
-	
+
 	The owner of the base decide what he wants to "pour" into the demand of the people. This is done by setting the wage for the base
-	
+
 	An owner can thus decide the "life-quality" level of the population. The benefits and penalties for doing this to the extreme should
 	be as follows:
 		starvation
@@ -1321,7 +1321,7 @@ class base(firm):
 		low research
 	FIXME This should be implemented later
 	"""
-	
+
 	def __init__(self,solar_system_object,base_name,home_planet,base_data,owner):
 		self.location = self
 		self.name = base_name
@@ -1329,29 +1329,29 @@ class base(firm):
 		self.owner = owner
 		self.home_planet = home_planet
 		self.solar_system_object_link = solar_system_object
-		
+
 		self.for_sale = False #can be set to True when base is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
 		self.for_sale_deadline = None # a date at which the bidding contest is over
-		
-		
+
+
 		# inserting initial base data values
 		self.position_coordinate = (base_data["eastern_loc"], base_data["northern_loc"])
 		self.gdp_per_capita_in_dollars = base_data["GDP_per_capita_in_dollars"]
 		self.population = base_data["population"]
 		self.GDP =  self.population * self.gdp_per_capita_in_dollars
 		self.original_country = base_data["country"]
-		self.wages = self.gdp_per_capita_in_dollars * 0.5 
+		self.wages = self.gdp_per_capita_in_dollars * 0.5
 		self.bitternes_of_base = 100.0 # setting a random variable to start with
-		
+
 		self.technology_name = "Base"
 		self.size = self.population
-		
+
 		self.terrain_type = self.check_terrain_type()
-		
-		self.starving = "No" #reset to "No" every Year end, but set to "A little" or "A lot" by various events. Has impact on growth. 
+
+		self.starving = "No" #reset to "No" every Year end, but set to "A little" or "A lot" by various events. Has impact on growth.
 		self.lacks_housing = "No" #reset to "No" every Year end, but set to "A little" or "A lot" by various events. Has impact on growth.
-		
+
 		self.picture_file = None
 		self.is_on_dry_land = "Yes"
 		self.trade_routes = {}
@@ -1364,19 +1364,19 @@ class base(firm):
 		for resource in self.solar_system_object_link.mineral_resources:
 			self.mining_performed[resource] = 0
 
-		
+
 		self.market = self.initialize_market() #a dictionary of traded resources as keys, and lists of past transaction as value
-		
-		
+
+
 		self.input_output_dict = {"input":{"housing":1 * self.population,"food":1 * self.population,"consumer goods":1 * self.population},"output":{"labor":1 * self.population},"timeframe":30,"byproducts":{}} #however this is highly changeable
-		
+
 
 		self.stock_dict = {}
-		
+
 		for resource in self.solar_system_object_link.trade_resources:
 			if self.solar_system_object_link.trade_resources[resource]["demanded_by_base"]:
 				self.stock_dict[resource] = self.population
-		
+
 		for resource in self.input_output_dict["output"]:
 			self.stock_dict[resource] = 0
 
@@ -1388,12 +1388,12 @@ class base(firm):
 		"""
 		if self.position_coordinate == (None, None):
 			return "Space"
-		
+
 		#check atmospheric safety
 		environmental_safety = self.home_planet.check_environmental_safety()
-		
+
 		#check local safety (radiation)
-		
+
 #		print "returning " + environmental_safety + " for " + self.name
 		return environmental_safety
 
@@ -1403,24 +1403,24 @@ class base(firm):
 		The calculation of the demand of a base is special because it is more elastic than the demand of firms. Simply put the idea
 		is that you give the workers a wage (which is saved as self.wages for each base), and then THEY decide how they spend the money
 		given their various demand as humans.
-		
-		Explained a little more each resource of interest to a population has a demand curve defined. A demand curve is a function of 
+
+		Explained a little more each resource of interest to a population has a demand curve defined. A demand curve is a function of
 		the current stock of the resource. It is given as (a, b, c) where the function then is:
-		
+
 			y = c * ((x / self.population)^a + b)
 				a must be below or equal to zero, b must be above or equal to zero, c must be above zero
-				
+
 		in the trade resources.txt where the values are specified a, b and c are known as
-		a: base_demand_elasticity 
+		a: base_demand_elasticity
 		b: base_demand_asymptote
 		c: base_demand_intensity
-		
-		This explains what they do somewhat, but in other words: 
+
+		This explains what they do somewhat, but in other words:
 			The more negative a is, the steeper the demand increases when the resource is gone (ie. food etc)
 			The more positive b is, the more constant is the demand, even though it is getting fulfilled (ie. education is always needed and more is better)
 			The more positive c is, the more demand there generally is for this resource (ie. health care should not be higher in demand than food, even though they share the same profile)
 			The "tipping" point for where "low-a" goods become flat is around self.population. One unit per population can therefore be thought of as a "pretty content" place. But of course content-ness is relative, so don't get stuck on it.
-		
+
 		An R function to plot the curves, just in case
 			a<--0.5
 			b<-0.5
@@ -1428,13 +1428,13 @@ class base(firm):
 			population = 10
 			x = seq(0.00001 * population,population*2,population/1000)
 			plot(x,((x/population)^a+b)*c)
-		
+
 		The function returns a dictionary with each of the resources of interest as keys, and a numerical of demand as value.
-		
+
 		Resources are then bought by the demands calculated. The quantity wanted is always 1 per person, but the price is in relation
-		to the demand value. If all demand is for food, then the food price is set to the entire value of the wage per person. If even 
+		to the demand value. If all demand is for food, then the food price is set to the entire value of the wage per person. If even
 		demand is for food and housing, then the wage is only split between these two.
-		
+
 		The elasticity comes from the fact that the input_output_dict also changes with the demand. This is to reflect the fact
 		that virtually no consumption of education exists if you are starving etc. (Maslow's theories if you will, but more mixed. You can
 		both want housing and self realization - you just want one more). The input_output_dict is changed so that food demand is
@@ -1445,7 +1445,7 @@ class base(firm):
 		if self.population <= 0:
 			self.bitternes_of_base = 1500 #FIXME check at some point that this is an ok value for being bitter in an empty base
 			return
-		
+
 		#First we calculate how the inhabitants feel about the world and what they demand
 		base_demand_dict = {}
 		for resource in self.solar_system_object_link.trade_resources:
@@ -1453,27 +1453,27 @@ class base(firm):
 				a = self.solar_system_object_link.trade_resources[resource]["base_demand_elasticity"]
 				b = self.solar_system_object_link.trade_resources[resource]["base_demand_asymptote"]
 				c = self.solar_system_object_link.trade_resources[resource]["base_demand_intensity"]
-				
+
 				resource_level = self.stock_dict[resource]
 				if resource_level == 0:
 					resource_level = 0.00001 * self.population #because we want the zero level to be the same no matter the size
 				elif resource_level < 0:
 					raise Exception(self.name + " had a negative amount (",str(resource_level),") of " + str(resource))
-					
+
 				demand_level = c * (((resource_level / float(self.population)) ** a) + b)
-				
+
 				base_demand_dict[resource] = demand_level
-		
-		
-		
-		
-		#The bitterness of a base is the cumulative demand 
+
+
+
+
+		#The bitterness of a base is the cumulative demand
 		bitternes_of_base = 0
 		for demand_level_here in list(base_demand_dict.values()):
-			bitternes_of_base = bitternes_of_base + demand_level_here 
+			bitternes_of_base = bitternes_of_base + demand_level_here
 		self.bitternes_of_base = bitternes_of_base
-		
-		
+
+
 
 		#When we convert we quite simply say that the wage given to the people is spent proportionally on the demands:
 		for resource in base_demand_dict:
@@ -1483,15 +1483,15 @@ class base(firm):
 			#they always price the stuff at the level of demand and their income
 			price = (base_demand_dict[resource] / bitternes_of_base) * (self.wages * self.population / quantity_wanted)
 
-			
+
 			if quantity_wanted * price <= self.owner.capital and quantity_wanted > 0 and price > 0:
 				buy_offer = {"resource":resource,"price":price,"buyer":self,"name":self.name,"quantity":quantity_wanted,"date":self.solar_system_object_link.current_date}
-				
+
 				self.make_market_bid(market,buy_offer)
-				
-				
-		
-		
+
+
+
+
 			#finally we update the self.input_output_dict to reflect the new tastes of the inhabitants
 			#the assumption here is that "food" is always at 0.1 unit per population, and the others are then consumed
 			#by their relative demand ratio to food.
@@ -1504,45 +1504,45 @@ class base(firm):
 		Tentative rules:
 		compare bitterness_of_base to bitternes of trade_route partners. Calculate a fraction of the population that leaves based on this
 		formula:
-			
+
 			percent emigration = 0.1 (bitterness_here - bitterness_there) / (max_bitternes_world - min_bitternes_world)
-		
+
 		This would make the situation with the worlds best city and the worlds worst yield a 10% migration and all otheres somewhere
 		in between. Perhaps something with an exponential function or a threshold depending on route length.
-		
-		Also add to the emigration if the base 
+
+		Also add to the emigration if the base
 			* is threathened by flooding (perhaps 20%)
 			* there are any bases anywhere in the universe that offers prize-money for migration. (max 1% I think)
-			 
+
 		"""
 		for trade_routes in self.trade_routes:
 			if self.trade_routes[trade_routes]["endpoint_links"].index(self) == 1:
 				neighbour = self.trade_routes[trade_routes]["endpoint_links"][0]
 			else:
 				neighbour = self.trade_routes[trade_routes]["endpoint_links"][1]
-			
-			
+
+
 			if self.bitternes_of_base > neighbour.bitternes_of_base:
-				percent_emigration_from_bitterness = (0.1 * (self.bitternes_of_base - neighbour.bitternes_of_base) / (self.solar_system_object_link.bitterness_of_world[1] - self.solar_system_object_link.bitterness_of_world[0]) ) / len(self.trade_routes) 
-				
+				percent_emigration_from_bitterness = (0.1 * (self.bitternes_of_base - neighbour.bitternes_of_base) / (self.solar_system_object_link.bitterness_of_world[1] - self.solar_system_object_link.bitterness_of_world[0]) ) / len(self.trade_routes)
+
 				if self.is_on_dry_land == "almost":
 					percent_emigration_from_fear_of_flood = 0.2 / len(self.trade_routes)
-					#print "DEBUGGING: 
+					#print "DEBUGGING:
 					if self.owner == self.solar_system_object_link.current_player:
 						print_dict = {"text":"the base: " + self.name + " is facing flooding and will experience a refuge surge","type":"base info"}
 						self.solar_system_object_link.messages.append(print_dict)
 
 				else:
 					percent_emigration_from_fear_of_flood = 0
-					
-				
-				
+
+
+
 				people_leaving = int((percent_emigration_from_bitterness +  percent_emigration_from_fear_of_flood)* self.population)
 				if people_leaving > 0:
-					
+
 #					if self.name in ["zygote","stockholm"]:
 #						print self.name + " is neighbour with " + str(neighbour.name) + " - their relation should result in " + str(people_leaving) + " people emigrating from " + self.name + " this is " + str(int(100*(percent_emigration_from_bitterness +  percent_emigration_from_fear_of_flood))) + "%"
-					
+
 					if self.home_planet.solar_system_object_link.effectuate_migration:
 						if people_leaving < self.population:
 							self.population = self.population - people_leaving
@@ -1550,30 +1550,30 @@ class base(firm):
 						else:
 							self.population = 0
 							neighbour.population = neighbour.population + self.population
-							if self.owner == self.solar_system_object_link.current_player: 
+							if self.owner == self.solar_system_object_link.current_player:
 								print_dict = {"text":"The base " + self.name + " has lost all of its population due to migration","type":"base info"}
 								self.solar_system_object_link.messages.append(print_dict)
-						
+
 
 	def calculate_growth_and_deaths(self):
 		"""
 		Function that calculates the "organic" size change of the base (ie. non-migration).
 		Tentative rules:
-		Fixed growth of say 2% per anno. 
-		Perhaps these modifiers: 
+		Fixed growth of say 2% per anno.
+		Perhaps these modifiers:
 			-20 % if self.stock_dict["food"] == 0
 			-10 % if self.stock_dict["housing"] == 0
 			-30 % if self.stock_dict["housing"] == 0 and terraformed_planet=False
-		
-		
+
+
 		To perform this you'll need to include a self.was_starving and a self.lacked_housing variable that gets set
 		to False at the end of each year, and that gets set to True if at anytime the food/housing supply hits zero.
 		Perhaps instead of a logical, use "No", "Some", "A lot". The setting of these in times of trouble, should be set
 		somewhere perhaps in the execute change functions. Also include an analysis of breathableness of the atmosphere
 		and make the housing dependet on this.
 		"""
-		base_growth_percent = 0.022 #maximum global growth rate ever (1963) according to wikipeida 
-		
+		base_growth_percent = 0.022 #maximum global growth rate ever (1963) according to wikipeida
+
 		if self.starving == "A lot":
 			starving_modifier = -0.2
 		elif self.starving == "A little":
@@ -1582,7 +1582,7 @@ class base(firm):
 			starving_modifier = 0.0
 		else:
 			raise Exception("Unknown self.starving parameter: " + str(self.starving))
-		
+
 		if self.lacks_housing == "A lot":
 			housing_modifier = -0.2
 		elif self.lacks_housing == "A little":
@@ -1598,15 +1598,15 @@ class base(firm):
 				housing_modifier = housing_modifier * 2
 			if self.terrain_type in ["Space","No atmosphere","Radiation"]:
 				housing_modifier = housing_modifier * 4
-		
+
 		growth_percent = base_growth_percent + starving_modifier + housing_modifier
-		
+
 
 		if self.home_planet.solar_system_object_link.effectuate_growth:
 			self.population = int(self.population * (1.0 + growth_percent))
-		
-		
-		
+
+
+
 
 
 	def calculate_emissions(self):
@@ -1618,11 +1618,11 @@ class base(firm):
 		pass
 
 
-			
+
 
 	def initialize_market(self):
-		""" 
-		Function that fills in the self.market dictionary (a dictionary of traded resources as keys, and lists of 
+		"""
+		Function that fills in the self.market dictionary (a dictionary of traded resources as keys, and lists of
 		past transaction as value), with all resources and a few fake starting transaction to build future pricings on
 		"""
 		market = {}
@@ -1638,13 +1638,13 @@ class base(firm):
 			for i in range(1,number_of_startup_transactions):
 				market["transactions"][trade_resource].append({"price":self.solar_system_object_link.trade_resources[trade_resource]["starting_price"],"buyer":None,"seller":None,"quantity":random.randint(500,1000),"date":self.solar_system_object_link.start_date-datetime.timedelta(0)})
 		return market
-		
 
 
 
 
 
-		
+
+
 	def get_base_background(self):
 		"""
 		Function that returns a background picture for each base
@@ -1700,37 +1700,37 @@ class base(firm):
 			self.picture_file = file_name_and_path
 
 		image = Image.open(file_name_and_path)
-		
+
 		#resizing to fit the window
 		window_size = global_variables.window_size
 		aspect_ratio_needed = float(window_size[0])/float(window_size[1])
 		aspect_ratio_found = float(image.size[0])/float(image.size[1])
 		if aspect_ratio_needed > aspect_ratio_found:
-			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0])) 
+			image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0]))
 		elif aspect_ratio_needed < aspect_ratio_found:
-			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed))) 
+			image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed)))
 		else:
 			pass
 		image = image.resize(global_variables.window_size)
 		image_string = image.tostring()
 		surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
-		return surface	
-		
+		return surface
+
 	def draw_base_window(self):
 		"""
 		The reason there is a special function for this is to keep to the same system as draw_planet.
 		"""
 		surface = self.get_base_background()
 		return surface
-		
+
 
 
 
 
 	def calculate_trade_routes(self,planet):
 		"""
-		Function to calculate the trade routes of a base. Takes a planet instance and 
-		uses that to calculate networks to other bases. 
+		Function to calculate the trade routes of a base. Takes a planet instance and
+		uses that to calculate networks to other bases.
 		"""
 		if self.terrain_type != "Space": #only ground bases
 			distance_dict = {}
@@ -1738,13 +1738,13 @@ class base(firm):
 				number_of_trade_routes = min(int(math.log10(self.population)), len(planet.bases)-1)
 			else:
 				number_of_trade_routes = 0
-			
+
 			position_one = (self.position_coordinate[0],self.position_coordinate[1])
-			
+
 			search_length = 0
 			search_increment = 1
-			while len(self.trade_routes) < number_of_trade_routes: 
-				
+			while len(self.trade_routes) < number_of_trade_routes:
+
 				search_length = search_length + search_increment
 				if search_length > 180:
 					break
@@ -1753,10 +1753,10 @@ class base(firm):
 						position_two = (other_base.position_coordinate[0],other_base.position_coordinate[1])
 						if position_one[0] - search_length < position_two[0] < position_one[0] + search_length and position_one[1] - search_length < position_two[1] < position_one[1] + search_length:
 							if not other_base.base_name in list(self.trade_routes.keys()):
-								
+
 								if len(other_base.trade_routes) < int(math.log10(other_base.population)):
 									distance = planet.calculate_distance(position_one,position_two)
-									
+
 									transport_type = "ground transport"
 									endpoints = [other_base.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
 									endpoint_links = [other_base,self]
@@ -1780,21 +1780,21 @@ class base(firm):
 			trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
 			self.trade_routes[space_port.base_name] = trade_route
 			space_port.trade_routes[self.base_name] = trade_route
-						
-			
 
 
-	
+
+
+
 	def get_mining_opportunities(self,planet,resource):
 		"""
 		Calculates the mining_opportunities for a base. Takes a planet (to get the resource overlays)
 		and a resource name. Saves the value in the self.resource_opportunities variable which is a dictionary
 		for containing all the different resources as key
 		"""
-		
+
 		cost_addition_for_distance = 2 #the factor which is multiplied to the distance when calculating costs
 		range_km = 400 #the width in km's of the farthest interval
-		
+
 		self.last_mining_check = self.solar_system_object_link.current_date
 
 
@@ -1810,7 +1810,7 @@ class base(firm):
 				food_multiplier = 0.8
 			else:
 				food_multiplier = 0.4
-			
+
 			earth_sun_distance = self.solar_system_object_link.planets["earth"].planet_data["semi_major_axis"]
 			effective_sun_distance = float(max(self.home_planet.planet_data["semi_major_axis"], earth_sun_distance))
 			food_multiplier = ((earth_sun_distance / effective_sun_distance) ** 0.5) * food_multiplier
@@ -1821,25 +1821,25 @@ class base(firm):
 			try: planet.resource_maps[resource]
 			except:
 				planet.calculate_resource_map(resource)
-				
+
 			resource_map = planet.resource_maps[resource]
 			resource_map = resource_map.convert("L")
 			distance_data = global_variables.distance_data
 			#max_distance_in_matrix_degrees = distance_data["steps"] * distance_data["step_size"]
 			planet_circumference = planet.planet_diameter_km * math.pi
 			distance_matrix = distance_data["distance_matrix"]
-			
+
 			eastern_loc_degrees = self.position_coordinate[0]
 			northern_loc_degrees = -self.position_coordinate[1]
 			northern_loc_px = int((northern_loc_degrees + 90)/ 4)
 			eastern_loc_px = int((eastern_loc_degrees + 180) / 4)
 			resource_extrema = (50, 255)
 
-			
+
 			#calculating a resource matrix - which is a dictionary, starting with distance as keys, then with positions at that distance as keys, and then finally with the resource_concentration as value.
 			resource_matrix = {}
 			distance_matrix_here = distance_matrix[(0,northern_loc_px)]
-			
+
 			max_distance_step_degrees = (float(range_km) / float(planet_circumference)) * 360.0
 			max_distance_step_degrees_rounded = int(max_distance_step_degrees / distance_data["step_size"]) * distance_data["step_size"]
 			if max_distance_step_degrees_rounded >= (distance_data["step_size"] * distance_data["steps"]):
@@ -1849,20 +1849,20 @@ class base(firm):
 				max_distance_step_degrees_rounded = distance_data["step_size"] * 1
 				#print "it is short"
 
-			
+
 			new_distance_matrix_here = {}
 			for i in range(0,max_distance_step_degrees_rounded  + distance_data["step_size"] ,distance_data["step_size"]):
 				new_distance_matrix_here[i] = distance_matrix_here[i]
-				
+
 			del distance_matrix_here
 			distance_matrix_here = new_distance_matrix_here
 
 			for distance in distance_matrix_here:
 				resource_matrix[distance] = {}
 				for zero_position in distance_matrix_here[distance]:
-					
+
 					real_position = (zero_position[0] +  eastern_loc_px,zero_position[1])
-					
+
 					if not 0 < real_position[0] < resource_map.size[0]:
 						if 0 > real_position[0]:
 							#print "too small"
@@ -1870,15 +1870,15 @@ class base(firm):
 						else:
 							#print "too big"
 							real_position = (zero_position[0] +  eastern_loc_px - resource_map.size[0],zero_position[1])
-	
+
 					#print real_position
 					real_position = (int(real_position[0]), int(real_position[1])) #this has been shown to be necessary on linux computeres for some reason
 					resource_value = (100*(resource_map.getpixel(real_position) - resource_extrema[0])) / (resource_extrema[1] - resource_extrema[0])
 
 					resource_matrix[distance][real_position] = resource_value
-					
-		
-		
+
+
+
 		#adjusting the resource levels of the planet in case there has been extensive mining
 		if self.mining_performed[resource] > 0:
 			deposit_reduction = (self.mining_performed[resource] / 50000.0) / global_variables.mineral_deposit_size_multiplier
@@ -1886,47 +1886,47 @@ class base(firm):
 			if deposit_reduction > 1:
 				deposit_reduction_rest = deposit_reduction % 1
 #					print "In " + self.name + " a " + resource + " deposit_reduction of " + str(int(deposit_reduction)) + " is taken place. From " + str (self.mining_performed[resource]) + " There was a deposit rest of " + str(deposit_reduction_rest) + " so " + str(50000.0 * global_variables.mineral_deposit_size_multiplier * deposit_reduction_rest) + " was left in mined pool"
-				
-#					print self.name + " is performing adjustment of " + primitives.nicefy_numbers(self.mining_performed[resource]) + " mined units of " + resource + " map with " + str(int(deposit_reduction)) + " units"		
-				self.mining_performed[resource] = 50000.0 * global_variables.mineral_deposit_size_multiplier * deposit_reduction_rest 
+
+#					print self.name + " is performing adjustment of " + primitives.nicefy_numbers(self.mining_performed[resource]) + " mined units of " + resource + " map with " + str(int(deposit_reduction)) + " units"
+				self.mining_performed[resource] = 50000.0 * global_variables.mineral_deposit_size_multiplier * deposit_reduction_rest
 				for distance in resource_matrix:
 					for pixels in resource_matrix[distance]:
 						original_tuple = planet.resource_maps[resource].getpixel(pixels)
-						
+
 						reduced_value = int(original_tuple[1] - int(deposit_reduction) * (4 - distance))
 						new_tuple= (original_tuple[0], reduced_value, original_tuple[2])
-						
-						planet.resource_maps[resource].putpixel(pixels,new_tuple)
-					
 
-		
-		
-		
+						planet.resource_maps[resource].putpixel(pixels,new_tuple)
+
+
+
+
+
 		sum_of_resources = 0
 		for distance in resource_matrix:
 			resources_at_distance = []
 			for pixels in resource_matrix[distance]:
 				resources_at_distance.append(resource_matrix[distance][pixels])
-			sum_of_resources_at_distance = (float(sum(resources_at_distance) / len(resources_at_distance))) * (float(len(resource_matrix)) / float(distance_data["steps"])) 
-			#normalize to the amounts of pixel in each distance category, and normalize to the number of 
+			sum_of_resources_at_distance = (float(sum(resources_at_distance) / len(resources_at_distance))) * (float(len(resource_matrix)) / float(distance_data["steps"]))
+			#normalize to the amounts of pixel in each distance category, and normalize to the number of
 			#distance categories (ie you dont want higher yield from the larger area far away from the base
 			# not unless it is absolutely controlled by cost_addition_for_distance
 			#and you don't want to punish bases on large planets.
 			#print "at distance " + str(distance) + " the sum_of_resources_at_distance is " + str(sum_of_resources_at_distance) + " - these are found in " + str(len(resources_at_distance)) + " pixels"
 			sum_of_resources = sum_of_resources_at_distance / ((distance+2) * cost_addition_for_distance) + sum_of_resources
 			#print "at distance: " + str(distance) + " there is: " + str(sum_of_resources_at_distance) + " " + str(resource)
-		
-		
+
+
 		#print "for resource " + str(resource) + " there is " + str(sum_of_resources) + " units at base " + str(self.base_name)
 		self.mining_opportunities[resource] = sum_of_resources
-		#print "self.mining_opportunities[resource]: " + str(self.mining_opportunities[resource]) 
+		#print "self.mining_opportunities[resource]: " + str(self.mining_opportunities[resource])
 		return sum_of_resources
-				
 
-		
-		
-		
-		
+
+
+
+
+
 	def draw_mining_area(self, planet, overlay_image):
 		"""
 		creating the image of a resource overlay around a base
@@ -1942,17 +1942,17 @@ class base(firm):
 		distance_data = global_variables.distance_data
 		planet_circumference = planet.planet_diameter_km * math.pi
 		distance_matrix = distance_data["distance_matrix"]
-		
+
 		eastern_loc_degrees = self.position_coordinate[0]
 		northern_loc_degrees = -self.position_coordinate[1]
 		northern_loc_px = int((northern_loc_degrees + 90)/ 4)
 		eastern_loc_px = int((eastern_loc_degrees + 180) / 4)
 		resource_extrema = (50, 255)
-		
+
 		#calculating a resource matrix - which is a dictionary, starting with distance as keys, then with positions at that distance as keys, and then finally with the resource_concentration as value.
 		resource_matrix = {}
 		distance_matrix_here = distance_matrix[(0,northern_loc_px)]
-		
+
 		max_distance_step_degrees = (float(range_km) / float(planet_circumference)) * 360.0
 		max_distance_step_degrees_rounded = int(max_distance_step_degrees / distance_data["step_size"]) * distance_data["step_size"]
 		if max_distance_step_degrees_rounded >= (distance_data["step_size"] * distance_data["steps"]):
@@ -1962,11 +1962,11 @@ class base(firm):
 			max_distance_step_degrees_rounded = distance_data["step_size"] * 1
 			#print "it is short"
 
-		
+
 		new_distance_matrix_here = {}
 		for i in range(0,max_distance_step_degrees_rounded  + distance_data["step_size"] ,distance_data["step_size"]):
 			new_distance_matrix_here[i] = distance_matrix_here[i]
-			
+
 		del distance_matrix_here
 		distance_matrix_here = new_distance_matrix_here
 
@@ -1985,9 +1985,9 @@ class base(firm):
 
 		blank_image = Image.new(overlay_image.mode, overlay_image.size, (0,0,0))
 		overlay_image.paste(blank_image,None,base_area_mask)
-		return overlay_image	
-	
-	
+		return overlay_image
+
+
 
 
 
@@ -1996,7 +1996,7 @@ class base_construction(firm):
 	"""
 	Class containing the construction of a new base before it is shipped out
 	"""
-	def __init__(self,solar_system_object, input_output_dict, location, name, home_planet, base_to_be_build_data, owner, size):	
+	def __init__(self,solar_system_object, input_output_dict, location, name, home_planet, base_to_be_build_data, owner, size):
 		self.name = name
 		self.location = location
 		self.owner = owner
@@ -2011,7 +2011,7 @@ class base_construction(firm):
 		self.size = size
 		self.for_sale = False
 		self.base_to_be_build_data = base_to_be_build_data
-		
+
 		for resource in self.solar_system_object_link.trade_resources:
 			self.stock_dict[resource] = 0
 
@@ -2028,20 +2028,20 @@ class base_construction(firm):
 				if self.solar_system_object_link.message_printing["debugging"]:
 					print_dict = {"text":"Small debugging warning. Did not find self.last_consumption_date for " + str(self.name) + " when doing execute_stock_change(). self.solar_system_object_link.start_date was used but this should be corrected at some point","type":"debugging"}
 					self.solar_system_object_link.messages.append(print_dict)
- 
+
 			self.last_consumption_date = self.solar_system_object_link.start_date
 
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
 		timeframe = self.input_output_dict["timeframe"]
-		
+
 		if time_span_days > timeframe:
 			all_materials_present = True
 			for input_resource in self.input_output_dict["input"]:
-				if self.input_output_dict["input"][input_resource] > self.stock_dict[input_resource]: 
+				if self.input_output_dict["input"][input_resource] > self.stock_dict[input_resource]:
 					all_materials_present = False
 					break
-			
+
 
 			if all_materials_present:
 				owner = self.base_to_be_build_data["owner"]
@@ -2061,18 +2061,18 @@ class base_construction(firm):
 						print_dict = {"text":"Population of " + str(self.location.name)+ " was less than required for " + self.name + ". Only + " + str(self.base_to_be_build_data["population"]) + " people have been sent.","type":"general gameplay info"}
 						self.solar_system_object_link.messages.append(print_dict)
 						self.base_to_be_build_data["population"] = self.location.population
-				   
+
 				#removing the population from building base
 				self.location.population = self.location.population - self.base_to_be_build_data["population"]
-				
-				
+
+
 				#if this is just a population transfer
 				if self.base_to_be_build_data["destination_base"] is not None:
-					destination_base = self.base_to_be_build_data["destination_base"] 
-					destination_base.population = destination_base.population + self.base_to_be_build_data["population"] 
+					destination_base = self.base_to_be_build_data["destination_base"]
+					destination_base.population = destination_base.population + self.base_to_be_build_data["population"]
 					print_dict = {"text":str(self.base_to_be_build_data["population"]) + " people have moved from " + str(self.location.name) + " to " + str(destination_base.name),"type":"general gameplay info"}
 					self.solar_system_object_link.messages.append(print_dict)
-				
+
 				#if this is a new base
 				else:
 					base_data_here = {
@@ -2082,15 +2082,15 @@ class base_construction(firm):
 								 "country":self.base_to_be_build_data["country"],
 								 "GDP_per_capita_in_dollars":self.base_to_be_build_data["GDP_per_capita_in_dollars"]
 								 }
-					
+
 					new_base = base(
 										    self.solar_system_object_link,
 										    base_name = name,
 										    home_planet = self.base_to_be_build_data["home_planet"],
 										    base_data = base_data_here,
 										    owner = owner)
-		
-	
+
+
 					#making the trade route from the founding base
 					distance = self.base_to_be_build_data["distance_to_origin"]
 					transport_type = self.base_to_be_build_data["transport_type_to_origin"]
@@ -2099,11 +2099,11 @@ class base_construction(firm):
 					trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
 					new_base.trade_routes[self.location.base_name] = trade_route
 					self.location.trade_routes[new_base.base_name] = trade_route
-					
+
 					owner.owned_firms[name] = new_base
 					self.base_to_be_build_data["home_planet"].bases[name] = new_base
 					owner.home_cities[name] = new_base
-	
+
 					print_dict = {"text":"Building a base named " + str(name),"type":"general gameplay info"}
 					self.solar_system_object_link.messages.append(print_dict)
 
@@ -2113,12 +2113,12 @@ class base_construction(firm):
 									   size = 0,
 									   technology_name = self.technology_name)
 
-	
-	
+
+
 class producer(firm):
 	def __init__(self,input_output_dict):
 		self.input_output_dict = input_output_dict
-	
+
 
 
 class primary(producer):
@@ -2166,15 +2166,15 @@ class research(tertiary):
 		self.last_accounting = self.solar_system_object_link.current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
-		
+
 		self.stock_dict = {}
 		self.technology_name = "research"
 		self.size = 0
-	
+
 		self.for_sale = False #can be set to True when firm is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
 		self.for_sale_deadline = None # a date at which the bidding contest is over
-		
+
 		#self.decision_data = self.process_decision_data(decision_data)
 		for resource in self.solar_system_object_link.trade_resources:
 			self.stock_dict[resource] = 0
@@ -2182,7 +2182,7 @@ class research(tertiary):
 	def execute_stock_change(self,current_date):
 		"""
 		Function to calculate the research. Basically works the same way as the parent execute_stock_exchange functions
-		but instead of having a commodity as output, it adds to the research of the owning company. 
+		but instead of having a commodity as output, it adds to the research of the owning company.
 		"""
 		try: self.last_consumption_date
 		except:
@@ -2194,12 +2194,12 @@ class research(tertiary):
 		time_since_last_calculation = current_date - self.last_consumption_date
 		time_span_days = time_since_last_calculation.days
 		timeframe = self.input_output_dict["timeframe"]
-		
+
 		if time_span_days > timeframe:
 			number_of_rounds = time_span_days / timeframe
 			keep_calculating = True
 			self.last_consumption_date =  self.last_consumption_date + datetime.timedelta(number_of_rounds * timeframe)
-			
+
 			while keep_calculating:
 				keep_calculating = False
 				new_stock_level = {}
@@ -2210,7 +2210,7 @@ class research(tertiary):
 						keep_calculating = True
 				if keep_calculating:
 					number_of_rounds = new_number_of_rounds
-			
+
 			if number_of_rounds > 0:
 				if self.owner == self.solar_system_object_link.current_player:
 					print_dict = {"text":"for " + self.name + ", " + str(number_of_rounds) + " research rounds were completed adding research to " + self.owner.name,"type":"tech discovery"}
@@ -2218,24 +2218,24 @@ class research(tertiary):
 
 				for input_resource in new_stock_level:
 					self.stock_dict[input_resource] = new_stock_level[input_resource]
-				
+
 				# we give one research point per labor unit used
-				self.owner.research = self.owner.research + number_of_rounds * self.input_output_dict["input"]["labor"] 
+				self.owner.research = self.owner.research + number_of_rounds * self.input_output_dict["input"]["labor"]
 
 
-							
+
 
 
 class merchant(tertiary):
 	"""
-	Special rules for merchant firms are included in this class, the most important being that demand and supply functions 
+	Special rules for merchant firms are included in this class, the most important being that demand and supply functions
 	should be quite different because they exist at two locations.
 	"""
 	def __init__(self,solar_system_object,from_location,to_location,input_output_dict,owner,name,transport_type,distance,resource):
 		self.name = name
 		self.owner = owner
 		self.solar_system_object_link = solar_system_object
-		if not isinstance(from_location, base):				
+		if not isinstance(from_location, base):
 			raise Exception(self.name + " is a merchant firm but received a from_location that was not a base: " + str(from_location))
 		self.from_location = from_location
 
@@ -2245,60 +2245,60 @@ class merchant(tertiary):
 			raise Exception(self.name + " is a merchant firm but received a to_location that was not a base: " + str(to_location))
 		self.to_location = to_location
 
-		
+
 		self.picture_file = None
 		self.last_consumption_date = self.solar_system_object_link.current_date
 		self.last_accounting = self.solar_system_object_link.current_date
 		self.accounting = []
 		self.input_output_dict = input_output_dict
-		
-		
-		self.stock_dict = {} #this is a virtual variable to which to_stock_dict and from_stock_dict is copied in the make_market_bid function, depending on bid direction. 
+
+
+		self.stock_dict = {} #this is a virtual variable to which to_stock_dict and from_stock_dict is copied in the make_market_bid function, depending on bid direction.
 		self.to_stock_dict = {}
 		self.from_stock_dict = {}
-		
+
 		self.technology_name = "merchant"
 		self.size = 0
-		
+
 		self.transport_type = transport_type
 		self.distance = distance
 		self.resource = resource
-	
+
 		self.for_sale = False #can be set to True when firm is offered up for sale.
 		self.for_sale_bids = {} # a dictionary with the bidder as object as keys, and the price they bid as value
 		self.for_sale_deadline = None # a date at which the bidding contest is over
-		
+
 		#self.decision_data = self.process_decision_data(decision_data)
 		for resource in self.solar_system_object_link.trade_resources:
 			self.to_stock_dict[resource] = 0
 			self.from_stock_dict[resource] = 0
-			
+
 
 
 	def execute_stock_change(self,current_date):
 		"""
 		Function to calculate the merchant activity.
-		
+
 		Essentially this function moves resources from the from_stock_dict to the to_stock_dict at the cost of transport
-		 
+
 		The amount of transportation units needed equals the amount of goods times the distance transported divided by 1000.
 		"""
-		
-		
-		
+
+
+
 		transportation_capacity = int(math.floor((self.from_stock_dict[self.transport_type] * 1000.0) /  float(self.distance)))
-		
-		
+
+
 		quantity_to_transport = min(self.from_stock_dict[self.resource], transportation_capacity)
-		
-		
+
+
 		if quantity_to_transport > 0:
 			self.to_stock_dict[self.resource] = self.to_stock_dict[self.resource] + quantity_to_transport
-			
+
 			self.from_stock_dict[self.resource] = self.from_stock_dict[self.resource] - quantity_to_transport
-			
+
 			self.from_stock_dict[self.transport_type] = self.from_stock_dict[self.transport_type] - int(math.ceil((quantity_to_transport * self.distance) / 1000.0))
-			
+
 			if self.owner == self.solar_system_object_link.current_player:
 				print_dict = {"text":self.name + " transported " + str(quantity_to_transport) + " " + str(self.resource) + " from " + self.from_location.name + " to " + self.to_location.name + " using " + str(int((quantity_to_transport * self.distance) / 1000.0)) + " units of transport","type":"tech discovery"}
 				self.solar_system_object_link.messages.append(print_dict)
@@ -2314,12 +2314,12 @@ class merchant(tertiary):
 		The database specifies numbers between 1 and 100, so this will have to be normalized
 		to the number of entries in the databae
 		"""
-		
+
 		functions_to_choose_from = global_variables.market_decisions.calculate_intercity_demand
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_intercity_demand"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
 
-		
+
 
 	def calculate_supply_reaction(self):
 		"""
@@ -2332,10 +2332,10 @@ class merchant(tertiary):
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_intercity_supply"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
 
-							
 
 
 
 
- 
- 
+
+
+

@@ -1,24 +1,24 @@
 import signaller
-from . import button
-from . import entry
-from . import radiobuttons
-from . import fast_list
+import button
+import entry
+import radiobuttons
+import fast_list
 from pygame.locals import *
 import pygame
-from . import solarsystem
-from . import planet
-from . import global_variables
+import solarsystem
+import planet
+import global_variables
 import os
 import sys
 import datetime
-from . import main
+import main
 import time
-from . import primitives
+import primitives
 
 class IntroGui:
     def sequenceStep(self):
         try:
-            i=self._sequenceStep 
+            i=self._sequenceStep
         except AttributeError:
             self._sequenceStep=0
         return self._sequenceStep
@@ -26,7 +26,7 @@ class IntroGui:
         self._sequenceStep=i % (360/5) # that's how many steps there are
         return
     def handleEvent(self,event):
-        if event.type == QUIT: 
+        if event.type == QUIT:
             sys.exit(0)
         if event.type == 5: #mouse down event
             self.receive_click(event)
@@ -102,24 +102,24 @@ class IntroGui:
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,
                                     global_variables.window_size[1] / 3 - 50, 300,300)
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
-        load_window = fast_list.fast_list(self.window, os.listdir("savegames"), 
-                                          rect = pygame.Rect(self.gui_rect[0], 
-                                                             self.gui_rect[1], 
-                                                             self.gui_rect[2], 
+        load_window = fast_list.fast_list(self.window, os.listdir("savegames"),
+                                          rect = pygame.Rect(self.gui_rect[0],
+                                                             self.gui_rect[1],
+                                                             self.gui_rect[2],
                                                              self.gui_rect[3] - 50))
         self.buttons = {}
         self.buttons["load_window"] = load_window
         self.buttons["ok"] = button.button(
-            "ok", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "ok",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["ok"],"signal__clicked",lambda: self.load_game(load_window))
 
         self.buttons["cancel"] = button.button(
-            "cancel", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "cancel",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["cancel"],"signal__clicked",self.create_intro_gui)
 
@@ -152,19 +152,19 @@ class IntroGui:
         self.buttons = {}
         self.buttons["type_selector"] = radiobuttons.radiobuttons(
             ["Private company","Country"],
-            surface = self.window, 
-            topleft = (self.gui_rect[0] + 10, self.gui_rect[1] + 40), 
+            surface = self.window,
+            topleft = (self.gui_rect[0] + 10, self.gui_rect[1] + 40),
             selected = None)
         self.buttons["ok"] = button.button(
-            "ok", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "ok",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["ok"],"signal__clicked",self.decide_company_type)
         self.buttons["cancel"] = button.button(
-            "cancel", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "cancel",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["cancel"],"signal__clicked",self.create_intro_gui)
 
@@ -174,9 +174,9 @@ class IntroGui:
         self.text_receiver = None
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
 
-        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]), 
-                         (self.gui_rect[0] + self.gui_rect[2], self.gui_rect[1]),2)        
-        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]), 
+        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]),
+                         (self.gui_rect[0] + self.gui_rect[2], self.gui_rect[1]),2)
+        pygame.draw.line(self.window, (255,255,255), (self.gui_rect[0], self.gui_rect[1]),
                          (self.gui_rect[0], self.gui_rect[1] + self.gui_rect[3]),2)
         button_names= ["New game","Load game","Game settings","Quit game"]
         button_functions = [self.ask_company_type,self.load_callback,self.game_settings_callback,self.quit_callback]
@@ -217,8 +217,8 @@ class IntroGui:
                 cn=str(self.company_name)
             else:
                 cn=None
-            self.main.start_loop(companyName = cn, 
-                                 companyCapital = self.company_capital, 
+            self.main.start_loop(companyName = cn,
+                                 companyCapital = self.company_capital,
                                  loadPreviousGame = None)
         else:
             self.ask_company_capital(None, None, give_warning=True)
@@ -257,7 +257,7 @@ class IntroGui:
                 eccentricity = 1 - (((i+1) / float(500)) ** 2)
                 zoom = (1.2 ** (i+1)) / 100
                 print("at i = " + str(i) + " eccentricity: " + str(eccentricity) + " zoom: " + str(zoom))
-                
+
                 self.set_eccentricity(self.sol,eccentricity)
                 surface = self.sol.draw_solar_system(zoom_level=zoom,
                                                      date_variable=self.sol.current_date,
@@ -266,7 +266,7 @@ class IntroGui:
                 pygame.image.save(surface,pickle_final_name_and_path)
             earth = self.sol.planets["earth"]
             for i in range(self.steps_both):
-                northern_inclination = -40 + (i+1) / 2 
+                northern_inclination = -40 + (i+1) / 2
                 eastern_inclination = (i+1) * 5 - 50
                 projection_scaling = 3 + (i+1) * 4
                 if eastern_inclination >= 180:
@@ -276,7 +276,7 @@ class IntroGui:
                 zoom = (1.2 ** ((i+1) + self.steps_system)) / 100
 
                 self.set_eccentricity(sol,eccentricity)
-                
+
                 surface = self.sol.draw_solar_system(
                     zoom_level=zoom,
                     date_variable=self.sol.current_date,
@@ -289,9 +289,9 @@ class IntroGui:
                 projections = earth.plane_to_sphere_total(eastern_inclination,
                                                           northern_inclination,
                                                           projection_scaling)
-                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, 
+                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling,
                                                   fast_rendering=False, plane_to_sphere=projections)
-                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, 
+                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2,
                                               global_variables.window_size[1] / 2 - projection_scaling/2))
                 pickle_final_name_and_path = os.path.join("intro","intro_file_" + str(self.triplify_number(
                             i+self.steps_system)) + ".jpg")
@@ -305,10 +305,10 @@ class IntroGui:
                 print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(
                     eastern_inclination) + " and scaling is " + str(projection_scaling))
                 projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, 
+                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling,
                                                   fast_rendering=False, plane_to_sphere=projections)
                 surface = pygame.Surface(global_variables.window_size)
-                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, 
+                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2,
                                               global_variables.window_size[1] / 2 - projection_scaling/2))
                 pickle_final_name_and_path = os.path.join("intro","intro_file_" + str(self.triplify_number(
                             i+self.steps_system+self.steps_both)) + ".jpg")
@@ -358,16 +358,16 @@ class IntroGui:
         self.buttons = {}
         self.buttons["country_window"] = country_window
         self.buttons["ok"] = button.button(
-            "ok", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "ok",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["ok"],"signal__clicked",self.ask_company_capital)
         self.buttons["cancel"] = button.button(
-            "cancel", 
-            self.window, 
+            "cancel",
+            self.window,
             topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,
-                       self.gui_rect[1] + self.gui_rect[3] - 40), 
+                       self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["cancel"],"signal__clicked",self.create_intro_gui)
 
@@ -375,21 +375,21 @@ class IntroGui:
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         title = global_variables.standard_font.render("Name of company:",True,(0,0,0))
         self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
-        self.text_receiver = entry.entry(self.window, 
-                             (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
-                             self.gui_rect[2] - 20, 
+        self.text_receiver = entry.entry(self.window,
+                             (self.gui_rect[0] + 10, self.gui_rect[1] + 45),
+                             self.gui_rect[2] - 20,
                              global_variables.max_letters_in_company_names)
         self.buttons = {}
         self.buttons["ok"] = button.button(
-            "ok", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "ok",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["ok"],"signal__clicked",self.ask_company_capital)
         self.buttons["cancel"] = button.button(
-            "cancel", 
-            self.window, 
-            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+            "cancel",
+            self.window,
+            topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
             fixed_size = None)
         signaller.connect(self.buttons["cancel"],"signal__clicked",self.create_intro_gui);
         if give_warning:
@@ -414,22 +414,22 @@ class IntroGui:
             pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
             title = global_variables.standard_font.render("Starting capital:",True,(0,0,0))
             self.window.blit(title, (self.gui_rect[0] + 10, self.gui_rect[1] + 10))
-            self.text_receiver = entry.entry(self.window, 
-                                 (self.gui_rect[0] + 10, self.gui_rect[1] + 45), 
-                                 self.gui_rect[2] - 20, 
+            self.text_receiver = entry.entry(self.window,
+                                 (self.gui_rect[0] + 10, self.gui_rect[1] + 45),
+                                 self.gui_rect[2] - 20,
                                  global_variables.max_letters_in_company_names,
                                  starting_text = "10000000")
             self.buttons = {}
             self.buttons["ok"] = button.button(
-                "ok", 
-                self.window, 
-                topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                "ok",
+                self.window,
+                topleft = (self.gui_rect[0] + self.gui_rect[2] - 100,self.gui_rect[1] + self.gui_rect[3] - 40),
                 fixed_size = None)
             signaller.connect(self.buttons["ok"],"signal__clicked",self.start_new_game)
             self.buttons["cancel"] = button.button(
-                "cancel", 
-                self.window, 
-                topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40), 
+                "cancel",
+                self.window,
+                topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
                 fixed_size = None)
             signaller.connect(self.buttons["cancel"],"signal__clicked",self.create_intro_gui);
             self.company_name = company_name
@@ -455,13 +455,13 @@ class IntroGui:
     def setupGui(self):
         pygame.init()
         if global_variables.fullscreen:
-            self.window = pygame.display.set_mode(global_variables.window_size,FULLSCREEN) 
+            self.window = pygame.display.set_mode(global_variables.window_size,FULLSCREEN)
         else:
             self.window = pygame.display.set_mode(global_variables.window_size)
         icon = pygame.image.load(os.path.join("images","window_icon.png"))
-        pygame.display.set_icon(icon) 
+        pygame.display.set_icon(icon)
         if global_variables.fullscreen:
             pygame.time.delay(1000)
         return
-            
+
 introGui = IntroGui()

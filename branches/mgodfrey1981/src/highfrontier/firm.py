@@ -1,9 +1,9 @@
-from . import primitives
+import primitives
 import Image, ImageChops
 import pygame
 import random
 import os
-from . import global_variables
+import global_variables
 import math
 import datetime
 
@@ -15,10 +15,10 @@ class firm:
             Function that takes a sell or buy offer (identified if it has "seller" or "buyer" in it
             and connects to the market to see if a corresponding offer exists. If it does it will connect
             seller and buyer. If not it will store the offer in market database. If market database is too
-            long it will remove some of the highest price sell offers and the lowest price buy offers 
+            long it will remove some of the highest price sell offers and the lowest price buy offers
             """
 
-            #if self is a merchant we first need to assign the correct stock_dict 
+            #if self is a merchant we first need to assign the correct stock_dict
             if self.isMerchant():
                     if "seller" in list(own_offer.keys()):
                             self.stock_dict = self.to_stock_dict
@@ -29,7 +29,7 @@ class firm:
             #defining basics and checking if the offer is valid
             if not (isinstance(own_offer["quantity"],int) or isinstance(own_offer["quantity"],int)):
                     own_offer["quantity"] = int(own_offer["quantity"])
-                    if self.solarSystem().message_printing["debugging"]: 
+                    if self.solarSystem().message_printing["debugging"]:
                             print_dict = {"text":"DEBUGGING: The quantity given in an offer from " + str(self.name) + ", which is using " + str(self.decision_data["demand_function"]) + " and " + str(self.decision_data["supply_function"]) + " is not an integer. Try to keep it as integers","type":"debugging"}
                             self.solarSystem().messages.append(print_dict)
             if not isinstance(own_offer["price"],float):
@@ -68,7 +68,7 @@ class firm:
             i = 0
             offers_of_interest = []
             while quantity_found < own_offer["quantity"]:
-                    # if there are no more bids available but still a quantity left to fulfill of own_offer 
+                    # if there are no more bids available but still a quantity left to fulfill of own_offer
                     if i + 1 > len(opposite_bids):
                             balance_of_findings = - own_offer["quantity"]
                             need_to_find_more = True
@@ -80,7 +80,7 @@ class firm:
                             counterpart = opposite_bids[i]["seller"]
                     else:
                             raise Exception('unknown offer type')
-                    #if counterpart is a merchant we first need to assign the correct stock_dict 
+                    #if counterpart is a merchant we first need to assign the correct stock_dict
                     if counterpart.isMerchant():
                             if "seller" in list(own_offer.keys()):
                                     counterpart.stock_dict = counterpart.from_stock_dict
@@ -91,9 +91,9 @@ class firm:
 
                     # if there are bids available at an ok price
                     if (opposite_bids[i]["price"] >= own_offer["price"] and type == "sell_offer") or (opposite_bids[i]["price"] <= own_offer["price"] and type == "buy_offer"):
-                            if counterpart.stock_dict[resource] < opposite_bids[i]["quantity"] and type == "buy_offer": 
-                                    opposite_bids[i]["quantity"] = max(int(counterpart.stock_dict[resource]),0) 
-                            if counterpart.owner.capital < (opposite_bids[i]["quantity"] * opposite_bids[i]["price"]) and type == "sell_offer": 
+                            if counterpart.stock_dict[resource] < opposite_bids[i]["quantity"] and type == "buy_offer":
+                                    opposite_bids[i]["quantity"] = max(int(counterpart.stock_dict[resource]),0)
+                            if counterpart.owner.capital < (opposite_bids[i]["quantity"] * opposite_bids[i]["price"]) and type == "sell_offer":
                                     opposite_bids[i]["quantity"] = max(int(counterpart.owner.capital / opposite_bids[i]["price"]),0)
                             if opposite_bids[i]["quantity"]<0:
                                     if self.solarSystem().message_printing["debugging"]:
@@ -137,20 +137,20 @@ class firm:
                     counterparts_list.append(counterpart.name)
                     if type == "sell_offer":
                             counterpart = offer_of_interest["buyer"]
-                            counterpart.owner.capital = counterpart.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
-                            counterpart.stock_dict[resource] = counterpart.stock_dict[resource] + offer_of_interest["quantity"] 
-                            self.owner.capital = self.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"] 
-                            self.stock_dict[resource] = self.stock_dict[resource] - offer_of_interest["quantity"] 
+                            counterpart.owner.capital = counterpart.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"]
+                            counterpart.stock_dict[resource] = counterpart.stock_dict[resource] + offer_of_interest["quantity"]
+                            self.owner.capital = self.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"]
+                            self.stock_dict[resource] = self.stock_dict[resource] - offer_of_interest["quantity"]
                             if self.owner == self.solarSystem().current_player or counterpart.owner == self.solarSystem().current_player:
                                     print_dict = {"text":self.name + " sold " + str(offer_of_interest["quantity"]) + " units of " + resource + " to " + counterpart.name + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
                                     self.solarSystem().messages.append(print_dict)
                             transaction_report = {"seller":self,"buyer":counterpart,"price":offer_of_interest["price"],"quantity":offer_of_interest["quantity"],"date":own_offer["date"],"resource":resource}
                     elif type == "buy_offer":
                             counterpart = offer_of_interest["seller"]
-                            counterpart.owner.capital = counterpart.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"] 
-                            counterpart.stock_dict[resource] = counterpart.stock_dict[resource] - offer_of_interest["quantity"] 
-                            self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"] 
-                            self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"] 
+                            counterpart.owner.capital = counterpart.owner.capital + offer_of_interest["price"] * offer_of_interest["quantity"]
+                            counterpart.stock_dict[resource] = counterpart.stock_dict[resource] - offer_of_interest["quantity"]
+                            self.owner.capital = self.owner.capital - offer_of_interest["price"] * offer_of_interest["quantity"]
+                            self.stock_dict[resource] = self.stock_dict[resource] + offer_of_interest["quantity"]
                             if self.owner == self.solarSystem().current_player or counterpart.owner == self.solarSystem().current_player:
                                     print_dict = {"text":str(self.name) + " bought " + str(offer_of_interest["quantity"]) + " units of " + str(resource) + " from " + str(counterpart.name) + " for a price of " + str(offer_of_interest["price"]),"type":"firm info"}
                                     self.solarSystem().messages.append(print_dict)
@@ -160,14 +160,14 @@ class firm:
                             raise typeError
 
                     if counterpart.isMerchant():
-                            counterpart.stock_dict = {} #to make sure no problems arise in the future 
+                            counterpart.stock_dict = {} #to make sure no problems arise in the future
 
                     transaction_report["seller"].accounting.append(transaction_report)
                     transaction_report["buyer"].accounting.append(transaction_report)
                     market["transactions"][resource].append(transaction_report)
 
                     if transaction_report["quantity"] < 0:
-                            #print 
+                            #print
                             if self.solarSystem().message_printing["debugging"]:
                                     print_dict = {"text":"DEBUGGING WARNING: The quantity in a " + type + " of " + resource + " by " + self.name + " was found to be " + str(transaction_report["quantity"]),"type":"debugging"}
                                     self.solarSystem().messages.append(print_dict)
@@ -179,13 +179,13 @@ class firm:
                             if opposite_bid["buyer"].name in counterparts_list:
                                if offers_of_interest[-1]["buyer"].name == opposite_bid["buyer"].name and not need_to_find_more:
                                             offers_of_interest[-1]["quantity"] = balance_of_findings
-                               else: 
+                               else:
                                        remove_these.append(i)
                     if type == "buy_offer":
                             if opposite_bid["seller"].name in counterparts_list:
                                if offers_of_interest[-1]["seller"].name == opposite_bid["seller"].name and not need_to_find_more:
                                             offers_of_interest[-1]["quantity"] = balance_of_findings
-                               else: 
+                               else:
                                        remove_these.append(i)
             if len(remove_these) > 0:
                     remove_these.reverse()
@@ -207,9 +207,9 @@ class firm:
                     else:
                             did_not_pass_price_range = True
                             for i, competing_bid in enumerate(competing_bids):
-                                    if (type == "sell_offer" and competing_bid["seller"].name == self.name) or (type == "buy_offer" and competing_bid["buyer"].name == self.name): 
+                                    if (type == "sell_offer" and competing_bid["seller"].name == self.name) or (type == "buy_offer" and competing_bid["buyer"].name == self.name):
                                             competing_bids.pop(i)
-                                    if (competing_bid["price"] > own_offer["price"] and type == "sell_offer" and did_not_pass_price_range) or (competing_bid["price"] < own_offer["price"] and type == "buy_offer" and did_not_pass_price_range):  
+                                    if (competing_bid["price"] > own_offer["price"] and type == "sell_offer" and did_not_pass_price_range) or (competing_bid["price"] < own_offer["price"] and type == "buy_offer" and did_not_pass_price_range):
                                             insert_own_offer_at = i
                                             did_not_pass_price_range = False
                             try: insert_own_offer_at
@@ -230,7 +230,7 @@ class firm:
                     competing_bids.pop(-1)
 
             if self.isMerchant():
-                    self.stock_dict = {} #to make sure no problems arise in the future 
+                    self.stock_dict = {} #to make sure no problems arise in the future
     def isResearch(self):
         return False
     def isBase(self):
@@ -300,15 +300,15 @@ class firm:
             aspect_ratio_needed = float(window_size[0])/float(window_size[1])
             aspect_ratio_found = float(image.size[0])/float(image.size[1])
             if aspect_ratio_needed > aspect_ratio_found:
-                    image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0])) 
+                    image = image.crop((0,0,int(image.size[0]/aspect_ratio_needed),image.size[0]))
             elif aspect_ratio_needed < aspect_ratio_found:
-                    image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed))) 
+                    image = image.crop((0,0,image.size[1],int(image.size[1]/aspect_ratio_needed)))
             else:
                     pass
             image = image.resize(global_variables.window_size)
             image_string = image.tostring()
             surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
-            return surface	
+            return surface
 
     def draw_firm_window(self):
             surface = self.get_firm_background()
@@ -464,14 +464,14 @@ class firm:
                                             #For bases we need to see that the essentials are met
                                             if self.isBase():
                                                     if input_resource == "food":
-                                                            if self.starving == "No": 
+                                                            if self.starving == "No":
                                                                     self.starving = "A little"
-                                                            if self.starving == "A little": 
+                                                            if self.starving == "A little":
                                                                     self.starving = "A lot"
                                                     if input_resource == "housing":
-                                                            if self.lacks_housing == "No": 
+                                                            if self.lacks_housing == "No":
                                                                     self.lacks_housing = "A little"
-                                                            if self.lacks_housing == "A little": 
+                                                            if self.lacks_housing == "A little":
                                                                     self.lacks_housing = "A lot"
                             if keep_calculating:
                                     number_of_rounds = new_number_of_rounds
@@ -493,13 +493,13 @@ class firm:
                             #adding byproducts to the atmosphere
                             for byproduct in self.input_output_dict["byproducts"]:
                                     self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct] * number_of_rounds)
-                                    if self.owner == self.solarSystem().current_player: 
+                                    if self.owner == self.solarSystem().current_player:
                                             print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(self.input_output_dict["byproducts"][byproduct] * number_of_rounds) + " units on " + str(self.location.home_planet.name),"type":"climate"}
                                             self.solarSystem().messages.append(print_dict)
 
                             for resource in self.input_output_dict["output"]:
                                     if resource in self.solarSystem().mineral_resources:
                                             self.location.mining_performed[resource] = self.location.mining_performed[resource] + number_of_rounds * self.input_output_dict["output"][resource]
-                                            if self.owner == self.solarSystem().current_player: 
+                                            if self.owner == self.solarSystem().current_player:
                                                     print_dict = {"text":self.name + " mined " + primitives.nicefy_numbers(int(number_of_rounds * self.input_output_dict["output"][resource])) + " on " + str(self.location.home_planet.name),"type":"mining"}
                                                     self.solarSystem().messages.append(print_dict)

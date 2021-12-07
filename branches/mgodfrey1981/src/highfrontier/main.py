@@ -3,13 +3,13 @@ import pygame
 from pygame.locals import *
 import time
 import os, sys
-from . import planet
-from . import company
-from . import solarsystem
+import planet
+import company
+import solarsystem
 import datetime
-from . import primitives
-from . import global_variables
-from . import gui
+import primitives
+import global_variables
+import gui
 import random
 import importlib
 importlib.reload(sys)
@@ -19,7 +19,7 @@ if hasattr(sys,"setdefaultencoding"):
 class Game:
     def handleEvent(self,event):
         """handle a single event"""
-        if event.type == QUIT: 
+        if event.type == QUIT:
             sys.exit(0)
         if event.type == 5: #mouse down event
             self.gui().receive_click(event)
@@ -43,9 +43,9 @@ class Game:
         return
     def start_loop(self,companyName = None, companyCapital = None, loadPreviousGame = None):
         """
-        companyName          string of a company that will play as current player. If none, 
+        companyName          string of a company that will play as current player. If none,
         the game will run in simulation mode
-                             
+
         companyCapital       int with the starting capital of the newly started company.
 
         loadPreviousGame    filename of a save game that can be loaded
@@ -54,11 +54,11 @@ class Game:
         window_size = global_variables.window_size
         pygame.init()
         if global_variables.fullscreen:
-            window = pygame.display.set_mode(window_size,FULLSCREEN) 
+            window = pygame.display.set_mode(window_size,FULLSCREEN)
         else:
             window = pygame.display.set_mode(window_size)
         icon = pygame.image.load(os.path.join("images","window_icon.png"))
-        pygame.display.set_icon(icon) 
+        pygame.display.set_icon(icon)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         #initializing the world - depends on if a previous game should be loaded
         if loadPreviousGame is not None:
@@ -111,7 +111,7 @@ class Game:
         right_side_surface = window.subsurface(right_side_rect)
         message_surface = window.subsurface(message_rect)
         #switch to determine planetary mode or solarsystem mode from beginning
-        mode_before_change = self.sol().display_mode 
+        mode_before_change = self.sol().display_mode
         if self.sol().display_mode == "solar_system":
             surface = self.sol().draw_solar_system(zoom_level=self.sol().solar_system_zoom,
                                                    date_variable=self.sol().current_date,
@@ -193,7 +193,7 @@ class Game:
         """the main loop of the game"""
         while True:
             events = pygame.event.get()
-            for event in events: 
+            for event in events:
                 if(self.handleEvent(event)):
                     break
             i = 0

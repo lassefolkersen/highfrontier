@@ -1,14 +1,14 @@
-from . import fast_list
-from . import merchant
+import fast_list
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -21,13 +21,13 @@ class company_window():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-        
- 
+
+
     def create(self):
         """
-        The creation function. 
+        The creation function.
         """
-        
+
         company_data = {}
         for company_name in self.solar_system_object_link.companies:
             company_instance = self.solar_system_object_link.companies[company_name]
@@ -41,12 +41,12 @@ class company_window():
                     self.solar_system_object_link.messages.append(print_dict)
                 company_name = company_name[0:global_variables.max_letters_in_company_names]
             company_data[company_name] = data_here
-        
+
         column_order = ["rownames","capital","owned firms","home cities"]
-        
+
         self.fast_list = fast_list.fast_list(self.action_surface, company_data, rect = self.rect, column_order = column_order)
 
-                
+
 
     def receive_click(self,event):
         self.fast_list.receive_click(event)
@@ -61,7 +61,7 @@ class company_window():
             else:
                 print_dict = {"text":"DEBUGGING:  " + str(self.fast_list.selected_name) + " was not found in company database","type":"debugging"}
                 self.solar_system_object_link.messages.append(print_dict)
-                
+
 
 
 

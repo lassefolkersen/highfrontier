@@ -1,18 +1,18 @@
 import signaller
-from . import fast_list
-from . import entry
-from . import button
-from . import vscrollbar
-from . import merchant
+import fast_list
+import entry
+import button
+import vscrollbar
+import merchant
 import os
-from . import global_variables
+import global_variables
 import sys
 import string
 import pygame
 import datetime
 import math
-from . import company
-from . import primitives
+import company
+import primitives
 import random
 import time
 
@@ -49,7 +49,7 @@ class base_build_menu():
                     self.merchant_pick_name(self.fast_list.selected_name)
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
         self.text_receiver = None
         self.menu_position = "root"
@@ -76,12 +76,12 @@ class base_build_menu():
         self.fast_list = fast_list.fast_list(self.action_surface, buildoption_data, rect = self.rect)
     """
     Subview of the base view. Shows all options regarding building firms and other bases from the current base.
-    The first list is derived from the list of currently known technologies + options to build research, merchants 
+    The first list is derived from the list of currently known technologies + options to build research, merchants
     and new bases.
-    
-    The actions from choosing a commodity producer from the known technologies is to create that firm in the 
-    current city. Likewise, more or less, for research firms. Choosing merchant brings up question boxes about 
-    where the destination and what resource should be traded.  Choosing new base building brings zooms out to 
+
+    The actions from choosing a commodity producer from the known technologies is to create that firm in the
+    current city. Likewise, more or less, for research firms. Choosing merchant brings up question boxes about
+    where the destination and what resource should be traded.  Choosing new base building brings zooms out to
     base position mode.
     """
     def __init__(self,solar_system_object,action_surface):
@@ -136,7 +136,7 @@ class base_build_menu():
                 resource_data[resource]["Qt on market here"] = quantity_offered_here
                 resource_data[resource]["Best sell price"] = cheapest_sell_price
                 resource_data[resource]["Best buy price"] = best_buy_price
-        self.fast_list = fast_list.fast_list(self.action_surface, resource_data, rect = self.rect)    
+        self.fast_list = fast_list.fast_list(self.action_surface, resource_data, rect = self.rect)
         from_location = self.solar_system_object_link.current_planet.current_base
         trade_route_selected = from_location.trade_routes[destination_name]
         for endpoint in trade_route_selected["endpoint_links"]:
@@ -171,22 +171,22 @@ class base_build_menu():
             if give_length_warning:
                 warning = global_variables.standard_font.render("Name must be unique",True,(0,0,0))
                 self.action_surface.blit(warning, (self.rect[0] + 10, self.rect[1] + 50))
-            self.text_receiver = entry.entry(self.action_surface, 
-                                 topleft = (self.rect[0] + 10, self.rect[1] + 90), 
-                                 width = self.rect[3] - 20, 
+            self.text_receiver = entry.entry(self.action_surface,
+                                 topleft = (self.rect[0] + 10, self.rect[1] + 90),
+                                 width = self.rect[3] - 20,
                                  max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
             self.ok_button = button.button(
-                "ok", 
+                "ok",
                 self.action_surface,
-                fixed_size = (100,35), 
+                fixed_size = (100,35),
                 topleft = (self.rect[0] + 10, self.rect[1] + 150)
                 )
             signaller.connect(self.ok_button,"signal__clicked",self.merchant_build)
     def merchant_build(self,label,function_parameter):
         """
         Function to build the merchant
-        """ 
+        """
         for test in ["to_location","from_location","trade_route_selected","resource"]:
             if test not in list(self.selections.keys()):
                 raise Exception("The " + test + " was not properly selected")
@@ -224,7 +224,7 @@ class base_build_menu():
         """
         This function creates a dialog asking the size of the firm to be built
         The range of the size is from "1" where the it is just the input_output_dict
-        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule 
+        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule
         is not implemented for AI - also note that it is more like 101% of the sum at present)
         """
         self.menu_position = "commodity size"
@@ -244,7 +244,7 @@ class base_build_menu():
         #calculate the range allowed
         for input in list(technology["input_output_dict"]["input"].values()):
             input_size = input_size + input
-        if input_size < 2: 
+        if input_size < 2:
             input_size = 2
         if self.solar_system_object_link.current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
@@ -260,22 +260,22 @@ class base_build_menu():
         #clean up the act
         pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
         pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
-        pygame.draw.line(self.action_surface, 
-                         (255,255,255), 
-                         (self.rect[0], self.rect[1]), 
-                         (self.rect[0] + self.rect[2], 
+        pygame.draw.line(self.action_surface,
+                         (255,255,255),
+                         (self.rect[0], self.rect[1]),
+                         (self.rect[0] + self.rect[2],
                           self.rect[1]))
-        pygame.draw.line(self.action_surface, 
-                         (255,255,255), 
-                         (self.rect[0], self.rect[1]), 
+        pygame.draw.line(self.action_surface,
+                         (255,255,255),
+                         (self.rect[0], self.rect[1]),
                          (self.rect[0], self.rect[1] + self.rect[3]))
         if existing_firm is None:
             start_value = 1
             existing_firm_rendered_text = global_variables.standard_font.render("Choose name of firm:",True,(0,0,0))
             self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 90, self.rect[1] + 70))
-            self.text_receiver = entry.entry(self.action_surface, 
-                     topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150), 
-                     width = 300, 
+            self.text_receiver = entry.entry(self.action_surface,
+                     topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150),
+                     width = 300,
                      max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
         else:
@@ -295,7 +295,7 @@ class base_build_menu():
             This function is activated on scrollbar value change on the size selection box, and updates the input_
             output_dict
             """
-            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250) 
+            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250)
             pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
             size_info = global_variables.standard_font_small.render("size: " + str(self.slider.position),True,(0,0,0))
             self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 170))
@@ -319,9 +319,9 @@ class base_build_menu():
                         value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
                     self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 170 + lineno * 20))
             self.ok_button = button.button(
-                "ok", 
+                "ok",
                 self.action_surface,
-                fixed_size = (100,35), 
+                fixed_size = (100,35),
                 topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
             signaller.connect(self.ok_button,"signal__clicked",lambda: self.commodity_build_firm(existing_firm))
             pygame.display.flip()
@@ -339,7 +339,7 @@ class base_build_menu():
                                                 function_parameter = technology
                                                 )
         execute(None,technology)
-        self.selections["technology"] = technology 
+        self.selections["technology"] = technology
     def commodity_build_firm(self,existing_firm):
         """
         The effectuating function for building commodity firms.
