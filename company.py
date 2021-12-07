@@ -1710,8 +1710,8 @@ class base(firm):
 		else:
 			pass
 		image = image.resize(global_variables.window_size)
-		image_string = image.tostring()
-		surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
+		image_bytes = image.convert('RGB').tobytes()
+		surface = pygame.image.frombuffer(image_bytes , global_variables.window_size, "RGB")
 		return surface
 
 	def draw_base_window(self):

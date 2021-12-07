@@ -1119,7 +1119,7 @@ class planet:
             #print self.flat_image_borders
 
             image = image.crop((west_border,north_border,east_border,south_border))
-            image_bmp = image.tobitmap()
+            image_bmp = image.convert("RGB").tobytes()
 
             surface = pygame.image.frombuffer(image_bmp , (window_size[0],window_size[1]), mode)
 
