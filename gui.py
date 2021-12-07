@@ -269,7 +269,12 @@ class gui():
                 return
 
             else: #if we are not in build_base_mode we work as normally
-                areas_of_interest = sol.current_planet.areas_of_interest[(sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination,sol.current_planet.projection_scaling)]
+                indexes = (sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination, int(sol.current_planet.projection_scaling))
+                try:
+                    areas_of_interest = sol.current_planet.areas_of_interest[indexes]
+                except IndexError:
+                    print(f'Problem with the area, index {indexes}')
+
                 collision_test_result = click_spot.collidedict(areas_of_interest)
                 if collision_test_result != None:
                     current_base = sol.current_planet.bases[collision_test_result[1]]
@@ -280,6 +285,9 @@ class gui():
                     if button == 3:
                         self.going_to_base_mode_event(current_base)
 
+                        return
+                    else:
+                        print(f"Making the bug ? {button}")
                         return
                 else:
                     return
