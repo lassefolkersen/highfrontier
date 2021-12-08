@@ -52,8 +52,8 @@ These pre-[compiled python-binaries](https://sourceforge.net/projects/highfronti
 
 Setting up from source is possible however.
 
-### Windows
-On windows it was a matter of finding and installing:
+### From source
+
 * [Python 3.10](https://www.python.org/downloads/)
 * [Pygame](http://www.pygame.org/)
 * Python Image Module: [PIL](https://pillow.readthedocs.io)
