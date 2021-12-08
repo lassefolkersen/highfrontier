@@ -1,11 +1,19 @@
+
+
+## Special note on this fork
+
+This is an attempt to port the original High Frontier game to python 3.10.
+Note that if the game seems to work, not everything has been tested and many
+errors might be thrown when running the game.
+
 # High Frontier
 
-The goal of High Frontier is a civilization-like game, which uses more realistic modelling of economy, climate, research and migration. Uniquely this game starts today - the initiation date of a game is todays date and the existing world is the world as we know it today, complete with cities and countries and people. The aim from there - that is whatever the player thinks the aim is for the world. Developing of the underdeveloping world, action against climate changes, expansion into the rest of the solar system, or just racking in a lot of money. 
+The goal of High Frontier is a civilization-like game, which uses more realistic modelling of economy, climate, research and migration. Uniquely this game starts today - the initiation date of a game is todays date and the existing world is the world as we know it today, complete with cities and countries and people. The aim from there - that is whatever the player thinks the aim is for the world. Developing of the underdeveloping world, action against climate changes, expansion into the rest of the solar system, or just racking in a lot of money.
 
-The game is currently somewhat playable. Working features include: 
-- Google-earth-like map view of the Earth and all other bodies of the solar system. Complete solar system model with accurate orbital data. 
-- Underlying economical model based on agents (countries or companies) buying and selling goods thereby setting price. Genetic/evolutionary algorithm copies variations of best agents thus continuously perfecting the AI decisions 
-- Infinitly expandable research tree based on automatic technology-name generation by random selction from lists of tech-buzz-words (same way as it happens in the real world) 
+The game is currently somewhat playable. Working features include:
+- Google-earth-like map view of the Earth and all other bodies of the solar system. Complete solar system model with accurate orbital data.
+- Underlying economical model based on agents (countries or companies) buying and selling goods thereby setting price. Genetic/evolutionary algorithm copies variations of best agents thus continuously perfecting the AI decisions
+- Infinitly expandable research tree based on automatic technology-name generation by random selction from lists of tech-buzz-words (same way as it happens in the real world)
 - climate model, including the feature of changing sea levels based on topographical maps of the planet in question. Nice for terraforming a northern ocean on Mars. Less nice for rampant greenhouse-effects on earth (allows checking if your country should worry more or less about carbon emission in real life as well)
 
 
@@ -17,7 +25,7 @@ All economical transactions centers around a base and its market. On Earth a bas
 
 All natural environment actions center around the planet, its atmospheric components, its orbital configuration and the its interactions with the economical environment, primarily emitters of gases and other byproducts. The simulation calculates atmospheric variables such as temperature, pressure and oxygen content based gravity and current levels of atmospheric gas species. Temperature will be affected primarily by the presence of greenhouse gases, while viability of the atmosphere (and hence farming efficiency and housing construction cost) will be determined by partial pressure and oxygen content. If temperature rises, polar ice reservoirs convert to liquid water and cover increasing parts of the surface of the planet. Useful for terraforming new planets, but problematic for an already settled and viable Earth. A strategy for creating new living space is therefore to create many firms that has greeenhouse gases as byproducts on Mars. A strategy for stopping run-away greenhouse effects on Earth is to stop fossil fuel utilization. Of course in order to keep the demand from bases supplied, another source of energy has to be used. If this is increased research in renewable energy, a general shift to nuclear power or the moving away from the Earth surface will be decided by the economical actions of the companies and countries.
 
-The technological research model is based on an infinitely expanding tree of progressively more refined technology in each of a number of different broad areas. At game start only the basic technologies are available to each company but research through the establishment of research facilities or buying of technologies in the trade menu enables the building of more advanced firm types that will make more efficient use of input resources. 
+The technological research model is based on an infinitely expanding tree of progressively more refined technology in each of a number of different broad areas. At game start only the basic technologies are available to each company but research through the establishment of research facilities or buying of technologies in the trade menu enables the building of more advanced firm types that will make more efficient use of input resources.
 
 
 ## GAME CONTROL
@@ -27,7 +35,7 @@ Page-up and page-down functions as zoom keys when viewing the solar system, a mo
 Bases and planets can be selected by left-clicking on them. Right-clicking performs an instant zoom.
 In general, menu items are selected with the left-mouse-button and executed with the right-mouse-button.
 
-The first step a player will take is usually to start building firms. This is done when zoomed in on a base, under the build menu item. Selecting this will show a list of technologies and standard buildings available to the player. Right-clicking on any will start the building. In most cases the first question is the size of the firm to be built. This determines the output and input requirements in each game-iteration (30 days) and any size will do. 
+The first step a player will take is usually to start building firms. This is done when zoomed in on a base, under the build menu item. Selecting this will show a list of technologies and standard buildings available to the player. Right-clicking on any will start the building. In most cases the first question is the size of the firm to be built. This determines the output and input requirements in each game-iteration (30 days) and any size will do.
 
 In the case of selecting to build a new base the player will be prompted for a location. This can be anywhere on any planet or in orbit around this planet. A left-click in space or on planetary-surface after selecting to build base will select placement in that location. The price of the base is then calculated based on its size and the distance to the building base. Orbital lifts from heavy-gravity surfaces are priced very expensively, and the price rises exponentially. So extraplanetary missions are best started from orbital locations. Once materials for the construction has been obtained in the building base, it will be created at the location specified.
 
@@ -42,7 +50,7 @@ If a research firm is operating the player will need to select a research path. 
 
 These pre-[compiled python-binaries](https://sourceforge.net/projects/highfrontier/files/?source=navbar) will work on a 2009-machine, but on most modern machines they will only show the intro and not much further than that. There's also an ubuntu debian image there, with the same caveat.
 
-Setting up from source is possible however. 
+Setting up from source is possible however.
 
 ### Windows
 On windows it was a matter of finding and installing:
@@ -62,7 +70,7 @@ tar -zxvf pygame-1.9.1release.tar.gz
 python setup.py
 ```
 Then I had some problems with a video-link that [stack-overflow](https://stackoverflow.com/a/14026861) solved for me.
-* PIL - just using 
+* PIL - just using
 ```
 sudo apt-get install python-imaging
 ```
