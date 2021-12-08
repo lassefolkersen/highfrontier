@@ -58,22 +58,13 @@ On windows it was a matter of finding and installing:
 * [Pygame](http://www.pygame.org/)
 * Python Image Module: [PIL](https://pillow.readthedocs.io)
 
-Then run by starting the intro.py file.
+You can all install through pip
 
-### Linux
-On ubuntu it was also possible. These were the needed steps:
-* [Python 2.7](https://www.python.org/downloads/) - but came pre-installed of course.
-* Pygame:
 ```
-wget http://www.pygame.org/ftp/pygame-1.9.1release.tar.gz
-tar -zxvf pygame-1.9.1release.tar.gz
-python setup.py
+pip install -r requirements.txt
 ```
-Then I had some problems with a video-link that [stack-overflow](https://stackoverflow.com/a/14026861) solved for me.
-* PIL - just using
-```
-sudo apt-get install python-imaging
-```
+
+Then run by starting the intro.py file.
 
 In either case it can then be run by typing:
 ```
