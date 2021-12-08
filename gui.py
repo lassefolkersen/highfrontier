@@ -1544,7 +1544,7 @@ class file_window():
     def receive_click(self,event):
         if self.distribute_click_to_subwindow is None:
             if isinstance(event.pos[1],int):
-                index = (event.pos[1] - self.rect[1] - 10) / 40
+                index = int((event.pos[1] - self.rect[1] - 10) / 40)
                 if index >= 0 and index < len(self.button_list_now):
                     button_pressed = self.button_list_now[index]
                     if button_pressed != "Empty space":
