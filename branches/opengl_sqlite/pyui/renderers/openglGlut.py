@@ -31,7 +31,7 @@ from pyui.renderers import openglBase
 try:
     from PIL.Image import *
 except:
-    print "Unable to find Python Imaging Library!"
+    print("Unable to find Python Imaging Library!")
 
 class OpenGLGlut(openglBase.OpenGLBase):
     """ openGL renderer. Uses the PyOpenGL extensions.
@@ -64,10 +64,10 @@ class OpenGLGlut(openglBase.OpenGLBase):
                 
         
     def draw(self, windows):
-        apply(self.drawBackMethod, self.drawBackArgs)                
+        self.drawBackMethod(*self.drawBackArgs)                
         self.setup2D()
 
-        for i in xrange(len(windows)-1, -1, -1):
+        for i in range(len(windows)-1, -1, -1):
             w = windows[i]
             self.setWindowOrigin(w.posX, w.posY)
             ## use display lists for deferred rendering...
@@ -120,7 +120,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
     
     def onSpecialDown(self, key, x, y):
         k = self.keyMap.get(key, key)
-        print "down: ", k, key
+        print("down: ", k, key)
         getDesktop().postUserEvent(pyui.locals.KEYDOWN, 0, 0, k, self.getModifiers() )
         
     def onSpecialUp(self, key, x, y):
@@ -150,7 +150,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
         now = time.time()
         if now - self.last >= 1:
             self.last = now
-            print "FPS: %d" % self.frame
+            print("FPS: %d" % self.frame)
             self.frame = 0
         #time.sleep(0.01)
         
@@ -167,10 +167,10 @@ class OpenGLGlut(openglBase.OpenGLBase):
 
     def loadTexture(self, filename, label = None):
         if label:
-            if self.textures.has_key(label):
+            if label in self.textures:
                 return
         else:
-            if self.textures.has_key(filename):
+            if filename in self.textures:
                 return
 
         image = open(filename)
@@ -181,7 +181,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
             try:
                 image = image.tostring("raw", mode, 0, -1)
             except (IOError, SystemError):
-                print "Unable to load %s with encoder %s" % (filename, mode)
+                print("Unable to load %s with encoder %s" % (filename, mode))
                 failed = 1
             else:
                 failed = 0
@@ -195,7 +195,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
         glPixelStorei(GL_UNPACK_ALIGNMENT,1)
         glTexImage2D(GL_TEXTURE_2D, 0, seq, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
 
-        print "Loaded: %s as %d" % ( filename, texture)
+        print("Loaded: %s as %d" % ( filename, texture))
         if label:
             self.textures[label] = texture
         else:

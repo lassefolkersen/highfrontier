@@ -49,7 +49,7 @@ class base_build_menu():
                     self.merchant_pick_name(self.fast_list.selected_name)
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
         self.text_receiver = None
         self.menu_position = "root"
@@ -63,7 +63,7 @@ class base_build_menu():
                 for put in ["input","output"]:
                     if put == "output":
                         nice_input_output_line = nice_input_output_line + "-> "
-                    for resource in technology["input_output_dict"][put].keys():
+                    for resource in list(technology["input_output_dict"][put].keys()):
                         value = technology["input_output_dict"][put][resource]
                         nice_input_output_line = nice_input_output_line + resource + ": " + str(value) + " "
                 buildoption_data[technology_name]["input and output"] = str(nice_input_output_line)
@@ -76,12 +76,12 @@ class base_build_menu():
         self.fast_list = fast_list.fast_list(self.action_surface, buildoption_data, rect = self.rect)
     """
     Subview of the base view. Shows all options regarding building firms and other bases from the current base.
-    The first list is derived from the list of currently known technologies + options to build research, merchants 
+    The first list is derived from the list of currently known technologies + options to build research, merchants
     and new bases.
-    
-    The actions from choosing a commodity producer from the known technologies is to create that firm in the 
-    current city. Likewise, more or less, for research firms. Choosing merchant brings up question boxes about 
-    where the destination and what resource should be traded.  Choosing new base building brings zooms out to 
+
+    The actions from choosing a commodity producer from the known technologies is to create that firm in the
+    current city. Likewise, more or less, for research firms. Choosing merchant brings up question boxes about
+    where the destination and what resource should be traded.  Choosing new base building brings zooms out to
     base position mode.
     """
     def __init__(self,solar_system_object,action_surface):
@@ -117,7 +117,7 @@ class base_build_menu():
                 to_location = endpoint
         #prepare resource data
         resource_data = {}
-        for resource in self.solar_system_object_link.trade_resources.keys():
+        for resource in list(self.solar_system_object_link.trade_resources.keys()):
             if self.solar_system_object_link.trade_resources[resource]["transportable"]:
                 resource_data[resource] = {}
                 quantity_offered_here = 0
@@ -136,7 +136,7 @@ class base_build_menu():
                 resource_data[resource]["Qt on market here"] = quantity_offered_here
                 resource_data[resource]["Best sell price"] = cheapest_sell_price
                 resource_data[resource]["Best buy price"] = best_buy_price
-        self.fast_list = fast_list.fast_list(self.action_surface, resource_data, rect = self.rect)    
+        self.fast_list = fast_list.fast_list(self.action_surface, resource_data, rect = self.rect)
         from_location = self.solar_system_object_link.current_planet.current_base
         trade_route_selected = from_location.trade_routes[destination_name]
         for endpoint in trade_route_selected["endpoint_links"]:
@@ -152,7 +152,7 @@ class base_build_menu():
         self.selections["resource"] = resource
         #check that this does not already exist
         exists = False
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+        for firm_instance in list(self.solar_system_object_link.current_player.owned_firms.values()):
             if isinstance(firm_instance, company.merchant):
                 if firm_instance.from_location == self.selections["from_location"]:
                     if firm_instance.to_location == self.selections["to_location"]:
@@ -171,30 +171,30 @@ class base_build_menu():
             if give_length_warning:
                 warning = global_variables.standard_font.render("Name must be unique",True,(0,0,0))
                 self.action_surface.blit(warning, (self.rect[0] + 10, self.rect[1] + 50))
-            self.text_receiver = entry.entry(self.action_surface, 
-                                 topleft = (self.rect[0] + 10, self.rect[1] + 90), 
-                                 width = self.rect[3] - 20, 
+            self.text_receiver = entry.entry(self.action_surface,
+                                 topleft = (self.rect[0] + 10, self.rect[1] + 90),
+                                 width = self.rect[3] - 20,
                                  max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
             self.ok_button = button.button(
-                "ok", 
+                "ok",
                 self.action_surface,
-                fixed_size = (100,35), 
+                fixed_size = (100,35),
                 topleft = (self.rect[0] + 10, self.rect[1] + 150)
                 )
             signaller.connect(self.ok_button,"signal__clicked",self.merchant_build)
     def merchant_build(self,label,function_parameter):
         """
         Function to build the merchant
-        """ 
+        """
         for test in ["to_location","from_location","trade_route_selected","resource"]:
-            if test not in self.selections.keys():
+            if test not in list(self.selections.keys()):
                 raise Exception("The " + test + " was not properly selected")
         resource = self.selections["resource"]
         name = self.text_receiver.text
         unique = True
-        for company_instance in self.solar_system_object_link.companies.values():
-            if name in company_instance.owned_firms.keys():
+        for company_instance in list(self.solar_system_object_link.companies.values()):
+            if name in list(company_instance.owned_firms.keys()):
                 unique = False
         if 0 < len(name) <= global_variables.max_letters_in_company_names and unique:
             owner = self.solar_system_object_link.current_player
@@ -224,7 +224,7 @@ class base_build_menu():
         """
         This function creates a dialog asking the size of the firm to be built
         The range of the size is from "1" where the it is just the input_output_dict
-        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule 
+        to the integer at which the sum of the inputs are equal to 10% the population of the city (FIXME this rule
         is not implemented for AI - also note that it is more like 101% of the sum at present)
         """
         self.menu_position = "commodity size"
@@ -242,9 +242,9 @@ class base_build_menu():
             technology = self.solar_system_object_link.current_player.known_technologies[firm_type]
         input_size = 0
         #calculate the range allowed
-        for input in technology["input_output_dict"]["input"].values():
+        for input in list(technology["input_output_dict"]["input"].values()):
             input_size = input_size + input
-        if input_size < 2: 
+        if input_size < 2:
             input_size = 2
         if self.solar_system_object_link.current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
@@ -252,7 +252,7 @@ class base_build_menu():
         max_size = max(int(population * 0.05 / float(input_size)),1)
         #check if the current_player already owns a company of that technology in the current base
         existing_firm = None
-        for firm_instance in self.solar_system_object_link.current_player.owned_firms.values():
+        for firm_instance in list(self.solar_system_object_link.current_player.owned_firms.values()):
             if firm_instance.location == self.solar_system_object_link.current_planet.current_base:
                 if firm_instance.technology_name == firm_type:
                     existing_firm = firm_instance
@@ -260,22 +260,22 @@ class base_build_menu():
         #clean up the act
         pygame.draw.rect(self.action_surface, (212,212,212), self.rect)
         pygame.draw.rect(self.action_surface, (0,0,0), self.rect, 2)
-        pygame.draw.line(self.action_surface, 
-                         (255,255,255), 
-                         (self.rect[0], self.rect[1]), 
-                         (self.rect[0] + self.rect[2], 
+        pygame.draw.line(self.action_surface,
+                         (255,255,255),
+                         (self.rect[0], self.rect[1]),
+                         (self.rect[0] + self.rect[2],
                           self.rect[1]))
-        pygame.draw.line(self.action_surface, 
-                         (255,255,255), 
-                         (self.rect[0], self.rect[1]), 
+        pygame.draw.line(self.action_surface,
+                         (255,255,255),
+                         (self.rect[0], self.rect[1]),
                          (self.rect[0], self.rect[1] + self.rect[3]))
         if existing_firm is None:
             start_value = 1
             existing_firm_rendered_text = global_variables.standard_font.render("Choose name of firm:",True,(0,0,0))
             self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 90, self.rect[1] + 70))
-            self.text_receiver = entry.entry(self.action_surface, 
-                     topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150), 
-                     width = 300, 
+            self.text_receiver = entry.entry(self.action_surface,
+                     topleft = (self.rect[0] + 100, self.rect[1] + 90, self.rect[2] - 100, self.rect[3] - 150),
+                     width = 300,
                      max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
         else:
@@ -295,7 +295,7 @@ class base_build_menu():
             This function is activated on scrollbar value change on the size selection box, and updates the input_
             output_dict
             """
-            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250) 
+            update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250)
             pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
             size_info = global_variables.standard_font_small.render("size: " + str(self.slider.position),True,(0,0,0))
             self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 170))
@@ -305,7 +305,7 @@ class base_build_menu():
                 direction_info = global_variables.standard_font_small.render(put+":",True,(0,0,0))
                 self.action_surface.blit(direction_info, (self.rect[0] + 130, self.rect[1] + 170 + lineno * 20))
 #                print technology.keys()
-                for resource in technology["input_output_dict"][put].keys():
+                for resource in list(technology["input_output_dict"][put].keys()):
                     lineno = lineno + 1
                     if resource in self.solar_system_object_link.mineral_resources + ["food"] and put == "output":
                         mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource)
@@ -319,16 +319,16 @@ class base_build_menu():
                         value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
                     self.action_surface.blit(value_info, (self.rect[0] + 150, self.rect[1] + 170 + lineno * 20))
             self.ok_button = button.button(
-                "ok", 
+                "ok",
                 self.action_surface,
-                fixed_size = (100,35), 
+                fixed_size = (100,35),
                 topleft = (self.rect[0] + self.rect[2] - 110, self.rect[1] + self.rect[3] - 40))
             signaller.connect(self.ok_button,"signal__clicked",lambda: self.commodity_build_firm(existing_firm))
             pygame.display.flip()
         if 1 >  start_value or max_size < start_value:
-            print start_value
-            print max_size
-            print firm_type
+            print(start_value)
+            print(max_size)
+            print(firm_type)
             raise Exception("This has been observed before. See printout")
         self.slider = vscrollbar.vscrollbar (self.action_surface,
                                                 execute,
@@ -339,7 +339,7 @@ class base_build_menu():
                                                 function_parameter = technology
                                                 )
         execute(None,technology)
-        self.selections["technology"] = technology 
+        self.selections["technology"] = technology
     def commodity_build_firm(self,existing_firm):
         """
         The effectuating function for building commodity firms.
@@ -349,8 +349,8 @@ class base_build_menu():
         if existing_firm is None:
             name = self.text_receiver.text
             unique = True
-            for company_instance in self.solar_system_object_link.companies.values():
-                if name in company_instance.owned_firms.keys():
+            for company_instance in list(self.solar_system_object_link.companies.values()):
+                if name in list(company_instance.owned_firms.keys()):
                     unique = False
             if not (0 < len(name) <= global_variables.max_letters_in_company_names and unique):
                 print_dict = {"text":"the selected name " + str(name) + " was too long and/or not unique. Has to be less than " + str(global_variables.max_letters_in_company_names) + " characters","type":"general gameplay info"}
@@ -364,11 +364,11 @@ class base_build_menu():
         owner = self.solar_system_object_link.current_player
         size = self.slider.position
         owner.change_firm_size(location,size,technology["technology_name"], name)
-        if isinstance(name, str) or isinstance(name, unicode):
+        if isinstance(name, str) or isinstance(name, str):
             print_dict = {"text":str(name) + ", a " + self.selections["firm_type"] + " firm of size " + str(size) + " was built at " + str(location.name) + " for " + str(owner.name),"type":"general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
         else:
-            print name
-            print name.__class__
+            print(name)
+            print(name.__class__)
             raise Exception("The name used: " + str(name) + " was of class " + str(name.__class__) + " but should have been a string")
         return "clear"

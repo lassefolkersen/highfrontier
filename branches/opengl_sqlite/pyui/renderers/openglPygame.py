@@ -50,9 +50,9 @@ class OpenGLPygame(openglBase.OpenGLBase):
         
 
     def draw(self, windows):
-        apply(self.drawBackMethod, self.drawBackArgs)        
+        self.drawBackMethod(*self.drawBackArgs)        
         self.setup2D()
-        for i in xrange(len(windows)-1, -1, -1):
+        for i in range(len(windows)-1, -1, -1):
             w = windows[i]
             self.setWindowOrigin(w.posX, w.posY)
             if w.dirty:
@@ -97,7 +97,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
             elif event.type == locals.MOUSEMOTION:
                 desktop.postUserEvent(pyui.locals.MOUSEMOVE, event.pos[0], event.pos[1])
             elif event.type == locals.KEYDOWN:
-                character = event.unicode
+                character = event.str
                 code = 0
                 if len(character) > 0:
                     code = ord(character)
@@ -114,7 +114,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
                 try:
                     desktop.postUserEvent(event.type)
                 except:
-                    print "Error handling event %s" % repr(event)
+                    print("Error handling event %s" % repr(event))
             event = pygame.event.poll()
     def quit(self):
         pygame.quit()          
@@ -123,10 +123,10 @@ class OpenGLPygame(openglBase.OpenGLBase):
         """This loads images without using P.I.L! Yay.
         """
         if label:
-            if self.textures.has_key(label):
+            if label in self.textures:
                 return
         else:
-            if self.textures.has_key(filename):
+            if filename in self.textures:
                 return
 
         surface = pygame.image.load(filename)

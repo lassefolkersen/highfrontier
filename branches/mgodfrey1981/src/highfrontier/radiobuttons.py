@@ -48,14 +48,14 @@ class radiobuttons():
         self.update_radiobuttons()
 
 
-    
-    def update_radiobuttons(self):    
+
+    def update_radiobuttons(self):
         for i, label in enumerate(self.labels()):
             pygame.draw.circle(self.surface(),(255,255,255),(self.topLeft()[0] + 10,self.topLeft()[1] + self.textHeight() // 2 + self.textHeight()*i),6)
             pygame.draw.circle(self.surface(),(0,0,0),(self.topLeft()[0] + 10,self.topLeft()[1] + self.textHeight() // 2 + self.textHeight()*i),6, 1)
             if label == self.selected():
                 pygame.draw.circle(self.surface(),(0,0,0),(self.topLeft()[0] + 10,self.topLeft()[1] + self.textHeight() // 2 + self.textHeight()*i),4)
-        
+
         pygame.display.flip()
 
     def setTopLeft(self,t):

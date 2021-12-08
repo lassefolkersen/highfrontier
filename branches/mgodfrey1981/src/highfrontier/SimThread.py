@@ -15,7 +15,7 @@ class SimThread(threading.Thread):
 #            print "SimThread starting another month"
             sol.current_date = datetime.timedelta(30)+sol.current_date
             sol.evaluate_each_game_step()
-            for company_instance in sol.companies.values():
+            for company_instance in list(sol.companies.values()):
                 company_instance.evaluate_self()
             time.sleep(1)
     def join(self,timeout=None):

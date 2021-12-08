@@ -297,11 +297,11 @@ class Sheet(pyui.widgets.Base):
                 
         (colNum, rowNum) = self.findCellAt(x,y)
         if colNum <= self.hscroll.currentItem or rowNum <= self.vscroll.currentItem:
-            print "ERROR: value too low:", colNum, rowNum
+            print("ERROR: value too low:", colNum, rowNum)
             self.entryBox.deactivate()
             return 1
         if colNum >= self.visibleColumns+self.hscroll.currentItem or rowNum >= self.visibleRows+self.vscroll.currentItem:
-            print "ERROR: value too high:", colNum, rowNum
+            print("ERROR: value too high:", colNum, rowNum)
             self.entryBox.deactivate()            
             return 1
         if self.getColumnReadOnly(colNum) or self.getRowReadOnly(rowNum):

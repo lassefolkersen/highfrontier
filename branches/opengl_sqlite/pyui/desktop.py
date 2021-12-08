@@ -128,7 +128,7 @@ class Desktop:
                 return self.running
         # process timer callbacks
         timer = self.renderer.readTimer()    
-        for callback in self.callbacks.keys():
+        for callback in list(self.callbacks.keys()):
             if callback.process(timer):
                 del self.callbacks[callback]
         return self.running
@@ -160,7 +160,7 @@ class Desktop:
         """cleanup all global references to widget. This is called by destroy() so don't call it twice.
         (internal)
         """
-        if self.allWidgets.has_key(widget.id):
+        if widget.id in self.allWidgets:
             del self.allWidgets[widget.id]
         for w in self.windows:
             if w.id == widget.id:
@@ -218,7 +218,7 @@ class Desktop:
 
             if event.type == pyui.locals.QUIT:
                 self.quit()
-                print "DONE!"
+                print("DONE!")
                 return
 
             # pre-handle mouse move events here for tool tips
@@ -244,7 +244,7 @@ class Desktop:
                     return
 
             # check for application handlers
-            if self.userHandlers.has_key(event.type):
+            if event.type in self.userHandlers:
                 self.userHandlers[event.type](event)
                 return
 
@@ -354,7 +354,7 @@ class Desktop:
         return callback
 
     def removeCallback(self, callback):
-        if self.callbacks.has_key(callback):
+        if callback in self.callbacks:
             del self.callbacks[callback]
 
     def findWindowByHandle(self, handle):

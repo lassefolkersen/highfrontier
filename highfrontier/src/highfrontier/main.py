@@ -11,12 +11,13 @@ import primitives
 import global_variables
 import gui
 import random
-reload(sys)
+import importlib
+importlib.reload(sys)
 if hasattr(sys,"setdefaultencoding"):
     sys.setdefaultencoding("latin-1")
 class Game:
     def __init__(self):
-        print "init Game"
+        print("init Game")
         return
     def start_loop(self,companyName = None, companyCapital = None, loadPreviousGame = None):
         """
@@ -28,11 +29,11 @@ class Game:
         window_size = global_variables.window_size
         pygame.init()
         if global_variables.fullscreen:
-            window = pygame.display.set_mode(window_size,FULLSCREEN) 
+            window = pygame.display.set_mode(window_size,FULLSCREEN)
         else:
             window = pygame.display.set_mode(window_size)
         icon = pygame.image.load(os.path.join("images","window_icon.png"))
-        pygame.display.set_icon(icon) 
+        pygame.display.set_icon(icon)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         #initializing the world - depends on if a previous game should be loaded
         if loadPreviousGame is not None:
@@ -56,23 +57,23 @@ class Game:
                 "Pick research (pick research automatically)":False,
                 "Expand area of operation (search for new home cities)":False
                 }
-            if companyName in sol.companies.keys():
+            if companyName in list(sol.companies.keys()):
                 sol.current_player = sol.companies[companyName]
                 sol.current_player.automation_dict = automation_dict
                 sol.current_player.automation_dict["Demand bidding (initiate buying bids)"] = True
                 sol.current_player.automation_dict["Supply bidding (initiate selling bids)"] = True
                 sol.current_player.capital = companyCapital
             else:
-                model_companyName = random.choice(sol.companies.keys())
+                model_companyName = random.choice(list(sol.companies.keys()))
                 model_company = sol.companies[model_companyName]
                 new_company = company.company(sol,model_company.company_database,deviation=5,companyName=companyName,capital=companyCapital)
                 sol.companies[companyName] = new_company
                 new_company.automation_dict = automation_dict
                 sol.current_player = new_company
         #loading planets that are often used:
-        print "loading earth"
+        print("loading earth")
         sol.planets["earth"].pickle_all_projections()
-        print "finished loading"
+        print("finished loading")
         #divide the surface in action and non-action
         action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
         right_side_rect = pygame.Rect(global_variables.window_size[0] - 150, 0, 150, global_variables.window_size[1])
@@ -81,7 +82,7 @@ class Game:
         right_side_surface = window.subsurface(right_side_rect)
         message_surface = window.subsurface(message_rect)
         #switch to determine planetary mode or solarsystem mode from beginning
-        mode_before_change = sol.display_mode 
+        mode_before_change = sol.display_mode
         if sol.display_mode == "solar_system":
             surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
         if sol.display_mode == "planetary":
@@ -103,8 +104,8 @@ class Game:
         while True:
 #            print "Game running another gui cycle"
             events = pygame.event.get()
-            for event in events: 
-                if event.type == QUIT: 
+            for event in events:
+                if event.type == QUIT:
                     sys.exit(0)
                 if event.type == 5: #mouse down event
                     gui_instance.receive_click(event)

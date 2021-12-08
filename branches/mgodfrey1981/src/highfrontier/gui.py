@@ -58,14 +58,14 @@ class gui():
         try:
             b=self._techWindow
         except AttributeError:
-            self._techWindow=tech_window.tech_window(self.sol(), 
+            self._techWindow=tech_window.tech_window(self.sol(),
                                                      self.actionSurface())
         return self._techWindow
     def fileWindow(self):
         try:
             b=self._fileWindow
         except AttributeError:
-            self._fileWindow = file_window.file_window(self.sol(), 
+            self._fileWindow = file_window.file_window(self.sol(),
                                                        self.actionSurface())
         return self._fileWindow
     def receive_click(self,event):
@@ -74,14 +74,14 @@ class gui():
         """
         #Checking where the click is located
         if self.command_rect.collidepoint(event.pos) == 1:
-            for button in self.command_buttons.values():
-                if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2], 
+            for button in list(self.command_buttons.values()):
+                if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.command_rect[2],
                                                event.pos[1] - self.command_rect[1])) == 1:
                     button.activate(None)
-                    return 
+                    return
         if self.subcommand_rect.collidepoint(event.pos) == 1:
             self.subcommand_rect_clicked(event)
-            return 
+            return
         elif self.action_rect.collidepoint(event.pos) == 1:
             if self.active_window is not None:
                 if self.active_window.rect.collidepoint(event.pos) == 1:
@@ -106,58 +106,58 @@ class gui():
                     return
         self.click_in_action_window(event)
 
-        
+
         #updating the infobox in any case
         self.create_infobox()
         self.messageBar().create()
         pygame.display.flip()
     """
-    This class holds all the top-level gui stuff, 
-    such as functions to distribute clicks 
+    This class holds all the top-level gui stuff,
+    such as functions to distribute clicks
     and the commandbox buttons on the right side and such
     """
     def __init__(self,right_side_surface, message_surface, action_surface, solar_system_object):
         self.setActionSurface(action_surface)
         self.setMessageSurface(message_surface)
         """
-        Here the commandbox is started initialized. 
-        In addition all the other GUI elements is started up, 
+        Here the commandbox is started initialized.
+        In addition all the other GUI elements is started up,
         to keep it at one place
         """
-        # defining 
+        # defining
         command_box_left = right_side_surface.get_offset()[0]
         command_width = right_side_surface.get_size()[0]
         infobox_top = 0
         command_top = 70
         subcommand_top = 470
         self.action_rect = pygame.Rect(0,
-                                       0, 
-                                       self.actionSurface().get_size()[0], 
+                                       0,
+                                       self.actionSurface().get_size()[0],
                                        self.actionSurface().get_size()[1])
-        self.infobox_rect = pygame.Rect(command_box_left, 
-                                        infobox_top, 
-                                        command_width, 
+        self.infobox_rect = pygame.Rect(command_box_left,
+                                        infobox_top,
+                                        command_width,
                                         command_top)
-        self.command_rect =  pygame.Rect(command_box_left, 
-                                         command_top, 
-                                         command_width, 
+        self.command_rect =  pygame.Rect(command_box_left,
+                                         command_top,
+                                         command_width,
                                          subcommand_top-command_top)
-        self.subcommand_rect = pygame.Rect(command_box_left, 
-                                           subcommand_top, 
-                                           command_width, 
+        self.subcommand_rect = pygame.Rect(command_box_left,
+                                           subcommand_top,
+                                           command_width,
                                            global_variables.window_size[1] -subcommand_top)
         self.setActionSurface(action_surface)
-        self.infobox_surface = right_side_surface.subsurface(pygame.Rect(0, 
-                                                                         infobox_top, 
-                                                                         command_width, 
+        self.infobox_surface = right_side_surface.subsurface(pygame.Rect(0,
+                                                                         infobox_top,
+                                                                         command_width,
                                                                          command_top))
-        self.command_surface =  right_side_surface.subsurface(pygame.Rect(0, 
-                                                                          command_top, 
-                                                                          command_width, 
+        self.command_surface =  right_side_surface.subsurface(pygame.Rect(0,
+                                                                          command_top,
+                                                                          command_width,
                                                                           subcommand_top-command_top))
-        self.subcommand_surface = right_side_surface.subsurface(pygame.Rect(0, 
-                                                                            subcommand_top, 
-                                                                            command_width, 
+        self.subcommand_surface = right_side_surface.subsurface(pygame.Rect(0,
+                                                                            subcommand_top,
+                                                                            command_width,
                                                                             global_variables.window_size[1] -subcommand_top))
         self.setSol(solar_system_object)
         self.active_window = None
@@ -175,7 +175,7 @@ class gui():
         try:
             b=self._baseWindow
         except AttributeError:
-            self._baseWindow=base_window.base_window(self.sol(), 
+            self._baseWindow=base_window.base_window(self.sol(),
                                                      self.actionSurface())
         return self._baseWindow
     def slot__showPlanetShortcutsWindow(self):
@@ -187,7 +187,7 @@ class gui():
         try:
             b=self._planetJumpWindow
         except AttributeError:
-            self._planetJumpWindow=planet_jump_window.planet_jump_window(self.sol(), 
+            self._planetJumpWindow=planet_jump_window.planet_jump_window(self.sol(),
                                                                          self.actionSurface())
         return self._planetJumpWindow
     def slot__showMapOverlayWindow(self):
@@ -202,9 +202,9 @@ class gui():
         button = event.button
         click_spot = pygame.Rect(position[0]-3,position[1]-3,6,6)
         if sol.display_mode == "solar_system":
-            
+
             collision_test_result = click_spot.collidedict(sol.areas_of_interest)
-            
+
             if collision_test_result != None:
                 sol.current_planet = sol.planets[collision_test_result[1]]
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,
@@ -212,7 +212,7 @@ class gui():
                                                 center_object=sol.current_planet.planet_name)
                 if surface == "planetary_mode":
                     manager.emit("going_to_planetary_mode_event",sol.current_planet)
-                    sol.solar_system_zoom = 200000000 / sol.current_planet.planet_diameter_km  
+                    sol.solar_system_zoom = 200000000 / sol.current_planet.planet_diameter_km
                     sol.display_mode = "planetary"
                     sol.current_planet.load_for_drawing()
                     surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,
@@ -223,9 +223,9 @@ class gui():
         elif sol.display_mode == "planetary":
             if sol.build_base_mode: #if we are in the special build base mode, there should be a base creation instead.
                 sphere_coordinates = sol.current_planet.check_base_position(position)
-                if (sphere_coordinates[0:19] == "transfer population" or isinstance(sphere_coordinates, tuple) 
-                    or sphere_coordinates == "space base"): 
-                    """if the selection was correctly verified by check_base_position we send it back to the GUI 
+                if (sphere_coordinates[0:19] == "transfer population" or isinstance(sphere_coordinates, tuple)
+                    or sphere_coordinates == "space base"):
+                    """if the selection was correctly verified by check_base_position we send it back to the GUI
                     for further processing"""
                     sol.build_base_mode = False
                     pygame.mouse.set_cursor(*pygame.cursors.arrow)
@@ -256,17 +256,17 @@ class gui():
             self.actionSurface().blit(surface,(0,0))
             pygame.display.flip()
         elif sol.display_mode in ["company","firm","base"]:
-            pass            
+            pass
         else:
-            raise Exception("error. The mode: " + sol.display_mode +" is unknown")                
+            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
     def mapOverlayWindow(self):
         try:
             b=self._mapOverlayWindow
         except AttributeError:
-            self._mapOverlayWindow=overlay_window.overlay_window(self.sol(), 
+            self._mapOverlayWindow=overlay_window.overlay_window(self.sol(),
                                                                  self.actionSurface())
         return self._mapOverlayWindow
-    def create_commandbox(self):    
+    def create_commandbox(self):
         """
         Creates the right-side menu command box
         """
@@ -318,7 +318,7 @@ class gui():
         self.command_buttons[b.label()]=b
     def clear_screen(self):
         """
-        Function that takes care of clearing screen, 
+        Function that takes care of clearing screen,
         by drawing whatever planet or solar system or base window that is supposed
         to be on it, thus overwriting what gui-box might be there
         """
@@ -333,7 +333,7 @@ class gui():
             self.actionSurface().blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,
                                                                            sol.current_planet.northern_inclination,
                                                                            sol.current_planet.projection_scaling),
-                                     (0,0))                        
+                                     (0,0))
         elif sol.display_mode == "base":
             if sol.current_planet.current_base is not None:
                 self.going_to_base_mode_event(sol.current_planet.current_base)
@@ -403,9 +403,9 @@ class gui():
                                                                 sol.current_planet.northern_inclination,
                                                                 sol.current_planet.projection_scaling)
             else:
-                sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000) 
+                sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000)
                 sol.current_planet.unload_from_drawing()
-                sol.display_mode = "solar_system" 
+                sol.display_mode = "solar_system"
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,
                                                 date_variable=datetime.date(2102,1,22),
                                                 center_object=sol.current_planet.planet_name)
@@ -504,7 +504,7 @@ class gui():
         surface = firm_selected.draw_firm_window()
         self.actionSurface().blit(surface,(0,0))
         pygame.display.flip()
-        
+
     def going_to_base_mode_event(self,base_selected):
         sol = self.sol()
 #        mode_before_change = sol.display_mode
@@ -518,7 +518,7 @@ class gui():
 
     def create_infobox(self):
         self.infobox_surface.fill((150,150,150))
-        
+
         # creating the date string
         date_string = str(self.sol().current_date)
         rendered_date_string = global_variables.standard_font.render(date_string,True,(0,0,0))
@@ -526,12 +526,12 @@ class gui():
 
         # creating the env string
         if self.sol().display_mode == "solar_system":
-            env_string = "Solar system -" + string.capitalize(self.sol().current_planet.planet_name)
+            env_string = "Solar system -" + self.sol().current_planet.planet_name.upper()
         elif self.sol().display_mode == "planetary":
             if self.sol().current_planet.current_base == None:
                 env_string = self.sol().current_planet.planet_name
             else:
-                env_string = self.sol().current_planet.planet_name + " - " + self.sol().current_planet.current_base.name 
+                env_string = self.sol().current_planet.planet_name + " - " + self.sol().current_planet.current_base.name
         elif self.sol().display_mode == "company" and self.sol().company_selected is not None:
             env_string = self.sol().company_selected.name
         elif self.sol().display_mode == "firm" and self.sol().firm_selected is not None:
@@ -568,7 +568,7 @@ class gui():
         self._message_surface=s
         return
     def messageBar(self):
-        """ inits the message bar once, 
+        """ inits the message bar once,
         and returns the one attached to this object """
         try:
             b=self._message_bar
@@ -595,70 +595,70 @@ class gui():
         try:
             b=self._baseListOfCompanies
         except AttributeError:
-            self._baseListOfCompanies=base_list_of_companies.base_list_of_companies(self.sol(), 
+            self._baseListOfCompanies=base_list_of_companies.base_list_of_companies(self.sol(),
                                                                                     self.actionSurface())
         return self._baseListOfCompanies
     def baseListOfFirms(self):
         try:
             b=self._baseListOfFirms
         except AttributeError:
-            self._baseListOfFirms = base_list_of_firms.base_list_of_firms(self.sol(), 
+            self._baseListOfFirms = base_list_of_firms.base_list_of_firms(self.sol(),
                                                                           self.actionSurface())
         return self._baseListOfFirms
     def baseAndFirmMarketWindow(self):
         try:
             b=self._baseAndFirmMarketWindow
         except AttributeError:
-            self._baseAndFirmMarketWindow=base_and_firm_market_window.base_and_firm_market_window(self.sol(), 
+            self._baseAndFirmMarketWindow=base_and_firm_market_window.base_and_firm_market_window(self.sol(),
                                                                                                   self.actionSurface())
         return self._baseAndFirmMarketWindow
     def baseBuildMenu(self):
         try:
             b=self._baseBuildMenu
         except AttributeError:
-            self._baseBuildMenu=base_build_menu.base_build_menu(self.sol(), 
+            self._baseBuildMenu=base_build_menu.base_build_menu(self.sol(),
                                                                 self.actionSurface())
         return self._baseBuildMenu
     def companyOwnershipInfo(self):
         try:
             b=self._companyOwnershipInfo
         except AttributeError:
-            self._companyOwnershipInfo = company_ownership_info.company_ownership_info(self.sol(), 
+            self._companyOwnershipInfo = company_ownership_info.company_ownership_info(self.sol(),
                                                                                        self.actionSurface())
         return self._companyOwnershipInfo
     def companyFinancialInfo(self):
         try:
             b=self._companyFinancialInfo
         except AttributeError:
-            self._companyFinancialInfo=company_financial_info.company_financial_info(self.sol(), 
+            self._companyFinancialInfo=company_financial_info.company_financial_info(self.sol(),
                                                                                      self.actionSurface())
         return self._companyFinancialInfo
     def companyListOfFirms(self):
         try:
             b=self._companyListOfFirms
         except AttributeError:
-            self._companyListOfFirms = company_list_of_firms.company_list_of_firms(self.sol(), 
+            self._companyListOfFirms = company_list_of_firms.company_list_of_firms(self.sol(),
                                                                                    self.actionSurface())
         return self._companyListOfFirms
     def firmTradePartnersInfo(self):
         try:
             b=self._firmTradePartnersInfo
         except AttributeError:
-            self._firmTradePartnersInfo=firm_trade_partners_info.firm_trade_partners_info(self.sol(), 
+            self._firmTradePartnersInfo=firm_trade_partners_info.firm_trade_partners_info(self.sol(),
                                                                                           self.actionSurface())
         return self._firmTradePartnersInfo
     def firmProcessInfo(self):
         try:
             b=self._firmProcessInfo
         except AttributeError:
-            self._firmProcessInfo=firm_process_info.firm_process_info(self.sol(), 
+            self._firmProcessInfo=firm_process_info.firm_process_info(self.sol(),
                                                                       self.actionSurface())
         return self._firmProcessInfo
     def constructBaseMenu(self):
         try:
             b=self._constructBaseMenu
         except AttributeError:
-            self._constructBaseMenu=construct_base_menu.construct_base_menu(self.sol(), 
+            self._constructBaseMenu=construct_base_menu.construct_base_menu(self.sol(),
                                                                             self.actionSurface())
         return self._constructBaseMenu
     def slot__clickBasePopulation(self):
@@ -695,26 +695,26 @@ class gui():
         self.buttonlinks = ["firm_process_info","base_and_firm_market_window","firm_trade_partners_info"]
         self.buttonnicenames = ["production","market","trade partners"]
         i=0
-        b=button.button("production", 
+        b=button.button("production",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["production"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickFirmProduction)
         i=i+1
-        b=button.button("market", 
+        b=button.button("market",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["market"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickFirmMarket)
         i=i+1
-        b=button.button("trade partners", 
+        b=button.button("trade partners",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["trade partners"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickFirmTradePartners)
@@ -724,42 +724,42 @@ class gui():
                             "base_and_firm_market_window","base_build_menu"]
         self.buttonnicenames = ["population","companies","firms","market","build"]
         i=0
-        b=button.button("population", 
+        b=button.button("population",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["population"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickBasePopulation)
         i=i+1
-        b=button.button("companies", 
+        b=button.button("companies",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["companies"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickBaseCompanies)
         i=i+1
-        b=button.button("firms", 
+        b=button.button("firms",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["firms"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickBaseFirms)
         i=i+1
-        b=button.button("market", 
+        b=button.button("market",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["market"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickBaseMarket)
         i=i+1
-        b=button.button("build", 
+        b=button.button("build",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["build"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickBaseBuild)
@@ -783,31 +783,31 @@ class gui():
         self.buttonlinks = ["company_ownership_info","company_financial_info","company_list_of_firms"]
         self.buttonnicenames = ["ownership info","financial info","owned firms"]
         i=0
-        b=button.button("ownership info", 
+        b=button.button("ownership info",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["ownership_info"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickCompanyOwnershipInfo)
         i=i+1
-        b=button.button("financial info", 
+        b=button.button("financial info",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["financial info"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickCompanyFinancialInfo)
         i=i+1
-        b=button.button("owned firms", 
+        b=button.button("owned firms",
                         self.subcommand_surface,
                         fixed_size = (self.subcommand_surface.get_width()-20,
-                                      35), 
+                                      35),
                         topleft = (10, i * 40 + 10))
         self.subcommand_buttons["owned firms"] = b
         signaller.connect(b,"signal__clicked",self.slot__clickCompanyOwnedFirms)
         return
-    def create_subcommandbox(self):    
+    def create_subcommandbox(self):
         """
         creates the right-side menu lower subcommand box. this is specific for the navigation window context
         such as for example base information and such
@@ -828,13 +828,13 @@ class gui():
         try:
             b=self._basePopulationInfo
         except AttributeError:
-            self._basePopulationInfo=base_population_info.base_population_info(self.sol(), 
+            self._basePopulationInfo=base_population_info.base_population_info(self.sol(),
                                                                                self.actionSurface())
         return self._basePopulationInfo
     def subcommand_rect_clicked(self,event):
-        print 'gui::subcommand_rect_clicked()'
-        for button in self.subcommand_buttons.values():
-            if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2], 
+        print('gui::subcommand_rect_clicked()')
+        for button in list(self.subcommand_buttons.values()):
+            if button.rect().collidepoint((event.pos[0] - global_variables.window_size[0] + self.subcommand_rect[2],
                                            event.pos[1] - self.subcommand_rect[1])) == 1:
                 button.activate(None)
     def slot__showTradeWindow(self):
@@ -846,7 +846,7 @@ class gui():
         try:
             b=self._tradeMenu
         except AttributeError:
-            self._tradeMenu=trade_window.trade_window(self.sol(), 
+            self._tradeMenu=trade_window.trade_window(self.sol(),
                                                       self.actionSurface())
         return self._tradeMenu
     def slot__showFileWindow(self):
@@ -864,6 +864,6 @@ class gui():
             b=self._companyWindow
             pass
         except AttributeError:
-            self._companyWindow=company_window.company_window(self.sol(), 
+            self._companyWindow=company_window.company_window(self.sol(),
                                                               self.actionSurface())
         return self._companyWindow

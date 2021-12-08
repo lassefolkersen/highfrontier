@@ -18,7 +18,7 @@ class PrimativeLine:
 
     def draw(self, renderer, posX, posY, area):
         for primative in self.primatives:
-            print "line prim:", primative
+            print("line prim:", primative)
             primative.draw(renderer, posX, posY, area)
             posX += primative.width
 
@@ -81,10 +81,10 @@ class PrimativeArea(Primative):
         
         for line in self.lines:
 
-            print "posX, posY: (%s,%s)" % (posX,posY), "height:", height, line.height, line       
+            print("posX, posY: (%s,%s)" % (posX,posY), "height:", height, line.height, line)       
             if absolutePosY-top + line.height > height:
                 absolutePosY += line.height                
-                print "not drawing:", line
+                print("not drawing:", line)
                 continue
             
             if absolutePosY >= top:
@@ -111,17 +111,17 @@ class PrimativeTable(PrimativeArea):
                 self.width = width * percent
             else:
                 self.width = int(w)
-        print "Table width is ", self.width
+        print("Table width is ", self.width)
         self.text = "table"
         
     def draw(self, renderer, posX, posY, area):
-        print "\nBEGIN TABLE DRAWING!!!!", posX, posY, self.height
+        print("\nBEGIN TABLE DRAWING!!!!", posX, posY, self.height)
         #for l in self.lines:
         #    print "   line:", l
         #    for p in l.primatives:
         #        print "     prim:", p.text
         PrimativeArea.draw(self, renderer, posX, posY, 0, self.height)
-        print "END TABLE DRAWING!!!!\n\n"
+        print("END TABLE DRAWING!!!!\n\n")
         
 class PrimativeTableRow(PrimativeLine):
     """A row within a table.
@@ -139,7 +139,7 @@ class TextPrimative(Primative):
         Primative.__init__(self, [], width, height, align)
         
     def draw(self, renderer, posX, posY, area):
-        print "DRAW TEXT:", self.text
+        print("DRAW TEXT:", self.text)
         textColor = self.formatState.color
         if textColor:
             color = parseColor(textColor)
@@ -303,10 +303,10 @@ def getFont(formatState):
     face = formatState.face.split(",")[0]
     key = (face, int(size), flags)
 
-    if fontCache.has_key(key):
+    if key in fontCache:
         return fontCache[key]
 
-    font = apply( pyui.desktop.getRenderer().createFont, key)
+    font = pyui.desktop.getRenderer().createFont(*key)
     (width,h) = pyui.desktop.getRenderer().getTextSize('o', font)
     fontCache[key] = (font,width)
     formatState.font = font

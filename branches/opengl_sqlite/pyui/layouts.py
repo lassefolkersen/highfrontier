@@ -163,7 +163,7 @@ class GridLayoutManager(LayoutManager):
 
     def placeChild(self, child, option):
         if self.full:
-            print "grid full!"
+            print("grid full!")
             return 
         # NOTE: changing posX/posY directly as an optimization. the correct
         # rect will be calculated below in resize()
@@ -203,18 +203,18 @@ class TableLayoutManager(LayoutManager):
         placed there.
         """
         if len(option) != 4:
-            raise ("Child option <%s> wrong for <%s>" % (repr(option), child) )
+            raise "Child option <%s> wrong for <%s>"
         
         (x, y, w, h) = option
         if x < 0 or y < 0 or x + w > self.width or y + h > self.height:
-            print "error - outside of range of tableLayout."
+            print("error - outside of range of tableLayout.")
             return
         # check for empty space
         for yy in range(y, y + h):
             for xx in range(x, x + w):
                 offset = xx + yy * self.width
                 if self.grid[offset]:
-                    print "error - Cannot place at %d,%d occupied by %s" % (xx,yy,self.grid[offset])
+                    print("error - Cannot place at %d,%d occupied by %s" % (xx,yy,self.grid[offset]))
                     return
         # populate cells
         for yy in range(y, y + h):

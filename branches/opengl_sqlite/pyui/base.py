@@ -120,7 +120,7 @@ class Base:
             child.setParent(None)
             return child            
         except:
-            print "ERROR: couldn't find the child to remove."
+            print("ERROR: couldn't find the child to remove.")
             return None
 
     def addPopup(self, popup):
@@ -154,7 +154,7 @@ class Base:
             if child.handleEvent(event):
                 return 1
             i = i  - 1
-        if self.eventMap.has_key(event.type):
+        if event.type in self.eventMap:
             if self.eventMap[event.type](event):
                 return 1
 
@@ -194,7 +194,7 @@ class Base:
     def unregisterEvent(self, eventType):
         """Remove handler for an event
         """
-        if self.eventMap.has_key(eventType):
+        if eventType in self.eventMap:
             del self.eventMap[eventType]
 
     def pack(self):
@@ -291,14 +291,14 @@ class Panel(Base):
 
     def nextTab(self, step = 1):
         # see if a child currently has focus
-        for i in xrange(len(self.children)):
+        for i in range(len(self.children)):
             if self.children[i].hasFocus():
                 tab = i + step
                 break
         else:
             tab = 0
             
-        for i in xrange(0, len(self.children)):
+        for i in range(0, len(self.children)):
             tab = tab % len(self.children)
             child = self.children[tab]
             
@@ -375,7 +375,7 @@ class Window(Base):
         self.drawCommands = []
         # these are drawing callbacks to draw _after_ all the widgets are drawn
         self.drawLastCallbacks = [] 
-        if self.__dict__.has_key("title"):
+        if "title" in self.__dict__:
             self.handle = getRenderer().createWindow(self.title)
         else:
             self.handle = getRenderer().createWindow("")
@@ -466,7 +466,7 @@ class Window(Base):
             self.topMost = 0
         else:
             self.topMost = 1
-        print "set topmost to ", self.topMost            
+        print("set topmost to ", self.topMost)            
 
 
     def setShow(self, value):

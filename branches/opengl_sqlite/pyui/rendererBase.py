@@ -88,7 +88,7 @@ class RendererBase:
             now = time.time()
             if now - self.last >= 1:
                 self.last = now
-                print "FPS: %d" % self.frame
+                print("FPS: %d" % self.frame)
                 self.frame = 0
             
             if callback:

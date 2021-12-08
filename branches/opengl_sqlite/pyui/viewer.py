@@ -27,14 +27,14 @@ class Viewer(pyui.widgets.Frame):
     def __init__(self, x, y, target):
         pyui.widgets.Frame.__init__(self, x, y, 400, 200, "%s" % target)
         if not target:
-            print "Viewer: target in None"
+            print("Viewer: target in None")
             self.valid =0
             return
         self.target = target
         try:
             self.numAttributes = len(dir(self.target)) #len(self.target.__dict__)
         except:
-            print "Viewer: target has no dict"
+            print("Viewer: target has no dict")
             self.valid = 0
             return
         self.setLayout(pyui.layouts.BorderLayoutManager())
@@ -63,7 +63,7 @@ class Viewer(pyui.widgets.Frame):
 
     def createViewWidget(self, object, attribute):
         t = type(object)
-        if t == types.IntType or t == types.LongType or t == types.FloatType:
+        if t == int or t == int or t == float:
             n = NumberViewer(self.target, attribute, object)
             self.numPanel.addChild(n)
             return n
@@ -71,20 +71,20 @@ class Viewer(pyui.widgets.Frame):
             n =  InstanceViewer(self.target, attribute, object)
             self.instancePanel.addChild(n)
             return n
-        if t == types.StringType:
+        if t == bytes:
             n = StringViewer(self.target, attribute, object)
             self.stringPanel.addChild(n)
             return n
-        if t == types.ListType:
+        if t == list:
             n = ListViewer(attribute, object)
             self.collectionsPanel.addChild(n)
             return n
-        if t == types.DictType:
+        if t == dict:
             n = DictViewer(attribute, object)
             self.collectionsPanel.addChild(n)
             return n
 
-        if t == types.NoneType:
+        if t == type(None):
             n = NoneViewer(attribute)
             self.otherPanel.addChild(n)
             return n
@@ -171,7 +171,7 @@ class DictViewer(pyui.widgets.Panel):
         self.setLayout(pyui.layouts.GridLayoutManager(2, 1))
 
         self.box = pyui.widgets.ListBox()
-        for v in self.value.keys():
+        for v in list(self.value.keys()):
             self.box.addItem(repr(v), v)
         self.button = pyui.widgets.Button("view %s" % attributeName, self.onView)
         self.addChild(self.box)
@@ -231,23 +231,23 @@ class TreeViewPanel(pyui.widgets.Panel):
         pyui.widgets.Panel.resize(self, w,h)
         
     def populateNode(self, node):
-        print "populating", node, node.title, type(node.target)
+        print("populating", node, node.title, type(node.target))
         t = type(node.target)
-        if t == types.ListType or t == types.TupleType:
+        if t == list or t == tuple:
             for attr in node.target:
                 newNode = ViewerNode(repr(attr), attr)
                 newNode.populated = 0
                 node.addNode(newNode)
-        elif t == types.DictType:
-            print "populating a dict"
-            for attr in node.target.keys():
+        elif t == dict:
+            print("populating a dict")
+            for attr in list(node.target.keys()):
                 newNode = ViewerNode(repr(attr), node.target[attr])
                 newNode.populated = 0
                 node.addNode(newNode)
-        elif t == types.IntType or t == types.LongType or t == types.FloatType:
+        elif t == int or t == int or t == float:
             newNode = ViewerNode(repr(node.target), None)
             node.addNode(newNode)
-        elif t == types.StringType:
+        elif t == bytes:
             newNode = ViewerNode(repr(node.target), None)
             node.addNode(newNode)
         else:
@@ -267,18 +267,18 @@ class ViewerNode(pyui.tree.TreeNode):
         self.target = target
         bitmap = "none.png"
         t = type(target)
-        if t == types.IntType or t == types.LongType or t == types.FloatType:
+        if t == int or t == int or t == float:
             bitmap = "numeric.png"
         elif t == types.InstanceType or t == types.ModuleType:
             bitmap = "instance.png"
-        elif t == types.StringType:
+        elif t == bytes:
             bitmap = "string.png"
-        elif t == types.DictType:
+        elif t == dict:
             bitmap = "dictionary.png"
-            print "got a dict"            
-        elif t == types.ListType or t == types.TupleType:
+            print("got a dict")            
+        elif t == list or t == tuple:
             bitmap = "list.png"
         elif t == types.MethodType or t == types.FunctionType or t == types.BuiltinFunctionType or t == types.BuiltinMethodType:
             bitmap = "function.png"
-        print "adding", target, bitmap
+        print("adding", target, bitmap)
         pyui.tree.TreeNode.__init__(self, title, bitmap)

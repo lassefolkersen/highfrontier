@@ -22,24 +22,24 @@ class firm_process_info():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-        
 
-        
+
+
     def receive_click(self,event):
         self.fast_list.receive_click(event)
-            
+
 
 
     def create(self):
         """
-        The creation function.  
+        The creation function.
         """
-        
+
         firm_selected = self.solar_system_object_link.firm_selected
-        
-        
+
+
         if firm_selected is not None:
-            
+
             if isinstance(firm_selected, company.merchant):
                 process_and_stock_dict = {}
                 for direction_name in ["destination","origin"]:
@@ -47,7 +47,7 @@ class firm_process_info():
                         base = firm_selected.to_location
                     else:
                         base = firm_selected.from_location
-                    
+
                     direction = "in " + base.name
                     for resource in [firm_selected.resource, firm_selected.transport_type]:
                          process_and_stock_dict[resource + " at " + direction_name] = {}
@@ -57,7 +57,7 @@ class firm_process_info():
                          else:
                              process_and_stock_dict[resource + " at " + direction_name]["current stock"] = firm_selected.from_stock_dict[resource]
                          process_and_stock_dict[resource + " at " + direction_name]["rate"] = "NA"
-                 
+
             else:
                 process_and_stock_dict = {}
                 for direction in ["input","output"]:
@@ -66,10 +66,10 @@ class firm_process_info():
                          process_and_stock_dict[resource]["direction"] = direction
                          process_and_stock_dict[resource]["current stock"] = firm_selected.stock_dict[resource]
                          process_and_stock_dict[resource]["rate"] = firm_selected.input_output_dict[direction][resource]
-        
+
             self.fast_list = fast_list.fast_list(self.action_surface, process_and_stock_dict, rect = self.rect,column_order = ["rownames","direction","rate","current stock"])
-        
-            
+
+
 
 
 

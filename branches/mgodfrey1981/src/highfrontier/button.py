@@ -21,9 +21,9 @@ class button():
             h=size[1]
         self._rect = pygame.Rect(x,y,w,h)
         return self._rect
-    def __init__(self,label="unlabeled", 
-                 surface=None, 
-                 topleft = (0,0), 
+    def __init__(self,label="unlabeled",
+                 surface=None,
+                 topleft = (0,0),
                  fixed_size = None):
         self.setPadding(5)
         self.setLabel(label)
@@ -36,7 +36,7 @@ class button():
         return
     def padding(self):
         return self._padding
-    
+
     def setLabel(self,l):
         self._label=l
         self._rendered_label = global_variables.standard_font.render(self._label,True,(0,0,0))
@@ -50,15 +50,15 @@ class button():
         return self.renderedLabel().get_size();
     """
     Class that defines buttons. Takes the name of the button, the surface that it should be drawn on, a function to execute on pressing
-    and optionally a position. Size will be determined by length of label.  
+    and optionally a position. Size will be determined by length of label.
     """
     def activate(self, pos):
         self.draw_pressed()
         signaller.emit(self,"signal__clicked") # dispatch the click event
-        
+
     def draw(self):
         shape = self.rect()
-        
+
         pygame.draw.rect(self.surface(),(212,212,212),shape)
         pygame.draw.rect(self.surface(),(0,0,0),shape,1)
         pygame.draw.line(self.surface(),(255,255,255),(shape[0], shape[1]),(shape[0],shape[1]+shape[3]))
@@ -74,7 +74,7 @@ class button():
         self.surface().blit(self.renderedLabel(),(shape[0] + self.padding(), shape[1] + self.padding()))
         pygame.display.flip()
         time.sleep(0.05)
-        self.draw()         
+        self.draw()
     def setSurface(self,s):
         self._surface=s
         return

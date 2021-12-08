@@ -109,7 +109,7 @@ class RendererNeb(rendererBase.RendererBase):
         return (r/255.0,g/255.0,b/255.0,a/255.0)
 
     def unpackColor(self, color):
-        return map(lambda x: x * 255.0, color)
+        return [x * 255.0 for x in color]
 
     mouseX = None
     mouseY = None
@@ -136,7 +136,7 @@ class RendererNeb(rendererBase.RendererBase):
         pass
     
     def draw(self, windows):
-        apply(self.drawBackMethod, self.drawBackArgs)                
+        self.drawBackMethod(*self.drawBackArgs)                
 
         import pdb
         #if __debug__: pdb.set_trace()
@@ -148,7 +148,7 @@ class RendererNeb(rendererBase.RendererBase):
             w.drawWindow(self)
             self.drawlist.reverse()
             for dc in self.drawlist:
-                apply(getattr(self, dc[0]), dc[1])
+                getattr(self, dc[0])(*dc[1])
 
     def setDrawList(self, emptylist):
         self.drawlist = emptylist
@@ -165,7 +165,8 @@ class RendererNeb(rendererBase.RendererBase):
     def drawImage(self,*args):
         self.drawlist.append(('doImage',args +(self.windowPos,)))
 
-    def doRect(self, color, (x,y,w,h), windowPos):
+    def doRect(self, color, xxx_todo_changeme, windowPos):
+        (x,y,w,h) = xxx_todo_changeme
         x = x + windowPos[0]
         y = y + windowPos[1]
         x1,y1 = (x/self.w * 2)-1, 1-(2*y/self.h)
@@ -173,7 +174,8 @@ class RendererNeb(rendererBase.RendererBase):
         #print "drawRect(",x,y,w,h,color,"): " ,x1,y2,x2,y1
         self.pyui.doRect(x1,y2,x2,y1,color[0],color[1],color[2],color[3])
 
-    def doGradient(self, (x,y,w,h), c1,c2,c3,c4, windowPos):
+    def doGradient(self, xxx_todo_changeme1, c1,c2,c3,c4, windowPos):
+        (x,y,w,h) = xxx_todo_changeme1
         x = x + windowPos[0]
         y = y + windowPos[1]
         x1,y1 = (x/self.w * 2)-1, 1-(2*y/self.h)
@@ -191,7 +193,9 @@ class RendererNeb(rendererBase.RendererBase):
         #print  'drawLine(',x1,y1,x2,y2,color,')',X1,Y1,X2,Y2,color[0],color[1],color[2],color[3]
         self.pyui.doLine(X1,Y1,X2,Y2,color[0],color[1],color[2],color[3])
 
-    def doText(self, text, (x,y), (r,g,b,a), font, windowPos):
+    def doText(self, text, xxx_todo_changeme2, xxx_todo_changeme3, font, windowPos):
+        (x,y) = xxx_todo_changeme2
+        (r,g,b,a) = xxx_todo_changeme3
         x = x + windowPos[0]
         y = y + windowPos[1] -4
         x1,y1 = (x/self.w* 2)-1, 1-(2*y/self.h)
@@ -215,12 +219,13 @@ class RendererNeb(rendererBase.RendererBase):
         #print "calling loadImage(%s,%s)" % (filename, label)
         self.pyui.loadImage(filename,label,0)
 
-    def doImage(self, (x,y,w,h), name, windowPos):
+    def doImage(self, xxx_todo_changeme4, name, windowPos):
+        (x,y,w,h) = xxx_todo_changeme4
         x = x + windowPos[0]
         y = y + windowPos[1]
         x1,y1 = (x/self.w * 2)-1, 1-(2*(y+h)/self.h)
         x2,y2 = (2*(x+w)/self.w)-1, 1-(2*y/self.h)
-        if not self.images.has_key(name):
+        if name not in self.images:
             self.loadImage(name)
         stage, label = self.images[name]
         #print "calling doImage(%s,%f,%f,%f,%f)" %(label,x1,y1,x2,y2)

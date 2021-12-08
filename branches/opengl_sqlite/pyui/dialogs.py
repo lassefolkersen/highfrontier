@@ -267,11 +267,11 @@ class Console(pyui.widgets.Frame):
         command = self.inputBox.text
         self.output.beginCapture()
         try:
-            print ">%s" % command
-            exec command in globals(), self.locals
+            print(">%s" % command)
+            exec(command, globals(), self.locals)
         except:
-            print "Exception on command '%s':" % command
-            print ">    %s" % sys.exc_value
+            print("Exception on command '%s':" % command)
+            print(">    %s" % sys.exc_info()[1])
         self.output.endCapture()
         return 1
 
@@ -414,8 +414,8 @@ class FileDialog(Dialog):
         try:
             info = os.stat(newDir)
             isdir = stat.S_ISDIR(info[stat.ST_MODE])
-        except OSError, e:
-            print "Invalid Dir:", newDir
+        except OSError as e:
+            print("Invalid Dir:", newDir)
             return None
         if isdir:
             self.currentDir = newDir
@@ -600,10 +600,10 @@ class ColorGradient(pyui.widgets.Base):
         width = self.windowRect[2] / float(self.segments)
         for i in range(0,self.segments):
             renderer.drawGradient( (self.windowRect[0]+int(i*width),top,int(width+1),height),
-                                   apply(renderer.packColor,self.colors[i]),
-                                   apply(renderer.packColor,self.colors[i+1]),
-                                   apply(renderer.packColor,self.colors[i]),
-                                   apply(renderer.packColor,self.colors[i+1]))
+                                   renderer.packColor(*self.colors[i]),
+                                   renderer.packColor(*self.colors[i+1]),
+                                   renderer.packColor(*self.colors[i]),
+                                   renderer.packColor(*self.colors[i+1]))
 
     def _pyuiMouseDown(self, event):
         if not self.hit(event.pos):
@@ -620,7 +620,7 @@ class ColorGradient(pyui.widgets.Base):
             diff = after[i] - before[i]
             value = before[i] + innerRatio*diff
             newColor.append(int(value))
-        apply(self.dialog.setRGB, newColor)
+        self.dialog.setRGB(*newColor)
         return 1
         
 class ColorStrip(pyui.widgets.Base):
@@ -660,5 +660,5 @@ class ColorStrip(pyui.widgets.Base):
                     value = self.color[i] + (255 - self.color[i]) * (ratio/2)
             newColor.append(int(value))
         newColor.append(0) # this make setRGB not reset self.color
-        apply(self.dialog.setRGB, newColor)
+        self.dialog.setRGB(*newColor)
         return 1

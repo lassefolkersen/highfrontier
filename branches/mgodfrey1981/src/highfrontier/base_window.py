@@ -22,11 +22,11 @@ class base_window():
         self.action_surface = action_surface
     def create(self):
         """
-        The creation function. ' 
+        The creation function. '
         """
         base_data = {}
-        for planet_instance in self.solar_system_object_link.planets.values():
-            for base_instance in planet_instance.bases.values():
+        for planet_instance in list(self.solar_system_object_link.planets.values()):
+            for base_instance in list(planet_instance.bases.values()):
                 if base_instance.for_sale:
                     for_sale = "For sale"
                 else:
@@ -39,8 +39,8 @@ class base_window():
         self.fast_list.receive_click(event)
         if event.button == 3:
             base_selected = None
-            for planet_instance in self.solar_system_object_link.planets.values():
-                for base_instance in planet_instance.bases.values():
+            for planet_instance in list(self.solar_system_object_link.planets.values()):
+                for base_instance in list(planet_instance.bases.values()):
                     if base_instance.name == self.fast_list.selected_name:
                         base_selected = base_instance
             if base_selected is None:

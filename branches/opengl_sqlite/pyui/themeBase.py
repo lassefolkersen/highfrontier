@@ -1,15 +1,15 @@
 # PyUI
 # Copyright (C) 2001-2002 Sean C. Riley
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of version 2.1 of the GNU Lesser General Public
 # License as published by the Free Software Foundation.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ class ThemeBase:
 
         self.fgColor = renderer.packColor(255,255,255)
         self.bgColor = renderer.packColor(0,0,0)
-        
+
         # setup default font
         self.defaultFontFace = fontFace
         self.defaultFontSize = fontSize
@@ -57,7 +57,7 @@ class ThemeBase:
         self.frameBorderBottom = 4
         self.tabsHeight = int(self.defaultTextHeight * 1.3)
         self.scrollerSize = 10
-        
+
 
     ### Information about the theme..
     def getFrameBorderTop(self):
@@ -65,16 +65,16 @@ class ThemeBase:
 
     def getFrameBorderLeft(self):
         return self.frameBorderLeft
-    
+
     def getFrameBorderRight(self):
         return self.frameBorderRight
-    
+
     def getFrameBorderBottom(self):
         return self.frameBorderBottom
-    
+
     def getTabsHeight(self):
         return self.tabsHeight
-    
+
     def getScrollerSize(self):
         return self.scrollerSize
 
@@ -101,7 +101,7 @@ class ThemeBase:
     ###
     ###   Utility drawing functions not specific to any widgets
     ###
-    #####################################################################    
+    #####################################################################
 
     def draw3DRect(self, rect, color, reverse, thick=1):
         """Draw a 3D rectangle
@@ -113,7 +113,7 @@ class ThemeBase:
 
         if reverse:
             (colorLo, colorHi) = (colorHi, colorLo)
-            
+
         (x,y,w,h) = rect
         if w < 2 or h < 2:
             return
@@ -134,31 +134,31 @@ class ThemeBase:
 
     def drawGradient(self, rect, vertical, c1, c2):
         if vertical:
-            self.renderer.drawGradient(rect, c1, c2, c1, c2)            
+            self.renderer.drawGradient(rect, c1, c2, c1, c2)
         else:
             self.renderer.drawGradient(rect, c1, c1, c2, c2)
-        
+
     #####################################################################
     ###
     ### Widgets specific drawing functions.
     ### These are the methods for actual themes to implement.
     ###
-    #####################################################################    
+    #####################################################################
     def drawButton(self, rect, title, hasFocus, status, enabled, font=None, shadow=0,fgColor=0, bgColor=0,roColor=0):
         return rect
-    
+
     def drawImageButton(self, rect, filename, title, hasFocus, status):
         return rect
-    
+
     def drawLabel(self, rect, title, color = None, font = None, shadow=0, align=0 ):
         return rect
-    
+
     def drawCheckBox(self, rect, text, checkState):
         return rect
-    
+
     def drawSliderBar(self, rect, range, position, BARWIDTH=8):
         return rect
-    
+
     def drawEdit(self, rect, text, hasFocus, caretPos, selectPos):
         return rect
 
@@ -166,12 +166,12 @@ class ThemeBase:
         return rect
 
     def drawToolTip(self, text, rect):
-        return rect    
-    
+        return rect
+
     # scroll bar methods
     def drawScrollBack(self, rect):
         return rect
-    
+
     def drawScrollButtonUp(self, rect):
         return rect
 
@@ -184,7 +184,7 @@ class ThemeBase:
     # tabbed panel methods
     def drawTabItem(self, rect, title, active):
         return rect
-    
+
     def drawTabHeader(self, rect):
         return rect
 
@@ -197,14 +197,14 @@ class ThemeBase:
 
     def drawMenu(self, rect):
         return rect
-    
+
     def drawMenuItem(self, rect, title, selected, icon = None):
         return rect
 
     # list box methods
     def drawListBox(self, rect):
         return rect
-        
+
     def drawListBoxItem(self, rect, title, selected, color):
         return rect
 

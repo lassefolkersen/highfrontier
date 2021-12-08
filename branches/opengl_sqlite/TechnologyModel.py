@@ -14,7 +14,7 @@ class TechnologyModel:
                  technology)
         return db.lastInsertId()
     def save(self,technology):
-        if(technology.has_key('technology_id')):
+        if('technology_id' in technology):
             return self.update(technology)
         return self.insert(technology)
     def createInstance(self):

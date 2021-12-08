@@ -20,30 +20,30 @@ class firm_trade_partners_info():
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(50,50,700,500)
         self.action_surface = action_surface
-        
+
 
 
     def create(self):
         """
-        The creation function. Doesn't return anything, but saves self.window_transactions variable and renders using the self.renderer. 
+        The creation function. Doesn't return anything, but saves self.window_transactions variable and renders using the self.renderer.
         """
-        
+
         firm_selected = self.solar_system_object_link.firm_selected
         if isinstance(firm_selected,company.merchant):
             location_list = [firm_selected.from_location, firm_selected.to_location]
-            
+
         else:
             location_list = [firm_selected.location]
 
-        
+
         transactions = {}
         for k, location_instance in enumerate(location_list):
-            
+
             market = location_instance.market
             for i, resource in enumerate(market["transactions"]):
-                
+
                 for j, transaction in enumerate(market["transactions"][resource]):
-                    
+
                     date = transaction["date"]
                     if transaction["buyer"] is not None:
                         buyer = transaction["buyer"].name
@@ -62,18 +62,18 @@ class firm_trade_partners_info():
 #                        print location_instance.name + " name of market"
 #                        print "for the " + str(i) + " resource which is " + str(resource)
 #                        print "for the " + str(j) + " transaction which is " + str(transaction)
-                    
-                        
+
+
 #        print "transaction keys " + str(transactions.keys())
 #        print "transactions: " + str(transactions)
         self.fast_list = fast_list.fast_list(
-            self.action_surface, 
-            transactions, 
+            self.action_surface,
+            transactions,
             rect = self.rect,
             sort_by = "date",
             column_order = ["date","buyer","seller","price","quantity"])
     def receive_click(self,event):
         self.fast_list.receive_click(event)
 
-        
-        
+
+
