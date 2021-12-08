@@ -272,8 +272,9 @@ class gui():
                 indexes = (sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination, int(sol.current_planet.projection_scaling))
                 try:
                     areas_of_interest = sol.current_planet.areas_of_interest[indexes]
-                except IndexError:
-                    print(f'Problem with the area, index {indexes}')
+                except (IndexError, KeyError):
+                    print(f'Problem with the area of interest for index {indexes}')
+                    return
 
                 collision_test_result = click_spot.collidedict(areas_of_interest)
                 if collision_test_result != None:
