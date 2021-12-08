@@ -54,9 +54,9 @@ Setting up from source is possible however.
 
 ### Windows
 On windows it was a matter of finding and installing:
-* [Python 2.7](https://www.python.org/downloads/)
-* [Pygame](http://www.pygame.org/download.shtml), just the latest version - I used the one called pygame-1.9.1.win32-py2.7.msi.
-* Python Image Module: [PIL](http://www.pythonware.com/products/pil/), just the latest version - I used the one called Python Imaging Library 1.1.7 for Python 2.7
+* [Python 3.10](https://www.python.org/downloads/)
+* [Pygame](http://www.pygame.org/)
+* Python Image Module: [PIL](https://pillow.readthedocs.io)
 
 Then run by starting the intro.py file.
 
