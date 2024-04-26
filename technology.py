@@ -64,6 +64,14 @@ class Tree():
 		self.stepsize = 60
 
 
+	def draw(self) -> pygame.Surface:
+		"""Return a surface with the tech tree."""
+		return self.plot_total_tree(
+			self.vertex_dict,zoomlevel=self.zoomlevel,
+			center=self.center
+		)
+
+
 	def receive_click(self,event):
 		"""
 		Function that handles everything that is done when the plot is clicked. Takes a the arguments:
@@ -117,27 +125,23 @@ class Tree():
 			else:
 				print("DEBUGGING: Unkown click_type " + str(click_type) + " in technology tree. This should not be able to happen")
 
-		image = self.plot_total_tree(self.vertex_dict,zoomlevel=self.zoomlevel,center=self.center)
+		image = self.draw()
 
 
 		return image
 
-	def zoom(self,direction):
+	def zoom(self, out: bool):
 		"""
 		Function that zooms the graph. Takes a character string denoting the direction
 		direction	either "out" or "in"
 		"""
-		if direction == "out":
+		if out:
 			self.zoomlevel = self.zoomlevel * 2
 			self.center = (self.center[0]/2, self.center[1]/2)
-		elif direction == "in":
+		else:
 			self.zoomlevel = self.zoomlevel / 2
 			self.center = (self.center[0]*2, self.center[1]*2)
-		else:
-			Exception("The direction " + str(direction) + " was not recognized")
 
-		image = self.plot_total_tree(self.vertex_dict,zoomlevel=self.zoomlevel,center=self.center)
-		return image
 
 	def move(self,direction):
 		"""
@@ -155,8 +159,6 @@ class Tree():
 		else:
 			Exception("The direction " + str(direction) + " was not recognized")
 
-		image = self.plot_total_tree(self.vertex_dict,zoomlevel=self.zoomlevel,center=self.center)
-		return image
 
 
 

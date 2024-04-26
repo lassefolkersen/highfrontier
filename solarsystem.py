@@ -13,7 +13,26 @@ import primitives
 import technology
 import pickle
 
+from display import Display
+
 class solarsystem:
+
+    display_mode: Display
+
+    @property
+    def display_mode(self) -> Display:
+        return self._display_mode
+
+
+    @display_mode.setter
+    def display_mode(self, value: Display | str):
+        if isinstance(value, str):
+            value = Display(value)
+        else:
+            assert isinstance(value, Display)
+        self._display_mode = value
+
+
     def launchThread(self):
         self.simThread=SimThread.SimThread(self)
         self.simThread.start()
@@ -88,7 +107,7 @@ class solarsystem:
                     self.messages.append(print_dict)
     def __init__(self,start_date, de_novo_initialization = True):
         if de_novo_initialization:
-            self.display_mode = "planetary"
+            self.display_mode = Display.PLANETARY
             self.effectuate_migration = global_variables.effectuate_migration #if False all migration calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
             self.effectuate_growth = global_variables.effectuate_growth #if False all growth calculations are performed, but are not actually applied to population numbers. Useful for equilibrizing the markets first.
             self.current_player = None #switch that determines what company is playing. If None it would default to simulatormode without possibility of interaction. Else it should be a company object.
@@ -538,7 +557,7 @@ class solarsystem:
         smallplanet_color = self.planets[object].planet_data["smallplanet_color"]
         if self.solar_system_zoom > 2000000:
             if object != "sun":
-                self.display_mode = "planetary"
+                self.display_mode = Display.PLANETARY
                 self.go_to_planetary_mode = True
             else: #this will keep the zoom from going to far in on the sun
                 self.solar_system_zoom = self.solar_system_zoom / 2
@@ -547,7 +566,7 @@ class solarsystem:
             pygame.draw.polygon(surface,smallplanet_color,[position,(position[0],position[1]+1),(position[0]+1,position[1]),(position[0]+1,position[1]+1)])
         elif diameter > 20.0 and object != "sun":
             if object == self.current_planet.planet_name:
-                self.display_mode = "planetary"
+                self.display_mode = Display.PLANETARY
                 self.go_to_planetary_mode = True
             else:
                 if 20 < diameter < 40:
@@ -596,8 +615,6 @@ class solarsystem:
         sun_diameter = self.planets["sun"].planet_diameter_km * max(self.window_size)*int(zoom_level) / 17000000000
         sun_position = (hierarchy_dependent_transposition[0] + global_variables.window_size[0] * 0.5, hierarchy_dependent_transposition[1] + global_variables.window_size[1] * 0.5)
         self.draw_small_object(sun_diameter, sun_position , "sun", surface)
-        if self.go_to_planetary_mode is True:
-            surface = "planetary_mode"
-        else:
+        if not self.go_to_planetary_mode:
             self.get_areas_of_interest(zoom_level,date_variable,center_object)
         return surface

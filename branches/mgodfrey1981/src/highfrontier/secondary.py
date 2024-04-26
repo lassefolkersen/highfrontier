@@ -1,2 +1,0 @@
-class secondary(firm):
-	pass

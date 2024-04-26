@@ -1,4 +1,5 @@
 import primitives
+import logging
 import pygame, sys,os
 from pygame.locals import *
 #from ocempgui.widgets from PIL import ImageLabel
@@ -15,7 +16,7 @@ import random
 
 
 
-
+logger = logging.getLogger(__name__)
 
 
 
@@ -215,58 +216,31 @@ class planet:
         dictionary with keys being tuples of all 90 x 45 pixels. The value of each is another dictionary
         with keys being 1n,2n,3n,4n(distances in degrees, n = step_size variable) and values being the pixel-tuples
         within these distances.
-        For efficiency it will save this calculation in a file "distances" in /data - and also check
-        if this file is present before doing calculations
-
         """
 
         step_size = 1
         steps = 9
 
-        if os.access(os.path.join("pickledmiscellanous","distances"),os.R_OK):
-            #print "Found distance_matrix. Loading..."
-            with open(os.path.join("pickledmiscellanous","distances"),"rb") as file:
-                print(file)
-                distance_data = pickle.load(file)
-            #print "done"
-            #print distance_matrix
-#
-        else:
+        distance_matrix = {}
 
-            distance_matrix = {}
+        planet_circumference = self.planet_diameter_km * math.pi
+        x1 = 0
+        for y1 in range(45):
+            distance_matrix[(x1,y1)] = {}
+            for i in range(0,step_size * steps,step_size):
+                distance_matrix[(x1,y1)][i] = []
 
-            planet_circumference = self.planet_diameter_km * math.pi
-            x1 = 0
-            for y1 in range(45):
-                #print (x1,y1)
-                distance_matrix[(x1,y1)] = {}
-                for i in range(0,step_size * steps,step_size):
-                    distance_matrix[(x1,y1)][i] = []
+            for x2 in range(90):
+                for y2 in range(45):
 
-                for x2 in range(90):
-                    for y2 in range(45):
+                    distance_km = self.calculate_distance(((x1*4)-180,(y1*4)-90),((x2*4)-180,(y2*4)-90))
+                    distance_degrees = (360 * distance_km[0]) / planet_circumference
+                    degree_rounding = int(distance_degrees / step_size) * step_size
+                    if degree_rounding in list(distance_matrix[(x1,y1)].keys()):
+                        distance_matrix[(x1,y1)][degree_rounding].append((x2,y2))
 
-                        distance_km = self.calculate_distance(((x1*4)-180,(y1*4)-90),((x2*4)-180,(y2*4)-90))
-                        distance_degrees = (360 * distance_km[0]) / planet_circumference
-                        degree_rounding = int(distance_degrees / step_size) * step_size
-                        if degree_rounding in list(distance_matrix[(x1,y1)].keys()):
-                            distance_matrix[(x1,y1)][degree_rounding].append((x2,y2))
+        distance_data = {"distance_matrix":distance_matrix,"step_size":step_size,"steps":steps}
 
-#                        if x1 == 0 and y1 == 14 and x2 == 0 and y2 == 15:
-#                            print "Between " + str((x1,y1)) + " and " + str((x2,y2)) + " there is " + str(degree_rounding) + " degrees"
-#                        if x1 == 0 and y1 == 14 and x2 == 0 and y2 == 13:
-#                            print "Between " + str((x1,y1)) + " and " + str((x2,y2)) + " there is " + str(degree_rounding) + " degrees"
-
-
-            distance_data = {"distance_matrix":distance_matrix,"step_size":step_size,"steps":steps}
-
-
-            file = open(os.path.join("pickledmiscellanous","distances"),"w")
-            pickle.dump(distance_data,file)
-            file.close()
-
-
-            print("Did not find calculate_all_distances file. Performed calculations and saved them as distances in folder pickledmiscellanous")
 
         return distance_data
 
@@ -1674,7 +1648,3 @@ class planet:
 #                pygame.time.delay(delay_time)
 #
 #
-
-
-
-

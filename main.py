@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 import time
 import os, sys
+from display import Direction, Display
 import planet
 import company
 import solarsystem
@@ -13,9 +14,9 @@ import global_variables
 import gui
 import random
 import importlib
-importlib.reload(sys)
-if hasattr(sys,"setdefaultencoding"):
-    sys.setdefaultencoding("latin-1")
+
+
+
 class Game:
     def __init__(self):
         print("init Game")
@@ -84,9 +85,9 @@ class Game:
         message_surface = window.subsurface(message_rect)
         #switch to determine planetary mode or solarsystem mode from beginning
         mode_before_change = sol.display_mode
-        if sol.display_mode == "solar_system":
+        if sol.display_mode == Display.SOLAR_SYSTEM:
             surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-        if sol.display_mode == "planetary":
+        if sol.display_mode == Display.PLANETARY:
             sol.current_planet = sol.planets["earth"]
             surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         action_surface.blit(surface,(0,0))
@@ -105,6 +106,7 @@ class Game:
         while True:
             events = pygame.event.get()
             for event in events:
+                direction_to_move = None
                 match event.type:
                     case pygame.QUIT:
                         sys.exit(0)
@@ -117,35 +119,39 @@ class Game:
                                 gui_instance.active_window.text_receiver.receive_text(event)
                                 break
                         match event.key:
+
                             case  pygame.K_PAGEUP:
-                                gui_instance.zoom_in(event)
+                                gui_instance.zoom()
                             case  pygame.K_PAGEDOWN:
-                                gui_instance.zoom_out(event)
+                                gui_instance.zoom(out=True)
                             case  pygame.K_LEFT | pygame.K_a:
-                                gui_instance.go_left(event)
+                                direction_to_move = Direction.LEFT
                             case  pygame.K_RIGHT| pygame.K_d:
-                                gui_instance.go_right(event)
+                                direction_to_move = Direction.RIGHT
                             case  pygame.K_UP | pygame.K_w:
-                                gui_instance.go_up(event)
+                                direction_to_move = Direction.UP
                             case  pygame.K_DOWN | pygame.K_s:
-                                gui_instance.go_down(event)
+                                direction_to_move = Direction.DOWN
                         pygame.display.flip()
                     case pygame.MOUSEWHEEL:
                         if event.y > 0:
-                            gui_instance.zoom_in(event)
+                            gui_instance.zoom()
                         if event.y < 0:
-                            gui_instance.zoom_out(event)
+                            gui_instance.zoom(out=True)
                         if event.x > 0:
-                            gui_instance.go_right(event)
+                            direction_to_move = Direction.RIGHT
                         if event.x < 0:
-                            gui_instance.go_left(event)
+                            direction_to_move = Direction.LEFT
+
+                if direction_to_move is not None:
+                    gui_instance.go_any_direction(direction_to_move)
 
 
             i = 0
             gui_instance.create_infobox()
             gui_instance.all_windows["Messages"].create()
             #in solar system the display needs updating all the time. However we need to protect whatever active window is shown:
-            if sol.display_mode == "solar_system":
+            if sol.display_mode == Display.SOLAR_SYSTEM:
                 surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
                 if gui_instance.active_window is not None:
                     left_rect = pygame.Rect(0,0,gui_instance.active_window.rect[0],global_variables.window_size[1])

@@ -6,7 +6,7 @@ ATKK
 Access Co.
 Acom
 Advantest
-ÆON
+Ã†ON
 Aflac
 Aichi Bank
 Aichi Steel
@@ -348,7 +348,7 @@ Tamron
 Technics
 Tecmo
 Teijin
-Telefónica
+TelefÃ³nica
 Terumo
 The Oriental Land Company
 The Seiyu

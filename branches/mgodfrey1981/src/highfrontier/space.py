@@ -1,2 +1,0 @@
-class space(secondary):
-	pass
