@@ -1,2 +1,0 @@
-All files in this folder exists to speed up initialising calculations
-If they are deleted they will be recalculated on next load
