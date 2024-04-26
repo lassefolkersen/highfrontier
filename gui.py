@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 import global_variables
 import sys
@@ -11,8 +12,13 @@ import gui_components
 import random
 import time
 
+from solarsystem import solarsystem
+from display import Display, raise_not_implemented_display, Direction
 
+import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 
 
@@ -20,7 +26,7 @@ class gui():
     """
     This class holds all the top-level gui stuff, such as functions to distribute clicks and the commandbox buttons on the right side and such
     """
-    def __init__(self,right_side_surface, message_surface, action_surface, solar_system_object):
+    def __init__(self,right_side_surface, message_surface, action_surface, solar_system_object: solarsystem):
         """
         Here the commandbox is started initialized. In addition all the other GUI elements is started up, to keep it at one place
         """
@@ -141,97 +147,116 @@ class gui():
         """
         self.active_window = None
         sol = self.solar_system_object_link
-        if sol.display_mode == "solar_system":
-            self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
-        elif sol.display_mode == "planetary":
-            self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))
-        elif sol.display_mode == "base":
-            if sol.current_planet.current_base is not None:
-                self.going_to_base_mode_event(sol.current_planet.current_base)
-        elif sol.display_mode == "firm":
-            if sol.firm_selected is not None:
-                self.going_to_firm_window_event(sol.firm_selected)
-        elif sol.display_mode == "company":
-            if sol.company_selected is not None:
-                self.going_to_company_window_event(sol.company_selected)
-        elif sol.display_mode in ["techtree"]:
-            pass
-        else:
-            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
+        match sol.display_mode:
+            case Display.SOLAR_SYSTEM:
+                self.action_surface.blit(sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name),(0,0))
+            case Display.PLANETARY:
+                self.action_surface.blit(sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling),(0,0))
+            case Display.BASE:
+                if sol.current_planet.current_base is not None:
+                    self.going_to_base_mode_event(sol.current_planet.current_base)
+            case Display.FIRM:
+                if sol.firm_selected is not None:
+                    self.going_to_firm_window_event(sol.firm_selected)
+            case Display.COMPANY:
+                if sol.company_selected is not None:
+                    self.going_to_company_window_event(sol.company_selected)
+            case Display.TECHTREE:
+                pass
+            case _:
+                raise NotImplementedError(f"The mode: {sol.display_mode} is unknown")
 
         self.create_subcommandbox()
         pygame.display.flip()
 
 
+    def draw_display(self, display: Display) -> pygame.Surface:
+        """Draw the display according to the given mode."""
+        sol = self.solar_system_object_link
 
-    def zoom_in(self,event):
+        surface = None
+
+        logger.debug(f"Drawing display {display=}")
+
+        match display:
+            case Display.SOLAR_SYSTEM:
+                surface = sol.draw_solar_system(
+                    zoom_level=sol.solar_system_zoom,
+                    date_variable=sol.current_date,
+                    center_object=sol.current_planet.planet_name
+                )
+            case Display.PLANETARY:
+                surface = sol.current_planet.draw_entire_planet(
+                    sol.current_planet.eastern_inclination,
+                    sol.current_planet.northern_inclination,
+                    sol.current_planet.projection_scaling
+                )
+            case Display.TECHTREE:
+                surface = sol.technology_tree.draw()
+
+            case _:
+                raise_not_implemented_display(display)
+
+        if surface is None:
+            raise RuntimeError("No surface was created")
+        return surface
+
+
+    def zoom(self, out: bool = False):
+        """Zoom in or out."""
         self.clear_screen()
         sol = self.solar_system_object_link
-        if sol.display_mode == "solar_system":
-            sol.solar_system_zoom = int(sol.solar_system_zoom * 2)
-            surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-            if surface == "planetary_mode":
-                sol.solar_system_zoom = int(sol.solar_system_zoom / 2)
-                sol.display_mode = "planetary"
-                sol.current_planet.load_for_drawing()
-                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-        elif sol.display_mode == "planetary":
-            if sol.current_planet.projection_scaling < 720:
-                sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling * 2)
-                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-            else:
-                if sol.current_planet.current_base is not None: #if a base is selected on this planet, we'll zoom in on it
-                    sol.display_mode = "base"
-                    self.going_to_base_mode_event(sol.current_planet.current_base)
-                    return
+
+        logger.debug(f"Zooming {out=}, {sol.display_mode=}")
+
+        match sol.display_mode, out:
+            case Display.SOLAR_SYSTEM, True:
+                if sol.solar_system_zoom >= 2:
+                    # Zoom out if not already on max
+                    sol.solar_system_zoom = int(sol.solar_system_zoom / 2)
                 else:
+                    # No update
                     return
-        elif sol.display_mode in ["base","firm","company"]:
-            return
-        elif sol.display_mode in ["techtree"]:
-            surface = sol.technology_tree.zoom("in")
-        else:
-            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
+            case Display.SOLAR_SYSTEM, False:
+                if sol.solar_system_zoom > 2000000:
+                    # Go to planet
+                    sol.display_mode = Display.PLANETARY
+                else:
+                    # Zoom
+                    sol.solar_system_zoom = int(sol.solar_system_zoom * 2)
 
+            case Display.PLANETARY, True:
+                if sol.current_planet.projection_scaling >= 90:
+                    sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling / 2)
+                else:
+                    sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000)
+                    sol.current_planet.unload_from_drawing()
+                    sol.display_mode = Display.SOLAR_SYSTEM
+            case Display.PLANETARY, False:
+                if sol.current_planet.projection_scaling < 720:
+                    sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling * 2)
+                else:
+                    if sol.current_planet.current_base is not None:
+                        # if a base is selected on this planet, we'll zoom in on it
+                        sol.display_mode = Display.BASE
+                        self.going_to_base_mode_event(sol.current_planet.current_base)
+                    return
 
-        self.action_surface.blit(surface,(0,0))
-        pygame.display.flip()
+            case Display.FIRM | Display.COMPANY | Display.BASE, True:
+                # Use the planetary surface
+                sol.display_mode = Display.PLANETARY
+                self.create_subcommandbox()
 
-
-
-    def zoom_out(self,event):
-        self.clear_screen()
-        sol = self.solar_system_object_link
-        if sol.display_mode == "solar_system":
-            if sol.solar_system_zoom >= 2:
-                sol.solar_system_zoom = int(sol.solar_system_zoom / 2)
-                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-            else:
+            case Display.TECHTREE, _:
+                sol.technology_tree.zoom(out=out)
+            case _:
+                # No update
                 return
 
-        elif sol.display_mode == "planetary":
-            if sol.current_planet.projection_scaling >= 90:
-                sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling / 2)
-                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-            else:
-                sol.solar_system_zoom = 300000000 / max(sol.current_planet.planet_diameter_km, 2000)
-                sol.current_planet.unload_from_drawing()
-                sol.display_mode = "solar_system"
-                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=datetime.date(2102,1,22),center_object=sol.current_planet.planet_name)
-
-        elif sol.display_mode in ["firm","company","base"]:
-            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-            sol.display_mode = "planetary"
-            self.create_subcommandbox()
-        elif sol.display_mode in ["techtree"]:
-            surface = sol.technology_tree.zoom("out")
-
-        else:
-            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
-            return
-
+        surface = self.draw_display(sol.display_mode)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
+
 
 
 
@@ -240,150 +265,116 @@ class gui():
         position = event.pos
         button = event.button
         click_spot = pygame.Rect(position[0]-3,position[1]-3,6,6)
-        if sol.display_mode == "solar_system":
 
-            collision_test_result = click_spot.collidedict(sol.areas_of_interest)
+        logger.debug(f"Click in action window {sol.display_mode=}")
 
-            if collision_test_result != None:
-                sol.current_planet = sol.planets[collision_test_result[1]]
-                surface = sol.draw_solar_system(zoom_level=sol.solar_system_zoom,date_variable=sol.current_date,center_object=sol.current_planet.planet_name)
-                if surface == "planetary_mode":
-                    manager.emit("going_to_planetary_mode_event",sol.current_planet)
-                    sol.solar_system_zoom = 200000000 / sol.current_planet.planet_diameter_km
-                    sol.display_mode = "planetary"
-                    sol.current_planet.load_for_drawing()
-                    surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-                self.action_surface.blit(surface,(0,0))
-                pygame.display.flip()
+        surface = None
 
-        elif sol.display_mode == "planetary":
+        match sol.display_mode:
+            case Display.SOLAR_SYSTEM:
 
-            if sol.build_base_mode: #if we are in the special build base mode, there should be a base creation instead.
-                sphere_coordinates = sol.current_planet.check_base_position(position)
+                collision_test_result = click_spot.collidedict(sol.areas_of_interest)
 
-                if sphere_coordinates[0:19] == "transfer population" or isinstance(sphere_coordinates, tuple) or sphere_coordinates == "space base": #if the selection was correctly verified by check_base_position we send it back to the GUI for further processing
-                    sol.build_base_mode = False
-                    pygame.mouse.set_cursor(*pygame.cursors.arrow)
-                    self.all_windows["construct_base_menu"].new_base_ask_for_name(sphere_coordinates)
-                    self.active_window = self.all_windows["construct_base_menu"]
-                return
-
-            else: #if we are not in build_base_mode we work as normally
-                indexes = (sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination, int(sol.current_planet.projection_scaling))
-                try:
-                    areas_of_interest = sol.current_planet.areas_of_interest[indexes]
-                except (IndexError, KeyError):
-                    print(f'Problem with the area of interest for index {indexes}')
-                    return
-
-                collision_test_result = click_spot.collidedict(areas_of_interest)
                 if collision_test_result != None:
-                    current_base = sol.current_planet.bases[collision_test_result[1]]
-                    #print "current_base " + str(current_base)
-                    sol.current_planet.current_base = current_base
-                    if button == 1:
-                        surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-                    if button == 3:
-                        self.going_to_base_mode_event(current_base)
+                    sol.current_planet = sol.planets[collision_test_result[1]]
 
-                        return
-                    else:
-                        print(f"Making the bug ? {button}")
-                        return
                 else:
                     return
 
-            self.action_surface.blit(surface,(0,0))
-            pygame.display.flip()
+            case Display.PLANETARY:
 
+                if sol.build_base_mode:
+                    #if we are in the special build base mode, there should be a base creation instead.
+                    sphere_coordinates = sol.current_planet.check_base_position(position)
 
-        elif sol.display_mode in ["techtree"]:
-            surface = sol.technology_tree.receive_click(event)
-            self.action_surface.blit(surface,(0,0))
-            pygame.display.flip()
+                    if sphere_coordinates[0:19] == "transfer population" or isinstance(sphere_coordinates, tuple) or sphere_coordinates == "space base": #if the selection was correctly verified by check_base_position we send it back to the GUI for further processing
+                        sol.build_base_mode = False
+                        pygame.mouse.set_cursor(*pygame.cursors.arrow)
+                        self.all_windows["construct_base_menu"].new_base_ask_for_name(sphere_coordinates)
+                        self.active_window = self.all_windows["construct_base_menu"]
+                    return
 
-        elif sol.display_mode in ["company","firm","base"]:
-            pass
-        else:
-            raise Exception("error. The mode: " + sol.display_mode +" is unknown")
+                else:
+                    #if we are not in build_base_mode we work as normally
+                    indexes = (sol.current_planet.northern_inclination,sol.current_planet.eastern_inclination, int(sol.current_planet.projection_scaling))
+                    try:
+                        areas_of_interest = sol.current_planet.areas_of_interest[indexes]
+                    except (IndexError, KeyError):
+                        logger.error(f'Problem with the area of interest for index {indexes}')
+                        return
 
+                    collision_test_result = click_spot.collidedict(areas_of_interest)
+                    if collision_test_result != None:
+                        current_base = sol.current_planet.bases[collision_test_result[1]]
+                        logger.debug(f"{current_base=}")
+                        sol.current_planet.current_base = current_base
+                        if button == 1:
+                            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
+                        elif button == 3:
+                            self.going_to_base_mode_event(current_base)
+                            return
+                        else:
+                            logger.error(f"Unkonw button action {button}")
+                            return
+                    else:
+                        return
 
+            case Display.TECHTREE:
+                surface = sol.technology_tree.receive_click(event)
 
-
-
-    def go_left(self,event):
-        self.clear_screen()
-        sol = self.solar_system_object_link
-        if sol.display_mode == "planetary":
-            sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination - 30
-            if sol.current_planet.eastern_inclination <= -180:
-                sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination + 360
-            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-        elif sol.display_mode == "techtree":
-            surface = sol.technology_tree.move("left")
-        else:
-            return
-
-        self.action_surface.blit(surface,(0,0))
-        pygame.display.flip()
-
-    def go_right(self,event):
-        self.clear_screen()
-        sol = self.solar_system_object_link
-        if sol.display_mode == "planetary":
-            sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination + 30
-            if sol.current_planet.eastern_inclination > 180:
-                sol.current_planet.eastern_inclination = sol.current_planet.eastern_inclination - 360
-
-            surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-        elif sol.display_mode == "techtree":
-            surface = sol.technology_tree.move("right")
-        else:
-            return
-        self.action_surface.blit(surface,(0,0))
-        pygame.display.flip()
-
-
-    def go_down(self,event):
-        self.clear_screen()
-        sol = self.solar_system_object_link
-        if sol.display_mode == "planetary":
-            if sol.current_planet.northern_inclination > -90:
-                sol.current_planet.northern_inclination = sol.current_planet.northern_inclination - 30
-                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-            else:
+            case _:
+                # No update
                 return
-        elif sol.display_mode == "techtree":
-            surface = sol.technology_tree.move("down")
-        else:
-            return
+
+        if surface is None:
+            logger.error(f"No surface received to update after click in action window")
+
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
 
-
-
-    def go_up(self,event):
+    def go_any_direction(self, direction: Direction):
+        """Move the display to the requested direction."""
         self.clear_screen()
         sol = self.solar_system_object_link
-        if sol.display_mode == "planetary":
-            if sol.current_planet.northern_inclination < 90:
-                sol.current_planet.northern_inclination = sol.current_planet.northern_inclination + 30
-                surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
-            else:
+
+        logger.debug(f"Moving {direction=}, {sol.display_mode=}")
+
+        match sol.display_mode:
+            case Display.PLANETARY:
+                self._go_planet_direction(direction)
+            case Display.TECHTREE:
+                sol.technology_tree.move(direction)
+            case _:
                 return
-        elif sol.display_mode == "techtree":
-            surface = sol.technology_tree.move("up")
-        else:
-            return
+
+        surface = self.draw_display(sol.display_mode)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
 
+    def _go_planet_direction(self, direction: Direction):
+        """Move the planet accordint to the direction."""
 
+        sol = self.solar_system_object_link
 
-
-
-#            print "error. The mode: " + sol.display_mode +" does not accept a/z input"
-
+        match direction:
+            case Direction.LEFT:
+                sol.current_planet.eastern_inclination  -= 30
+                if sol.current_planet.eastern_inclination <= -180:
+                    sol.current_planet.eastern_inclination += 360
+            case Direction.RIGHT:
+                sol.current_planet.eastern_inclination += 30
+                if sol.current_planet.eastern_inclination > 180:
+                    sol.current_planet.eastern_inclination -= 360
+            case Direction.UP:
+                sol.current_planet.northern_inclination += 30
+                if sol.current_planet.northern_inclination > 90:
+                    sol.current_planet.northern_inclination = 90
+            case Direction.DOWN:
+                sol.current_planet.northern_inclination -= 30
+                if sol.current_planet.northern_inclination < -90:
+                    sol.current_planet.northern_inclination = -90
+            case _:
+                raise ValueError(f"Unknown direction {direction}")
 
 
 
@@ -392,14 +383,14 @@ class gui():
         sol = self.solar_system_object_link
 #        company_selected = event.data
 #        mode_before_change = sol.display_mode
-        sol.display_mode = "company"
+        sol.display_mode = Display.COMPANY
         surface = company_selected.draw_company_window()
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
 
     def going_to_firm_window_event(self,firm_selected):
         sol = self.solar_system_object_link
-        sol.display_mode = "firm"
+        sol.display_mode = Display.FIRM
         surface = firm_selected.draw_firm_window()
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
@@ -409,7 +400,7 @@ class gui():
 #        mode_before_change = sol.display_mode
         sol.current_planet.current_base = base_selected
         sol.current_planet = base_selected.home_planet
-        sol.display_mode = "base"
+        sol.display_mode = Display.BASE
         surface = base_selected.draw_base_window()
         self.create_subcommandbox()
         self.action_surface.blit(surface,(0,0))
@@ -443,26 +434,29 @@ class gui():
         self.infobox_surface.blit(rendered_date_string, (10,10))
 
         # creating the env string
-        if self.solar_system_object_link.display_mode == "solar_system":
-            env_string = "Solar system -" + self.solar_system_object_link.current_planet.planet_name.upper()
-        elif self.solar_system_object_link.display_mode == "planetary":
-            if self.solar_system_object_link.current_planet.current_base == None:
-                env_string = self.solar_system_object_link.current_planet.planet_name
-            else:
-                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "company" and self.solar_system_object_link.company_selected is not None:
-            env_string = self.solar_system_object_link.company_selected.name
-        elif self.solar_system_object_link.display_mode == "firm" and self.solar_system_object_link.firm_selected is not None:
-            env_string = self.solar_system_object_link.firm_selected.name
-        elif self.solar_system_object_link.display_mode == "base" and self.solar_system_object_link.current_planet.current_base is not None:
-            env_string = self.solar_system_object_link.current_planet.current_base.name
-        elif self.solar_system_object_link.display_mode == "techtree":
-            env_string = "technology tree"
-        else:
-            env_string = ""
-            if self.solar_system_object_link.message_printing["debugging"]:
-                print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
-                self.solar_system_object_link.messages.append(print_dict)
+        env_string = ""
+        match self.solar_system_object_link.display_mode:
+            case Display.SOLAR_SYSTEM:
+                env_string = "Solar system -" + self.solar_system_object_link.current_planet.planet_name.upper()
+            case Display.PLANETARY:
+                if self.solar_system_object_link.current_planet.current_base == None:
+                    env_string = self.solar_system_object_link.current_planet.planet_name
+                else:
+                    env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name
+            case Display.COMPANY:
+                if self.solar_system_object_link.company_selected is not None:
+                    env_string = self.solar_system_object_link.company_selected.name
+            case Display.FIRM:
+                if self.solar_system_object_link.firm_selected is not None:
+                    env_string = self.solar_system_object_link.firm_selected.name
+            case Display.BASE:
+                if self.solar_system_object_link.current_planet.current_base is not None:
+                    env_string = self.solar_system_object_link.current_planet.current_base.name
+            case Display.TECHTREE:
+                env_string = "technology tree"
+            case _:
+                raise_not_implemented_display(self.solar_system_object_link.display_mode)
+
         rendered_env_string = global_variables.standard_font.render(env_string,True,(0,0,0))
         self.infobox_surface.blit(rendered_env_string, (10,30))
 
@@ -480,7 +474,7 @@ class gui():
         Function that decides what to do if a commandbox button is pressed
         """
         if label == "Technology":
-            if self.solar_system_object_link.display_mode == "techtree":
+            if self.solar_system_object_link.display_mode == Display.TECHTREE:
                 self.solar_system_object_link.display_mode = self.all_windows["Technology"].display_mode_before
                 self.clear_screen()
                 return
@@ -529,13 +523,13 @@ class gui():
         self.subcommand_buttons = {}
 #        pygame.draw.rect(self.subcommand_surface, (150,150,150), self.subcommand_rect)
 
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solar_system_object_link.display_mode == Display.BASE:
             self.buttonlinks = ["base_population_info","base_list_of_companies","base_list_of_firms","base_and_firm_market_window","base_build_menu"]
             self.buttonnicenames = ["Population","Companies","Firms","Market","Build"]
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == Display.FIRM:
             self.buttonlinks = ["firm_process_info","base_and_firm_market_window","firm_trade_partners_info"]
             self.buttonnicenames = ["Production","Market","Trade partners"]
-        elif self.solar_system_object_link.display_mode == "company":
+        elif self.solar_system_object_link.display_mode == Display.COMPANY:
             self.buttonlinks = ["company_ownership_info","company_financial_info","company_list_of_firms"]
             self.buttonnicenames = ["Ownership info","Financial info","Owned firms"]
 
@@ -552,231 +546,6 @@ class gui():
                                                                 topleft = (10, i * 40 + 10))
 
         pygame.display.flip()
-
-
-
-
-
-
-
-#class infobox_window():
-#    """
-#    The infobox window. Always visible and shows time and location - ie "solarsystem, centered on earth",
-#    "Frankfurt" etc. It also shows internet-browser style backward and forward buttons.
-#    """
-#    def __init__(self,solar_system_object,commandbox):
-#        self.solar_system_object_link = solar_system_object
-#        self.size = (400,40)
-#        self.topleft = (global_variables.window_size[0]/2 - self.size[0]/2,0)
-#        self.data = self.update_data()
-#        self.history = []
-#        self.has_been_history = []
-#        self.history_button_size = (30,30)
-#        self.current_event = Signals.Event("going_to_planetary_mode_event",self.solar_system_object_link.current_planet)
-#        self.protect_has_been_history = False  #Without this variable has_been_history would be deleted even when going steps forward
-#        self.create_infobox(self.renderer)
-#
-#
-#    def forwardbutton_callback(self):
-#        if len(self.has_been_history) > 0:
-#            signal_to_emit = self.has_been_history.pop()
-#
-#            self.protect_has_been_history = True
-#            if signal_to_emit.signal == "going_to_solar_system_mode_event":
-#                self.solar_system_object_link.current_planet.projection_scaling = 45
-#                self.solar_system_object_link.display_mode = "planetary"
-#                self.manager.emit("zoom_out",None)
-#            elif signal_to_emit.signal == "going_to_planetary_mode_event":
-#                self.manager.emit("center_on",signal_to_emit.data.name)
-#            else:
-#                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
-#            self.protect_has_been_history = False
-#
-#        else:
-#            raise Exception("The forward button was pressed but it should not have been set to sensitive")
-#
-#        if len(self.has_been_history) < 1:
-#            self.forwardbutton.sensitive = False
-#
-#
-#    def backbutton_callback(self):
-#
-#        if len(self.history) > 0:
-#            self.has_been_history.append(self.current_event)
-#
-#            signal_to_emit = self.history.pop()
-#            self.protect_has_been_history = True
-#            if signal_to_emit.signal == "going_to_solar_system_mode_event":
-#                #print "going to solar system mode"
-#                self.solar_system_object_link.current_planet.projection_scaling = 45
-#                self.solar_system_object_link.display_mode = "planetary"
-#                self.manager.emit("zoom_out",None)
-#            elif signal_to_emit.signal == "going_to_planetary_mode_event":
-#                self.manager.emit("center_on",signal_to_emit.data.name)
-#            else:
-#                self.manager.emit(signal_to_emit.signal,signal_to_emit.data)
-#            self.protect_has_been_history = False
-#
-#            try: self.forwardbutton.sensitive
-#            except: pass
-#            else:
-#                self.forwardbutton.sensitive = True
-#
-#            self.history.pop()
-#        else:
-#            raise Exception("The back button was pressed but it should not have been set to sensitive")
-#
-#        if len(self.history) < 1:
-#            try: self.backbutton.sensitive
-#            except: pass
-#            else:
-#                self.backbutton.sensitive = False
-#
-#
-#    def create_infobox(self,renderer):
-#        """
-#        The creation function. Doesn't return anything, but saves self.window variable and renders using the self.renderer.
-#        """
-#        info_label = Label(self.data)
-#        info_label.multiline = True
-#        self.window = VFrame()
-#        self.window.set_opacity(100)
-#        self.window.border = BORDER_NONE
-#        self.window.add_child(info_label)
-#        self.window.topleft = self.topleft
-#        self.window.minsize = self.size
-#        self.window.depth = 1
-#        renderer.add_widget(self.window)
-#
-#
-#        #Drawing a button with an arrow
-#        blank_surface = pygame.Surface(self.history_button_size)
-#        blank_surface.fill((234,228,223))
-#        pygame.draw.line(blank_surface,(155,155,155),(5,13),(30,13))
-#        pygame.draw.line(blank_surface,(155,155,155),(5,16),(30,16))
-#        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,10))
-#        pygame.draw.line(blank_surface,(155,155,155),(0,15),(5,20))
-#        pygame.draw.line(blank_surface,(155,155,155),(5,10),(5,13))
-#        pygame.draw.line(blank_surface,(155,155,155),(5,20),(5,16))
-#        pygame.draw.line(blank_surface,(155,155,155),(30,13),(30,16))
-#
-#        flipped_blank_surface = pygame.transform.flip(blank_surface,True,False)
-#
-#        self.backbutton = ImageButton(blank_surface)
-#        self.forwardbutton = ImageButton(flipped_blank_surface)
-#        self.backbutton.set_opacity(100)
-#        self.forwardbutton.set_opacity(100)
-#        self.forwardbutton.topleft = (self.topleft[0] + self.size[0] + 5, self.topleft[1])
-#        self.backbutton.topleft = (self.topleft[0] - self.history_button_size[0] - 15 , self.topleft[1])
-#        if len(self.history) < 1:
-#            self.backbutton.sensitive = False
-#        if len(self.has_been_history) < 1:
-#            self.forwardbutton.sensitive = False
-#
-#
-#        self.backbutton.connect_signal(Constants.SIG_CLICKED,self.backbutton_callback)
-#        self.forwardbutton.connect_signal(Constants.SIG_CLICKED,self.forwardbutton_callback)
-#
-#        self.backbutton.depth = 1
-#        self.forwardbutton.depth = 1
-#
-#
-#        self.renderer.add_widget(self.backbutton,self.forwardbutton)
-#
-
-#    def exit(self):
-#        try: self.window
-#        except: pass
-#        else:
-#            self.window.destroy()
-#            del self.window
-#        try: self.backbutton
-#        except: pass
-#        else:
-#            self.backbutton.destroy()
-#            del self.backbutton
-#        try: self.forwardbutton
-#        except: pass
-#        else:
-#            self.forwardbutton.destroy()
-#            del self.forwardbutton
-#
-#
-#    def notify(self,event):
-#        if event.signal in ["going_to_planetary_mode_event","going_to_solar_system_mode_event","going_to_base_mode_event","going_to_company_window_event","going_to_firm_window_event","going_to_techtree_mode_event"]:
-#            self.history.append(self.current_event)
-#            self.current_event = event
-#            if not self.protect_has_been_history:
-#                self.has_been_history = []
-#                try: self.forwardbutton
-#                except: pass
-#                else:
-#                    self.forwardbutton.sensitive = False
-#            while len(self.history) > global_variables.max_stepback_history_size:
-#                del self.history[0]
-#            try: self.backbutton
-#            except: pass
-#            else:
-#                self.backbutton.sensitive = True
-#        if event.signal == "update_infobox":
-#            try: self.window
-#            except:
-#                pass
-#            else:
-#                self.window.lock()
-#                self.data = self.update_data()
-#                info_label = Label(self.data)
-#                info_label.multiline = True
-#                self.window.set_children([info_label])
-#                self.window.update()
-#                self.window.unlock()
-#        if event.signal == "infobox_toggle":
-#            if not event.data:
-#                try: self.window
-#                except:
-#                    self.create_infobox(self.renderer)
-#                    #self.window.set_focus(True)
-#                else:
-#                    print "DEBUGGING: infobox was switched on, but already exists"
-#            else:
-#                self.exit()
-
-
-#
-#    def update_data(self):
-#        date_string = str(self.solar_system_object_link.current_date)
-#        if self.solar_system_object_link.display_mode == "solar_system":
-#            env_string = "Solar system -" + string.capitalize(self.solar_system_object_link.current_planet.planet_name)
-#        elif self.solar_system_object_link.display_mode == "planetary":
-#            if self.solar_system_object_link.current_planet.current_base == None:
-#                env_string = self.solar_system_object_link.current_planet.planet_name
-#            else:
-#                env_string = self.solar_system_object_link.current_planet.planet_name + " - " + self.solar_system_object_link.current_planet.current_base.name
-#        elif self.solar_system_object_link.display_mode == "planetary":
-#            env_string = self.solar_system_object_link.current_planet.current_base.name
-#        elif self.solar_system_object_link.display_mode == "company":
-#            env_string = self.solar_system_object_link.company_selected.name
-#        elif self.solar_system_object_link.display_mode == "firm":
-#            env_string = self.solar_system_object_link.firm_selected.name
-#        elif self.solar_system_object_link.display_mode == "base":
-#            env_string = self.solar_system_object_link.current_planet.current_base.name
-#        elif self.solar_system_object_link.display_mode == "techtree":
-#            env_string = "technology tree"
-#        else:
-#            env_string = ""
-#            if self.solar_system_object_link.message_printing["debugging"]:
-#                print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
-#                self.solar_system_object_link.messages.append(print_dict)
-#
-#
-#
-#
-#        info_string = date_string + "\n" + env_string
-#
-#        return info_string
-
-
-
 
 
 
@@ -2237,7 +2006,7 @@ class base_and_firm_market_window():
             self.market_selection_buttons = None
             firm_selected = self.solar_system_object_link.current_planet.current_base
         else:
-            raise Exception("Unknown display_mode: " + str(global_variabes.display_mode))
+            raise_not_implemented_display(self.solar_system_object_link.display_mode)
 
         #Add an update button that allows for updates to be done
         try:    self.market_selection_buttons.rect
@@ -4125,4 +3894,3 @@ class construct_base_menu():
             self.solar_system_object_link.messages.append(print_dict)
 
             self.new_base_ask_for_name(sphere_coordinates,give_length_warning=True)
-
