@@ -328,6 +328,7 @@ class gui():
 
         if surface is None:
             logger.error(f"No surface received to update after click in action window")
+            return
 
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
