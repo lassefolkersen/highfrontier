@@ -1,4 +1,0 @@
-#!/bin/bash
-cd /usr/share/games/highfrontier/data/
-python intro.py
-
