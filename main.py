@@ -13,9 +13,8 @@ import global_variables
 import gui
 import random
 import importlib
-importlib.reload(sys)
-if hasattr(sys,"setdefaultencoding"):
-    sys.setdefaultencoding("latin-1")
+
+
 class Game:
     def __init__(self):
         print("init Game")
