@@ -208,7 +208,7 @@ AMR Corporation Delaware Pines
 AMREP Corporation
 AmSouth Bancorporation
 AMVESCAP plc
-América Móvil S.A. de C.V.
+AmÃ©rica MÃ³vil S.A. de C.V.
 Anadarko Petroleum Corporation
 Analog Devices Inc.
 Angelica Corp.
@@ -351,7 +351,7 @@ Bay View Capital Corporation
 Baytex Energy Trust Trust Unit
 Bayer AG
 BB&T Corporation
-BBVA Banco Francés S.V.
+BBVA Banco FrancÃ©s S.V.
 BBVA Preferred Capital Ltd.
 BCE Inc.
 Bear Stearns & Co. Inc.
@@ -452,7 +452,7 @@ Bny Capital IV
 BNY Capital V
 The BOC Group plc
 The Boeing Company
-Bois d’Arc Energy Inc.
+Bois dÂ’Arc Energy Inc.
 Bombay Company Inc.
 Borders Group Inc.
 BorgWarner Inc.
@@ -475,7 +475,7 @@ Brandywine Realty Trust
 Brandywine Realty Trust
 Brandywine Realty Trust
 Brascan Corporation
-Brasil Telecom Participações S.A.
+Brasil Telecom ParticipaÃ§Ãµes S.A.
 Brasil Telecom S.A.
 Braskem S.A.
 The Brazil Fund Inc.
@@ -740,19 +740,19 @@ Commercial Net Lease Realty Inc.
 Commscope Inc.
 Community Bank System Inc.
 Community Health Systems Inc.
-Compagnie Générale de Géophysique
-Companhia Brasileira de Distribuição
-Companhia Energética de Minas Gerais (CEMIG)
+Compagnie GÃ©nÃ©rale de GÃ©ophysique
+Companhia Brasileira de DistribuiÃ§Ã£o
+Companhia EnergÃ©tica de Minas Gerais (CEMIG)
 Companhia Paranaense de Energia (COPEL)
-Companhia Siderúrgica Nacional
+Companhia SiderÃºrgica Nacional
 Companhia Vale do Rio Doce
 Companhia Vale do Rio Doce (CVRD)
 Compania de Telecomunicaciones de Chile S.A.
 Compass Minerals International Inc.
 Compass Trust III
-Compañia de Minas Buenaventura S.A.
-Compañía Anónima Nacional Teléfonos de Venezuela (CANTV)
-Compañía Cervecerías Unidas
+CompaÃ±ia de Minas Buenaventura S.A.
+CompaÃ±Ã­a AnÃ³nima Nacional TelÃ©fonos de Venezuela (CANTV)
+CompaÃ±Ã­a CervecerÃ­as Unidas
 Compton Petroleum Corp
 Computer Associates International Inc.
 Computer Sciences Corporation
@@ -921,7 +921,7 @@ Digital River Inc.
 Dillards Cap Tr I
 Dillards Inc.
 The DIRECTV Group Inc.
-Distribución y Servicio (D&S)
+DistribuciÃ³n y Servicio (D&S)
 Diversified Income Strategies Portfolio Inc.
 Dividend Capital Realty Income Allocation Fund
 dj Orthopedics Inc.
@@ -1028,7 +1028,7 @@ El Paso Corporation
 El Paso Corporation
 El Paso Electric Co.
 El Paso Energy Capital Trust I
-Élan Corporation plc
+Ã‰lan Corporation plc
 Electronic Data Systems Corporation
 Eli Lilly and Company
 ELKCORP
@@ -1036,7 +1036,7 @@ Elscint Limited
 Embotelladora Andina
 Embotelladora Andina
 Embraer-Empresa Brasileira de Aeronautica
-Embratel Participações S.A.
+Embratel ParticipaÃ§Ãµes S.A.
 EMC Corporation
 EMCOR Group Inc.
 Emerging Markets Telecommunications Fund Inc.
@@ -1233,7 +1233,7 @@ Flowserve Corporation
 Fluor Corporation
 FMC Corporation
 FMC Technologies Inc.
-Fomento Económico Mexicano S.A.
+Fomento EconÃ³mico Mexicano S.A.
 Foot Locker Inc.
 Ford Motor Company
 Ford Motor Company
@@ -1378,7 +1378,7 @@ Global Signal Inc.
 Global-Tech Appliances Inc.
 GlobalSantaFe Corporation
 GMH Communities Trust
-Gol Linhas Aéreas Inteligentes S.A.
+Gol Linhas AÃ©reas Inteligentes S.A.
 Gold Fields Limited
 Goldcorp Inc.
 Goldcorp Inc.
@@ -2558,7 +2558,7 @@ Pepco Holdings Inc.
 Pepsi Bottling Group Inc.
 PepsiAmericas Inc.
 PepsiCo Inc.
-Perdigão S.A.
+PerdigÃ£o S.A.
 Perini Corporation
 PerkinElmer Inc.
 Permian Basin Realty Trust
@@ -2570,7 +2570,7 @@ PetroKazakhstan Inc.
 Petroleo Brasilero S.A. - Petrobras
 Petroleum & Resources Corporation
 Petroleum Geo-Services Asa
-Petróleo Brasileiro S.A. – PETROBRAS
+PetrÃ³leo Brasileiro S.A. Â– PETROBRAS
 Pfeiffer Vacuum Technology AG
 PFF Bancorp Inc.
 Pfizer Inc.
@@ -2687,7 +2687,7 @@ ProQuest Company
 Prospect Street High Income Portfolio Inc.
 Prospect Street Income Shares Inc.
 Protective Life Corporation
-Provident Capital Trust III 10 ¼% Trust Pfd Securities
+Provident Capital Trust III 10 Å’% Trust Pfd Securities
 Provident Capital Trust IV
 Provident Financial Group Inc.
 Provident Financial Services Inc.
@@ -2752,7 +2752,7 @@ Questar Corp.
 Quicksilver Resources Inc.
 Quiksilver Inc.
 Quilmes Industrial (Quinsa)
-Quiñenco SA
+QuiÃ±enco SA
 Qwest Communications Intl Inc.
 R H DONNELLEY CORP
 R&G Financial Corporation
@@ -3020,8 +3020,8 @@ Smith International Inc.
 Smithfield Foods Inc.
 Snap On Inc.
 SNH Capital Trust I
-Sociedad Química y Minera de Chile
-Sociedad Química y Minera de Chile
+Sociedad QuÃ­mica y Minera de Chile
+Sociedad QuÃ­mica y Minera de Chile
 Sodexho Alliance SA
 Solectron Corporation
 Sonic Automotive Inc.
@@ -3103,8 +3103,8 @@ StorageTek Corporation
 Strategic Global Income Fund Inc.
 Strategic Hotel Capital Inc.
 streetTRACKS Gold Trust
-streetTRACKS® Dow Jones EURO STOXX 50 Fund
-streetTRACKS® Dow Jones STOXX 50 Fund
+streetTRACKSÂ® Dow Jones EURO STOXX 50 Fund
+streetTRACKSÂ® Dow Jones STOXX 50 Fund
 Stride Rite Corporation
 Structured Obligations Corporation
 Structured Products (CORTS)
@@ -3230,30 +3230,30 @@ Teekay Shipping Corporation
 Tefron Ltd.
 Tejon Ranch Co.
 Tektronix Inc.
-Tele Centro Oeste Celular Participações S.A
-Tele Leste Celular Participações S.A.
-Tele Norte Celular Participações S.A.
+Tele Centro Oeste Celular ParticipaÃ§Ãµes S.A
+Tele Leste Celular ParticipaÃ§Ãµes S.A.
+Tele Norte Celular ParticipaÃ§Ãµes S.A.
 Tele Norte Leste Participacoes S.A.
-Tele Sudeste Celular Participações S.A.
+Tele Sudeste Celular ParticipaÃ§Ãµes S.A.
 Telebras HOLDRs
 Telecom Argentina S.A.
 Telecom Italia S.P.A.
 Telecom Italia S.P.A.
 Telecom New Zealand
-Telecomunicaçôes de Sao Paulo S/A-Telesp
+TelecomunicaÃ§Ã´es de Sao Paulo S/A-Telesp
 Teledyne Technologies Inc.
 Teleflex Inc.
-Telefonica Móviles S.A.
+Telefonica MÃ³viles S.A.
 Telefonica S.A.
-Telefónica de Argentina
+TelefÃ³nica de Argentina
 Telekom Austria AG
-Telemig Celular Participações S.A.
+Telemig Celular ParticipaÃ§Ãµes S.A.
 Telephone and Data Systems Inc.
 Telephone and Data Systems Inc.
 Telkom SA Limited
 Telstra Corporation Limited
 TELUS Corporation
-Teléfonos de México
+TelÃ©fonos de MÃ©xico
 Temple-Inland Inc.
 Templeton Dragon Fund Inc.
 Templeton Emerging Markets Fund (Delaware)
@@ -3293,7 +3293,7 @@ Thornburg Mortgage Inc.
 Thornburg Mortgage Inc.
 Tidewater Inc.
 Tiffany & Co.
-Tim Participações S.A.
+Tim ParticipaÃ§Ãµes S.A.
 Timberland Co.
 Time Warner Inc.
 Time Horton Inc
@@ -3412,7 +3412,7 @@ Universal Health Realty Income Trust
 Universal Health Services Inc.
 Universal Technical Institute
 Univision Communications Inc.
-União de Bancos Brasileiros S.A (Unibanco)
+UniÃ£o de Bancos Brasileiros S.A (Unibanco)
 Unova Inc.
 UnumProvident Corporation
 UnumProvident Corporation
@@ -3481,8 +3481,8 @@ Virginia Power Capital Trust II
 Vishay Intertechnology Inc.
 Visteon Corporation
 Vitro S.A. de C.V.
-Vivo Participações S.A.
-Viña Concha y Toro S.A.
+Vivo ParticipaÃ§Ãµes S.A.
+ViÃ±a Concha y Toro S.A.
 VNB Capital Trust I
 Vodafone Group plc
 Volt Information Sciences Inc.
@@ -3620,7 +3620,7 @@ XTO Energy Inc.
 Yankee Candle Inc
 Yanzhou Coal Mining Co. Ltd.
 York International Corp.
-YPF Sociedad Anónima
+YPF Sociedad AnÃ³nima
 Yum! Brands Inc.
 Zale Corporation
 Zapata Corporation
