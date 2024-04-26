@@ -775,6 +775,11 @@ class firm():
 		for resource in self.solar_system_object_link.trade_resources:
 			self.stock_dict[resource] = 0
 
+	def __str__(self) -> str:
+		return f"{type(self).__name__}({self.name})"
+
+	def __repr__(self) -> str:
+		return self.__str__()
 
 	def get_firm_background(self):
 		"""
@@ -1377,6 +1382,7 @@ class base(firm):
 
 		for resource in self.input_output_dict["output"]:
 			self.stock_dict[resource] = 0
+
 
 
 	def check_terrain_type(self):
@@ -2329,11 +2335,3 @@ class merchant(tertiary):
 		functions_to_choose_from = global_variables.market_decisions.calculate_intercity_supply
 		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_intercity_supply"] / 100.0)))
 		functions_to_choose_from[function_to_choose](self)
-
-
-
-
-
-
-
-
