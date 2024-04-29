@@ -115,7 +115,7 @@ class gui():
                         if return_value == "clear":
                             self.clear_screen()
                         elif return_value == "population transfer":
-                            self.solar_system_object_link.display_mode = "planetary"
+                            self.solar_system_object_link.display_mode = Display.PLANETARY
                             self.solar_system_object_link.build_base_mode = True
                             self.solar_system_object_link.building_base = self.solar_system_object_link.current_planet.current_base
                             print_dict = {"text":"DEBUGGING: unknown display mode passed to infobox","type":"debugging"}
@@ -765,7 +765,7 @@ class planet_jump_window():
         planet = self.solar_system_object_link.planets[planet_name]
         self.solar_system_object_link.current_planet = planet
         planet.load_for_drawing()
-        self.solar_system_object_link.display_mode = "planetary"
+        self.solar_system_object_link.display_mode = Display.PLANETARY
         surface = planet.draw_entire_planet(planet.eastern_inclination,planet.northern_inclination,planet.projection_scaling)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
@@ -817,13 +817,13 @@ class tech_window():
     def __init__(self,solar_system_object, action_surface):
         self.solar_system_object_link = solar_system_object
         self.action_surface = action_surface
-        self.display_mode_before = "planetary"
+        self.display_mode_before = Display.PLANETARY
         self.rect = pygame.Rect(0,0,0,0)
 
 
     def create(self):
         sol = self.solar_system_object_link
-        sol.display_mode = "techtree"
+        sol.display_mode = Display.TECHTREE
         surface = sol.technology_tree.plot_total_tree(sol.technology_tree.vertex_dict,sol.technology_tree.zoomlevel,center = sol.technology_tree.center)
         self.action_surface.blit(surface,(0,0))
         pygame.display.flip()
@@ -882,7 +882,7 @@ class base_window():
                 raise Exception("The base sought after (" + str(self.fast_list.selected_name) + ") was not found in the base list of the solar_system_object_link")
 
             self.solar_system_object_link.current_planet.current_base = base_selected
-            self.solar_system_object_link.display_mode = "base"
+            self.solar_system_object_link.display_mode = Display.BASE
             return "clear"
 
 
@@ -1202,7 +1202,7 @@ class company_window():
 
             if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
-                self.solar_system_object_link.display_mode = "company"
+                self.solar_system_object_link.display_mode = Display.COMPANY
                 self.solar_system_object_link.company_selected = selected_company
                 return "clear"
 
@@ -1639,7 +1639,7 @@ class file_window():
         """
         sol = self.solar_system_object_link
 
-        if sol.display_mode == "planetary":
+        if sol.display_mode == Display.PLANETARY:
             sol.current_planet.change_water_level(sol.current_planet.water_level + 0.5)
             surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         else:
@@ -1651,7 +1651,7 @@ class file_window():
     def lower_waters(self,label,function_parameter):
         sol = self.solar_system_object_link
 
-        if sol.display_mode == "planetary":
+        if sol.display_mode == Display.PLANETARY:
             sol.current_planet.change_water_level(sol.current_planet.water_level - 0.5)
             surface = sol.current_planet.draw_entire_planet(sol.current_planet.eastern_inclination,sol.current_planet.northern_inclination,sol.current_planet.projection_scaling)
         else:
@@ -1662,7 +1662,7 @@ class file_window():
 
     def nuclear_war(self,label,function_parameter):
         sol = self.solar_system_object_link
-        if sol.display_mode == "planetary":
+        if sol.display_mode == Display.PLANETARY:
             earth = sol.planets["earth"]
             base_names_chosen = ["stockholm","glasgow","bremen","rotterdam","stuttgart","genoa"]
             bases_chosen = {}
@@ -1787,7 +1787,7 @@ class base_list_of_companies():
 
             if self.fast_list.selected_name in list(self.solar_system_object_link.companies.keys()):
                 selected_company = self.solar_system_object_link.companies[self.fast_list.selected_name]
-                self.solar_system_object_link.display_mode = "company"
+                self.solar_system_object_link.display_mode = Display.COMPANY
                 self.solar_system_object_link.company_selected = selected_company
                 return "clear"
 
@@ -1884,7 +1884,7 @@ class base_list_of_firms():
             if isinstance(firm_selected, company.base): #in this case we are already in the base, so we do nothing.
                 return "clear"
             else:
-                self.solar_system_object_link.display_mode = "firm"
+                self.solar_system_object_link.display_mode = Display.FIRM
                 self.solar_system_object_link.firm_selected = firm_selected
                 return "clear"
 
@@ -1948,9 +1948,9 @@ class base_and_firm_market_window():
         pygame.draw.line(self.action_surface, (255,255,255), (self.rect[0], self.rect[1]), (self.rect[0], self.rect[1] + self.rect[3]))
 
         #first making a list of the resources that should be displayed
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solar_system_object_link.display_mode == Display.BASE:
             resource_button_names = list(self.solar_system_object_link.trade_resources.keys())
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == Display.FIRM:
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
                 resource_button_names = [firm_selected.resource, firm_selected.transport_type]
@@ -1986,7 +1986,7 @@ class base_and_firm_market_window():
 
 
         #in case it is a merchant selected we have to also pick the markets looked upon.
-        if self.solar_system_object_link.display_mode == "firm":
+        if self.solar_system_object_link.display_mode == Display.FIRM:
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
                 self.market_selection_buttons = gui_components.radiobuttons(
@@ -2003,7 +2003,7 @@ class base_and_firm_market_window():
             else:
                 self.market_selection_buttons = None
 
-        elif self.solar_system_object_link.display_mode == "base":
+        elif self.solar_system_object_link.display_mode == Display.BASE:
             self.market_selection_buttons = None
             firm_selected = self.solar_system_object_link.current_planet.current_base
         else:
@@ -2081,9 +2081,9 @@ class base_and_firm_market_window():
 
 
             #first determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
-            if self.solar_system_object_link.display_mode == "base":
+            if self.solar_system_object_link.display_mode == Display.BASE:
                 market = self.solar_system_object_link.current_planet.current_base.market
-            elif self.solar_system_object_link.display_mode == "firm":
+            elif self.solar_system_object_link.display_mode == Display.FIRM:
                 firm_selected = self.solar_system_object_link.firm_selected
                 if isinstance(firm_selected, company.merchant):
                     market = self.base_selected_for_merchant.market
@@ -2239,9 +2239,9 @@ class base_and_firm_market_window():
         resource = self.resource_selected
 
         #determining which market to look at. If in base mode it is obvious which. In firm for non-merchants it is home city, and for merchant it should be selectable
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solar_system_object_link.display_mode == Display.BASE:
             market = self.solar_system_object_link.current_planet.current_base.market
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == Display.FIRM:
             firm_selected = self.solar_system_object_link.firm_selected
             if isinstance(firm_selected, company.merchant):
                 market = self.base_selected_for_merchant.market
@@ -2316,9 +2316,9 @@ class base_and_firm_market_window():
         self.graph_selected = "place bid mode"
         resource = self.resource_selected
 
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solar_system_object_link.display_mode == Display.BASE:
             firm_selected = self.solar_system_object_link.current_planet.current_base
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == Display.FIRM:
             firm_selected = self.solar_system_object_link.firm_selected
         else:
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
@@ -2521,9 +2521,9 @@ class base_and_firm_market_window():
         """
 
 #        all_ok = True
-        if self.solar_system_object_link.display_mode == "base":
+        if self.solar_system_object_link.display_mode == Display.BASE:
             firm_selected = self.solar_system_object_link.current_planet.current_base
-        elif self.solar_system_object_link.display_mode == "firm":
+        elif self.solar_system_object_link.display_mode == Display.FIRM:
             firm_selected = self.solar_system_object_link.firm_selected
         else:
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
@@ -2658,10 +2658,10 @@ class base_and_firm_market_window():
                             if not isinstance(click_spot_result[1]["linkto"],company.base): #if it was a base there would be no point, since it would already in zoom
                                 linkto = click_spot_result[1]["linkto"]
                                 if isinstance(linkto, company.base):
-                                    self.solar_system_object_link.display_mode = "base"
+                                    self.solar_system_object_link.display_mode = Display.BASE
                                     self.solar_system_object_link.current_planet.current_base = linkto
                                 elif isinstance(linkto, company.firm) or isinstance(linkto, company.merchant) or isinstance(linkto, company.research):
-                                    self.solar_system_object_link.display_mode = "firm"
+                                    self.solar_system_object_link.display_mode = Display.FIRM
                                     self.solar_system_object_link.firm_selected = linkto
                                 else:
                                     raise Exception("The class of " + linkto.name + " was " + linkto.__class__)
@@ -3439,11 +3439,11 @@ class company_list_of_firms():
 
             else:
                 if isinstance(firm_selected, company.base):
-                    self.solar_system_object_link.display_mode = "base"
+                    self.solar_system_object_link.display_mode = Display.BASE
                     self.solar_system_object_link.current_planet.current_base = firm_selected
 
                 else:
-                    self.solar_system_object_link.display_mode = "firm"
+                    self.solar_system_object_link.display_mode = Display.FIRM
                     self.solar_system_object_link.firm_selected = firm_selected
                 return "clear"
 
@@ -3887,7 +3887,7 @@ class construct_base_menu():
             self.solar_system_object_link.messages.append(print_dict)
 
             #clear up everything to make space
-            self.solar_system_object_link.display_mode = "planetary"
+            self.solar_system_object_link.display_mode = Display.PLANETARY
             return "clear"
 
         else:
