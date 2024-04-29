@@ -439,6 +439,8 @@ class radiobuttons():
 
     def activate(self, pos):
         selected_pos = (pos[1] - self.topleft[1]) // self.textheight
+        if selected_pos < 0 or selected_pos >= len(self.labels):
+            return
         self.selected = self.labels[selected_pos]
         self.update_radiobuttons()
         self.function(self.selected,self.function_parameter)
