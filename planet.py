@@ -20,6 +20,19 @@ logger = logging.getLogger(__name__)
 
 
 
+proj_not_working_error = Exception(
+    "\n".join(
+        (
+            "Calling the subprocess proj did not work. ",
+            "On windows machines the proj.exe is found in the main highfrontier directory. ",
+            "Make sure you run the program from there. ",
+            "On unix-based machines it probably means that you don't have the proj command installed.",
+            "Please check and install proj if missing. ",
+        )
+    )
+)
+
+
 class planet:
     """
     The class that holds all methods of the planets
@@ -678,6 +691,11 @@ class planet:
             else:
                 pass
             stdout_tuple = proj.communicate(bytes(communication_string, 'utf-8'))
+            if len(stdout_tuple[0]) == 0:
+                try:
+                    raise RuntimeError("The proj command did not return anything. This is probably because the proj command is not installed on your system")
+                except Exception as e:
+                    raise proj_not_working_error from e
             stdout_text = [None  if stdout is None else bytes.decode(stdout, 'utf-8') for stdout in stdout_tuple ]
 
             stdout_text = stdout_text[0].split("\n")
@@ -700,6 +718,12 @@ class planet:
                     y_proj = -( y_raw / 5986778 ) * (projection_scaling * 0.5) + (projection_scaling * 0.5)
 
                     projection_coordinates.append((x_proj,y_proj))
+            
+            if len(projection_coordinates) != len(sphere_coordinates):
+                try:
+                    raise RuntimeError("The number of projection coordinates does not match the number of sphere coordinates")
+                except Exception as e:
+                    raise proj_not_working_error from e
 
         else: #planar map projection
             window_size = global_variables.window_size
