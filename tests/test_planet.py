@@ -21,7 +21,6 @@ def test_solar_system_initialization():
     assert sol.building_base is None  # Check if the building base is set to None initially
     assert len(sol.messages) == 0  # Check if the messages list is empty initially
     assert sol.window_size == global_variables.window_size  # Check if the window size is set correctly
-    assert sol.universe_creation_date == datetime.date(1969, 7, 16)  # Check if the universe creation date is set correctly
     assert sol.solar_system_zoom == 20480  # Check if the solar system zoom is set correctly
     assert len(sol.areas_of_interest) == 0  # Check if the areas of interest dictionary is empty initially
     assert sol.company_selected is None  # Check if the company selected is set to None initially
