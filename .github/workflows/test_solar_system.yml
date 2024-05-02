@@ -28,7 +28,15 @@ jobs:
         run: pwd
 
       - name: List all files
-        run: ls          
+        run: ls         
+
+      - name: Debugging - Print Python path
+        run: python -c "import sys; print(sys.path)"
+
+      - name: Debugging - List files and permissions
+        run: |
+          ls -l
+          stat planet.py
 
       - name: run the tests
         run: pytest tests/
