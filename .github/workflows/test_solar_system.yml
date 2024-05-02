@@ -24,6 +24,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Add current directory to Python path
+        run: echo "::add-path::$(pwd)"
+
       - name: Print current working directory
         run: pwd
 
