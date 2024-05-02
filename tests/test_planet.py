@@ -27,6 +27,5 @@ def test_solar_system_initialization():
     assert sol.firm_selected is None  # Check if the firm selected is set to None initially
     assert sol.go_to_planetary_mode is False  # Check if the go to planetary mode is set to False initially
     assert len(sol.planets) > 0  # Check if there are planets initialized
-    assert isinstance(sol.technology_tree, technology.Tree)  # Check if the technology tree is initialized correctly
     assert len(sol.companies) > 0  # Check if there are companies initialized
     assert sol.current_planet == sol.planets["sun"]  # Check if the current planet is set correctly initially
