@@ -26,20 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Print current working directory
-        run: pwd
-
-      - name: List all files
-        run: ls         
-
-      - name: Debugging - Print Python path
-        run: python -c "import sys; print(sys.path)"
-
-      - name: Debugging - List files and permissions
-        run: |
-          ls -l
-          stat planet.py
-
       - name: run the tests
         run: pytest tests/
 
