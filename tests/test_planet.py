@@ -5,8 +5,8 @@ from solarsystem import solarsystem
 import global_variables
 
 
-def test_solar_system_initializtion():
-    sol = solarsystem.solarsystem(global_variables.start_date, de_novo_initialization = True)
+def test_solar_system_initialization():
+    sol = solarsystem(global_variables.start_date, de_novo_initialization = True)
 
     # Assertion statements
     assert sol.display_mode == Display.PLANETARY  # Check if the display mode is set to planetary
