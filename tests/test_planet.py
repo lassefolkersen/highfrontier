@@ -1,7 +1,7 @@
 import pytest
-import planet
-import company
-import solarsystem
+from planet import planet
+from company import company
+from solarsystem import solarsystem
 import global_variables
 
 
