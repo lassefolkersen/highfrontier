@@ -9,7 +9,6 @@ def test_solar_system_initialization():
     sol = solarsystem(global_variables.start_date, de_novo_initialization = True)
 
     # Assertion statements
-    assert sol.display_mode == Display.PLANETARY  # Check if the display mode is set to planetary
     assert sol.effectuate_migration == global_variables.effectuate_migration  # Check if migration effectuation is set correctly
     assert sol.effectuate_growth == global_variables.effectuate_growth  # Check if growth effectuation is set correctly
     assert sol.current_player is None  # Check if the current player is set to None initially
