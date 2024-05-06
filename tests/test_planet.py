@@ -104,7 +104,7 @@ def test_read_pre_base_file(solar_system):
     # Check if bases are correctly read
     assert isinstance(bases, dict)
     assert len(bases) > 0
-    assert "københavn" in bases.keys()
+    assert "stockholm" in bases.keys()
     assert "new york" in bases.keys()
 
 
