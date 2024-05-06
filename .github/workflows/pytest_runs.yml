@@ -1,4 +1,4 @@
-name: test-solar-system
+name: pytest
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-solar-system:
+  pytests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
