@@ -284,6 +284,9 @@ class solarsystem:
                             start_up_firm.stock_dict[resource] = start_up_firm.input_output_dict["input"][resource]
 #                        print company_instance.name + " started " + start_up_name + " in " + str(location.name)
         return company_database
+
+
+
     def save_solar_system(self,filename, prepare_scenario = False):
         """
         Function that will save the settings. One of the tricky things of doing this is that pictures can not be pickled, so
@@ -291,7 +294,6 @@ class solarsystem:
         by default since it is known where to find the pictures. Pictures are then converted to strings before saving, and
         re-converted back after saving. The planet surface pictures that are loaded in memory for faster rendering are removed temporarilu
         before the save but inserted afterwards. This means that they are lost on reload, which shouldn't be a big issue.
-
         prepare_for_scenario    Kills the current_player
         """
         def get_sub_entry(entry,i,before):
@@ -364,12 +366,9 @@ class solarsystem:
                     image = planet_instance.resource_maps[resource]
                     size = image.size
                     mode = image.mode
-                    print(image.format)
-                    if image.format in ["PNG",None]:
-                        image_string = image.tobytes()
-                    else:
-                        image_string = image.tostring()
+                    image_string = image.tobytes()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
+
         try:
           file = open(filename, "wb")  # Open the file in binary mode for pickle
           pickle.dump(self, file)
@@ -384,20 +383,6 @@ class solarsystem:
           if 'file' in locals() and not file.closed:
             file.close()
 
-        #file = open(filename,"w")
-        #try:  pickle.dump(self,file)
-        #except MemoryError:
-        #    print("DEBUGGING: cPickle failed, likely because of memory issue. Switching to regular pickle. Regular pickle is slower but less memory intensive.")
-        #    import pickle
-        #    try:    pickle.dump(self,file)
-        #    except: print("DEBUGGING: regular pickle also failed. The game was NOT saved")
-        #    else:   print("game saved")
-        #except:
-        #    print("some weird error with cPickle - shown here:")
-        #    pickle.dump(self,file)
-        #else:
-        #    print("game saved")
-        #file.close()
         #here we restore the pre_drawn surfaces
         for planet_name in backup_up_pre_drawn_surfaces:
             planet_instance = self.planets[planet_name]
@@ -417,6 +402,9 @@ class solarsystem:
                     if image.format:
                       image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
+
+
+
     def load_solar_system(self,filename):
         """
         Function that loads the solar system
@@ -446,15 +434,17 @@ class solarsystem:
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
                     image_parts = planet_instance.resource_maps[resource]
-                    print(image_parts.keys())
-
-                    image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
         #inserting all variables in self
         for entry_name in dir(self):
+            if entry_name == '__weakref__':
+                continue
             if not hasattr(new_solar_system, entry_name):
                 delattr(self,entry_name)
         for entry_name in dir(new_solar_system):
+            if entry_name == '__weakref__':
+                continue
             entry = getattr(new_solar_system, entry_name)
             setattr(self,entry_name, entry)
         #updating all solar_system_object_links (this is actually rather weird that it has to be done)
