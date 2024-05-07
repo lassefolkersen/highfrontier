@@ -290,7 +290,6 @@ def test_sphere_to_plane_total(solar_system, tmpdir):
         for i, coord in enumerate(projection_coordinates):
             print(f"Sphere Coordinate {i+1}: {sphere_coordinates[i]} -> Projection Coordinate: {coord}")
 
-        return True
 
     except Exception as e:
         error_message = str(e)
