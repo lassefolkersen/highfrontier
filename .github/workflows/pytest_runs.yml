@@ -28,6 +28,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          # Install proj-bin only on Ubuntu
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            sudo apt-get install proj-bin
+          fi
 
       - name: run the tests
         run: pytest tests/
