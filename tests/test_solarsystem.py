@@ -1,4 +1,7 @@
 import pytest
+import os
+import datetime
+from PIL import Image
 from planet import planet
 from company import company
 from solarsystem import solarsystem
@@ -29,3 +32,31 @@ def test_solar_system_initialization():
     assert len(sol.planets) > 0  # Check if there are planets initialized
     assert len(sol.companies) > 0  # Check if there are companies initialized
     assert sol.current_planet == sol.planets["sun"]  # Check if the current planet is set correctly initially
+
+
+def test_save_and_load_solar_system(tmpdir):
+
+
+
+    # Define the start date string
+    start_date_str = "2024-05-01"
+
+    # Parse the start date string into a datetime.date object
+    start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d").date()
+
+    # Create a temporary directory to save the file
+    save_dir = tmpdir.mkdir("save_files")
+    save_file_path = os.path.join(save_dir, "test_save_file.pkl")
+
+    # Create a new solar system instance and load the saved settings
+    new_solar_system = solarsystem(start_date=start_date)
+    new_solar_system.initialize_planets()
+
+
+    new_solar_system.save_solar_system(save_file_path)  # Corrected the method call
+
+    # Load the solar system settings from the saved file
+    new_solar_system.load_solar_system(save_file_path)
+
+    # Assertions
+    assert os.path.exists(save_file_path)
