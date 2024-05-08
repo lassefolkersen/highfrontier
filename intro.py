@@ -31,7 +31,7 @@ class IntroGui:
         self.main=main.Game()
 
         # Create a clock object to keep track of time
-        self.fps = 60
+        self.fps = 30
         self.clock = pygame.time.Clock()
         self.company_capital = None
         self.company_name = None
@@ -71,9 +71,8 @@ class IntroGui:
             self.clock.tick(self.fps)
             if self.run_background_spin:
                 self.background_sequence(i)
-                i = i + 1
-                if i >= self.steps_loop:
-                    i = 0
+                i = (i + 1) % self.steps_loop
+
             events = pygame.event.get()
             for event in events:
                 if event.type == QUIT:
@@ -214,7 +213,7 @@ class IntroGui:
         return surface
 
     def intro_sequence(self):
-        skip_intro = False
+
         for step in range(self.steps_system + self.steps_both + self.steps_planet):
             events = pygame.event.get()
             for event in events:
@@ -236,7 +235,6 @@ class IntroGui:
             self.window.blit(surface, (0,0))
         self.window.set_clip(None)
         pygame.display.flip()
-        self.clock.tick(self.fps)
 
     def effectuate_load_callback(self):
         load_file_name = self.load_window.selected
