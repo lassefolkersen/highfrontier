@@ -342,7 +342,7 @@ class solarsystem:
                     technology["known_by"] = {}
         #removing pre-drawn surfaces and stringifiyng resource_maps
         backup_up_pre_drawn_surfaces = {}
-        known_planet_images = ["wet_areas","topo_image"] #this can be tested with above commented out block - also remember to change accordingly in the load function
+        known_planet_images = ["wet_areas","topo_image"] 
         for planet_instance in list(self.planets.values()):
             planet_instance.unload_from_drawing()
             for known_planet_image in known_planet_images:
@@ -354,6 +354,7 @@ class solarsystem:
                     mode = image.mode
                     image_string = image.tostring()
                     setattr(planet_instance, known_planet_image, {"string":image_string,"mode":mode,"size":size})
+                    print(f"Planet: {planet_instance.name}, Image type: {type(image)}")
             if planet_instance.pre_drawn_surfaces != {}:
                 backup_up_pre_drawn_surfaces[planet_instance.name] = {}
                 for pre_drawn_surface_key in planet_instance.pre_drawn_surfaces:
@@ -368,10 +369,14 @@ class solarsystem:
                     mode = image.mode
                     image_string = image.tobytes()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
+                    print(f"Planet: {planet_instance.name}, Resource: {resource}, Image type: {type(image)}")
 
         try:
           file = open(filename, "wb")  # Open the file in binary mode for pickle
+          self.simThread.join()
+          del self.simThread
           pickle.dump(self, file)
+          self.launchThread()
           print("Game saved successfully.")
         except MemoryError:
           print("Error: MemoryError occurred while saving the game. Consider freeing up memory or using a system with more memory.")
@@ -404,7 +409,6 @@ class solarsystem:
                     planet_instance.resource_maps[resource] = image
 
 
-
     def load_solar_system(self,filename):
         """
         Function that loads the solar system
@@ -415,8 +419,9 @@ class solarsystem:
                 new_solar_system = pickle.load(file)
         except EOFError as e:
             print_dict = {"text": f"Un-loadable file: {filename} - no load performed", "type": "general gameplay info"}
-            self.solar_system_object_link.messages.append(print_dict)
-            return "clear"
+            error_message = str(e)
+            print(error_message)
+            raise Exception(f"An EOFError of type: {error_message} was found")
         except Exception as e:
             error_message = str(e)
             print(error_message)
