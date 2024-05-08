@@ -354,7 +354,6 @@ class solarsystem:
                     mode = image.mode
                     image_string = image.tostring()
                     setattr(planet_instance, known_planet_image, {"string":image_string,"mode":mode,"size":size})
-                    print(f"Planet: {planet_instance.name}, Image type: {type(image)}")
             if planet_instance.pre_drawn_surfaces != {}:
                 backup_up_pre_drawn_surfaces[planet_instance.name] = {}
                 for pre_drawn_surface_key in planet_instance.pre_drawn_surfaces:
@@ -369,7 +368,6 @@ class solarsystem:
                     mode = image.mode
                     image_string = image.tobytes()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
-                    print(f"Planet: {planet_instance.name}, Resource: {resource}, Image type: {type(image)}")
 
         try:
           file = open(filename, "wb")  # Open the file in binary mode for pickle
