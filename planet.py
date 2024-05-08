@@ -1097,13 +1097,7 @@ class planet:
                 northern_inclination = -60
 
             if image.size != self.image.size: #comparing the topographic/resource map with the real-light surface map
-                #print "image size before : " + str(image.size)
-
                 image = image.resize(self.image.size)
-                #print "image size after : " + str(image.size)
-
-
-
 
             window_size = global_variables.window_size
             image = ImageChops.offset(image,int((-eastern_inclination/ 360.0 ) * image.size[0]),0)
@@ -1128,14 +1122,11 @@ class planet:
             self.flat_image_borders["east_border"] = int(eastern_inclination + east_west_span_degrees /2)
             self.flat_image_borders["north_border"] = int(((north_border / float(image.size[1])) - 0.5) * - 180)
             self.flat_image_borders["south_border"] = int(((south_border / float(image.size[1])) - 0.5) * - 180)
-            #print self.flat_image_borders
-
             image = image.crop((west_border,north_border,east_border,south_border))
-            image_bmp = image.convert("RGB").tobytes()
-
+            image_bmp = image.convert(mode).tobytes()
             surface = pygame.image.frombuffer(image_bmp , (window_size[0],window_size[1]), mode)
-
             self.projection_dim =(window_size[0],window_size[1])
+
         return surface
 
 
