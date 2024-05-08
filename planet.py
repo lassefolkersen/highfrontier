@@ -22,19 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 
-proj_not_working_error = Exception(
-    "\n".join(
-        (
-            "Calling the subprocess proj did not work. ",
-            "On windows machines the proj.exe is found in the main highfrontier directory. ",
-            "Make sure you run the program from there. ",
-            "On unix-based machines it probably means that you don't have the proj command installed.",
-            "Please check and install proj if missing. ",
-        )
-    )
-)
-
-
 class planet:
     """
     The class that holds all methods of the planets
@@ -696,12 +683,6 @@ class planet:
 
             projection_coordinates = [(x , y) for x, y in zip(x_proj,y_proj)]
 
-            if len(projection_coordinates) != len(sphere_coordinates):
-                try:
-                    raise RuntimeError("The number of projection coordinates does not match the number of sphere coordinates")
-                except Exception as e:
-                    raise proj_not_working_error from e
-
         else: #planar map projection
 
             projection_coordinates = []
@@ -765,15 +746,18 @@ class planet:
 
 
         projection_dim = (projection_scaling,projection_scaling)
-        rotation_coordinates = (eastern_inclination,northern_inclination)
-        startup_string = "proj -I +proj=ortho +ellps=sphere +lat_0=" + str(-rotation_coordinates[1]) + " +lon_0=" + str(rotation_coordinates[0])
-        communication_string = ""
+
         sphere_coordinates = []
         projection_coordinates=[]
         plane_to_sphere = {}
 
         #new_image_string=""
         if projection_scaling <= 360: #for the round world projection
+
+            startup_string = f"-I +proj=ortho +ellps=sphere +lat_0={-northern_inclination} +lon_0={eastern_inclination}"
+
+            x_proj = []
+            y_proj = []
             if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
                 if isinstance(given_coordinates,tuple):
                     given_coordinates = [given_coordinates]
@@ -781,9 +765,8 @@ class planet:
                 #Creating the string that goes into the proj command
                 for coordinate in given_coordinates:
                     projection_coordinates.append(coordinate)
-                    x_proj = ((coordinate[0] / (projection_dim[0]*0.5)) -1.0) * 6370997
-                    y_proj = ((coordinate[1] / (projection_dim[1]*0.5)) -1.0) * 6370997
-                    communication_string = communication_string + (str(x_proj) + " " + str(y_proj) + "\n")
+                    x_proj.append(((coordinate[0] / (projection_dim[0]*0.5)) -1.0) * 6370997)
+                    y_proj.append(((coordinate[1] / (projection_dim[1]*0.5)) -1.0) * 6370997)
 
 
             elif given_coordinates == None:
@@ -791,45 +774,32 @@ class planet:
                 #Creating the string that goes into the proj command
                 for i in range(0,(projection_dim[0]*projection_dim[1])):
                     projection_coordinates.append((i-(i/projection_dim[0])*projection_dim[0],i / projection_dim[1]))  #testing to see if the integer round works to my advantage
-                    x_proj = ((projection_coordinates[i][0] / (projection_dim[0]*0.5)) -1.0) * 6370997
-                    y_proj = ((projection_coordinates[i][1] / (projection_dim[1]*0.5)) -1.0) * 6370997
-                    communication_string = communication_string + (str(x_proj) + " " + str(y_proj) + "\n")
+                    x_proj.append(((projection_coordinates[i][0] / (projection_dim[0]*0.5)) -1.0) * 6370997)
+                    y_proj.append(((projection_coordinates[i][1] / (projection_dim[1]*0.5)) -1.0) * 6370997)
 
             else:
                 raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")
 
+            #running pyproj
+            transformer = Transformer.from_pipeline(startup_string)
 
+            xxs, yys = transformer.transform(x_proj,y_proj)
 
-            try:    proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE, shell = True)
-            except:
-                raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
-            else:
-                pass
-
-
-            stdout_text = proj.communicate(bytes(communication_string, 'utf-8'))
-            if isinstance(stdout_text[0], bytes):
-                stdout_text = stdout_text[0].decode('utf-8').split("\n")
-            else:
-                stdout_text = stdout_text[0].split("\n")
 
 
             #print "stdout_text: " + str(stdout_text)
-            for i in range(0,len(stdout_text)-1):
-                if stdout_text[i].find("*") != -1:
-                    plane_to_sphere[projection_coordinates[i]] = "space"
+            for x, y, coord in zip(xxs,yys, projection_coordinates):
+                if not (np.isfinite(x) and np.isfinite(y)):
+                    plane_to_sphere[coord] = "space"
                 else:
-                    splitting = stdout_text[i].partition("\t")
-                    x_total = splitting[0]
-                    y_total = splitting[2]
-                    sphere_coordinates_x = parse_coordinate_from_sphere(x_total)
-                    sphere_coordinates_y = parse_coordinate_from_sphere(y_total)
+                    sphere_coordinates_x = parse_coordinate_from_sphere(x)
+                    sphere_coordinates_y = parse_coordinate_from_sphere(y)
 
-                    plane_to_sphere[projection_coordinates[i]] = (sphere_coordinates_x,-sphere_coordinates_y)
+                    plane_to_sphere[coord] = (sphere_coordinates_x,-sphere_coordinates_y)
 
 
 
-        else: #fot the flat world projection
+        else: #for the flat world projection
             if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
                 if isinstance(given_coordinates,tuple):
                     given_coordinates = [given_coordinates]
