@@ -57,7 +57,7 @@ class IntroGui:
         i = 0
         while True:
             if self.run_background_spin:
-                pygame.time.delay(self.stepsize*30)
+                pygame.time.delay(self.stepsize)
                 self.background_sequence(i)
                 i = i + 1
                 if i >= self.steps_loop:
@@ -199,7 +199,7 @@ class IntroGui:
                 surface = pygame.image.load(path)
                 self.window.blit(surface, (0,0))
                 pygame.display.flip()
-                pygame.time.delay(self.stepsize*30)
+                pygame.time.delay(self.stepsize)
     def background_sequence(self,i):
         path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
         surface = pygame.image.load(path)
