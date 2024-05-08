@@ -35,6 +35,8 @@ class IntroGui:
     def __init__(self):
         self.main=main.Game()
         self.stepsize = 1
+        self.fps = 60
+        self.clock = pygame.time.Clock()
         self.company_capital = None
         self.company_name = None
         self.save_game_to_load = None
@@ -55,9 +57,10 @@ class IntroGui:
         self.intro_sequence()
         self.create_intro_gui()
         i = 0
+        # Create a clock object to keep track of time
         while True:
+            self.clock.tick(self.fps)
             if self.run_background_spin:
-                pygame.time.delay(self.stepsize)
                 self.background_sequence(i)
                 i = i + 1
                 if i >= self.steps_loop:
@@ -188,18 +191,21 @@ class IntroGui:
                 pickle_final_name_and_path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
                 pygame.image.save(surface,pickle_final_name_and_path)
     def intro_sequence(self):
-        skip_intro = False
+        """The intro sequence simply loads the images and displays them in order.
+
+        It is possible to skip the intro by pressing a key or clicking the mouse.
+        """
         for i in range(self.steps_system + self.steps_both + self.steps_planet):
             events = pygame.event.get()
             for event in events:
-                if event.type in [2,5]: #key or mouse down event
-                    skip_intro = True
-            if not skip_intro:
-                path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
-                surface = pygame.image.load(path)
-                self.window.blit(surface, (0,0))
-                pygame.display.flip()
-                pygame.time.delay(self.stepsize)
+                if event.type in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]:
+                    return
+            path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
+            surface = pygame.image.load(path)
+            self.window.blit(surface, (0,0))
+            pygame.display.flip()
+            self.clock.tick(self.fps)
+
     def background_sequence(self,i):
         path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
         surface = pygame.image.load(path)
@@ -212,7 +218,7 @@ class IntroGui:
             self.window.blit(surface, (0,0))
         self.window.set_clip(None)
         pygame.display.flip()
-        pygame.time.delay(self.stepsize)
+        self.clock.tick(self.fps)
     def effectuate_load_callback(self):
         load_file_name = self.load_window.selected
         if load_file_name is not None:
