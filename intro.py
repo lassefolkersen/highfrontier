@@ -144,29 +144,34 @@ class IntroGui:
 
     def generate_intro_image(self, step: int) -> pygame.Surface:
 
-        if step < self.steps_system:
-            eccentricity = 1 - (((step+1) / float(500)) ** 2)
-            zoom = (1.2 ** (step+1)) / 100
+
+        # Draw the solar system
+        if step < self.steps_system + self.steps_both:
+            # Parameters for the solar system
+            eccentricity = 1 - (((step + 1) / 500) ** 2)
+            zoom = (1.2 ** (step + 1)) / 100
             self.logger.debug(f"at {step=} {eccentricity=}  {zoom=}")
 
             self.set_eccentricity(self.sol,eccentricity)
             surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
+        else:
+            surface = pygame.Surface(global_variables.window_size)
 
+        if step < self.steps_system:
+            # Draw only the solar system
+            pass
         elif step < self.steps_system + self.steps_both:
-            earth = self.sol.planets["earth"]
+            earth: planet.planet  = self.sol.planets["earth"]
 
-            northern_inclination = -40 + (step+1) / 2
-            eastern_inclination = (step+1) * 5 - 50
-            projection_scaling = 3 + (step+1) * 4
+            step_this = step - self.steps_system + 1
+
+            northern_inclination = -40 + step_this / 2
+            eastern_inclination = step_this* 5 - 50
+            projection_scaling = 3 + step_this * 4
             if eastern_inclination >= 180:
                 eastern_inclination = eastern_inclination - 360
 
-            eccentricity = 1 - ((((step+1) + self.steps_system) / float(500)) ** 2)
-            zoom = (1.2 ** ((step+1) + self.steps_system)) / 100
 
-            self.set_eccentricity(self.sol,eccentricity)
-
-            surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
             surface.blit(pygame.Surface((projection_scaling*4,projection_scaling*4)),(global_variables.window_size[0] / 2 - projection_scaling*2, global_variables.window_size[1] / 2 - projection_scaling*2))
             self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
             projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
@@ -174,17 +179,20 @@ class IntroGui:
             surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
 
         else:
-            earth = self.sol.planets["earth"]
+            earth: planet.planet = self.sol.planets["earth"]
+            step_this = step - self.steps_system - self.steps_both + 1
 
-            northern_inclination = -30 + (step+1) / 2
-            eastern_inclination = (step+1) * 5
-            projection_scaling = 43 + (step+1) * 6
+            # Will make the earth rotate while zooming in
+            northern_inclination = -30 + step_this / 2
+            eastern_inclination = step_this * 5
+            projection_scaling = 43 + step_this * 6
             if eastern_inclination >= 180:
                 eastern_inclination = eastern_inclination - 360
+
             self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
             projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
             planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
-            surface = pygame.Surface(global_variables.window_size)
+
             surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
 
         return surface
