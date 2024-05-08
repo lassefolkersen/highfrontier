@@ -13,6 +13,8 @@ import global_variables
 import company
 import random
 
+from pyproj import Transformer
+import numpy as np
 
 
 
@@ -674,51 +676,26 @@ class planet:
         to sphere_coordinates and then paint the corresponding projection_coordinate.
 
         """
-        projection_coordinates = []
         if self.projection_scaling <= 360: #for the round world projection
-            #Creating the string that goes into the proj command
-            communication_string = ""
-            for i in range(0,len(sphere_coordinates)):
-                #projection_coordinates.append((i-(i/projection_dim[0])*projection_dim[0],i / projection_dim[1]))
-                x_sphere = sphere_coordinates[i][0]
-                y_sphere = sphere_coordinates[i][1]
-                communication_string = communication_string + (str(x_sphere) + " " + str(y_sphere) + "\n")
 
-            startup_string = "proj +proj=ortho +ellps=sphere +lon_0=" + str(eastern_inclination) + " +lat_0=" + str(northern_inclination)
-            try:    proj = subprocess.Popen(startup_string,stdin=subprocess.PIPE,stdout=subprocess.PIPE, shell = True)
-            except:
-                raise Exception("Calling the subprocess proj did not work. On windows machines that is weird. On unix-based machines it probably means that you should install proj 4.6. Check your local repository or google for proj + cartographic")
-            else:
-                pass
-            stdout_tuple = proj.communicate(bytes(communication_string, 'utf-8'))
-            if len(stdout_tuple[0]) == 0:
-                try:
-                    raise RuntimeError("The proj command did not return anything. This is probably because the proj command is not installed on your system")
-                except Exception as e:
-                    raise proj_not_working_error from e
-            stdout_text = [None  if stdout is None else bytes.decode(stdout, 'utf-8') for stdout in stdout_tuple ]
+            arr = np.array(sphere_coordinates)
+            x_sphere = arr[:,0]
+            y_sphere = arr[:,1]
 
-            stdout_text = stdout_text[0].split("\n")
 
-            for i in range(0,len(stdout_text)):
-                if stdout_text[i].find("*") != -1:
-                    projection_coordinates.append("Not seen")
-                elif len(stdout_text[i]) < 5: #to remove empty lines
-                    pass
-                else:
+            startup_string = f"+proj=ortho +ellps=sphere +lon_0={eastern_inclination} +lat_0={northern_inclination}"
 
-                    splitting = stdout_text[i].partition("\t")
-                    x_raw = splitting[0]
-                    y_raw = splitting[2]
+            transformer = Transformer.from_pipeline(startup_string)
 
-                    x_raw = float(x_raw.rstrip("\r"))
-                    y_raw = float(y_raw.rstrip("\r"))
+            x, y = transformer.transform(x_sphere,y_sphere)
 
-                    x_proj = ( x_raw / 6370997 ) * (projection_scaling * 0.5) + (projection_scaling * 0.5)  #where 6370997 is the constant of the proj program
-                    y_proj = -( y_raw / 5986778 ) * (projection_scaling * 0.5) + (projection_scaling * 0.5)
+            half_scale = projection_scaling * 0.5
 
-                    projection_coordinates.append((x_proj,y_proj))
-            
+            x_proj = ( x / 6370997 ) * half_scale + half_scale  #where 6370997 is the constant of the proj program
+            y_proj = -( y / 5986778 ) * half_scale + half_scale
+
+            projection_coordinates = [(x , y) for x, y in zip(x_proj,y_proj)]
+
             if len(projection_coordinates) != len(sphere_coordinates):
                 try:
                     raise RuntimeError("The number of projection coordinates does not match the number of sphere coordinates")
@@ -726,6 +703,9 @@ class planet:
                     raise proj_not_working_error from e
 
         else: #planar map projection
+
+            projection_coordinates = []
+
             window_size = global_variables.window_size
             west_border = self.flat_image_borders["west_border"]
             east_border = self.flat_image_borders["east_border"]
@@ -1231,9 +1211,10 @@ class planet:
                 reverse_plane_coordinates = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
 
                 for i in range(0,len(base_names)):
-                    if plane_coordinates[i] != "Not seen":
-                        base_positions_here[base_names[i]] = (int(plane_coordinates[i][0] ),int(plane_coordinates[i][1]))
-                        absolute_position = (plane_coordinates[i][0] + (window_size[0]/2) - (projection_scaling/2), plane_coordinates[i][1] + ( window_size[1] /2) - (projection_scaling/2))
+                    x, y = plane_coordinates[i]
+                    if np.isfinite(x) and np.isfinite(y):
+                        base_positions_here[base_names[i]] = (int(x),int(y))
+                        absolute_position = (x + (window_size[0]/2) - (projection_scaling/2), y + ( window_size[1] /2) - (projection_scaling/2))
                         areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
                     else:
                         #calculation the edge position for a base below the edge (for use in trade_network drawing)
