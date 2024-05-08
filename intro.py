@@ -1,46 +1,58 @@
+import os
+import sys
+import logging
+from pathlib import Path
+
 from pygame.locals import *
 import pygame
+
 import solarsystem
 import planet
 import global_variables
-import os
-import sys
-import datetime
+
 import gui_components
 import main
-import time
 import primitives
 
+
 class IntroGui:
-    def start_new_game(self, label, function_parameter):
-        company_capital = self.text_receiver.text
-        all_ok = True
-        try:    int(company_capital)
-        except: all_ok = False
-        else:   pass
-        if all_ok:
-            if 0 >= int(company_capital):
-                all_ok = False
-        if all_ok:
-            self.company_capital = int(company_capital)
-            if(self.company_name is not None):
-                cn=str(self.company_name)
-            else:
-                cn=None
-            self.main.start_loop(companyName = cn,
-                                 companyCapital = self.company_capital,
-                                 loadPreviousGame = None)
-        else:
-            self.ask_company_capital(None, None, give_warning=True)
+    """GUI for the introduction.
+
+    The intro shows a annimation that starts with the solar system,
+    then zooms in on the earth.
+    Finally the introduction menu is shown, with in the background
+    a loop showing the earth from different angles.
+
+    """
+
+
+
     def __init__(self):
         self.main=main.Game()
-        self.stepsize = 1
+
+        # Create a clock object to keep track of time
+        self.fps = 30
+        self.clock = pygame.time.Clock()
         self.company_capital = None
         self.company_name = None
         self.save_game_to_load = None
         self.run_background_spin = True
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 90,global_variables.window_size[1] / 3, 180,180)
         self.text_receiver = None
+
+        # Where to save computed intro files
+        self.intro_dir = Path("intro")
+        self.intro_dir.mkdir(exist_ok=True)
+
+        # Steps for the intro sequence
+        self.steps_system = 74
+        self.steps_both = 9
+        self.steps_planet = 51
+        self.steps_loop = 72
+
+        # Logger object
+        self.logger = logging.getLogger(__name__)
+
         pygame.init()
         if global_variables.fullscreen:
             self.window = pygame.display.set_mode(global_variables.window_size,FULLSCREEN)
@@ -51,17 +63,16 @@ class IntroGui:
 
         if global_variables.fullscreen:
             pygame.time.delay(1000)
-        self.initialize_intro_sequence()
+
         self.intro_sequence()
         self.create_intro_gui()
         i = 0
         while True:
+            self.clock.tick(self.fps)
             if self.run_background_spin:
-                pygame.time.delay(self.stepsize*30)
                 self.background_sequence(i)
-                i = i + 1
-                if i >= self.steps_loop:
-                    i = 0
+                i = (i + 1) % self.steps_loop
+
             events = pygame.event.get()
             for event in events:
                 if event.type == QUIT:
@@ -72,6 +83,14 @@ class IntroGui:
                 if event.type == pygame.KEYDOWN:
                     if self.text_receiver is not None:
                         self.text_receiver.receive_text(event)
+
+
+    @property
+    def sol(self):
+        if not hasattr(self, "_sol"):
+            self._sol = solarsystem.solarsystem(global_variables.start_date)
+        return self._sol
+
     def receive_click(self, event):
         print(event)
         if self.gui_rect.collidepoint(event.pos) == 1:
@@ -84,16 +103,7 @@ class IntroGui:
                         button.activate(event.pos)
                     else:
                         button.activate(event)
-    def triplify_number(self,number):
-        if len(str(number)) == 1:
-            number = "00" + str(number)
-        elif len(str(number)) == 2:
-            number = "0" + str(number)
-        elif len(str(number)) == 3:
-            number = str(number)
-        else:
-            raise Exception("Bad number: " + str(number))
-        return number
+
     def set_eccentricity(self,solar_system_instance, new_eccentricity):
         if new_eccentricity >= 1:
             raise Exception("Too high eccentricity")
@@ -103,106 +113,119 @@ class IntroGui:
                 if planet_instance.name != "sun":
                     planet_instance.planet_data["original eccentricity"] = eccentricity
             planet_instance.planet_data["eccentricity"] = new_eccentricity
-    def initialize_intro_sequence(self):
-        self.steps_system = 74
-        self.steps_both = 9
-        self.steps_planet = 51
-        all_ok = True
-        for i in range(self.steps_system + self.steps_both + self.steps_planet):
-            path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
-            if not os.access(path,os.R_OK):
-                all_ok = False
-        if not all_ok:
-            print("WARNING: Some files were missing from the intro directory. It will be recreated. This will take time.")
-            self.sol = solarsystem.solarsystem(global_variables.start_date)
-            for i in range(self.steps_system):
-                eccentricity = 1 - (((i+1) / float(500)) ** 2)
-                zoom = (1.2 ** (i+1)) / 100
-                print("at i = " + str(i) + " eccentricity: " + str(eccentricity) + " zoom: " + str(zoom))
 
-                self.set_eccentricity(self.sol,eccentricity)
-                surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
-                pickle_final_name_and_path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
-                pygame.image.save(surface,pickle_final_name_and_path)
+    def filepath_of_intro(self, step: int, is_loop: bool):
+        """Get the path to the introfile for step i."""
+        f_name = f"file_{step:03d}.jpg"
+        if is_loop:
+            f_name = "loop_" + f_name
+        else:
+            f_name = "intro_" + f_name
+        return self.intro_dir / f_name
+
+
+
+    def get_surface_intro(self, step: int, is_loop: bool = True):
+        """Get the surface for the intro step i."""
+        filepath = self.filepath_of_intro(step, is_loop)
+
+        if filepath.is_file():
+            return pygame.image.load(filepath)
+        else:
+            # Generate the file if it doesn't exist
+            self.logger.warning(f" {filepath} not found. It will be recreated. This will take time.")
+            if is_loop:
+                surface = self.generate_intro_loop_image(step)
+            else:
+                surface = self.generate_intro_image(step)
+            pygame.image.save(surface, filepath)
+            return surface
+
+
+    def generate_intro_image(self, step: int) -> pygame.Surface:
+
+        if step < self.steps_system:
+            eccentricity = 1 - (((step+1) / float(500)) ** 2)
+            zoom = (1.2 ** (step+1)) / 100
+            self.logger.debug(f"at {step=} {eccentricity=}  {zoom=}")
+
+            self.set_eccentricity(self.sol,eccentricity)
+            surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
+
+        elif step < self.steps_system + self.steps_both:
             earth = self.sol.planets["earth"]
-            for i in range(self.steps_both):
-                northern_inclination = -40 + (i+1) / 2
-                eastern_inclination = (i+1) * 5 - 50
-                projection_scaling = 3 + (i+1) * 4
-                if eastern_inclination >= 180:
-                    eastern_inclination = eastern_inclination - 360
 
-                eccentricity = 1 - ((((i+1) + self.steps_system) / float(500)) ** 2)
-                zoom = (1.2 ** ((i+1) + self.steps_system)) / 100
+            northern_inclination = -40 + (step+1) / 2
+            eastern_inclination = (step+1) * 5 - 50
+            projection_scaling = 3 + (step+1) * 4
+            if eastern_inclination >= 180:
+                eastern_inclination = eastern_inclination - 360
 
-                self.set_eccentricity(sol,eccentricity)
+            eccentricity = 1 - ((((step+1) + self.steps_system) / float(500)) ** 2)
+            zoom = (1.2 ** ((step+1) + self.steps_system)) / 100
 
-                surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
-                surface.blit(pygame.Surface((projection_scaling*4,projection_scaling*4)),(global_variables.window_size[0] / 2 - projection_scaling*2, global_variables.window_size[1] / 2 - projection_scaling*2))
-                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
-                projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
-                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
-                pickle_final_name_and_path = os.path.join("intro","intro_file_" + str(self.triplify_number(i+self.steps_system)) + ".jpg")
-                pygame.image.save(surface,pickle_final_name_and_path)
-            for i in range(self.steps_planet):
-                northern_inclination = -30 + (i+1) / 2
-                eastern_inclination = (i+1) * 5
-                projection_scaling = 43 + (i+1) * 6
-                if eastern_inclination >= 180:
-                    eastern_inclination = eastern_inclination - 360
-                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
-                projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
-                surface = pygame.Surface(global_variables.window_size)
-                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
-                pickle_final_name_and_path = os.path.join("intro","intro_file_" + str(self.triplify_number(i+self.steps_system+self.steps_both)) + ".jpg")
-                pygame.image.save(surface,pickle_final_name_and_path)
+            self.set_eccentricity(self.sol,eccentricity)
+
+            surface = self.sol.draw_solar_system(zoom_level=zoom,date_variable=self.sol.current_date,center_object="earth")
+            surface.blit(pygame.Surface((projection_scaling*4,projection_scaling*4)),(global_variables.window_size[0] / 2 - projection_scaling*2, global_variables.window_size[1] / 2 - projection_scaling*2))
+            self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
+            projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
+            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+            surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
+
+        else:
+            earth = self.sol.planets["earth"]
+
+            northern_inclination = -30 + (step+1) / 2
+            eastern_inclination = (step+1) * 5
+            projection_scaling = 43 + (step+1) * 6
+            if eastern_inclination >= 180:
+                eastern_inclination = eastern_inclination - 360
+            self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
+            projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
+            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+            surface = pygame.Surface(global_variables.window_size)
+            surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
+
+        return surface
+
+    def generate_intro_loop_image(self, step: int) -> pygame.Surface:
+
         northern_inclination_start = -30 + (self.steps_planet+1) / 2
         eastern_inclination_start = (self.steps_planet+1) * 5
         projection_scaling_start = 43 + (self.steps_planet+1) * 6
         self.steps_loop = int(360 / 5) #because we tilt 5 each step
-        all_ok = True
-        for i in range(self.steps_loop):
-            path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
-            if not os.access(path,os.R_OK):
-                all_ok = False
-        if not all_ok:
-            try:    self.sol
-            except:
-                self.sol = solarsystem.solarsystem(global_variables.start_date)
-            else:
-                pass
-            earth = self.sol.planets["earth"]
-            for i in range(self.steps_loop):
-                eastern_inclination = eastern_inclination_start + i * 5
-                northern_inclination = northern_inclination_start
-                projection_scaling = projection_scaling_start
-                if eastern_inclination >= 180:
-                    eastern_inclination = eastern_inclination - 360
-                print(" at i " + str(i) + " north is " + str(northern_inclination) + " and east is " + str(eastern_inclination) + " and scaling is " + str(projection_scaling))
-                projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-                planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
-                surface = pygame.Surface(global_variables.window_size)
-                surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
-                pickle_final_name_and_path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
-                pygame.image.save(surface,pickle_final_name_and_path)
+
+
+        # Other wise recreate the file
+        earth = self.sol.planets["earth"]
+        eastern_inclination = eastern_inclination_start + step * 5
+        northern_inclination = northern_inclination_start
+        projection_scaling = projection_scaling_start
+        if eastern_inclination >= 180:
+            eastern_inclination = eastern_inclination - 360
+        self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
+        projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
+        planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+        surface = pygame.Surface(global_variables.window_size)
+        surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
+
+        return surface
+
     def intro_sequence(self):
-        skip_intro = False
-        for i in range(self.steps_system + self.steps_both + self.steps_planet):
+
+        for step in range(self.steps_system + self.steps_both + self.steps_planet):
             events = pygame.event.get()
             for event in events:
-                if event.type in [2,5]: #key or mouse down event
-                    skip_intro = True
-            if not skip_intro:
-                path = os.path.join("intro","intro_file_" + str(self.triplify_number(i)) + ".jpg")
-                surface = pygame.image.load(path)
-                self.window.blit(surface, (0,0))
-                pygame.display.flip()
-                pygame.time.delay(self.stepsize*30)
+                if event.type in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]:
+                    return
+            surface = self.get_surface_intro(step, is_loop=False)
+            self.window.blit(surface, (0,0))
+            pygame.display.flip()
+            self.clock.tick(self.fps)
+
     def background_sequence(self,i):
-        path = os.path.join("intro","loop_file_" + str(self.triplify_number(i)) + ".jpg")
-        surface = pygame.image.load(path)
+        surface = self.get_surface_intro(i, is_loop=True)
         left_rect = pygame.Rect(0,0,self.gui_rect[0],global_variables.window_size[1])
         right_rect = pygame.Rect(self.gui_rect[0] + self.gui_rect[2],0,global_variables.window_size[0]-self.gui_rect[0]-self.gui_rect[2],global_variables.window_size[1])
         top_rect = pygame.Rect(0,0,global_variables.window_size[0],self.gui_rect[1])
@@ -212,11 +235,12 @@ class IntroGui:
             self.window.blit(surface, (0,0))
         self.window.set_clip(None)
         pygame.display.flip()
-        pygame.time.delay(self.stepsize)
+
     def effectuate_load_callback(self):
         load_file_name = self.load_window.selected
         if load_file_name is not None:
             self.main.start_loop(load_previous_game = os.path.join("savegames",load_file_name))
+
     def load_callback(self, label, function_parameter):
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
@@ -235,12 +259,16 @@ class IntroGui:
                               function_parameter = None,
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
                               fixed_size = None)
+
     def load_game(self, label, load_window):
         self.main.start_loop(loadPreviousGame = os.path.join("savegames",load_window.selected_name))
+
     def game_settings_callback(self, label, function_parameter):
         pass
+
     def quit_callback(self, label, function_parameter):
         sys.exit(0)
+
     def create_intro_gui(self, label = None, function_parameter = None):
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 90,global_variables.window_size[1] / 3, 180,180)
         self.text_receiver = None
@@ -258,6 +286,7 @@ class IntroGui:
                                   function_parameter = None,
                                   topleft = (self.gui_rect[0] + 25,self.gui_rect[1] + i * 35 + 25),
                                   fixed_size = (130,30))
+
     def ask_company_type(self,label,function_parameter):
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         title = global_variables.standard_font.render("Type of company:",True,(0,0,0))
@@ -284,6 +313,7 @@ class IntroGui:
                               function_parameter = None,
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
                               fixed_size = None)
+
     def decide_company_type(self, label, function_parameter):
         data_file_name = os.path.join("data","base_data","earth.txt")
         if os.access(data_file_name,os.R_OK):
@@ -303,6 +333,7 @@ class IntroGui:
             self.is_country = True
         else:
             raise Exception("unknown company type selected: ",self.buttons["type_selector"].selected)
+
     def ask_country_name(self,label,function_parameter):
         self.gui_rect = pygame.Rect(global_variables.window_size[0] / 2 - 150,global_variables.window_size[1] / 3 - 50, 300,300)
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
@@ -322,6 +353,7 @@ class IntroGui:
                               function_parameter = None,
                               topleft = (self.gui_rect[0] + self.gui_rect[2] - 65,self.gui_rect[1] + self.gui_rect[3] - 40),
                               fixed_size = None)
+
     def ask_company_name(self,label, function_parameter, give_warning = False):
         pygame.draw.rect(self.window, (212,212,212), self.gui_rect)
         title = global_variables.standard_font.render("Name of company:",True,(0,0,0))
@@ -347,6 +379,7 @@ class IntroGui:
             warning_label = global_variables.standard_font_small.render("No double space, no blanks",True,(0,0,0))
             self.window.blit(warning_label, (self.gui_rect[0] + 10, self.gui_rect[1] + 90))
             pygame.display.flip()
+
     def ask_company_capital(self, label, function_parameter, give_warning = False):
         if "country_window" in self.buttons and self.is_country:
             company_name = self.buttons["country_window"].selected
@@ -392,5 +425,27 @@ class IntroGui:
                 pygame.display.flip()
         else:
             self.ask_company_name(None, None, give_warning=True)
+
+    def start_new_game(self, label, function_parameter):
+        company_capital = self.text_receiver.text
+        all_ok = True
+        try:    int(company_capital)
+        except: all_ok = False
+        else:   pass
+        if all_ok:
+            if 0 >= int(company_capital):
+                all_ok = False
+        if all_ok:
+            self.company_capital = int(company_capital)
+            if(self.company_name is not None):
+                cn=str(self.company_name)
+            else:
+                cn=None
+            self.main.start_loop(companyName = cn,
+                                 companyCapital = self.company_capital,
+                                 loadPreviousGame = None)
+        else:
+            self.ask_company_capital(None, None, give_warning=True)
+
 
 introGui = IntroGui()
