@@ -371,10 +371,14 @@ class solarsystem:
 
         try:
           file = open(filename, "wb")  # Open the file in binary mode for pickle
-          self.simThread.join()
-          del self.simThread
-          pickle.dump(self, file)
-          self.launchThread()
+
+          if hasattr(self, 'simThread'):
+              self.simThread.join()  # Wait for the simulation thread to finish
+              del self.simThread  # Delete the thread reference
+              pickle.dump(self, file)
+              self.launchThread()
+          else:
+              pickle.dump(self, file)
           print("Game saved successfully.")
         except MemoryError:
           print("Error: MemoryError occurred while saving the game. Consider freeing up memory or using a system with more memory.")
