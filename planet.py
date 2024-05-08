@@ -718,7 +718,7 @@ class planet:
 
 
 
-    def plane_to_sphere_total(self,eastern_inclination,northern_inclination,projection_scaling,given_coordinates = None):
+    def plane_to_sphere_total(self,eastern_inclination,northern_inclination,projection_scaling,given_coordinates=None):
         """
         The function that calculates the relation of all the points on the projection to their sphere coordinates
         It returns a dictionary of all projection coordinates and their corresponding sphere coordinates
@@ -751,7 +751,6 @@ class planet:
             return decimal_degrees
 
 
-        projection_dim = (projection_scaling,projection_scaling)
 
         sphere_coordinates = []
         projection_coordinates=[]
@@ -762,29 +761,16 @@ class planet:
 
             startup_string = f"-I +proj=ortho +ellps=sphere +lat_0={-northern_inclination} +lon_0={eastern_inclination}"
 
-            x_proj = []
-            y_proj = []
-            if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
-                if isinstance(given_coordinates,tuple):
-                    given_coordinates = [given_coordinates]
+            if given_coordinates is None:
+                given_coordinates = [(i%projection_scaling, i//projection_scaling) for i in range(projection_scaling**2)]
+            arr = np.array(given_coordinates)
 
-                #Creating the string that goes into the proj command
-                for coordinate in given_coordinates:
-                    projection_coordinates.append(coordinate)
-                    x_proj.append(((coordinate[0] / (projection_dim[0]*0.5)) -1.0) * 6370997)
-                    y_proj.append(((coordinate[1] / (projection_dim[1]*0.5)) -1.0) * 6370997)
+            # Conversion
+            arr = ((arr/ (projection_scaling*0.5) -1.0) * 6370997)
 
+            x_proj = arr[:,0]
+            y_proj = arr[:,1]
 
-            elif given_coordinates == None:
-
-                #Creating the string that goes into the proj command
-                for i in range(0,(projection_dim[0]*projection_dim[1])):
-                    projection_coordinates.append((i-(i/projection_dim[0])*projection_dim[0],i / projection_dim[1]))  #testing to see if the integer round works to my advantage
-                    x_proj.append(((projection_coordinates[i][0] / (projection_dim[0]*0.5)) -1.0) * 6370997)
-                    y_proj.append(((projection_coordinates[i][1] / (projection_dim[1]*0.5)) -1.0) * 6370997)
-
-            else:
-                raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")
 
             #running pyproj
             transformer = Transformer.from_pipeline(startup_string)
