@@ -29,6 +29,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install proj-bin on Ubuntu
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get install proj-bin
+
+      - name: Install proj on macOS
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install proj
+
       - name: run the tests
         run: pytest tests/
 

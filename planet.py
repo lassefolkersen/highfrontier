@@ -828,7 +828,12 @@ class planet:
 
 
             stdout_text = proj.communicate(bytes(communication_string, 'utf-8'))
-            stdout_text = stdout_text[0].split("\n")
+            if isinstance(stdout_text[0], bytes):
+                stdout_text = stdout_text[0].decode('utf-8').split("\n")
+            else:
+                stdout_text = stdout_text[0].split("\n")
+
+
             #print "stdout_text: " + str(stdout_text)
             for i in range(0,len(stdout_text)-1):
                 if stdout_text[i].find("*") != -1:

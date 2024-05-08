@@ -6,3 +6,4 @@ Earth city names, position and population from the www.world-gazetteer.com
 
 GNP per capita per country from www.imf.org
 
+proj is from https://proj.org/en/9.4/install.html

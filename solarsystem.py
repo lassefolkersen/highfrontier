@@ -1,6 +1,7 @@
 import SimThread
 import os
 import math
+import sys
 from PIL import Image
 import pygame
 import random
@@ -12,8 +13,8 @@ import global_variables
 import primitives
 import technology
 import pickle
-
 from display import Display
+sys.setrecursionlimit(10000)
 
 class solarsystem:
 
@@ -283,6 +284,9 @@ class solarsystem:
                             start_up_firm.stock_dict[resource] = start_up_firm.input_output_dict["input"][resource]
 #                        print company_instance.name + " started " + start_up_name + " in " + str(location.name)
         return company_database
+
+
+
     def save_solar_system(self,filename, prepare_scenario = False):
         """
         Function that will save the settings. One of the tricky things of doing this is that pictures can not be pickled, so
@@ -290,7 +294,6 @@ class solarsystem:
         by default since it is known where to find the pictures. Pictures are then converted to strings before saving, and
         re-converted back after saving. The planet surface pictures that are loaded in memory for faster rendering are removed temporarilu
         before the save but inserted afterwards. This means that they are lost on reload, which shouldn't be a big issue.
-
         prepare_for_scenario    Kills the current_player
         """
         def get_sub_entry(entry,i,before):
@@ -363,22 +366,23 @@ class solarsystem:
                     image = planet_instance.resource_maps[resource]
                     size = image.size
                     mode = image.mode
-                    image_string = image.tostring()
+                    image_string = image.tobytes()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
-        file = open(filename,"w")
-        try:  pickle.dump(self,file)
+
+        try:
+          file = open(filename, "wb")  # Open the file in binary mode for pickle
+          pickle.dump(self, file)
+          print("Game saved successfully.")
         except MemoryError:
-            print("DEBUGGING: cPickle failed, likely because of memory issue. Switching to regular pickle. Regular pickle is slower but less memory intensive.")
-            import pickle
-            try:    pickle.dump(self,file)
-            except: print("DEBUGGING: regular pickle also failed. The game was NOT saved")
-            else:   print("game saved")
-        except:
-            print("some weird error with cPickle - shown here:")
-            pickle.dump(self,file)
-        else:
-            print("game saved")
-        file.close()
+          print("Error: MemoryError occurred while saving the game. Consider freeing up memory or using a system with more memory.")
+        except pickle.PickleError as e:
+          print(f"Error: Failed to pickle the game. Details: {e}")
+        except Exception as e:
+          print(f"Error: An unexpected error occurred while saving the game. Details: {e}")
+        finally:
+          if 'file' in locals() and not file.closed:
+            file.close()
+
         #here we restore the pre_drawn surfaces
         for planet_name in backup_up_pre_drawn_surfaces:
             planet_instance = self.planets[planet_name]
@@ -395,22 +399,30 @@ class solarsystem:
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
                     image_parts = planet_instance.resource_maps[resource]
-                    image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    if image.format:
+                      image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
+
+
+
     def load_solar_system(self,filename):
         """
         Function that loads the solar system
         """
-        file = open(filename,"r")
-        try:    new_solar_system = pickle.load(file)
-        except EOFError as error:
-            print_dict = {"text":"Un-loadable file: " + str(filename) + " - no load performed","type":"general gameplay info"}
+        file = open(filename, "r")
+        try:
+            with open(filename, "rb") as file:
+                new_solar_system = pickle.load(file)
+        except EOFError as e:
+            print_dict = {"text": f"Un-loadable file: {filename} - no load performed", "type": "general gameplay info"}
             self.solar_system_object_link.messages.append(print_dict)
             return "clear"
-        except error:
-            print(error)
-            raise Exception("An error of type: " + str(error) + " was found")
-        file.close()
+        except Exception as e:
+            error_message = str(e)
+            print(error_message)
+            raise Exception(f"An error of type: {error_message} was found")
+        finally:
+            file.close()
         #here we de-stringify the resource maps and other known planet images
         known_planet_images = ["wet_areas","topo_image"]
         for planet_instance in list(new_solar_system.planets.values()):
@@ -422,13 +434,17 @@ class solarsystem:
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
                     image_parts = planet_instance.resource_maps[resource]
-                    image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
         #inserting all variables in self
         for entry_name in dir(self):
+            if entry_name == '__weakref__':
+                continue
             if not hasattr(new_solar_system, entry_name):
                 delattr(self,entry_name)
         for entry_name in dir(new_solar_system):
+            if entry_name == '__weakref__':
+                continue
             entry = getattr(new_solar_system, entry_name)
             setattr(self,entry_name, entry)
         #updating all solar_system_object_links (this is actually rather weird that it has to be done)
