@@ -141,7 +141,7 @@ def test_load_for_drawing(solar_system, tmpdir):
     planet_instance._load_for_drawing()
 
     # Assertions
-    assert hasattr(planet_instance, "image")  # Check if the image attribute exists
+    assert hasattr(planet_instance, "_image")  # Check if the image attribute exists
     assert isinstance(planet_instance.image, Image.Image)  # Check if the image is an instance of PIL Image
 
     # Check if the placeholder image is loaded when the actual image file is missing
@@ -152,7 +152,7 @@ def test_load_for_drawing(solar_system, tmpdir):
     planet_instance.unload_from_drawing()
 
     # Assertions for unloading
-    assert not hasattr(planet_instance, "image")  # Check if the image attribute is removed
+    assert not hasattr(planet_instance, "_image")  # Check if the image attribute is removed
     assert not hasattr(planet_instance, "heat_bar")  # Check if the heat_bar attribute is removed
     assert planet_instance.pre_drawn_action_layers == {}  # Check if the pre_drawn_action_layers attribute is empty
 
@@ -257,15 +257,16 @@ def test_sphere_to_plane_total(solar_system, tmpdir):
     projection_scaling = 360
 
     # Call the sphere_to_plane_total function
-    projection_coordinates = planet_instance.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
+    xxs, yys = planet_instance.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
 
-    # Assertions
-    assert len(projection_coordinates) == len(sphere_coordinates)  # Check if the number of projection coordinates matches the number of sphere coordinates
+    # Check if the number of projection coordinates matches the number of sphere coordinates
+    assert len(xxs) == len(sphere_coordinates)
+    assert len(yys) == len(sphere_coordinates)
 
     # Print out the projection coordinates for examination
     print("Projection Coordinates:")
-    for i, coord in enumerate(projection_coordinates):
-        print(f"Sphere Coordinate {i+1}: {sphere_coordinates[i]} -> Projection Coordinate: {coord}")
+    for i, (x, y) in enumerate(zip(xxs, yys)):
+        print(f"Sphere Coordinate {i+1}: {sphere_coordinates[i]} -> Projection Coordinate: {x, y}")
 
 
 
@@ -319,7 +320,7 @@ def test_calculate_resource_map_existing(solar_system, tmpdir):
 
 
 
-def test_calculate_base_positions_existing(solar_system, tmpdir):
+def test_calculate_base_positions_existing(solar_system: solarsystem, tmpdir):
     # Create a temporary directory to mimic the file system
     temp_dir = tmpdir.mkdir('images')
 
