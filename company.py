@@ -820,7 +820,7 @@ class firm():
 		else:
 			pass
 		image = image.resize(global_variables.window_size)
-		image_string = image.tostring()
+		image_string = image.tobytes()
 		surface = pygame.image.fromstring(image_string , global_variables.window_size, "RGB")
 		return surface
 
