@@ -168,7 +168,7 @@ class solarsystem:
         Function that closes down a company by simply deleting it from the list of companies
         """
         del self.companies[companyName]
-    def initialize_planets(self):
+    def initialize_planets(self) -> dict[str, planet.planet]:
         data_file_name = os.path.join("data","planets.txt")
         read_planet_database = primitives.import_datasheet(data_file_name)
         planet_database = {}
@@ -342,7 +342,8 @@ class solarsystem:
                     technology["known_by"] = {}
         #removing pre-drawn surfaces and stringifiyng resource_maps
         backup_up_pre_drawn_surfaces = {}
-        known_planet_images = ["wet_areas","topo_image"] 
+        known_planet_images = ["wet_areas","topo_image"]
+
         for planet_instance in list(self.planets.values()):
             planet_instance.unload_from_drawing()
             for known_planet_image in known_planet_images:
