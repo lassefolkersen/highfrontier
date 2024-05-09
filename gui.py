@@ -3073,12 +3073,10 @@ class base_build_menu():
                      max_letters = global_variables.max_letters_in_company_names)
             self.text_receiver.active = True
 
-
         else:
-
             start_value = existing_firm.size
-
-
+            if start_value > max_size:
+                start_value = max_size
             existing_firm_rendered_text = global_variables.standard_font.render("An existing size " + str(existing_firm.size) + " firm of this type already owned here.",True,(0,0,0))
             self.action_surface.blit(existing_firm_rendered_text, (self.rect[0] + 130, self.rect[1] + 70))
             existing_firm_rendered_text = global_variables.standard_font.render("Select new size and press ok if new size is required.",True,(0,0,0))
