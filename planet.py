@@ -323,20 +323,12 @@ class planet:
 
     def unload_from_drawing(self):
         """
-        Function that unloads the picture of a planet from memory after zoom_out
+        Unload the picture of a planet from memory.
         """
-        #print "now unloading " + str(self.planet_name)
-        try: self.image
-        except AttributeError:
-            pass
-        else:
-            del self.image
 
-#        try: self.image_string
-#        except AttributeError:
-#            pass
-#        else:
-#            del self.image_string
+        if hasattr(self, "_image"):
+            del self._image
+
 
         try: self.heat_bar
         except AttributeError:
@@ -577,7 +569,13 @@ class planet:
 
 
 
-    def sphere_to_plane_total(self,sphere_coordinates,eastern_inclination,northern_inclination,projection_scaling):
+    def sphere_to_plane_total(
+        self,
+        sphere_coordinates: list[tuple[float, float]] | np.ndarray,
+        eastern_inclination: float,
+        northern_inclination: float,
+        projection_scaling: float,
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Function to translate a list of single sphere_coordinates into projection coordinates with only one
         query to the proj program. Takes a list of tuples with sphere_coordinates.
@@ -603,6 +601,9 @@ class planet:
         to sphere_coordinates and then paint the corresponding projection_coordinate.
 
         """
+        if not sphere_coordinates:
+            return [], []
+
         if projection_scaling <= 360: #for the round world projection
 
             arr = np.array(sphere_coordinates)
@@ -621,11 +622,11 @@ class planet:
             x_proj = ( x / 6370997 ) * half_scale + half_scale  #where 6370997 is the constant of the proj program
             y_proj = -( y / 6370997 ) * half_scale + half_scale
 
-            projection_coordinates = [(x , y) for x, y in zip(x_proj,y_proj)]
 
         else: #planar map projection
 
-            projection_coordinates = []
+            x_proj = []
+            y_proj = []
 
             window_size = global_variables.window_size
             west_border = self.flat_image_borders["west_border"]
@@ -640,12 +641,18 @@ class planet:
                     x_proj_position = (( sphere_coordinate[0] - west_border) / east_west_span ) * window_size[0]
                     y_proj_position = window_size[1] - ((( sphere_coordinate[1] - south_border ) / north_south_span ) * window_size[1])
 
-                    projection_coordinates.append((int(x_proj_position),int(y_proj_position)))
+                    x_proj.append(x_proj_position)
+                    y_proj.append(y_proj_position)
                 else:
-                    projection_coordinates.append("Not seen")
+                    x_proj.append(np.nan)
+                    y_proj.append(np.nan)
+
+            x_proj = np.array(x_proj)
+            y_proj = np.array(y_proj)
 
 
-        return projection_coordinates
+        return x_proj, y_proj
+
 
 
 
@@ -657,7 +664,7 @@ class planet:
         eastern_inclination: float,
         northern_inclination: float,
         projection_scaling: float,
-        given_coordinates: np.ndarray,
+        given_coordinates: np.ndarray | tuple,
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         The function that calculates the relation of all the points on the projection to their sphere coordinates
@@ -667,6 +674,11 @@ class planet:
             given_coordinates - if given as tuple or a list of tuples this will limit the algorithm to give only these as sphere_coordinates
         """
 
+        if not given_coordinates:
+            return [], []
+
+        if isinstance(given_coordinates, tuple):
+            given_coordinates = [given_coordinates]
 
         #new_image_string=""
         if projection_scaling <= 360: #for the round world projection
@@ -889,8 +901,10 @@ class planet:
 
             # Calculate what the indices are in the image given
             mask_valid = np.isfinite(sphere_x) & np.isfinite(sphere_y)
-            x_image = np.floor((sphere_x[mask_valid] + 180) / 360 * image.size[0]).astype(int)
-            y_image = np.floor((sphere_y[mask_valid] + 90) / 180 * image.size[1]).astype(int)
+            x_image = ((sphere_x[mask_valid] + 180) / 360 * image.size[0]).round(0).astype(int).clip(0, image.size[0] - 1)
+            y_image = ((sphere_y[mask_valid] + 90) / 180 * image.size[1]).round(0).astype(int).clip(0, image.size[1] - 1)
+
+
 
             # Copy the values from the image to the output image
             output_image[mask_valid, :] = image_array[y_image, x_image, :]
@@ -1047,19 +1061,19 @@ class planet:
                         reverse_sphere_coordinates.append(reverse_sphere_position)
                         base_names.append(base)
 
-                plane_coordinates = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
-                reverse_plane_coordinates = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
+                plane_x, plane_y = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
+                reverse_plane_x, reverse_plane_y = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
 
                 for i in range(0,len(base_names)):
-                    x, y = plane_coordinates[i]
+                    x, y = plane_x[i], plane_y[i]
                     if np.isfinite(x) and np.isfinite(y):
                         base_positions_here[base_names[i]] = (int(x),int(y))
                         absolute_position = (x + (window_size[0]/2) - (projection_scaling/2), y + ( window_size[1] /2) - (projection_scaling/2))
                         areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
                     else:
                         #calculation the edge position for a base below the edge (for use in trade_network drawing)
-                        reverse_x =  - ( int(reverse_plane_coordinates[i][0]) - 0.5 * projection_scaling )
-                        reverse_y =  int(reverse_plane_coordinates[i][1]) - 0.5 * projection_scaling
+                        reverse_x =  - ( int(reverse_plane_x[i]) - 0.5 * projection_scaling )
+                        reverse_y =  int(reverse_plane_y[i]) - 0.5 * projection_scaling
                         angle = math.atan2(reverse_y,reverse_x)
                         edge_position = (0.5*projection_scaling * ( 1 + math.cos(angle) ), projection_scaling - 0.5 * projection_scaling *( 1 + math.sin(angle)))
                         #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
@@ -1171,8 +1185,14 @@ class planet:
 
         if self.projection_scaling <= 360: #for the round world projection
             transposed_projection_position = (projection_position[0] - global_variables.window_size[0]/2 + self.projection_scaling/2, projection_position[1] - global_variables.window_size[1]/2 + self.projection_scaling/2)
-            proj_to_sphere_coordinates = self.plane_to_sphere_total(self.eastern_inclination, self.northern_inclination, self.projection_scaling, transposed_projection_position)
-            sphere_coordinates = proj_to_sphere_coordinates[transposed_projection_position]
+            sphere_coordinates = self.plane_to_sphere_total(
+                self.eastern_inclination,
+                self.northern_inclination,
+                self.projection_scaling,
+                transposed_projection_position
+            )
+            logger.debug(f"Sphere coordinates: {sphere_coordinates}")
+
         else: #planar map projection
             window_size = global_variables.window_size
             west_border = self.flat_image_borders["west_border"]

@@ -19,12 +19,14 @@ def planet() -> planet_class:
 def test_projection_on_earth(planet: planet_class):
 
 
-    projected_coordinates = planet.sphere_to_plane_total(
+    xxs, yys  = planet.sphere_to_plane_total(
         sphere_coordinates=[(0, 0), (180, 0), (-180, 90), (90, 45), (90, 0)],
         eastern_inclination=0,
         northern_inclination=0,
         projection_scaling=1,
     )
+    # Convert to list of tuples
+    projected_coordinates = [(x, y) for x, y in zip(xxs, yys)]
 
     # Center of the sphere (Equator, Prime Meridian)
     assert projected_coordinates[0] == (0.5, 0.5)
@@ -42,12 +44,15 @@ def test_projection_on_earth(planet: planet_class):
 def test_projection_shifted(planet: planet_class):
 
 
-    projected_coordinates = planet.sphere_to_plane_total(
+    xxs, yys = planet.sphere_to_plane_total(
         sphere_coordinates=[(0, 0), (180, 0), (-180, 90), (90, 45), (90, 0)],
         eastern_inclination=90,
         northern_inclination=45,
         projection_scaling=1,
     )
+
+    # Convert to list of tuples
+    projected_coordinates = [(x, y) for x, y in zip(xxs, yys)]
 
     # Center of the sphere (Equator, Prime Meridian) is seen
     assert all(np.isfinite(projected_coordinates[0]))
@@ -88,3 +93,39 @@ def test_inverted_projection(planet: planet_class):
 
     # This is not a valid coordinate
     assert all(~np.isfinite(planet_coordinates[4]))
+
+
+def test_inverted_with_tuple(planet: planet_class):
+
+    x, y = planet.plane_to_sphere_total(
+        eastern_inclination=0,
+        northern_inclination=0,
+        projection_scaling=1,
+        given_coordinates=(0.5, 0.5)
+    )
+
+    assert (x, y) == (0, 0)
+
+
+
+def test_on_empty_input(planet: planet_class):
+
+    xxs, yys = planet.plane_to_sphere_total(
+        eastern_inclination=0,
+        northern_inclination=0,
+        projection_scaling=1,
+        given_coordinates=[]
+    )
+
+    assert xxs == []
+    assert yys == []
+
+    xxs, yys = planet.sphere_to_plane_total(
+        sphere_coordinates=[],
+        eastern_inclination=0,
+        northern_inclination=0,
+        projection_scaling=1,
+    )
+
+    assert xxs == []
+    assert yys == []
