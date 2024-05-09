@@ -282,11 +282,11 @@ def test_plane_to_sphere_total(solar_system, tmpdir):
     sample_coordinates = [(0, 0), (180, 180), (360, 360)]
 
     # Call the plane_to_sphere_total function
-    result = planet_instance.plane_to_sphere_total(eastern_inclination, northern_inclination, projection_scaling, given_coordinates=sample_coordinates)
+    xxs, yys = planet_instance.plane_to_sphere_total(eastern_inclination, northern_inclination, projection_scaling, given_coordinates=sample_coordinates)
 
     # Print out the result for examination
     print("Result:")
-    for coord, sphere_coord in result.items():
+    for coord, sphere_coord in zip(sample_coordinates, zip(xxs, yys)):
         print(f"Projection Coordinate: {coord} -> Sphere Coordinate: {sphere_coord}")
 
 
