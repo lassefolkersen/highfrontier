@@ -214,9 +214,20 @@ class IntroGui:
             eastern_inclination = eastern_inclination - 360
         self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
 
-        planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False)
+        planet_surface = earth.draw_image(
+            eastern_inclination,
+            northern_inclination,
+            projection_scaling
+        )
+
         surface = pygame.Surface(global_variables.window_size)
-        surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
+        surface.blit(
+            planet_surface,
+            (
+                global_variables.window_size[0] / 2 - projection_scaling/2,
+                global_variables.window_size[1] / 2 - projection_scaling/2
+            )
+        )
 
         return surface
 

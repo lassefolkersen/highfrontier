@@ -7,7 +7,6 @@ from pygame.locals import *
 #from ocempgui.widgets from PIL import ImageLabel
 from PIL import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
 import math
-import pickle
 import subprocess
 import time
 import os
@@ -286,98 +285,37 @@ class planet:
 
 
 
-
-
-
-
-    def pickle_all_projection_calculations(self):
-        """
-        A function that saves the projection_coordinate to sphere_coordinate conversions in a pickled file.
-        Each pickled file contains a dictionary with the projection coordinates as key and the sphere coordinates as value
-        This is only used when initializing and stuff, and will probably never be called during real execution of code
-        """
-
-        folder_save = Path("pickledprojections")
-        folder_save.mkdir(exist_ok=True)
-
-        for projection_scaling in (45,90,180,360):
-            for northern_inclination in (-90,-60,-30,0,30,60,90):
-                file_name = f"projection_{northern_inclination}_NS_{projection_scaling}_zoom"
-                file_path = folder_save / file_name
-                if file_path.is_file():
-                    continue
-
-                logger.info(f"{file_path} not found. Doing calculations.")
-                plane_to_sphere_list = self.plane_to_sphere_total(0,northern_inclination,projection_scaling)
-                with open(file_path,"wb") as file:
-                    pickle.dump(plane_to_sphere_list, file)
-
-                logger.info(f"Saved calculations as {file_name}.")
-
-
-
-
-    def pickle_all_projections(self):
-        """
-        Given a planet instance, this function will check the directory at /pickledsurfaces
-        to see if pre-drawn images of surfaces already exists. If so it will load them into the
-        pre_drawn_surfaces variable. If not it will calculate all rotation/zoom levels
-        and save them.
-        """
-        self.load_for_drawing()
-        for projection_scaling in (45,90,180,360):
-            for eastern_inclination in (-150,-120,-90,-60,-30,0,30,60,90,120,150,180):
-                for northern_inclination in (-90,-60,-30,0,30,60,90):
-                    pickle_file_name = str(self.planet_name) + "_" + str(projection_scaling) + "_zoom_" + str(northern_inclination) + "_NS_" + str(eastern_inclination) + "_EW.jpg"
-                    pickle_file_name_and_path = os.path.join("pickledsurfaces",pickle_file_name)
-                    if os.access(pickle_file_name_and_path,os.R_OK):
-                        surface = pygame.image.load(pickle_file_name_and_path)
-                    else:
-                        print(str((eastern_inclination, northern_inclination, projection_scaling)) +" was not found - calculating")
-                        self.load_for_drawing()
-
-                        surface = self.draw_image(eastern_inclination, northern_inclination, projection_scaling)
-
-                        pygame.image.save(surface,pickle_file_name_and_path)
-
-
-                    self.pre_drawn_surfaces[(northern_inclination,eastern_inclination,projection_scaling)] = surface
-
-
-
-
-    def load_for_drawing(self,force_reload = False):
+    @property
+    def image(self):
         """
         Function that loads the picture of a planet and saves it in the instance.
         This function could probably be made much better, since some of the map_dim etc.
         are irelevant. Finally there could be a "unload" function or something.
         """
-        #print "loading images from planet " + str(self.planet_name)
-        try: self.image
-        except AttributeError:
-            if os.access(self.surface_file_name,os.R_OK):
-                self.image = Image.open(self.surface_file_name)
-            else:
-                self.image = Image.open(os.path.join("images","planet","placeholder.jpg"))
-            self.projection_dim = (self.projection_scaling,self.projection_scaling)
-            if((self.image.size[0]/self.image.size[1])!=2):
-                if self.solar_system_object_link.message_printing["debugging"]:
-                    print_dict = {"text":"oh no! The map file is not twice as wide as it is high","type":"debugging"}
-                    self.solar_system_object_link.messages.append(print_dict)
+        if not hasattr(self, "_image"):
+            self._load_for_drawing()
+        return self._image
 
-                self.image = self.image.resize((self.image.size[0],self.image.size[0]/2))
-
-            if self.image.size[0]<1800:
-                self.image = self.image.resize((1800,900))
-#            self.image_string = self.image.tostring()
-            if (self.water_level != 0 and self.name != "earth") or (self.water_level != 1 and self.name == "earth"):
-#                print "Changing water level to " + str(self.water_level)
-                self.change_water_level(self.water_level)
-
+    def _load_for_drawing(self):
+        if os.access(self.surface_file_name,os.R_OK):
+            image = Image.open(self.surface_file_name)
         else:
-            if force_reload:
-                del self.image
-                self.load_for_drawing()
+            image = Image.open(os.path.join("images","planet","placeholder.jpg"))
+
+        self.projection_dim = (self.projection_scaling,self.projection_scaling)
+
+        size = image.size
+        if((size[0]/size[1])!=2):
+            logger.warning("The map file is not twice as wide as it is high !")
+            image = image.resize((size[0], size[0]/2))
+
+        if image.size[0] < 1800:
+            image = image.resize((1800,900))
+
+        if (self.water_level != 0 and self.name != "earth") or (self.water_level != 1 and self.name == "earth"):
+            self.change_water_level(self.water_level)
+
+        self._image = image
 
 
 
@@ -431,13 +369,8 @@ class planet:
 
                 #see if a regular image has already been loaded
                 if self.planet_type != "gasplanet":
-                    try: self.image
-                    except AttributeError:
-                        #print "self.image does not exist running load_for_drawing"
-                        self.load_for_drawing()
-                        regular_image = self.image
-                    else:
-                        regular_image = self.image
+
+                    regular_image = self.image
 
                     regular_image = ImageOps.grayscale(regular_image)
                     topo_image = ImageOps.posterize(regular_image, 5)
@@ -889,9 +822,9 @@ class planet:
 
     def draw_image(
         self,
-        eastern_inclination,
-        northern_inclination,
-        projection_scaling,
+        eastern_inclination: float,
+        northern_inclination: float,
+        projection_scaling: float,
         fast_rendering=False,
         image=None,
     ) -> pygame.Surface:
@@ -910,15 +843,10 @@ class planet:
 
         """
         if image != None:
-            check_memory = False #should only save images to memory when they are not resource/topographical overlays
+            check_memory = False
         else:
-            try: self.image
-            except:
-                self.load_for_drawing()
-                image = self.image
-            else:
-                image = self.image
-            check_memory = True #should only save images to memory when they are not resource/topographical overlays
+            image = self.image
+            check_memory = True
 
         mode = image.mode
         if mode == "RGBA":

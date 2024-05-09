@@ -72,10 +72,8 @@ class Game:
                 sol.companies[companyName] = new_company
                 new_company.automation_dict = automation_dict
                 sol.current_player = new_company
-        #loading planets that are often used:
-        print("loading earth")
-        sol.planets["earth"].pickle_all_projections()
-        print("finished loading")
+
+
         #divide the surface in action and non-action
         action_rect = pygame.Rect(0,0,global_variables.window_size[0] - 150, global_variables.window_size[1] - 100)
         right_side_rect = pygame.Rect(global_variables.window_size[0] - 150, 0, 150, global_variables.window_size[1])

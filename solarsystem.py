@@ -20,6 +20,8 @@ class solarsystem:
 
     display_mode: Display
 
+    planets: dict[str, planet.planet]
+
     @property
     def display_mode(self) -> Display:
         return self._display_mode
@@ -163,11 +165,13 @@ class solarsystem:
             self.companies = self.initialize_companies()
             print("done initializing companies")
             self.current_planet = self.planets["sun"]
+
     def close_company(self,companyName):
         """
         Function that closes down a company by simply deleting it from the list of companies
         """
         del self.companies[companyName]
+
     def initialize_planets(self) -> dict[str, planet.planet]:
         data_file_name = os.path.join("data","planets.txt")
         read_planet_database = primitives.import_datasheet(data_file_name)
@@ -180,8 +184,8 @@ class solarsystem:
         #checking that all projections exist
         random_planet_name = random.choice(list(planet_database.keys()))
         random_planet = planet_database[random_planet_name]
-        random_planet.pickle_all_projection_calculations()
         return planet_database
+
     def initialize_companies(self):
         base_to_country_list = {}
         base_to_GNP_list = {}

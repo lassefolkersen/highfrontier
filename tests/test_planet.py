@@ -11,7 +11,7 @@ from planet import planet
 
 # Fixture to set up a solar system for testing
 @pytest.fixture
-def solar_system():
+def solar_system() -> solarsystem:
     solar_system = solarsystem(global_variables.start_date, de_novo_initialization=True)
     solar_system.initialize_planets()
     return solar_system
@@ -78,7 +78,7 @@ def test_change_gas_in_atmosphere(solar_system):
 # Test check_gas_in_atmosphere method for raising waters
 def test_check_gas_in_atmosphere(solar_system):
     Earth = solar_system.planets["earth"]
-    
+
     # Set Earth's atmospheric CO2 level to be higher than the initial value
     Earth.change_gas_in_atmosphere("carbondioxide", 1000000)  # Add many tons of CO2
 
@@ -96,10 +96,10 @@ def test_check_gas_in_atmosphere(solar_system):
 # Test read_pre_base_file method
 def test_read_pre_base_file(solar_system):
     Earth = solar_system.planets["earth"]
-    
+
     # Read pre-base file for Mars
     bases = Earth.read_pre_base_file("earth")
-    
+
     # Check if bases are correctly read
     assert isinstance(bases, dict)
     assert len(bases) > 0
@@ -110,10 +110,10 @@ def test_read_pre_base_file(solar_system):
 # Test calculate_distance method
 def test_calculate_distance(solar_system):
     Earth = solar_system.planets["earth"]
-    
+
     # Calculate distance between two points on Earth
     distance = Earth.calculate_distance((0, 0), (45, 45))
-    
+
     # Check if distance is calculated correctly
     assert isinstance(distance, list)
     assert len(distance) == 1  # Only one distance calculated
@@ -124,36 +124,12 @@ def test_calculate_distance(solar_system):
 # Test check_environmental_safety method
 def test_check_environmental_safety(solar_system):
     Earth = solar_system.planets["earth"]
-    
+
     # Check environmental safety of Earth
     safety = Earth.check_environmental_safety()
-    
+
     # Check if safety assessment is correct
     assert safety == "Breathable atmosphere"  # Earth has a breathable atmosphere by default
-
-
-
-def test_pickle_all_projections_existing_files(solar_system, tmpdir):
-    tmp_dir = tmpdir.mkdir("pickledsurfaces")
-    planet_instance = solar_system.planets["earth"]
-    
-    # Create mock pre-drawn images in the temporary directory
-    for projection_scaling in (45, 90, 180, 360):
-        for eastern_inclination in (-150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150, 180):
-            for northern_inclination in (-90, -60, -30, 0, 30, 60, 90):
-                pickle_file_name = f"{planet_instance.planet_name}_{projection_scaling}_zoom_{northern_inclination}_NS_{eastern_inclination}_EW.jpg"
-                open(os.path.join(tmp_dir, pickle_file_name), "w").close()  # Create empty file
-
-    # Call the function
-    planet_instance.pickle_all_projections()
-
-    # Assertions: Check if pre-drawn surfaces are correctly loaded into pre_drawn_surfaces
-    for projection_scaling in (45, 90, 180, 360):
-        for eastern_inclination in (-150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150, 180):
-            for northern_inclination in (-90, -60, -30, 0, 30, 60, 90):
-                assert (northern_inclination, eastern_inclination, projection_scaling) in planet_instance.pre_drawn_surfaces
-                assert isinstance(planet_instance.pre_drawn_surfaces[(northern_inclination, eastern_inclination, projection_scaling)], pygame.Surface)
-
 
 
 
@@ -162,7 +138,7 @@ def test_load_for_drawing(solar_system, tmpdir):
     planet_instance = solar_system.planets["earth"]
 
     # Call the function
-    planet_instance.load_for_drawing()
+    planet_instance._load_for_drawing()
 
     # Assertions
     assert hasattr(planet_instance, "image")  # Check if the image attribute exists
@@ -198,7 +174,7 @@ def test_calculate_topography(solar_system):
         assert planet_instance.topo_image.size == (720, 360)  # Check if the topo_image is resized to (720, 360)
         # Add more assertions to check the content or characteristics of the topo_image if needed
     else:
-        assert planet_instance.planet_type == "gasplanet" 
+        assert planet_instance.planet_type == "gasplanet"
         assert planet_instance.topo_image.size == (720, 360)  # Check if the topo_image size matches the default gas planet size
 
 
