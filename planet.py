@@ -718,7 +718,7 @@ class planet:
 
 
 
-    def plane_to_sphere_total(self,eastern_inclination,northern_inclination,projection_scaling,given_coordinates=None):
+    def plane_to_sphere_total(self,eastern_inclination,northern_inclination,projection_scaling,given_coordinates):
         """
         The function that calculates the relation of all the points on the projection to their sphere coordinates
         It returns a dictionary of all projection coordinates and their corresponding sphere coordinates
@@ -726,70 +726,30 @@ class planet:
         Optional variables:
             given_coordinates - if given as tuple or a list of tuples this will limit the algorithm to give only these as sphere_coordinates
         """
-        def parse_coordinate_from_sphere(coordinate):
-            if len(coordinate) > 3:
-                if coordinate.find("S") > 0 or coordinate.find("W") > 0:
-                    negative_direction = True
-                else:
-                    negative_direction = False
-
-                degrees = float(coordinate[0:coordinate.find("d")])
-                if coordinate.find("\'") != -1:
-                    minutes = float(coordinate[coordinate.find("d")+1:coordinate.find("\'")])
-                else:
-                    minutes = 0
-                if coordinate.find("\"") != -1:
-                    seconds = float(coordinate[coordinate.find("\'")+1:coordinate.find("\"")])
-                else:
-                    seconds = 0
-                decimal_degrees = degrees + minutes/60.0 + seconds/(60.0*60.0)
-                if negative_direction:
-                    decimal_degrees = -decimal_degrees
-
-            else:
-                decimal_degrees = 0.0
-            return decimal_degrees
-
-
-
-        sphere_coordinates = []
-        projection_coordinates=[]
-        plane_to_sphere = {}
+        plane_to_sphere = []
 
         #new_image_string=""
         if projection_scaling <= 360: #for the round world projection
 
-            startup_string = f"-I +proj=ortho +ellps=sphere +lat_0={-northern_inclination} +lon_0={eastern_inclination}"
+            startup_string = f"+proj=ortho +ellps=sphere +lat_0={-northern_inclination} +lon_0={eastern_inclination}"
 
-            if given_coordinates is None:
-                given_coordinates = [(i%projection_scaling, i//projection_scaling) for i in range(projection_scaling**2)]
             arr = np.array(given_coordinates)
 
-            # Conversion
-            arr = ((arr/ (projection_scaling*0.5) -1.0) * 6370997)
+            # Coordinates scale from 0 to projection_scaling
+            x = arr[:,0]
+            y = arr[:,1]
 
-            x_proj = arr[:,0]
-            y_proj = arr[:,1]
+            x_proj = (x/projection_scaling - 0.5) * 2 * 6370997
+            y_proj = (0.5 - y/projection_scaling) * 2 * 6370997
 
 
             #running pyproj
             transformer = Transformer.from_pipeline(startup_string)
 
-            xxs, yys = transformer.transform(x_proj,y_proj)
+            xxs, yys = transformer.transform(x_proj,y_proj, direction='INVERSE')
 
 
-
-            #print "stdout_text: " + str(stdout_text)
-            for x, y, coord in zip(xxs,yys, projection_coordinates):
-                if not (np.isfinite(x) and np.isfinite(y)):
-                    plane_to_sphere[coord] = "space"
-                else:
-                    sphere_coordinates_x = parse_coordinate_from_sphere(x)
-                    sphere_coordinates_y = parse_coordinate_from_sphere(y)
-
-                    plane_to_sphere[coord] = (sphere_coordinates_x,-sphere_coordinates_y)
-
-
+            plane_to_sphere = [(x,y) for x, y in zip(xxs,yys)]
 
         else: #for the flat world projection
             if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
@@ -808,7 +768,7 @@ class planet:
                 for proj_position in given_coordinates:
                     x_sphere_position = (float(proj_position[0]) / float(window_size[0]) ) * east_west_span + west_border
                     y_sphere_position = ((float(window_size[1]) - float(proj_position[1])) / window_size[1] ) * north_south_span + south_border
-                    plane_to_sphere[proj_position] =(x_sphere_position,y_sphere_position)
+                    plane_to_sphere.append((x_sphere_position,y_sphere_position))
 
             else:
                 raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")

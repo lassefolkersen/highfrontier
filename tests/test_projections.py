@@ -69,20 +69,20 @@ def test_inverted_projection(planet: planet_class):
         eastern_inclination=0,
         northern_inclination=0,
         projection_scaling=1,
-        given_coordinates=[(0.5, 0.5), (1, 0.5), (0.5, 0), (0.5, 0.5), (1, 0.5)]
+        given_coordinates=[(0.5, 0.5), (1, 0.5), (0.5, 0), (0.5, 0.5), (1, 0.75)]
     )
 
     # Center of the sphere (Equator, Prime Meridian)
     assert planet_coordinates[0] == (0, 0)
 
     # Equator, 180 degrees East
-    assert planet_coordinates[1] == (180, 0)
+    assert planet_coordinates[1] == (90, 0)
 
     # North Pole
-    assert planet_coordinates[2] == (-180, 90)
+    assert planet_coordinates[2][1] ==  90
 
-    # 45 degrees North, 90 degrees East
-    assert planet_coordinates[3] == (90, 45)
+    # Center of the sphere (Equator, Prime Meridian)
+    assert planet_coordinates[3] == (0, 0)
 
-    # 0 degrees North, 90 degrees East
-    assert planet_coordinates[4] == (90, 0)
+    # This is not a valid coordinate
+    assert all(~np.isfinite(planet_coordinates[4]))
