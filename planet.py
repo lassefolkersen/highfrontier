@@ -607,7 +607,7 @@ class planet:
         if isinstance(sphere_coordinates, tuple):
             sphere_coordinates = [sphere_coordinates]
 
-        if projection_scaling <= 360: #for the round world projection
+        if projection_scaling <= global_variables.flat_earth_scaling_start: #for the round world projection
 
             arr = np.array(sphere_coordinates)
             x_sphere = arr[:,0]
@@ -684,7 +684,7 @@ class planet:
             given_coordinates = [given_coordinates]
 
         #new_image_string=""
-        if projection_scaling <= 360: #for the round world projection
+        if projection_scaling <= global_variables.flat_earth_scaling_start: #for the round world projection
 
             startup_string = f"+proj=ortho +ellps=sphere +lat_0={-northern_inclination} +lon_0={eastern_inclination}"
 
@@ -876,7 +876,7 @@ class planet:
         image_array = np.array(image)
 
         projection_scaling = int(projection_scaling)
-        if projection_scaling <= 360:
+        if projection_scaling <= global_variables.flat_earth_scaling_start:
             # When we don't need a very high resolution, we can use the fast rendering
             resize_after_fast_rendering = False
             if fast_rendering and projection_scaling > 45:
@@ -1057,7 +1057,7 @@ class planet:
 
         window_x, window_y = global_variables.window_size
 
-        if projection_scaling <= 360:
+        if projection_scaling <= global_variables.flat_earth_scaling_start:
             #for the round world projection
             sphere_coordinates = []
             reverse_sphere_coordinates = []
@@ -1199,7 +1199,7 @@ class planet:
             return "transfer population to " + collision_test_result[1]
 
 
-        if self.projection_scaling <= 360: #for the round world projection
+        if self.projection_scaling <= global_variables.flat_earth_scaling_start: #for the round world projection
             transposed_projection_position = (projection_position[0] - global_variables.window_size[0]/2 + self.projection_scaling/2, projection_position[1] - global_variables.window_size[1]/2 + self.projection_scaling/2)
             sphere_coordinates = self.plane_to_sphere_total(
                 self.eastern_inclination,
@@ -1438,7 +1438,7 @@ class planet:
 
         hit_x, hit_y = self.sphere_to_plane_total(hit_locations,self.eastern_inclination,self.northern_inclination,self.projection_scaling)
 
-        if self.projection_scaling <= 360:
+        if self.projection_scaling <= global_variables.flat_earth_scaling_start:
             # for the round world projection
             hit_x += global_variables.window_size[0] / 2 - self.projection_scaling / 2
             hit_y += global_variables.window_size[1] / 2 - self.projection_scaling / 2

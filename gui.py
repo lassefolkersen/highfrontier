@@ -233,7 +233,7 @@ class gui():
                     sol.current_planet.unload_from_drawing()
                     sol.display_mode = Display.SOLAR_SYSTEM
             case Display.PLANETARY, False:
-                if sol.current_planet.projection_scaling < 720:
+                if sol.current_planet.projection_scaling * 2 < min(global_variables.window_size):
                     sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling * 2)
                 else:
                     if sol.current_planet.current_base is not None:
