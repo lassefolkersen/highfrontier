@@ -65,12 +65,14 @@ def test_projection_shifted(planet: planet_class):
 
 def test_inverted_projection(planet: planet_class):
 
-    planet_coordinates = planet.plane_to_sphere_total(
+    xxs, yys = planet.plane_to_sphere_total(
         eastern_inclination=0,
         northern_inclination=0,
         projection_scaling=1,
         given_coordinates=[(0.5, 0.5), (1, 0.5), (0.5, 0), (0.5, 0.5), (1, 0.75)]
     )
+    # Convert to list of tuples
+    planet_coordinates = [(x, y) for x, y in zip(xxs, yys)]
 
     # Center of the sphere (Equator, Prime Meridian)
     assert planet_coordinates[0] == (0, 0)

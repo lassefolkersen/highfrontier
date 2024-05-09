@@ -654,11 +654,11 @@ class planet:
 
     def plane_to_sphere_total(
         self,
-        eastern_inclination,
-        northern_inclination,
-        projection_scaling,
-        given_coordinates,
-    ):
+        eastern_inclination: float,
+        northern_inclination: float,
+        projection_scaling: float,
+        given_coordinates: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         The function that calculates the relation of all the points on the projection to their sphere coordinates
         It returns a dictionary of all projection coordinates and their corresponding sphere coordinates
@@ -666,7 +666,7 @@ class planet:
         Optional variables:
             given_coordinates - if given as tuple or a list of tuples this will limit the algorithm to give only these as sphere_coordinates
         """
-        plane_to_sphere = []
+
 
         #new_image_string=""
         if projection_scaling <= 360: #for the round world projection
@@ -692,6 +692,9 @@ class planet:
             plane_to_sphere = xxs, yys
 
         else: #for the flat world projection
+
+            plane_to_sphere_x, plane_to_sphere_y = [], []
+
             if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
                 if isinstance(given_coordinates,tuple):
                     given_coordinates = [given_coordinates]
@@ -708,7 +711,8 @@ class planet:
                 for proj_position in given_coordinates:
                     x_sphere_position = (float(proj_position[0]) / float(window_size[0]) ) * east_west_span + west_border
                     y_sphere_position = ((float(window_size[1]) - float(proj_position[1])) / window_size[1] ) * north_south_span + south_border
-                    plane_to_sphere.append((x_sphere_position,y_sphere_position))
+                    plane_to_sphere_x.append((x_sphere_position))
+                    plane_to_sphere_y.append((y_sphere_position))
 
             else:
                 raise Exception("Major error in plane_to_sphere_total - the coordinates given does not make sense")
