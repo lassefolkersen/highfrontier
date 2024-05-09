@@ -61,3 +61,28 @@ def test_projection_shifted(planet: planet_class):
 
     # 0 degrees North, 90 degrees East
     assert all(np.isfinite(projected_coordinates[4]))
+
+
+def test_inverted_projection(planet: planet_class):
+
+    planet_coordinates = planet.plane_to_sphere_total(
+        eastern_inclination=0,
+        northern_inclination=0,
+        projection_scaling=1,
+        given_coordinates=[(0.5, 0.5), (1, 0.5), (0.5, 0), (0.5, 0.5), (1, 0.5)]
+    )
+
+    # Center of the sphere (Equator, Prime Meridian)
+    assert planet_coordinates[0] == (0, 0)
+
+    # Equator, 180 degrees East
+    assert planet_coordinates[1] == (180, 0)
+
+    # North Pole
+    assert planet_coordinates[2] == (-180, 90)
+
+    # 45 degrees North, 90 degrees East
+    assert planet_coordinates[3] == (90, 45)
+
+    # 0 degrees North, 90 degrees East
+    assert planet_coordinates[4] == (90, 0)
