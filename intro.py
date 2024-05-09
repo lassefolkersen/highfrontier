@@ -48,7 +48,12 @@ class IntroGui:
         self.steps_system = 74
         self.steps_both = 9
         self.steps_planet = 51
+
+        self.steps_intro = self.steps_system + self.steps_both + self.steps_planet
+
         self.steps_loop = 72
+
+        self.northern_inclination_start = 30
 
         # Logger object
         self.logger = logging.getLogger(__name__)
@@ -124,6 +129,17 @@ class IntroGui:
         return self.intro_dir / f_name
 
 
+    def get_intro_inclination(self, step: int):
+        """Get the inclination for the intro step i."""
+
+        # Linear interpolation, from 40 to intro start during the steps
+        # where we see the earth
+        progress = (
+            (step - self.steps_system)
+            / (self.steps_intro - self.steps_system)
+        )
+
+        return (1 - progress) * 40 + self.northern_inclination_start
 
     def get_surface_intro(self, step: int, is_loop: bool = True):
         """Get the surface for the intro step i."""
@@ -165,7 +181,7 @@ class IntroGui:
 
             step_this = step - self.steps_system + 1
 
-            northern_inclination = -40 + step_this / 2
+            northern_inclination = self.get_intro_inclination(step)
             eastern_inclination = step_this* 5 - 50
             projection_scaling = 3 + step_this * 4
             if eastern_inclination >= 180:
@@ -183,7 +199,7 @@ class IntroGui:
             step_this = step - self.steps_system - self.steps_both + 1
 
             # Will make the earth rotate while zooming in
-            northern_inclination = -30 + step_this / 2
+            northern_inclination = self.get_intro_inclination(step)
             eastern_inclination = step_this * 5
             projection_scaling = 43 + step_this * 6
             if eastern_inclination >= 180:
@@ -199,7 +215,6 @@ class IntroGui:
 
     def generate_intro_loop_image(self, step: int) -> pygame.Surface:
 
-        northern_inclination_start = -30 + (self.steps_planet+1) / 2
         eastern_inclination_start = (self.steps_planet+1) * 5
         projection_scaling_start = 43 + (self.steps_planet+1) * 6
         self.steps_loop = int(360 / 5) #because we tilt 5 each step
@@ -208,7 +223,7 @@ class IntroGui:
         # Other wise recreate the file
         earth = self.sol.planets["earth"]
         eastern_inclination = eastern_inclination_start + step * 5
-        northern_inclination = northern_inclination_start
+        northern_inclination = self.northern_inclination_start
         projection_scaling = projection_scaling_start
         if eastern_inclination >= 180:
             eastern_inclination = eastern_inclination - 360
