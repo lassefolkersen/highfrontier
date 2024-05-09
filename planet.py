@@ -604,6 +604,9 @@ class planet:
         if not sphere_coordinates:
             return [], []
 
+        if isinstance(sphere_coordinates, tuple):
+            sphere_coordinates = [sphere_coordinates]
+
         if projection_scaling <= 360: #for the round world projection
 
             arr = np.array(sphere_coordinates)
@@ -674,7 +677,7 @@ class planet:
             given_coordinates - if given as tuple or a list of tuples this will limit the algorithm to give only these as sphere_coordinates
         """
 
-        if not given_coordinates:
+        if len(given_coordinates) == 0:
             return [], []
 
         if isinstance(given_coordinates, tuple):
@@ -1418,15 +1421,12 @@ class planet:
                 latitude = random.gauss(aimed_position[1],lat_span)
                 hit_locations.append((longitude,latitude))
 
-        if self.projection_scaling <= 360: #for the round world projection
+        hit_x, hit_y = self.sphere_to_plane_total(hit_locations,self.eastern_inclination,self.northern_inclination,self.projection_scaling)
 
-            proj_hit_locations = self.sphere_to_plane_total(hit_locations,self.eastern_inclination,self.northern_inclination,self.projection_scaling)
-            for i in range(len(proj_hit_locations)):
-                   proj_hit_locations[i] = (proj_hit_locations[i][0] + global_variables.window_size[0] / 2 - self.projection_scaling/ 2, proj_hit_locations[i][1] + global_variables.window_size[1] / 2 - self.projection_scaling/ 2)
-
-        else: #planar map projection
-            proj_hit_locations = self.sphere_to_plane_total(hit_locations,self.eastern_inclination,self.northern_inclination,self.projection_scaling)
-
+        if self.projection_scaling <= 360:
+            # for the round world projection
+            hit_x += global_variables.window_size[0] / 2 - self.projection_scaling / 2
+            hit_y += global_variables.window_size[1] / 2 - self.projection_scaling / 2
 
 
         surface = mainscreen.copy()
@@ -1439,8 +1439,11 @@ class planet:
             #this is earth shattering: a meteor or some ultrahightech super bomb that has yet to be discovered
             #onle one animation at a time for these
 
-            for proj_hit_location in proj_hit_locations:
-                proj_hit_location_transposed = (int(proj_hit_location[0] - small_blast_surface.get_width()/2), int(proj_hit_location[1] - small_blast_surface.get_height()/2))
+            half_w_small = small_blast_surface.get_width() / 2
+            half_h_small = small_blast_surface.get_height() / 2
+
+            for x, y in zip(hit_x, hit_y):
+                proj_hit_location_transposed = (int(x - half_w_small), int(y - half_h_small))
                 surface.blit(small_blast_surface,proj_hit_location_transposed)
                 mainscreen.blit(surface.copy(),(1,0))
                 pygame.display.flip()
@@ -1457,13 +1460,13 @@ class planet:
 #                mainscreen.set_picture(surface)
 #                renderer.update()
                 pygame.time.delay(33)
-                proj_hit_location_transposed = (int(proj_hit_location[0] - medium_blast_surface.get_width()/2), int(proj_hit_location[1] - medium_blast_surface.get_height()/2))
+                proj_hit_location_transposed = (int(x - medium_blast_surface.get_width()/2), int(y - medium_blast_surface.get_height()/2))
                 mainscreen.blit(medium_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
 #                mainscreen.set_picture(surface)
 #                renderer.update()
                 pygame.time.delay(100)
-                proj_hit_location_transposed = (int(proj_hit_location[0] - large_blast_surface.get_width()/2), int(proj_hit_location[1] - large_blast_surface.get_height()/2))
+                proj_hit_location_transposed = (int(x - large_blast_surface.get_width()/2), int(y - large_blast_surface.get_height()/2))
                 mainscreen.blit(large_blast_surface,proj_hit_location_transposed)
                 pygame.display.flip()
 #                mainscreen.set_picture(surface)
