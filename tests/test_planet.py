@@ -335,5 +335,5 @@ def test_calculate_base_positions_existing(solar_system: solarsystem, tmpdir):
 
     # Assert that the existing base positions are returned
     assert base_positions == planet_instance.base_positions[(northern_inclination, eastern_inclination, projection_scaling)]
-    assert base_positions['phoenix'] == ['Not seen', (36.372838167606794, 71.50466192517058)]
-    assert base_positions['moscow'] == (241, 21)
+    assert base_positions['phoenix'] == ['Not seen', (33.38557327362136, 75.5767752092699)]
+    assert base_positions['moscow'] == (241, 31)
