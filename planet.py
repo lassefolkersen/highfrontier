@@ -669,7 +669,7 @@ class planet:
         to sphere_coordinates and then paint the corresponding projection_coordinate.
 
         """
-        if self.projection_scaling <= 360: #for the round world projection
+        if projection_scaling <= 360: #for the round world projection
 
             arr = np.array(sphere_coordinates)
             x_sphere = arr[:,0]
@@ -685,7 +685,7 @@ class planet:
             half_scale = projection_scaling * 0.5
 
             x_proj = ( x / 6370997 ) * half_scale + half_scale  #where 6370997 is the constant of the proj program
-            y_proj = -( y / 5986778 ) * half_scale + half_scale
+            y_proj = -( y / 6370997 ) * half_scale + half_scale
 
             projection_coordinates = [(x , y) for x, y in zip(x_proj,y_proj)]
 
