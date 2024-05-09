@@ -1032,85 +1032,98 @@ class planet:
 
 
 
-    def calculate_base_positions(self,eastern_inclination,northern_inclination,projection_scaling):
+    def calculate_base_positions(
+        self,
+        eastern_inclination: float,
+        northern_inclination: float,
+        projection_scaling: float,
+    ):
         """
         checks if base positions have been stored already and loads them if they have
         if not, they are calculated.
         Returns a dictionary with base names as key, and the position or ["Not seen",edge_position] as values.
         """
-        if (northern_inclination,eastern_inclination,projection_scaling) in list(self.base_positions.keys()) and sorted(self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)].keys()) == sorted(self.bases.keys()):
-            base_positions_here = self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)]
-        else:
-            base_positions_here = {}
-            size_of_target = projection_scaling / 20
+
+        # Name which is kept in cache
+        memory_tuple = (northern_inclination,eastern_inclination,projection_scaling)
+
+        if memory_tuple in self.base_positions:
+            # Check that the bases are all there
+            if all(base in self.base_positions[memory_tuple] for base in self.bases):
+                return self.base_positions[memory_tuple]
+
+        base_positions_here = {}
+        areas_of_interest_here = {}
+
+        window_x, window_y = global_variables.window_size
+
+        if projection_scaling <= 360:
+            #for the round world projection
+            sphere_coordinates = []
+            reverse_sphere_coordinates = []
+            base_names = []
+            for base in self.bases:
+                if self.bases[base].terrain_type == "Space": #for space stations
+                    base_positions_here[base] = ["Space",None]
+                else:
+                    sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
+                    sphere_coordinates.append(sphere_position)
+
+                    if sphere_position[0] < 0:
+                        reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
+                    else:
+                        reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
+                    reverse_sphere_coordinates.append(reverse_sphere_position)
+                    base_names.append(base)
+
+            plane_x, plane_y = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
+            reverse_plane_x, reverse_plane_y = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
+
+            for i in range(len(base_names)):
+                x, y = plane_x[i], plane_y[i]
+                if np.isfinite(x) and np.isfinite(y):
+                    base_positions_here[base_names[i]] = (int(x),int(y))
+                    absolute_position = (x + (window_x/2) - (projection_scaling/2), y + (window_y /2) - (projection_scaling/2))
+                    areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
+                else:
+                    #calculation the edge position for a base below the edge (for use in trade_network drawing)
+                    reverse_x =  - ( int(reverse_plane_x[i]) - 0.5 * projection_scaling )
+                    reverse_y =  int(reverse_plane_y[i]) - 0.5 * projection_scaling
+                    angle = math.atan2(reverse_y,reverse_x)
+                    edge_position = (0.5*projection_scaling * ( 1 + math.cos(angle) ), projection_scaling - 0.5 * projection_scaling *( 1 + math.sin(angle)))
+                    #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
+                    base_positions_here[base_names[i]] = ["Not seen", edge_position]
+
+        else: #if zoomed all the way in to the flat world
             window_size = global_variables.window_size
-            areas_of_interest_here = {}
-
-            if projection_scaling <= 360: #for the round world projection
-                sphere_coordinates = []
-                reverse_sphere_coordinates = []
-                base_names = []
-                for base in self.bases:
-                    if self.bases[base].terrain_type == "Space": #for space stations
-                        base_positions_here[base] = ["Space",None]
+            west_border = self.flat_image_borders["west_border"]
+            east_border = self.flat_image_borders["east_border"]
+            south_border = self.flat_image_borders["south_border"]
+            north_border = self.flat_image_borders["north_border"]
+            east_west_span = east_border - west_border
+            north_south_span = north_border - south_border
+            for base in self.bases:
+                if self.bases[base].terrain_type != "Space":
+                    sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
+                    if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
+                        x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_x
+                        y_proj_position = window_y - ((( sphere_position[1] - south_border ) / north_south_span ) * window_y)
+                        base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
+                        areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
                     else:
-                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                        sphere_coordinates.append(sphere_position)
-
-                        if sphere_position[0] < 0:
-                            reverse_sphere_position = (sphere_position[0]+180,-sphere_position[1])
-                        else:
-                            reverse_sphere_position = (sphere_position[0]-180,-sphere_position[1])
-                        reverse_sphere_coordinates.append(reverse_sphere_position)
-                        base_names.append(base)
-
-                plane_x, plane_y = self.sphere_to_plane_total(sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
-                reverse_plane_x, reverse_plane_y = self.sphere_to_plane_total(reverse_sphere_coordinates, eastern_inclination, northern_inclination, projection_scaling)
-
-                for i in range(0,len(base_names)):
-                    x, y = plane_x[i], plane_y[i]
-                    if np.isfinite(x) and np.isfinite(y):
-                        base_positions_here[base_names[i]] = (int(x),int(y))
-                        absolute_position = (x + (window_size[0]/2) - (projection_scaling/2), y + ( window_size[1] /2) - (projection_scaling/2))
-                        areas_of_interest_here[(absolute_position[0]-1,absolute_position[1]-1,2,2)] = base_names[i]
-                    else:
-                        #calculation the edge position for a base below the edge (for use in trade_network drawing)
-                        reverse_x =  - ( int(reverse_plane_x[i]) - 0.5 * projection_scaling )
-                        reverse_y =  int(reverse_plane_y[i]) - 0.5 * projection_scaling
-                        angle = math.atan2(reverse_y,reverse_x)
-                        edge_position = (0.5*projection_scaling * ( 1 + math.cos(angle) ), projection_scaling - 0.5 * projection_scaling *( 1 + math.sin(angle)))
+                        #calculation the edge position for a base over the edge (for use in trade_network drawing)
+                        x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_x
+                        y_proj_position = window_y - ((( sphere_position[1] - south_border ) / north_south_span ) * window_y)
                         #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
-                        base_positions_here[base_names[i]] = ["Not seen",edge_position]
-
-            else: #if zoomed all the way in to the flat world
-                window_size = global_variables.window_size
-                west_border = self.flat_image_borders["west_border"]
-                east_border = self.flat_image_borders["east_border"]
-                south_border = self.flat_image_borders["south_border"]
-                north_border = self.flat_image_borders["north_border"]
-                east_west_span = east_border - west_border
-                north_south_span = north_border - south_border
-                for base in self.bases:
-                    if self.bases[base].terrain_type != "Space":
-                        sphere_position = (self.bases[base].position_coordinate[0],self.bases[base].position_coordinate[1])
-                        if (west_border < sphere_position[0] < east_border) and (south_border < sphere_position[1] < north_border):
-                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                            base_positions_here[base] = (int(x_proj_position),int(y_proj_position))
-                            areas_of_interest_here[(x_proj_position,y_proj_position,2,2)] = base
-                        else:
-                            #calculation the edge position for a base over the edge (for use in trade_network drawing)
-                            x_proj_position = (( sphere_position[0] - west_border ) / east_west_span ) * window_size[0]
-                            y_proj_position = window_size[1] - ((( sphere_position[1] - south_border ) / north_south_span ) * window_size[1])
-                            #print str(base_names[i]) + " has an angle of: " + str(angle) + " / " + str(180*angle/math.pi) + ", a reverse_plane_position of " + str((reverse_x,reverse_y)) + " and an edge_position of " + str(edge_position)
 
 
-                            base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
+                        base_positions_here[base] = ["Not seen",(int(x_proj_position),int(y_proj_position))]
 
 
+        # Save the calculated positions to the memory
+        self.base_positions[memory_tuple] = base_positions_here
+        self.areas_of_interest[memory_tuple] = areas_of_interest_here
 
-            self.base_positions[(northern_inclination,eastern_inclination,projection_scaling)] = base_positions_here
-            self.areas_of_interest[(northern_inclination,eastern_inclination,projection_scaling)] = areas_of_interest_here
         return base_positions_here
 
 
@@ -1262,21 +1275,22 @@ class planet:
         inner_circle_radius = outer_circle_radius / 2
 
         base_positions = self.calculate_base_positions(eastern_inclination, northern_inclination, projection_scaling)
-        for base in base_positions:
-            if base_positions[base][0] not in ["Space", "Not seen"]:
-                if self.bases[base].is_on_dry_land == "almost":
-                    pygame.draw.circle(surface,(255,36,0),base_positions[base],outer_circle_radius)
-                    pygame.draw.circle(surface,(0,0,0),base_positions[base],inner_circle_radius)
-                elif self.bases[base].is_on_dry_land == "no":
-                    pass
-                else:
-                    pygame.draw.circle(surface,(255,255,255),base_positions[base],outer_circle_radius)
-                    pygame.draw.circle(surface,(0,0,0),base_positions[base],inner_circle_radius)
+        for base in self.bases:
+            if base_positions[base][0] in ["Space", "Not seen"]:
+                continue
+            if self.bases[base].is_on_dry_land == "almost":
+                pygame.draw.circle(surface,(255,36,0),base_positions[base],outer_circle_radius)
+                pygame.draw.circle(surface,(0,0,0),base_positions[base],inner_circle_radius)
+            elif self.bases[base].is_on_dry_land == "no":
+                pass
+            else:
+                pygame.draw.circle(surface,(255,255,255),base_positions[base],outer_circle_radius)
+                pygame.draw.circle(surface,(0,0,0),base_positions[base],inner_circle_radius)
 
-                if self.current_base is not None:
-                    if self.current_base.name == base:
-                        pygame.draw.circle(surface,(255,255,255),base_positions[base],inner_circle_radius)
-                    #pygame.draw.circle(surface,(0,0,0),base_positions[base],int(outer_circle_radius*1.5),1)
+            if self.current_base is not None:
+                if self.current_base.name == base:
+                    pygame.draw.circle(surface,(255,255,255),base_positions[base],inner_circle_radius)
+                #pygame.draw.circle(surface,(0,0,0),base_positions[base],int(outer_circle_radius*1.5),1)
 
         return surface
 
@@ -1287,16 +1301,17 @@ class planet:
         Function that decorates the globe as made by draw_image, with trade network. Takes a surface gives a surface
         """
         base_positions = self.calculate_base_positions(eastern_inclination, northern_inclination, projection_scaling)
-        for base in base_positions:
-            if base_positions[base][0] not in ["Space", "Not seen"]:
-                for other_base in self.bases[base].trade_routes:
-                    if other_base in list(base_positions.keys()):
-                        if base_positions[other_base][0] == "Not seen":
-                            pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
-                        elif base_positions[other_base][0] == "Space":
-                            pass
-                        else:
-                            pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
+        for base in self.bases:
+            if base_positions[base][0] in ["Space", "Not seen"]:
+                continue
+            for other_base in self.bases[base].trade_routes:
+                if other_base in list(base_positions.keys()):
+                    if base_positions[other_base][0] == "Not seen":
+                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base][1])
+                    elif base_positions[other_base][0] == "Space":
+                        pass
+                    else:
+                        pygame.draw.line(surface,(155,155,155),base_positions[base],base_positions[other_base])
 
         return surface
 
