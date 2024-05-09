@@ -174,8 +174,8 @@ class IntroGui:
 
             surface.blit(pygame.Surface((projection_scaling*4,projection_scaling*4)),(global_variables.window_size[0] / 2 - projection_scaling*2, global_variables.window_size[1] / 2 - projection_scaling*2))
             self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
-            projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+
+            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False)
             surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
 
         else:
@@ -190,8 +190,8 @@ class IntroGui:
                 eastern_inclination = eastern_inclination - 360
 
             self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
-            projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+
+            planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False,)
 
             surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
 
@@ -213,8 +213,8 @@ class IntroGui:
         if eastern_inclination >= 180:
             eastern_inclination = eastern_inclination - 360
         self.logger.debug(f" at {step=}  north is {northern_inclination} and east is {eastern_inclination} and scaling is {projection_scaling}")
-        projections = earth.plane_to_sphere_total(eastern_inclination,northern_inclination,projection_scaling)
-        planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False, plane_to_sphere=projections)
+
+        planet_surface = earth.draw_image(eastern_inclination,northern_inclination,projection_scaling, fast_rendering=False)
         surface = pygame.Surface(global_variables.window_size)
         surface.blit(planet_surface, (global_variables.window_size[0] / 2 - projection_scaling/2, global_variables.window_size[1] / 2 - projection_scaling/2))
 

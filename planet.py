@@ -335,8 +335,9 @@ class planet:
                     else:
                         print(str((eastern_inclination, northern_inclination, projection_scaling)) +" was not found - calculating")
                         self.load_for_drawing()
+
                         surface = self.draw_image(eastern_inclination, northern_inclination, projection_scaling)
-                        #draw_image(self,eastern_inclination,northern_inclination,projection_scaling,fast_rendering=False,image=None):
+
                         pygame.image.save(surface,pickle_file_name_and_path)
 
 
@@ -718,7 +719,13 @@ class planet:
 
 
 
-    def plane_to_sphere_total(self,eastern_inclination,northern_inclination,projection_scaling,given_coordinates):
+    def plane_to_sphere_total(
+        self,
+        eastern_inclination,
+        northern_inclination,
+        projection_scaling,
+        given_coordinates,
+    ):
         """
         The function that calculates the relation of all the points on the projection to their sphere coordinates
         It returns a dictionary of all projection coordinates and their corresponding sphere coordinates
@@ -749,7 +756,7 @@ class planet:
             xxs, yys = transformer.transform(x_proj,y_proj, direction='INVERSE')
 
 
-            plane_to_sphere = [(x,y) for x, y in zip(xxs,yys)]
+            plane_to_sphere = xxs, yys
 
         else: #for the flat world projection
             if isinstance(given_coordinates,list) or isinstance(given_coordinates,tuple):
@@ -887,7 +894,6 @@ class planet:
         projection_scaling,
         fast_rendering=False,
         image=None,
-        plane_to_sphere: dict[tuple[float, float], str | tuple[float, float] ] | None = None,
     ) -> pygame.Surface:
         """
         Function that gives the actual surface for use with pysurface, of a planet the zoom/rotation parameters.
@@ -915,79 +921,49 @@ class planet:
             check_memory = True #should only save images to memory when they are not resource/topographical overlays
 
         mode = image.mode
-        image_string = image.tobytes()
-
-
         if mode == "RGBA":
-            index = 4
+            color_len = 4
         else:
-            index = 3
+            color_len = 3
+
+        image_array = np.array(image)
 
         projection_scaling = int(projection_scaling)
         if projection_scaling <= 360:
-            if (northern_inclination,eastern_inclination,projection_scaling) in list(self.pre_drawn_surfaces.keys()) and check_memory:
-                self.logger.debug("loading pre-drawn surface")
-                surface = self.pre_drawn_surfaces[(northern_inclination,eastern_inclination,projection_scaling)]
-                return surface
-
+            # When we don't need a very high resolution, we can use the fast rendering
             resize_after_fast_rendering = False
             if fast_rendering and projection_scaling > 45:
                 projection_scaling = int(projection_scaling / 2)
                 resize_after_fast_rendering = True
 
-            new_image=bytes()
+            plane_to_sphere = None
+            # Here we could implement caching of the mapping
 
+            if plane_to_sphere is None:
+                # Caclulate it if it is not given
 
-            if plane_to_sphere is None: #in this case we load the standard translation maps
-                file_name = f"projection_{-northern_inclination}_NS_{projection_scaling}_zoom"
-                file_path = Path("pickledprojections") / file_name
-                if not file_path.is_file():
-                    raise FileNotFoundError(f"{file_path} missing")
-                with open(file_path, "rb") as file:
-                    try:
-                        plane_to_sphere = pickle.load(file)
-                    except Exception as e:
-                        self.logger.error(f"problem with file {file_name}")
-                        raise e
+                coord_x, coord_y = np.meshgrid(range(projection_scaling), range(projection_scaling))
 
-            for projection_coordinate in sorted(plane_to_sphere):
+                # Calculate the sphere coordinates
+                sphere_x, sphere_y = self.plane_to_sphere_total(
+                    eastern_inclination,
+                    northern_inclination,
+                    projection_scaling,
+                    np.c_[coord_x.T.flatten(), coord_y.T.flatten()],
+                )
 
-                sphere_coordinate = plane_to_sphere[projection_coordinate]
+            # Create the output byte image
+            output_image = np.zeros((projection_scaling * projection_scaling, color_len), dtype=np.uint8)
 
-                if(sphere_coordinate == "space"):
-                    new_image += bytes('\x00', 'utf-8')
-                    new_image += bytes('\x00', 'utf-8')
-                    new_image += bytes('\x00', 'utf-8')
+            # Calculate what the indices are in the image given
+            mask_valid = np.isfinite(sphere_x) & np.isfinite(sphere_y)
+            x_image = np.floor((sphere_x[mask_valid] + 180) / 360 * image.size[0]).astype(int)
+            y_image = np.floor((sphere_y[mask_valid] + 90) / 180 * image.size[1]).astype(int)
 
+            # Copy the values from the image to the output image
+            output_image[mask_valid, :] = image_array[y_image, x_image, :]
 
-                    if mode == "RGBA":
-                        new_image += bytes('\x00', 'utf-8')
-
-
-                else:
-                    if eastern_inclination != 0:
-                        if sphere_coordinate[0]+eastern_inclination < 180:
-                            sphere_coordinate = (sphere_coordinate[0]+eastern_inclination,sphere_coordinate[1])
-                        else:
-                            sphere_coordinate = (sphere_coordinate[0]+eastern_inclination-360,sphere_coordinate[1])
-
-                    image_coordinate = ((sphere_coordinate[0]*image.size[0]+image.size[0]*180)/360 , (sphere_coordinate[1]*image.size[1]+image.size[1]*90)/180)
-                    index_first = int(math.floor(image_coordinate[0]))*index + int(math.floor(image_coordinate[1]))*image.size[0]*index
-                    new_image=new_image + image_string[index_first:(index_first+index)]
-
-            #too short
-            if len(new_image) < (projection_scaling**2)*index:
-                missing = (projection_scaling**2)*index - len(new_image)
-                if missing > 5:
-                    self.logger.warning(f"There are {missing} pixels missing. They have been added to the end of the image")
-                new_image += bytes('\x00' * missing, 'utf-8')
-            # too long
-            if len(new_image) > (projection_scaling**2)*index:
-                self.logger.error("the image string in the make_image_string function is too long!")
-
-            surface = pygame.image.frombuffer(new_image , (projection_scaling,projection_scaling), mode)
-
-
+            surface = pygame.image.frombuffer(output_image.flatten(), (projection_scaling, projection_scaling), mode)
             surface = pygame.transform.rotate(surface,90)
 
 
