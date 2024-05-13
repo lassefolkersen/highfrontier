@@ -233,7 +233,7 @@ class gui():
                     sol.current_planet.unload_from_drawing()
                     sol.display_mode = Display.SOLAR_SYSTEM
             case Display.PLANETARY, False:
-                if sol.current_planet.projection_scaling < 720:
+                if sol.current_planet.projection_scaling * 2 < min(global_variables.window_size):
                     sol.current_planet.projection_scaling = int(sol.current_planet.projection_scaling * 2)
                 else:
                     if sol.current_planet.current_base is not None:
@@ -754,6 +754,9 @@ class planet_jump_window():
     The planet jump window. Can be toggled from commandbox. When visible it can be used as shortcut to planet view
     for the different planets
     """
+
+    solar_system_object_link: solarsystem
+
     def __init__(self,solar_system_object,action_surface):
         self.solar_system_object_link = solar_system_object
         self.rect = pygame.Rect(500,50,100,250)
@@ -764,7 +767,7 @@ class planet_jump_window():
     def planet_jump(self,planet_name,function_parameter):
         planet = self.solar_system_object_link.planets[planet_name]
         self.solar_system_object_link.current_planet = planet
-        planet.load_for_drawing()
+        planet._load_for_drawing()
         self.solar_system_object_link.display_mode = Display.PLANETARY
         surface = planet.draw_entire_planet(planet.eastern_inclination,planet.northern_inclination,planet.projection_scaling)
         self.action_surface.blit(surface,(0,0))

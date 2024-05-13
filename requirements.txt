@@ -1,3 +1,5 @@
 pygame
 Pillow
 pytest
+pyproj
+numpy
