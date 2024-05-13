@@ -833,7 +833,13 @@ class planet:
                 overlay_image = self.current_base.draw_mining_area(self,overlay_image)
 
         overlay_image = overlay_image.convert("RGB")
-        surface = self.draw_image(eastern_inclination, northern_inclination,projection_scaling,fast_rendering=True,image=overlay_image)
+        surface = self.draw_image(
+            eastern_inclination,
+            northern_inclination,
+            projection_scaling,
+            fast_rendering=False,
+            image=overlay_image,
+        )
 
         return surface
 
@@ -967,7 +973,13 @@ class planet:
         return surface
 
 
-    def draw_entire_planet(self,eastern_inclination,northern_inclination,projection_scaling,fast_rendering=True):
+    def draw_entire_planet(
+        self,
+        eastern_inclination: float,
+        northern_inclination: float,
+        projection_scaling: int,
+        fast_rendering: bool = False,
+    ) -> pygame.Surface:
         """
         Function that gives the actual surface for use with pysurface, of a planet, when given the flat
         image-string, and the zoom/rotation parameters.
