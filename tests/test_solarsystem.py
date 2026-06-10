@@ -110,3 +110,39 @@ def test_save_and_load_solar_system(tmpdir):
     assert compare_attributes(old_solar_system, new_solar_system, max_depth=10), "Attributes of old and new solar system instances are not the same"
 
 
+def test_save_and_load_solar_system_with_loaded_planet_images(tmpdir):
+    """Saving should survive planet PIL images/resource maps loaded in memory.
+
+    Planet drawing lazily loads images that cannot be pickled directly.  This
+    regression test exercises the conversion/restoration path that ordinary
+    bare save/load tests miss.
+    """
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "image_save_file.pkl")
+
+    old_solar_system = solarsystem(start_date=global_variables.start_date)
+    old_solar_system.initialize_planets()
+    earth = old_solar_system.planets["earth"]
+    earth.calculate_topography()
+    earth.calculate_resource_map("iron")
+
+    original_topo_size = earth.topo_image.size
+    original_resource_size = earth.resource_maps["iron"].size
+
+    old_solar_system.save_solar_system(save_file_path)
+
+    assert isinstance(earth.topo_image, Image.Image)
+    assert isinstance(earth.resource_maps["iron"], Image.Image)
+    assert earth.topo_image.size == original_topo_size
+    assert earth.resource_maps["iron"].size == original_resource_size
+
+    new_solar_system = solarsystem(start_date=global_variables.start_date)
+    new_solar_system.load_solar_system(save_file_path)
+    loaded_earth = new_solar_system.planets["earth"]
+
+    assert isinstance(loaded_earth.topo_image, Image.Image)
+    assert isinstance(loaded_earth.resource_maps["iron"], Image.Image)
+    assert loaded_earth.topo_image.size == original_topo_size
+    assert loaded_earth.resource_maps["iron"].size == original_resource_size
+    assert loaded_earth.solar_system_object_link is new_solar_system
+
+
