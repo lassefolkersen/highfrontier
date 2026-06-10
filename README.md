@@ -54,14 +54,18 @@ Setting up from source is possible however.
 
 ### From source
 
-* [Python 3.10](https://www.python.org/downloads/)
+* Python 3.10 or newer
 * [Pygame](http://www.pygame.org/)
-* Python Image Module: [PIL](https://pillow.readthedocs.io)
+* Python Image Module: [PIL/Pillow](https://pillow.readthedocs.io)
+* [pyproj](https://pyproj4.github.io/pyproj/) and [NumPy](https://numpy.org/)
 
-You can all install through pip
+Create a virtual environment and install the dependencies from the repository root:
 
 ```
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
 Then run by starting the intro.py file.
@@ -69,6 +73,23 @@ Then run by starting the intro.py file.
 In either case it can then be run by typing:
 ```
 python intro.py
+```
+
+### Running tests
+
+The test suite is headless-friendly. From a configured virtual environment:
+
+```
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy PYGAME_HIDE_SUPPORT_PROMPT=1 python -m pytest -q
+```
+
+On Windows PowerShell, set the environment variables first:
+
+```
+$env:SDL_VIDEODRIVER="dummy"
+$env:SDL_AUDIODRIVER="dummy"
+$env:PYGAME_HIDE_SUPPORT_PROMPT="1"
+python -m pytest -q
 ```
 
 
