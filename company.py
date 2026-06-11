@@ -11,6 +11,13 @@ from PIL import Image, ImageChops
 import pygame
 
 
+def select_strategy(functions_to_choose_from, company_gene):
+	"""Map a 1..100 company AI gene to a one-based strategy table entry."""
+	if company_gene < 1 or company_gene > 100:
+		raise ValueError("company strategy genes must be between 1 and 100")
+	function_to_choose = int(math.ceil(len(functions_to_choose_from) * (company_gene / 100.0)))
+	return functions_to_choose_from[function_to_choose]
+
 
 class company:
 	"""
@@ -108,7 +115,10 @@ class company:
 			if global_variables.company_database_headers[headers] == "int":
 				if headers in list(model_company_database.keys()):
 					if standard_deviation == 0:
-						new_company_database[headers] = model_company_database[headers]
+						gene_value = model_company_database[headers]
+						if gene_value < 1 or gene_value > 100:
+							raise ValueError(headers + " must be between 1 and 100")
+						new_company_database[headers] = gene_value
 					else:
 						new_company_database[headers] = int(math.fabs(random.gauss(model_company_database[headers],standard_deviation)))
 						while 1 > new_company_database[headers] or new_company_database[headers] > 100: #to make the deviation correct, even at the ends. I wonder if this is a good idea
@@ -187,8 +197,7 @@ class company:
 		##############################################
 		if self.automation_dict["Start research firms"]:
 			functions_to_choose_from = global_variables.market_decisions.start_research_firms
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["start_research_firms"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["start_research_firms"])(self)
 
 
 
@@ -196,30 +205,26 @@ class company:
 		##############################################
 		if self.automation_dict["Commodities market (start commodity producing firms)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_commodities_market
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_commodities_market"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["evaluate_commodities_market"])(self)
 
 		#check if nearby assets should be bought
 		##############################################
 		if self.automation_dict["Asset market (buy bases and firms)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_asset_market
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_asset_market"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["evaluate_asset_market"])(self)
 
 
 		#check what decisions should be made on the tech market
 		##############################################
 		if self.automation_dict["Tech market (buy and sell technology)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_tech_market
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_tech_market"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["evaluate_tech_market"])(self)
 
 		#check if any merchant companies should be started up
 		##############################################
 		if self.automation_dict["Transport market (start up merchant firms)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_intercity_trade_market
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_intercity_trade_market"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["evaluate_intercity_trade_market"])(self)
 
 
 
@@ -227,8 +232,7 @@ class company:
 		##############################################
 		if self.automation_dict["Expand area of operation (search for new home cities)"]:
 			functions_to_choose_from = global_variables.market_decisions.evaluate_expansion_opportunities
-			function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_expansion_opportunities"] / 100.0)))
-			functions_to_choose_from[function_to_choose](self)
+			select_strategy(functions_to_choose_from, self.company_database["evaluate_expansion_opportunities"])(self)
 
 
 
@@ -254,8 +258,7 @@ class company:
 		"""
 
 		functions_to_choose_from = global_variables.market_decisions.evaluate_firms
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["evaluate_firms"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.company_database["evaluate_firms"])(self)
 
 
 
@@ -267,8 +270,7 @@ class company:
 		to the number of entries in the database
 		"""
 		functions_to_choose_from = global_variables.market_decisions.pick_research
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.company_database["pick_research"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.company_database["pick_research"])(self)
 
 
 
@@ -838,8 +840,7 @@ class firm():
 		"""
 
 		functions_to_choose_from = global_variables.market_decisions.calculate_demand_reaction
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_demand_reaction"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.owner.company_database["calculate_demand_reaction"])(self)
 
 
 
@@ -850,8 +851,7 @@ class firm():
 		to the number of entries in the databae
 		"""
 		functions_to_choose_from = global_variables.market_decisions.calculate_supply_reaction
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_supply_reaction"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.owner.company_database["calculate_supply_reaction"])(self)
 
 
 
@@ -2321,8 +2321,7 @@ class merchant(tertiary):
 		"""
 
 		functions_to_choose_from = global_variables.market_decisions.calculate_intercity_demand
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_intercity_demand"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.owner.company_database["calculate_intercity_demand"])(self)
 
 
 
@@ -2334,5 +2333,4 @@ class merchant(tertiary):
 		"""
 		pass
 		functions_to_choose_from = global_variables.market_decisions.calculate_intercity_supply
-		function_to_choose = int(math.ceil(len(functions_to_choose_from) * (self.owner.company_database["calculate_intercity_supply"] / 100.0)))
-		functions_to_choose_from[function_to_choose](self)
+		select_strategy(functions_to_choose_from, self.owner.company_database["calculate_intercity_supply"])(self)

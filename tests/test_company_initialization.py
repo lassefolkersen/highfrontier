@@ -1,5 +1,8 @@
 import random
 
+import pytest
+
+import company as company_module
 import global_variables
 from solarsystem import solarsystem
 
@@ -36,3 +39,23 @@ def test_company_database_integer_genes_stay_within_1_to_100():
                     out_of_bounds.append((company_instance.name, gene_name, gene_value))
 
     assert out_of_bounds == []
+
+
+def test_model_company_database_rejects_integer_genes_outside_1_to_100():
+    company_instance = company_module.company.__new__(company_module.company)
+
+    with pytest.raises(ValueError, match="desired_gini_coefficent"):
+        company_instance.calculate_company_database(
+            {"desired_gini_coefficent": 101}, standard_deviation=0
+        )
+
+
+def test_strategy_selector_maps_company_genes_to_one_based_strategy_keys():
+    strategies = {1: "low", 2: "medium", 3: "high"}
+
+    assert company_module.select_strategy(strategies, 1) == "low"
+    assert company_module.select_strategy(strategies, 33) == "low"
+    assert company_module.select_strategy(strategies, 34) == "medium"
+    assert company_module.select_strategy(strategies, 66) == "medium"
+    assert company_module.select_strategy(strategies, 67) == "high"
+    assert company_module.select_strategy(strategies, 100) == "high"
