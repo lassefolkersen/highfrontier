@@ -679,6 +679,7 @@ class company:
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
+					self.solar_system_object_link.record_telemetry("firm_starts")
 
 
 				#if it is not we search for the process requested
@@ -714,6 +715,7 @@ class company:
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
+					self.solar_system_object_link.record_telemetry("firm_starts")
 
 					#checking input_output_dict FIXME this check can perhaps be omitted
 					for resource in new_firm.input_output_dict["input"]:
@@ -1144,6 +1146,7 @@ class firm():
 			transaction_report["seller"].accounting.append(transaction_report)
 			transaction_report["buyer"].accounting.append(transaction_report)
 			market["transactions"][resource].append(transaction_report)
+			self.solar_system_object_link.record_telemetry("transactions")
 
 			if transaction_report["quantity"] < 0:
 				#print

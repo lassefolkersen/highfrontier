@@ -19,6 +19,18 @@ from paths import data_path
 sys.setrecursionlimit(10000)
 
 KNOWN_PLANET_IMAGES = ["wet_areas", "topo_image"]
+TELEMETRY_KEYS = (
+    "stockouts",
+    "zero_stock_bases",
+    "transactions",
+    "firm_starts",
+    "firm_closes",
+    "bankruptcies",
+)
+
+
+def default_telemetry():
+    return {key: 0 for key in TELEMETRY_KEYS}
 
 
 def _serialize_pil_image(image):
@@ -50,6 +62,17 @@ class solarsystem:
         else:
             assert isinstance(value, Display)
         self._display_mode = value
+
+
+    def reset_telemetry(self):
+        self.telemetry = default_telemetry()
+
+
+    def record_telemetry(self, key, amount=1):
+        if not hasattr(self, "telemetry"):
+            self.reset_telemetry()
+        self.telemetry.setdefault(key, 0)
+        self.telemetry[key] = self.telemetry[key] + amount
 
 
     def launchThread(self):
@@ -138,6 +161,7 @@ class solarsystem:
             self.build_base_mode = False #a variable that specifies if a click on the map translates into building a base
             self.building_base = None #a link to the building base in build_base_mode - necessary for interplanetary builds
             self.messages = []
+            self.telemetry = default_telemetry()
             self.message_printing = {"general gameplay info":True,
                                 "general company info":True,
                                 "tech discovery":False,
@@ -180,6 +204,7 @@ class solarsystem:
             print("initializing companies")
             self.companies = self.initialize_companies()
             print("done initializing companies")
+            self.reset_telemetry()
             self.current_planet = self.planets["sun"]
 
     def close_company(self,companyName):
@@ -462,6 +487,11 @@ class solarsystem:
         except Exception as exc:
             raise SaveFormatError(f"Savegame payload could not be restored: {exc}") from exc
         #inserting all variables in self
+        if not hasattr(new_solar_system, "telemetry"):
+            new_solar_system.telemetry = default_telemetry()
+        else:
+            for telemetry_key in TELEMETRY_KEYS:
+                new_solar_system.telemetry.setdefault(telemetry_key, 0)
         self.__dict__.clear()
         self.__dict__.update(new_solar_system.__dict__)
         #updating all solar_system_object_links (this is actually rather weird that it has to be done)
