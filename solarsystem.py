@@ -16,6 +16,20 @@ import pickle
 from display import Display
 sys.setrecursionlimit(10000)
 
+KNOWN_PLANET_IMAGES = ["wet_areas", "topo_image"]
+
+
+def _serialize_pil_image(image):
+    if isinstance(image, Image.Image):
+        return {"string": image.tobytes(), "mode": image.mode, "size": image.size}
+    return image
+
+
+def _deserialize_pil_image(image_parts):
+    if isinstance(image_parts, Image.Image):
+        return image_parts
+    return Image.frombytes(image_parts["mode"], image_parts["size"], image_parts["string"])
+
 class solarsystem:
 
     display_mode: Display
@@ -346,37 +360,28 @@ class solarsystem:
                     technology["known_by"] = {}
         #removing pre-drawn surfaces and stringifiyng resource_maps
         backup_up_pre_drawn_surfaces = {}
-        known_planet_images = ["wet_areas","topo_image"]
-
-        for planet_instance in list(self.planets.values()):
-            planet_instance.unload_from_drawing()
-            for known_planet_image in known_planet_images:
-                try:    getattr(planet_instance, known_planet_image)
-                except: pass
-                else:
-                    image = getattr(planet_instance, known_planet_image)
-                    size = image.size
-                    mode = image.mode
-                    image_string = image.tobytes()
-                    setattr(planet_instance, known_planet_image, {"string":image_string,"mode":mode,"size":size})
-            if planet_instance.pre_drawn_surfaces != {}:
-                backup_up_pre_drawn_surfaces[planet_instance.name] = {}
-                for pre_drawn_surface_key in planet_instance.pre_drawn_surfaces:
-                     pre_drawn_surface = planet_instance.pre_drawn_surfaces[pre_drawn_surface_key]
-                     backup_up_pre_drawn_surfaces[planet_instance.name][pre_drawn_surface_key] = pre_drawn_surface
-                planet_instance.pre_drawn_surfaces = {}
-            #this is where the resource maps gets stringified
-            if planet_instance.resource_maps != {}:
-                for resource in planet_instance.resource_maps:
-                    image = planet_instance.resource_maps[resource]
-                    size = image.size
-                    mode = image.mode
-                    image_string = image.tobytes()
-                    planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
-
         tmp_filename = filename + ".tmp"
         simulation_thread_was_running = hasattr(self, 'simThread')
+
         try:
+          for planet_instance in list(self.planets.values()):
+              planet_instance.unload_from_drawing()
+              for known_planet_image in KNOWN_PLANET_IMAGES:
+                  if hasattr(planet_instance, known_planet_image):
+                      image = getattr(planet_instance, known_planet_image)
+                      setattr(planet_instance, known_planet_image, _serialize_pil_image(image))
+              if planet_instance.pre_drawn_surfaces != {}:
+                  backup_up_pre_drawn_surfaces[planet_instance.name] = {}
+                  for pre_drawn_surface_key in planet_instance.pre_drawn_surfaces:
+                       pre_drawn_surface = planet_instance.pre_drawn_surfaces[pre_drawn_surface_key]
+                       backup_up_pre_drawn_surfaces[planet_instance.name][pre_drawn_surface_key] = pre_drawn_surface
+                  planet_instance.pre_drawn_surfaces = {}
+              #this is where the resource maps gets stringified
+              if planet_instance.resource_maps != {}:
+                  for resource in planet_instance.resource_maps:
+                      image = planet_instance.resource_maps[resource]
+                      planet_instance.resource_maps[resource] = _serialize_pil_image(image)
+
           if simulation_thread_was_running:
               self.simThread.join()  # Wait for the simulation thread to finish
               del self.simThread  # Delete the thread reference
@@ -411,24 +416,24 @@ class solarsystem:
           if simulation_thread_was_running and not hasattr(self, 'simThread'):
             self.launchThread()
           print(f"Error: An unexpected error occurred while saving the game. Details: {e}")
-
-        for planet_name in backup_up_pre_drawn_surfaces:
-            planet_instance = self.planets[planet_name]
-            for pre_drawn_surface_key in backup_up_pre_drawn_surfaces[planet_name]:
-                 pre_drawn_surface = backup_up_pre_drawn_surfaces[planet_name][pre_drawn_surface_key]
-                 planet_instance.pre_drawn_surfaces[pre_drawn_surface_key] = pre_drawn_surface
-        #here we de-stringify the resource maps and other known images
-        for planet_instance in list(self.planets.values()):
-            for known_planet_image in known_planet_images:
-                if hasattr(planet_instance, known_planet_image):
-                    image_parts = getattr(planet_instance, known_planet_image)
-                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
-                    setattr(planet_instance, known_planet_image, image)
-            if planet_instance.resource_maps != {}:
-                for resource in planet_instance.resource_maps:
-                    image_parts = planet_instance.resource_maps[resource]
-                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
-                    planet_instance.resource_maps[resource] = image
+        finally:
+          for planet_name in backup_up_pre_drawn_surfaces:
+              planet_instance = self.planets[planet_name]
+              for pre_drawn_surface_key in backup_up_pre_drawn_surfaces[planet_name]:
+                   pre_drawn_surface = backup_up_pre_drawn_surfaces[planet_name][pre_drawn_surface_key]
+                   planet_instance.pre_drawn_surfaces[pre_drawn_surface_key] = pre_drawn_surface
+          #here we de-stringify the resource maps and other known images
+          for planet_instance in list(self.planets.values()):
+              for known_planet_image in KNOWN_PLANET_IMAGES:
+                  if hasattr(planet_instance, known_planet_image):
+                      image_parts = getattr(planet_instance, known_planet_image)
+                      image = _deserialize_pil_image(image_parts)
+                      setattr(planet_instance, known_planet_image, image)
+              if planet_instance.resource_maps != {}:
+                  for resource in planet_instance.resource_maps:
+                      image_parts = planet_instance.resource_maps[resource]
+                      image = _deserialize_pil_image(image_parts)
+                      planet_instance.resource_maps[resource] = image
 
 
     def load_solar_system(self,filename):
@@ -448,17 +453,16 @@ class solarsystem:
             print(error_message)
             raise Exception(f"An error of type: {error_message} was found")
         #here we de-stringify the resource maps and other known planet images
-        known_planet_images = ["wet_areas","topo_image"]
         for planet_instance in list(new_solar_system.planets.values()):
-            for known_planet_image in known_planet_images:
+            for known_planet_image in KNOWN_PLANET_IMAGES:
                 if hasattr(planet_instance, known_planet_image):
                     image_parts = getattr(planet_instance, known_planet_image)
-                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = _deserialize_pil_image(image_parts)
                     setattr(planet_instance, known_planet_image, image)
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
                     image_parts = planet_instance.resource_maps[resource]
-                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = _deserialize_pil_image(image_parts)
                     planet_instance.resource_maps[resource] = image
         #inserting all variables in self
         self.__dict__.clear()
