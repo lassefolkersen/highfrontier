@@ -275,9 +275,9 @@ class solarsystem:
 #                    if random.randint(1,3) == 1:
                     if True:
                         start_up_name = technology + " "+ str(random.randint(1000,9999))
-                        size_chosen = random.randint(1, all_bases[home_city].population)
                         location_name = list(company_instance.home_cities.keys())[0]
                         location = company_instance.home_cities[location_name]
+                        size_chosen = random.randint(1, location.population)
                         company_instance.change_firm_size(
                                                location,
                                                size_chosen,

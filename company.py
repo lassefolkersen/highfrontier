@@ -1764,7 +1764,7 @@ class base(firm):
 									transport_type = "ground transport"
 									endpoints = [other_base.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
 									endpoint_links = [other_base,self]
-									trade_route = {"distance":distance[0],"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+									trade_route = {"distance":distance[0],"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links,"metadata":{"schema_version":1,"route_class":"surface-surface"}} #converting distance from list to float (has to be list see planet
 									self.trade_routes[other_base.base_name] = trade_route
 									other_base.trade_routes[self.base_name] = trade_route
 		else: #space station trade route
@@ -1781,7 +1781,7 @@ class base(firm):
 			transport_type = "space transport"
 			endpoints = [space_port.base_name,self.base_name] #try to remove this if you get the opportunity FIXME
 			endpoint_links = [space_port,self]
-			trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+			trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links,"metadata":{"schema_version":1,"route_class":"surface-orbit"}} #converting distance from list to float (has to be list see planet
 			self.trade_routes[space_port.base_name] = trade_route
 			space_port.trade_routes[self.base_name] = trade_route
 
@@ -2100,7 +2100,8 @@ class base_construction(firm):
 					transport_type = self.base_to_be_build_data["transport_type_to_origin"]
 					endpoints = [new_base.base_name,self.location.base_name] #try to remove this if you get the opportunity FIXME
 					endpoint_links = [new_base,self.location]
-					trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links} #converting distance from list to float (has to be list see planet
+					route_class = "surface-orbit" if transport_type == "space transport" else "surface-surface"
+					trade_route = {"distance":distance,"transport_type":transport_type,"endpoints":endpoints,"endpoint_links":endpoint_links,"metadata":{"schema_version":1,"route_class":route_class}} #converting distance from list to float (has to be list see planet
 					new_base.trade_routes[self.location.base_name] = trade_route
 					self.location.trade_routes[new_base.base_name] = trade_route
 
