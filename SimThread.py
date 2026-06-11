@@ -8,10 +8,10 @@ class SimThread(threading.Thread):
         threading.Thread.__init__(self)
         self.sol=sol
         self._stopEvent=threading.Event()
-        self.setDaemon(True)
+        self.daemon = True
     def run(self):
         sol=self.sol
-        while(not self._stopEvent.isSet()):
+        while(not self._stopEvent.is_set()):
 #            print "SimThread starting another month"
             sol.current_date = datetime.timedelta(30)+sol.current_date
             sol.evaluate_each_game_step()

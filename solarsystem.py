@@ -357,7 +357,7 @@ class solarsystem:
                     image = getattr(planet_instance, known_planet_image)
                     size = image.size
                     mode = image.mode
-                    image_string = image.tostring()
+                    image_string = image.tobytes()
                     setattr(planet_instance, known_planet_image, {"string":image_string,"mode":mode,"size":size})
             if planet_instance.pre_drawn_surfaces != {}:
                 backup_up_pre_drawn_surfaces[planet_instance.name] = {}
@@ -374,28 +374,44 @@ class solarsystem:
                     image_string = image.tobytes()
                     planet_instance.resource_maps[resource] = {"string":image_string,"mode":mode,"size":size}
 
+        tmp_filename = filename + ".tmp"
+        simulation_thread_was_running = hasattr(self, 'simThread')
         try:
-          file = open(filename, "wb")  # Open the file in binary mode for pickle
-
-          if hasattr(self, 'simThread'):
+          if simulation_thread_was_running:
               self.simThread.join()  # Wait for the simulation thread to finish
               del self.simThread  # Delete the thread reference
-              pickle.dump(self, file)
+              with open(tmp_filename, "wb") as file:
+                  pickle.dump(self, file)
+                  file.flush()
+                  os.fsync(file.fileno())
+              os.replace(tmp_filename, filename)
               self.launchThread()
           else:
-              pickle.dump(self, file)
+              with open(tmp_filename, "wb") as file:
+                  pickle.dump(self, file)
+                  file.flush()
+                  os.fsync(file.fileno())
+              os.replace(tmp_filename, filename)
           print("Game saved successfully.")
         except MemoryError:
+          if os.path.exists(tmp_filename):
+            os.remove(tmp_filename)
+          if simulation_thread_was_running and not hasattr(self, 'simThread'):
+            self.launchThread()
           print("Error: MemoryError occurred while saving the game. Consider freeing up memory or using a system with more memory.")
         except pickle.PickleError as e:
+          if os.path.exists(tmp_filename):
+            os.remove(tmp_filename)
+          if simulation_thread_was_running and not hasattr(self, 'simThread'):
+            self.launchThread()
           print(f"Error: Failed to pickle the game. Details: {e}")
         except Exception as e:
+          if os.path.exists(tmp_filename):
+            os.remove(tmp_filename)
+          if simulation_thread_was_running and not hasattr(self, 'simThread'):
+            self.launchThread()
           print(f"Error: An unexpected error occurred while saving the game. Details: {e}")
-        finally:
-          if 'file' in locals() and not file.closed:
-            file.close()
 
-        #here we restore the pre_drawn surfaces
         for planet_name in backup_up_pre_drawn_surfaces:
             planet_instance = self.planets[planet_name]
             for pre_drawn_surface_key in backup_up_pre_drawn_surfaces[planet_name]:
@@ -406,13 +422,12 @@ class solarsystem:
             for known_planet_image in known_planet_images:
                 if hasattr(planet_instance, known_planet_image):
                     image_parts = getattr(planet_instance, known_planet_image)
-                    image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     setattr(planet_instance, known_planet_image, image)
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
                     image_parts = planet_instance.resource_maps[resource]
-                    if image.format:
-                      image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
 
 
@@ -420,7 +435,6 @@ class solarsystem:
         """
         Function that loads the solar system
         """
-        file = open(filename, "r")
         try:
             with open(filename, "rb") as file:
                 new_solar_system = pickle.load(file)
@@ -433,15 +447,13 @@ class solarsystem:
             error_message = str(e)
             print(error_message)
             raise Exception(f"An error of type: {error_message} was found")
-        finally:
-            file.close()
         #here we de-stringify the resource maps and other known planet images
         known_planet_images = ["wet_areas","topo_image"]
         for planet_instance in list(new_solar_system.planets.values()):
             for known_planet_image in known_planet_images:
                 if hasattr(planet_instance, known_planet_image):
                     image_parts = getattr(planet_instance, known_planet_image)
-                    image = Image.fromstring(image_parts["mode"],image_parts["size"],image_parts["string"])
+                    image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     setattr(planet_instance, known_planet_image, image)
             if planet_instance.resource_maps != {}:
                 for resource in planet_instance.resource_maps:
@@ -449,23 +461,15 @@ class solarsystem:
                     image = Image.frombytes(image_parts["mode"],image_parts["size"],image_parts["string"])
                     planet_instance.resource_maps[resource] = image
         #inserting all variables in self
-        for entry_name in dir(self):
-            if entry_name == '__weakref__':
-                continue
-            if not hasattr(new_solar_system, entry_name):
-                delattr(self,entry_name)
-        for entry_name in dir(new_solar_system):
-            if entry_name == '__weakref__':
-                continue
-            entry = getattr(new_solar_system, entry_name)
-            setattr(self,entry_name, entry)
+        self.__dict__.clear()
+        self.__dict__.update(new_solar_system.__dict__)
         #updating all solar_system_object_links (this is actually rather weird that it has to be done)
         for company_instance in list(self.companies.values()):
             company_instance.solar_system_object_link = self
             for owned_firm_instance in list(company_instance.owned_firms.values()):
                 owned_firm_instance.solar_system_object_link = self
         for planet_instance in list(self.planets.values()):
-            planet_instance.solars_system_object_link = self
+            planet_instance.solar_system_object_link = self
         self.technology_tree.solar_system_object_link = self
     def get_satellite_to_center_position(self,object,zoom_level,date_variable):
         """
