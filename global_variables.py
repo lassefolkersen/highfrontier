@@ -4,6 +4,7 @@ import pygame
 import time
 import market_decisions
 import os
+from paths import asset_path
 pygame.font.init()
 
 # variables that are "meta-gamespecific" ie. that should not follow a savegame
@@ -18,10 +19,10 @@ persons_per_company = 1200000   #upper limit on the number of companies relative
 max_transactions_tracked = 100 #the max number of tracked transaction in a market.
 max_letters_in_company_names = 32
 
-courier_font = pygame.font.Font(os.path.join("fonts","CRYSRG__.TTF"), 11) #some fonts
+courier_font = pygame.font.Font(asset_path("fonts","CRYSRG__.TTF"), 11) #some fonts
 standard_font = pygame.font.SysFont(os.path.join("fonts","freesansbold.ttf"), 13, bold=False, italic=False) #some fonts
-standard_font_small= pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
-standard_font_small_bold = pygame.font.Font(os.path.join("fonts","freesansbold.ttf"),10)
+standard_font_small= pygame.font.Font(asset_path("fonts","freesansbold.ttf"),10)
+standard_font_small_bold = pygame.font.Font(asset_path("fonts","freesansbold.ttf"),10)
 standard_font_small_bold.set_bold(True)
 max_stepback_history_size = 10 # how many steps back we can use the "back" key
 market_decisions = market_decisions.market_decisions() #this is the class of market decisions that should be globally available.
