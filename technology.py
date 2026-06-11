@@ -637,11 +637,11 @@ class Tree():
 				new_technology["input_output_dict"]["byproducts"]["carbondioxide"] = co2_emission
 
 
-			# rule 2: the radioactive waste from everything that has fission source as input is proportional to the coal input +/- X % randomness (where X is high, to reflect the many various fission technologies)
+			# rule 2: the radioactive waste from everything that has nuclear fuel as input is proportional to the nuclear fuel input +/- X % randomness (where X is high, to reflect the many various fission technologies)
 			percent_randomness = 0.8 # how many percent of ideal value, the final value can differ per resource - don't put more than 1.
-			if "fission source" in list(input_output_dict["input"].keys()):
-				fission_source_input = input_output_dict["input"]["fission source"]
-				radioactive_waste_emission = int(fission_source_input + ((random.random() - 0.5) * 2 * percent_randomness * fission_source_input))
+			if "nuclear fuel" in list(input_output_dict["input"].keys()):
+				nuclear_fuel_input = input_output_dict["input"]["nuclear fuel"]
+				radioactive_waste_emission = int(nuclear_fuel_input + ((random.random() - 0.5) * 2 * percent_randomness * nuclear_fuel_input))
 				new_technology["input_output_dict"]["byproducts"]["radioactive waste"] = radioactive_waste_emission
 
 			new_technology["known_by"] = {}
