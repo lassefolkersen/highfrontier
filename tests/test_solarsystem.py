@@ -146,3 +146,49 @@ def test_save_and_load_solar_system_with_loaded_planet_images(tmpdir):
     assert loaded_earth.solar_system_object_link is new_solar_system
 
 
+def test_load_legacy_raw_pickle_with_loaded_planet_images(tmpdir):
+    """Raw legacy pickles may contain PIL Images instead of serialized dicts."""
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "legacy_raw.pkl")
+
+    old_solar_system = solarsystem(start_date=global_variables.start_date)
+    old_solar_system.initialize_planets()
+    earth = old_solar_system.planets["earth"]
+    earth.calculate_topography()
+    earth.calculate_resource_map("iron")
+    original_topo_size = earth.topo_image.size
+    original_resource_size = earth.resource_maps["iron"].size
+
+    import pickle
+
+    with open(save_file_path, "wb") as save_file:
+        pickle.dump(old_solar_system, save_file)
+
+    new_solar_system = solarsystem(start_date=global_variables.start_date)
+    new_solar_system.load_solar_system(save_file_path)
+    loaded_earth = new_solar_system.planets["earth"]
+
+    assert isinstance(loaded_earth.topo_image, Image.Image)
+    assert isinstance(loaded_earth.resource_maps["iron"], Image.Image)
+    assert loaded_earth.topo_image.size == original_topo_size
+    assert loaded_earth.resource_maps["iron"].size == original_resource_size
+    assert loaded_earth.solar_system_object_link is new_solar_system
+
+
+def test_save_restores_loaded_planet_images_when_pickle_fails(tmpdir):
+    """A failed save must not leave live planet images in serialized dict form."""
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "failed_save.pkl")
+
+    old_solar_system = solarsystem(start_date=global_variables.start_date)
+    old_solar_system.initialize_planets()
+    earth = old_solar_system.planets["earth"]
+    earth.calculate_topography()
+    earth.calculate_resource_map("iron")
+    setattr(old_solar_system, "unpickleable_for_test", lambda: None)
+
+    old_solar_system.save_solar_system(save_file_path)
+
+    assert isinstance(earth.topo_image, Image.Image)
+    assert isinstance(earth.resource_maps["iron"], Image.Image)
+    assert not os.path.exists(save_file_path + ".tmp")
+
+
