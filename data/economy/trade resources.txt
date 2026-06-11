@@ -18,3 +18,4 @@ ground transport	False	False	transportation	100	ton/km	False	NA	NA	NA
 space transport	False	False	transportation	100	ton/km	False	NA	NA	NA
 oxygen	True	True	manufacturing	5	ton	False	NA	NA	NA
 nitrogen	True	True	manufacturing	5	ton	False	NA	NA	NA
+terraforming	False	False	service	100	units	False	NA	NA	NA
