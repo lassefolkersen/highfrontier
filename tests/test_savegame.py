@@ -48,8 +48,14 @@ def test_savegame_path_uses_validated_name_inside_save_dir(tmp_path):
 def test_list_savegames_excludes_empty_temp_invalid_and_directories(tmp_path):
     save_dir = tmp_path / "savegames"
     save_dir.mkdir()
-    for name in ["campaign-1", "zulu", "emptyfile", "autosave.tmp", "   "]:
+    for name in ["campaign-1", "zulu", "emptyfile", "autosave.tmp"]:
         (save_dir / name).write_bytes(b"placeholder")
+    try:
+        (save_dir / "   ").write_bytes(b"placeholder")
+    except OSError:
+        # Windows forbids names that are only spaces; other platforms can still
+        # exercise the list filter against this invalid directory entry.
+        pass
     (save_dir / "nested").mkdir()
 
     assert list_savegames(save_dir) == ["campaign-1", "zulu"]
