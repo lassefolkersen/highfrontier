@@ -14,6 +14,7 @@ import global_variables
 import gui
 import random
 import importlib
+import crashlog
 
 
 
@@ -166,7 +167,13 @@ class Game:
 
 
 if __name__ == "__main__":
+    crashlog.configure_logging()
+    crashlog.install_excepthooks()
     game = Game()
-    game.start_loop(companyName = "asdf",
-                        companyCapital =  1000000,
-                        loadPreviousGame = None)
+    crashlog.run_with_crash_logging(
+        "main game loop",
+        game.start_loop,
+        companyName = "asdf",
+        companyCapital =  1000000,
+        loadPreviousGame = None,
+    )
