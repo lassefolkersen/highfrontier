@@ -13,6 +13,7 @@ import global_variables
 import primitives
 import technology
 import pickle
+from savegame import SaveFormatError, load_payload, make_save_wrapper
 from display import Display
 sys.setrecursionlimit(10000)
 
@@ -386,14 +387,14 @@ class solarsystem:
               self.simThread.join()  # Wait for the simulation thread to finish
               del self.simThread  # Delete the thread reference
               with open(tmp_filename, "wb") as file:
-                  pickle.dump(self, file)
+                  pickle.dump(make_save_wrapper(self), file)
                   file.flush()
                   os.fsync(file.fileno())
               os.replace(tmp_filename, filename)
               self.launchThread()
           else:
               with open(tmp_filename, "wb") as file:
-                  pickle.dump(self, file)
+                  pickle.dump(make_save_wrapper(self), file)
                   file.flush()
                   os.fsync(file.fileno())
               os.replace(tmp_filename, filename)
@@ -440,30 +441,25 @@ class solarsystem:
         """
         Function that loads the solar system
         """
-        try:
-            with open(filename, "rb") as file:
-                new_solar_system = pickle.load(file)
-        except EOFError as e:
-            print_dict = {"text": f"Un-loadable file: {filename} - no load performed", "type": "general gameplay info"}
-            error_message = str(e)
-            print(error_message)
-            raise Exception(f"An EOFError of type: {error_message} was found")
-        except Exception as e:
-            error_message = str(e)
-            print(error_message)
-            raise Exception(f"An error of type: {error_message} was found")
+        new_solar_system = load_payload(filename)
+        if not hasattr(new_solar_system, "planets") or not hasattr(new_solar_system, "companies"):
+            raise SaveFormatError("Savegame payload is not a solarsystem")
+
         #here we de-stringify the resource maps and other known planet images
-        for planet_instance in list(new_solar_system.planets.values()):
-            for known_planet_image in KNOWN_PLANET_IMAGES:
-                if hasattr(planet_instance, known_planet_image):
-                    image_parts = getattr(planet_instance, known_planet_image)
-                    image = _deserialize_pil_image(image_parts)
-                    setattr(planet_instance, known_planet_image, image)
-            if planet_instance.resource_maps != {}:
-                for resource in planet_instance.resource_maps:
-                    image_parts = planet_instance.resource_maps[resource]
-                    image = _deserialize_pil_image(image_parts)
-                    planet_instance.resource_maps[resource] = image
+        try:
+            for planet_instance in list(new_solar_system.planets.values()):
+                for known_planet_image in KNOWN_PLANET_IMAGES:
+                    if hasattr(planet_instance, known_planet_image):
+                        image_parts = getattr(planet_instance, known_planet_image)
+                        image = _deserialize_pil_image(image_parts)
+                        setattr(planet_instance, known_planet_image, image)
+                if planet_instance.resource_maps != {}:
+                    for resource in planet_instance.resource_maps:
+                        image_parts = planet_instance.resource_maps[resource]
+                        image = _deserialize_pil_image(image_parts)
+                        planet_instance.resource_maps[resource] = image
+        except Exception as exc:
+            raise SaveFormatError(f"Savegame payload could not be restored: {exc}") from exc
         #inserting all variables in self
         self.__dict__.clear()
         self.__dict__.update(new_solar_system.__dict__)

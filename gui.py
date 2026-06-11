@@ -11,6 +11,7 @@ import primitives
 import gui_components
 import random
 import time
+from savegame import SaveNameError, list_savegames, savegame_path
 
 from solarsystem import solarsystem
 from display import Display, raise_not_implemented_display, Direction
@@ -1326,7 +1327,12 @@ class file_window():
             self.distribute_click_to_subwindow.receive_click(event)
             if event.button == 3:
                 if self.position == "Load menu":
-                    self.solar_system_object_link.load_solar_system(os.path.join("savegames",self.distribute_click_to_subwindow.selected))
+                    try:
+                        filename = savegame_path("savegames", self.distribute_click_to_subwindow.selected)
+                    except SaveNameError as error:
+                        print(f"Invalid savegame name: {error}")
+                        return
+                    self.solar_system_object_link.load_solar_system(filename)
 
 
 
@@ -1370,13 +1376,18 @@ class file_window():
 
     def effectuate_save(self,label,function_parameter):
         save_game_name = self.button_instances_now["Name box"].text
-        self.solar_system_object_link.save_solar_system(os.path.join("savegames",save_game_name))
+        try:
+            filename = savegame_path("savegames", save_game_name)
+        except SaveNameError as error:
+            print(f"Invalid savegame name: {error}")
+            return
+        self.solar_system_object_link.save_solar_system(filename)
         self.create()
 
 
     def select_game_to_load(self, label, function_parameter):
         self.position = "Load menu"
-        load_window = gui_components.fast_list(self.action_surface, os.listdir("savegames"), rect = self.rect)
+        load_window = gui_components.fast_list(self.action_surface, list_savegames("savegames"), rect = self.rect)
         self.distribute_click_to_subwindow = load_window
 
 

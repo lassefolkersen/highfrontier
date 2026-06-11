@@ -1,11 +1,13 @@
 import pytest
 import os
 import datetime
+import pickle
 from PIL import Image
 from planet import planet
 from company import company
 from solarsystem import solarsystem
 import global_variables
+from savegame import PAYLOAD_TYPE, SAVE_FORMAT, SAVE_VERSION, SaveFormatError
 
 
 def test_solar_system_initialization():
@@ -190,5 +192,110 @@ def test_save_restores_loaded_planet_images_when_pickle_fails(tmpdir):
     assert isinstance(earth.topo_image, Image.Image)
     assert isinstance(earth.resource_maps["iron"], Image.Image)
     assert not os.path.exists(save_file_path + ".tmp")
+
+
+def test_new_solar_system_saves_use_versioned_wrapper(tmpdir):
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "wrapped.pkl")
+    old_solar_system = solarsystem(start_date=global_variables.start_date)
+    old_solar_system.initialize_planets()
+
+    old_solar_system.save_solar_system(save_file_path)
+
+    with open(save_file_path, "rb") as save_file:
+        saved_object = pickle.load(save_file)
+    assert saved_object["format"] == SAVE_FORMAT
+    assert saved_object["version"] == SAVE_VERSION
+    assert saved_object["payload_type"] == PAYLOAD_TYPE
+    assert isinstance(saved_object["created_at"], str)
+    assert isinstance(saved_object["payload"], solarsystem)
+
+
+def test_versioned_wrapper_loads_solar_system(tmpdir):
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "wrapped.pkl")
+    old_solar_system = solarsystem(start_date=global_variables.start_date)
+    old_solar_system.initialize_planets()
+    old_solar_system.current_date = global_variables.start_date + datetime.timedelta(days=42)
+    old_solar_system.save_solar_system(save_file_path)
+
+    new_solar_system = solarsystem(start_date=global_variables.start_date)
+    new_solar_system.load_solar_system(save_file_path)
+
+    assert new_solar_system.current_date == old_solar_system.current_date
+    assert new_solar_system.planets["earth"].solar_system_object_link is new_solar_system
+
+
+def test_unsupported_wrapper_version_fails_without_mutating_current_system(tmpdir):
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "unsupported.pkl")
+    payload = solarsystem(start_date=global_variables.start_date)
+    payload.initialize_planets()
+    with open(save_file_path, "wb") as save_file:
+        pickle.dump(
+            {
+                "format": SAVE_FORMAT,
+                "version": SAVE_VERSION + 1,
+                "created_at": "2026-06-11T12:00:00+00:00",
+                "payload_type": PAYLOAD_TYPE,
+                "payload": payload,
+            },
+            save_file,
+        )
+
+    current_system = solarsystem(start_date=global_variables.start_date)
+    current_system.initialize_planets()
+    sentinel = object()
+    current_system.mutation_sentinel_for_test = sentinel
+
+    with pytest.raises(SaveFormatError, match="Unsupported savegame version"):
+        current_system.load_solar_system(save_file_path)
+
+    assert current_system.mutation_sentinel_for_test is sentinel
+
+
+@pytest.mark.parametrize(
+    ("contents", "message"),
+    [
+        (b"", "empty"),
+        (b"not a pickle", "could not be unpickled"),
+    ],
+)
+def test_corrupt_or_empty_save_fails_without_mutating_current_system(tmpdir, contents, message):
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "bad.pkl")
+    with open(save_file_path, "wb") as save_file:
+        save_file.write(contents)
+
+    current_system = solarsystem(start_date=global_variables.start_date)
+    current_system.initialize_planets()
+    sentinel = object()
+    current_system.mutation_sentinel_for_test = sentinel
+
+    with pytest.raises(SaveFormatError, match=message):
+        current_system.load_solar_system(save_file_path)
+
+    assert current_system.mutation_sentinel_for_test is sentinel
+
+
+def test_invalid_payload_fails_without_mutating_current_system(tmpdir):
+    save_file_path = os.path.join(tmpdir.mkdir("save_files"), "invalid.pkl")
+    with open(save_file_path, "wb") as save_file:
+        pickle.dump(
+            {
+                "format": SAVE_FORMAT,
+                "version": SAVE_VERSION,
+                "created_at": "2026-06-11T12:00:00+00:00",
+                "payload_type": "wrong-payload",
+                "payload": object(),
+            },
+            save_file,
+        )
+
+    current_system = solarsystem(start_date=global_variables.start_date)
+    current_system.initialize_planets()
+    sentinel = object()
+    current_system.mutation_sentinel_for_test = sentinel
+
+    with pytest.raises(SaveFormatError, match="Unsupported savegame payload type"):
+        current_system.load_solar_system(save_file_path)
+
+    assert current_system.mutation_sentinel_for_test is sentinel
 
 
