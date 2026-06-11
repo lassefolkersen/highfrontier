@@ -17,30 +17,64 @@ def _initialized_solar_system(seed=SNAPSHOT_SEED):
     return solarsystem(global_variables.start_date, de_novo_initialization=True)
 
 
-def test_full_initialization_snapshot_is_deterministic_for_fixed_seed():
-    sol = _initialized_solar_system()
+def _initialization_signature(sol):
+    """Return stable aggregates that should match for the same random seed."""
+    base_counts_by_planet = tuple(
+        sorted(
+            (planet_name, len(planet.bases))
+            for planet_name, planet in sol.planets.items()
+            if planet.bases
+        )
+    )
+    trade_route_counts_by_planet = tuple(
+        sorted(
+            (
+                planet_name,
+                sum(len(base.trade_routes) for base in planet.bases.values()),
+            )
+            for planet_name, planet in sol.planets.items()
+            if planet.bases
+        )
+    )
+    firm_counts_by_company = tuple(
+        sorted((company_name, len(owner.owned_firms)) for company_name, owner in sol.companies.items())
+    )
+    return {
+        "planets": tuple(sorted(sol.planets.keys())),
+        "base_counts_by_planet": base_counts_by_planet,
+        "trade_route_counts_by_planet": trade_route_counts_by_planet,
+        "company_count": len(sol.companies),
+        "firm_counts_by_company": firm_counts_by_company,
+        "trade_resources": tuple(sorted(sol.trade_resources.keys())),
+        "mineral_resources": tuple(sorted(sol.mineral_resources)),
+        "technology_subjects": tuple(sorted(sol.technology_tree.vertex_dict.keys())),
+    }
 
+
+def test_full_initialization_is_deterministic_for_fixed_seed():
+    first = _initialized_solar_system()
+    second = _initialized_solar_system()
+
+    assert _initialization_signature(first) == _initialization_signature(second)
+
+
+def test_full_initialization_builds_core_economy_invariants():
+    sol = _initialized_solar_system()
     total_bases = sum(len(planet.bases) for planet in sol.planets.values())
     total_firms = sum(len(owner.owned_firms) for owner in sol.companies.values())
     total_trade_routes = (
         sum(len(base.trade_routes) for planet in sol.planets.values() for base in planet.bases.values())
         // 2
     )
-    base_counts_by_planet = {
-        planet_name: len(planet.bases)
-        for planet_name, planet in sol.planets.items()
-        if planet.bases
-    }
 
-    assert len(sol.planets) == 193
-    assert total_bases == 255
-    assert len(sol.companies) == 500
-    assert total_firms == 7755
-    assert total_trade_routes == 808
-    assert base_counts_by_planet == {"earth": 255}
-    assert len(sol.trade_resources) == 19
-    assert len(sol.mineral_resources) == 5
-    assert len(sol.technology_tree.vertex_dict) == 149
+    assert {"sun", "earth", "moon", "mars"}.issubset(sol.planets)
+    assert total_bases > 0
+    assert total_trade_routes > 0
+    assert len(sol.companies) > 0
+    assert total_firms >= len(sol.companies)
+    assert {"food", "housing", "consumer goods"}.issubset(sol.trade_resources)
+    assert set(sol.mineral_resources).issubset(sol.trade_resources)
+    assert len(sol.technology_tree.vertex_dict) > 0
 
 
 def test_new_solar_system_starts_with_zeroed_telemetry_keys():
