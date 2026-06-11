@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "highfrontier"
+version = "0.1.0"
+description = "Legacy Pygame space-economy simulation"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pillow",
+    "pygame",
+    "pyproj",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]

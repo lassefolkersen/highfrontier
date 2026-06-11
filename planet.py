@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pygame, sys,os
 from pygame.locals import *
-#from ocempgui.widgets from PIL import ImageLabel
 from PIL import Image, ImageChops, ImageOps, ImageFile,ImageFilter,ImageEnhance
 import math
 import subprocess
@@ -13,6 +12,7 @@ import os
 import global_variables
 import company
 import random
+from paths import asset_path, data_path
 
 from pyproj import Transformer
 import numpy as np
@@ -38,7 +38,7 @@ class planet:
         self.current_base = None
         self.planet_name = planet_name
         self.name = planet_name
-        self.surface_file_name = os.path.join("images","planet",planet_file_name)
+        self.surface_file_name = str(asset_path("images","planet",planet_file_name))
         self.projection_scaling=45
         self.eastern_inclination = 0
         self.northern_inclination = 0
@@ -140,7 +140,7 @@ class planet:
 
 
     def read_pre_base_file(self,planet_name):
-        data_file_name = os.path.join("data","base_data",str(str(planet_name) + ".txt"))
+        data_file_name = data_path("base_data",str(str(planet_name) + ".txt"))
 
 
 
@@ -300,7 +300,7 @@ class planet:
         if os.access(self.surface_file_name,os.R_OK):
             image = Image.open(self.surface_file_name)
         else:
-            image = Image.open(os.path.join("images","planet","placeholder.jpg"))
+            image = Image.open(asset_path("images","planet","placeholder.jpg"))
 
         self.projection_dim = (self.projection_scaling,self.projection_scaling)
 
@@ -352,7 +352,7 @@ class planet:
         try: self.topo_image
         except AttributeError:
             #test if a pre-calculated topo-file exists
-            topo_file_name_and_path = os.path.join("images","planet","topo",str(self.planet_name + ".png"))
+            topo_file_name_and_path = asset_path("images","planet","topo",str(self.planet_name + ".png"))
             if os.access(topo_file_name_and_path,os.R_OK):
                 self.topo_image = Image.open(topo_file_name_and_path)
                 #print "topo file does not exist for " + str(self.planet_name) + " - all ok"
@@ -750,7 +750,7 @@ class planet:
         #try to find the proper non-renewable resource map
         try: self.resource_maps[resource_type]
         except:
-            resource_file_name_and_path = os.path.join("images","planet","nonrenewable materials map",resource_type,str(self.planet_name + ".png"))
+            resource_file_name_and_path = asset_path("images","planet","nonrenewable materials map",resource_type,str(self.planet_name + ".png"))
             if os.access(resource_file_name_and_path,os.R_OK):
                 resource_map_image = Image.open(resource_file_name_and_path)
                 #print "resource file " + str(resource_type) + " does exist for " + str(self.planet_name) + " - all ok"
@@ -1026,7 +1026,7 @@ class planet:
         if self.planet_display_mode not in ["visible light","trade network"]:
             try: self.heat_bar
             except:
-                self.heat_bar = pygame.image.load(os.path.join("images","heat_bar.png"))
+                self.heat_bar = pygame.image.load(asset_path("images","heat_bar.png"))
             else:
                 surface.blit(self.heat_bar,(0,global_variables.window_size[1]-320))
 
@@ -1413,7 +1413,7 @@ class planet:
 
         hit_locations = []
 
-        blast_surface = pygame.image.load(os.path.join("images","blast.png"))
+        blast_surface = pygame.image.load(asset_path("images","blast.png"))
         ratio = 0.25 *(float(per_hit_intensity) / 100.0) * (float(self.projection_scaling) / 360.0) * (self.solar_system_object_link.planets["earth"].planet_diameter_km / float(self.planet_diameter_km))
 #        print "ratio " + str(ratio)
         large_blast_surface = pygame.transform.scale(blast_surface, (int(blast_surface.get_width() * ratio / 2), int(blast_surface.get_height() * ratio / 2)))

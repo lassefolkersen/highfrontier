@@ -15,6 +15,7 @@ import technology
 import pickle
 from savegame import SaveFormatError, load_payload, make_save_wrapper
 from display import Display
+from paths import data_path
 sys.setrecursionlimit(10000)
 
 KNOWN_PLANET_IMAGES = ["wet_areas", "topo_image"]
@@ -148,8 +149,8 @@ class solarsystem:
                                 "mining":False
                                 }
             # importing the trade resource text and the mineral_resources
-            if os.access(os.path.join("data","economy","trade resources.txt"),os.R_OK):
-                data_file_name = os.path.join("data","economy","trade resources.txt")
+            data_file_name = data_path("economy","trade resources.txt")
+            if os.access(data_file_name,os.R_OK):
                 trade_resources = primitives.import_datasheet(data_file_name)
                 mineral_resources = []
                 for resource_name in trade_resources:
@@ -188,7 +189,7 @@ class solarsystem:
         del self.companies[companyName]
 
     def initialize_planets(self) -> dict[str, planet.planet]:
-        data_file_name = os.path.join("data","planets.txt")
+        data_file_name = data_path("planets.txt")
         read_planet_database = primitives.import_datasheet(data_file_name)
         planet_database = {}
         for planet_name in read_planet_database:
@@ -216,7 +217,7 @@ class solarsystem:
                 country_GNP = base_to_GNP_list[base] + country_GNP
             country_to_GNP_list[country] = country_GNP
         ### Start up countries from companies.txt in data/economy
-        data_file_name = os.path.join("data","economy","companies.txt")
+        data_file_name = data_path("economy","companies.txt")
         read_company_database = primitives.import_datasheet(data_file_name)
         random_companyName = random.choice(list(read_company_database.keys()))
         for key in read_company_database[random_companyName]:
