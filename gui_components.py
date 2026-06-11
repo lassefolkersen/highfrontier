@@ -862,14 +862,10 @@ class fast_list():
                 else:
                     temp_dict = {}
 
-                    #from http://mail.python.org/pipermail/python-list/2002-May/146190.html - thanks xtian
                     for row in data:
                         temp_dict[row] = data[row][sort_by]
-                    def sorter(x, y):
-                        return cmp(x[1],y[1])
 
-                    i = list(temp_dict.items())
-                    i.sort(sorter)
+                    i = sorted(temp_dict.items(), key=lambda item: item[1])
                     sorting_list = []
                     for i_entry in i:
                         sorting_list.append(i_entry[0])
