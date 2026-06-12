@@ -11,6 +11,17 @@ import primitives
 import gui_components
 import random
 import time
+from bidding_slider_scaling import (
+    SLIDER_MAX,
+    firm_size_from_slider,
+    firm_size_slider_max,
+    firm_size_to_slider,
+    market_price_from_slider,
+    market_price_to_slider,
+    quantity_anchor_for_direction,
+    quantity_from_slider,
+    quantity_to_slider,
+)
 from savegame import SaveNameError, list_savegames, savegame_path
 
 from solarsystem import solarsystem
@@ -2414,14 +2425,24 @@ class base_and_firm_market_window():
         if initial_price is not None:
             max_price = max(initial_price, max_price)
 
+        highest_buy_offer = None
+        lowest_sell_offer = None
         if len(market["buy_offers"][resource]) > 0:
-            max_price = max(market["buy_offers"][resource][0]["price"], max_price)
+            highest_buy_offer = market["buy_offers"][resource][0]["price"]
+            max_price = max(highest_buy_offer, max_price)
+        if len(market["sell_offers"][resource]) > 0:
+            lowest_sell_offer = market["sell_offers"][resource][0]["price"]
+            max_price = max(lowest_sell_offer, max_price)
 
         for transaction in market["transactions"][resource]:
             max_price = max(max_price, transaction["price"])
 
 
-        price_range = (0,int(max_price * 2))
+        price_fallback_max = int(max_price * 2)
+        price_slider_range = (0, SLIDER_MAX)
+        if initial_price is None:
+            initial_price = max_price
+        pre_selected_price_slider = market_price_to_slider(initial_price, highest_buy_offer, lowest_sell_offer, price_fallback_max)
 
 
 #        print "initial_quantity: " + str(initial_quantity)
@@ -2442,31 +2463,33 @@ class base_and_firm_market_window():
         variable_price_text = global_variables.standard_font.render(str(int(initial_price)),True,(0,0,0))
         self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
 
+        price_bar_left = self.graph_rect[0] + 10
+        price_bar_width = self.graph_rect[2]-20
+        highest_buy_label = global_variables.standard_font_small.render("highest buy offer",True,(0,0,0))
+        lowest_sell_label = global_variables.standard_font_small.render("lowest sell offer",True,(0,0,0))
+        self.action_surface.blit(highest_buy_label, (price_bar_left + int(price_bar_width / 3) - int(highest_buy_label.get_width() / 2), self.graph_rect[1] + height_to_draw + 8))
+        self.action_surface.blit(lowest_sell_label, (price_bar_left + int(2 * price_bar_width / 3) - int(lowest_sell_label.get_width() / 2), self.graph_rect[1] + height_to_draw + 8))
 
         def price_execute(label, price_rect):
             pygame.draw.rect(self.action_surface,(212,212,212),price_rect)
-            variable_price_text = global_variables.standard_font.render(str(self.price_bar.position),True,(0,0,0))
+            price = market_price_from_slider(self.price_bar.position, highest_buy_offer, lowest_sell_offer, price_fallback_max)
+            variable_price_text = global_variables.standard_font.render(str(price),True,(0,0,0))
             self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
             pygame.display.update(price_rect)
-
-        if price_range[0] > int(initial_price) or int(initial_price) > price_range[1]:
-            print(int(max_price))
-            print(price_range)
-            raise Exception("This has been observed before... check print outs")
 
 
         self.price_bar = gui_components.hscrollbar(self.action_surface,
                                   price_execute,
-                                  (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20),
-                                  self.graph_rect[2]-20,
-                                  price_range,
-                                  start_position = int(max_price),
+                                  (price_bar_left, self.graph_rect[1] + height_to_draw + 25),
+                                  price_bar_width,
+                                  price_slider_range,
+                                  start_position = pre_selected_price_slider,
                                   function_parameter=price_rect)
 
 
 
         #row 2 set the quantity
-        height_to_draw = height_to_draw + 60
+        height_to_draw = height_to_draw + 70
 
         fixed_quantity_text = global_variables.standard_font.render("Set the quantity:",True,(0,0,0))
         self.action_surface.blit(fixed_quantity_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
@@ -2474,20 +2497,29 @@ class base_and_firm_market_window():
         variable_quantity_text = global_variables.standard_font.render(str(initial_quantity),True,(0,0,0))
         self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
 
+        def current_quantity_anchor():
+            selected_direction = direction
+            if hasattr(self, "direction_buttons"):
+                selected_direction = self.direction_buttons.selected
+            return quantity_anchor_for_direction(firm_selected.input_output_dict, selected_direction, resource)
 
 
         def quantity_execute(label, quantity_rect):
             pygame.draw.rect(self.action_surface,(212,212,212),quantity_rect)
-            variable_quantity_text = global_variables.standard_font.render(str(self.quantity_bar.position),True,(0,0,0))
+            quantity = quantity_from_slider(self.quantity_bar.position, current_quantity_anchor(), quantity_max)
+            variable_quantity_text = global_variables.standard_font.render(str(quantity),True,(0,0,0))
             self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
             pygame.display.update(quantity_rect)
 
+        quantity_slider_range = (0, SLIDER_MAX)
+        self.manual_bid_quantity_fallback_max = quantity_max
+        pre_selected_quantity_slider = quantity_to_slider(pre_selected_quantity, current_quantity_anchor(), quantity_max)
         self.quantity_bar = gui_components.hscrollbar(self.action_surface,
                                   quantity_execute,
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20),
                                   self.graph_rect[2]-10,
-                                  quantity_range,
-                                  start_position = pre_selected_quantity,
+                                  quantity_slider_range,
+                                  start_position = pre_selected_quantity_slider,
                                   function_parameter=quantity_rect)
 
 
@@ -2503,7 +2535,8 @@ class base_and_firm_market_window():
 #            print "direction"
 #            print label
 #            print function_parameter
-            pass
+            if hasattr(self, "quantity_bar"):
+                quantity_execute(self.quantity_bar.position, quantity_rect)
 
 
         self.direction_buttons = gui_components.radiobuttons(["buy","sell"],
@@ -2541,14 +2574,35 @@ class base_and_firm_market_window():
             firm_selected = self.solar_system_object_link.firm_selected
         else:
             raise Exception("The display mode " + str(self.solar_system_object_link.display_mode) + " is not supposed to show market data")
-        price = self.price_bar.position
-        quantity = self.quantity_bar.position
-
         #determining direction
         direction = self.direction_buttons.selected
 
         #determining resource
         resource = self.resource_selected
+
+        if isinstance(firm_selected, company.merchant):
+            market_for_anchor = market
+        else:
+            market_for_anchor = firm_selected.location.market
+        highest_buy_offer = None
+        lowest_sell_offer = None
+        if len(market_for_anchor["buy_offers"][resource]) > 0:
+            highest_buy_offer = market_for_anchor["buy_offers"][resource][0]["price"]
+        if len(market_for_anchor["sell_offers"][resource]) > 0:
+            lowest_sell_offer = market_for_anchor["sell_offers"][resource][0]["price"]
+        fallback_max = 0
+        if highest_buy_offer is not None:
+            fallback_max = max(fallback_max, highest_buy_offer)
+        if lowest_sell_offer is not None:
+            fallback_max = max(fallback_max, lowest_sell_offer)
+        for transaction in market_for_anchor["transactions"][resource]:
+            fallback_max = max(fallback_max, transaction["price"])
+        fallback_max = int(fallback_max * 2)
+
+        quantity_fallback_max = max(1, getattr(self, "manual_bid_quantity_fallback_max", self.quantity_bar.range_of_values[1]))
+        quantity_anchor = quantity_anchor_for_direction(firm_selected.input_output_dict, direction, resource)
+        price = market_price_from_slider(self.price_bar.position, highest_buy_offer, lowest_sell_offer, fallback_max)
+        quantity = quantity_from_slider(self.quantity_bar.position, quantity_anchor, quantity_fallback_max)
 
         #determining unit
         unit = self.solar_system_object_link.trade_resources[resource]["unit_of_measurment"]
@@ -3053,7 +3107,8 @@ class base_build_menu():
         if self.solar_system_object_link.current_planet.current_base is None:
             raise Exception("very weird - there was no base selected")
         population = self.solar_system_object_link.current_planet.current_base.population
-        max_size = max(int(population * 0.05 / float(input_size)),1)
+        population_limited_max = max(int(population * 0.05 / float(input_size)),1)
+        max_size = firm_size_slider_max(self.solar_system_object_link.current_player.capital, population_limited_max)
 
 
         #check if the current_player already owns a company of that technology in the current base
@@ -3098,11 +3153,14 @@ class base_build_menu():
         self.action_surface.blit(text, (self.rect[0] + 90, self.rect[1] + 150))
 
 
-        fastest = global_variables.standard_font.render("Smallest",True,(0,0,0))
-        self.action_surface.blit(fastest, (self.rect[0] + 40, self.rect[1] + 40))
+        small_label = global_variables.standard_font.render("Small",True,(0,0,0))
+        self.action_surface.blit(small_label, (self.rect[0] + 40, self.rect[1] + 40))
 
-        slowest = global_variables.standard_font.render("Largest",True,(0,0,0))
-        self.action_surface.blit(slowest, (self.rect[0] + 40, self.rect[1] + self.rect[3]-  50))
+        medium_label = global_variables.standard_font.render("Medium",True,(0,0,0))
+        self.action_surface.blit(medium_label, (self.rect[0] + 40, self.rect[1] + int(self.rect[3] / 2)))
+
+        large_label = global_variables.standard_font.render("Large",True,(0,0,0))
+        self.action_surface.blit(large_label, (self.rect[0] + 40, self.rect[1] + self.rect[3]-  50))
 
 
         def execute(label, technology):
@@ -3113,7 +3171,9 @@ class base_build_menu():
             update_rect = pygame.Rect(self.rect[0] + 50, self.rect[1] + 170, self.rect[2] - 100, self.rect[3] - 250)
             pygame.draw.rect(self.action_surface, (212,212,212), update_rect)
 
-            size_info = global_variables.standard_font_small.render("size: " + str(self.slider.position),True,(0,0,0))
+            selected_size = firm_size_from_slider(self.slider.position, max_size)
+            self.selected_firm_size = selected_size
+            size_info = global_variables.standard_font_small.render("size: " + str(selected_size),True,(0,0,0))
             self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 170))
             lineno = 0
             for put in ["input","output"]:
@@ -3127,12 +3187,12 @@ class base_build_menu():
                         mining_opportunity = self.solar_system_object_link.current_planet.current_base.get_mining_opportunities(self.solar_system_object_link.current_planet, resource)
                         unmodified_output = technology["input_output_dict"]["output"][resource]
                         value = (mining_opportunity / 10) * unmodified_output
-                        value = int(value * self.slider.position)
+                        value = int(value * selected_size)
                         value_info = global_variables.standard_font_small.render(resource + ": " + str(value) + " (location modifier: " + str(round(mining_opportunity,2)) + ")",True,(0,0,0))
 
                     else:
                         value = technology["input_output_dict"][put][resource]
-                        value = value * self.slider.position
+                        value = value * selected_size
                         value_info = global_variables.standard_font_small.render(resource + ": " + str(value),True,(0,0,0))
 
 
@@ -3158,12 +3218,13 @@ class base_build_menu():
             print(firm_type)
             raise Exception("This has been observed before. See printout")
 
+        self.firm_size_slider_max = max_size
         self.slider = gui_components.vscrollbar (self.action_surface,
                                                 execute,
                                                 topleft = (self.rect[0] + 10, self.rect[1] + 30),
                                                 length_of_bar_in_pixel = self.rect[3] - 60,
-                                                range_of_values = (1,max_size),
-                                                start_position = start_value,
+                                                range_of_values = (0,SLIDER_MAX),
+                                                start_position = firm_size_to_slider(start_value, max_size),
                                                 function_parameter = technology
                                                 )
         execute(None,technology)
@@ -3241,7 +3302,7 @@ class base_build_menu():
         technology = self.selections["technology"]
         location = self.solar_system_object_link.current_planet.current_base
         owner = self.solar_system_object_link.current_player
-        size = self.slider.position
+        size = getattr(self, "selected_firm_size", firm_size_from_slider(self.slider.position, getattr(self, "firm_size_slider_max", self.slider.range_of_values[1])))
 
         owner.change_firm_size(location,size,technology["technology_name"], name)
         if isinstance(name, str) or isinstance(name, str):
