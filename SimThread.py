@@ -12,16 +12,24 @@ class SimThread(threading.Thread):
         self.sol=sol
         self._stopEvent=threading.Event()
         self.daemon = True
-    def run(self):
+
+    def run_one_step(self):
         sol=self.sol
+#       print "SimThread starting another month"
+        sol.current_date = datetime.timedelta(30)+sol.current_date
+        sol.evaluate_each_game_step()
+        for company_instance in list(sol.companies.values()):
+            company_instance.evaluate_self()
+
+    def sleep_between_steps(self):
+        delay_milliseconds = getattr(self.sol, "step_delay_time", 100)
+        time.sleep(max(0, delay_milliseconds) / 1000.0)
+
+    def run(self):
         try:
             while(not self._stopEvent.is_set()):
-#            print "SimThread starting another month"
-                sol.current_date = datetime.timedelta(30)+sol.current_date
-                sol.evaluate_each_game_step()
-                for company_instance in list(sol.companies.values()):
-                    company_instance.evaluate_self()
-                time.sleep(1)
+                self.run_one_step()
+                self.sleep_between_steps()
         except Exception:
             logger.exception("Unhandled exception in simulation thread")
             raise
