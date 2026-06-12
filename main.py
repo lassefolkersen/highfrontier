@@ -15,6 +15,7 @@ import gui
 import random
 import importlib
 import crashlog
+from paths import asset_path
 
 
 
@@ -35,7 +36,7 @@ class Game:
             window = pygame.display.set_mode(window_size,FULLSCREEN)
         else:
             window = pygame.display.set_mode(window_size)
-        icon = pygame.image.load(os.path.join("images","window_icon.png"))
+        icon = pygame.image.load(asset_path("images","window_icon.png"))
         pygame.display.set_icon(icon)
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
         #initializing the world - depends on if a previous game should be loaded

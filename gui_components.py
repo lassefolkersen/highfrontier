@@ -1,7 +1,4 @@
 import math
-#from ocempgui.widgets.Constants import *
-#from ocempgui.object import BaseObject
-#from ocempgui.widgets import *
 import global_variables
 import pygame
 import primitives

@@ -7,6 +7,7 @@ from xml.dom import minidom
 import os
 import global_variables
 import primitives
+from paths import data_path
 
 
 
@@ -779,7 +780,7 @@ class Backbone_Tree(Tree):
 
 		self.subject_list = []
 
-		self.import_core(os.path.join(os.getcwd(),"data","technology","technology.txt"))
+		self.import_core(str(data_path("technology","technology.txt")))
 
 		self.link_crossovers()
 

@@ -9,6 +9,7 @@ import time
 
 from PIL import Image, ImageChops
 import pygame
+from paths import asset_path, data_path
 
 
 def select_strategy(functions_to_choose_from, company_gene):
@@ -94,7 +95,7 @@ class company:
 
 		try: global_variables.company_database_headers
 		except:
-			with open(os.path.join("data","economy","companies.txt")) as company_database_headers_file:
+			with open(data_path("economy","companies.txt")) as company_database_headers_file:
 				company_database_headers = company_database_headers_file.readline()
 				company_database_headers = company_database_headers.split("\t")
 				explanation = company_database_headers_file.readline()
@@ -146,7 +147,7 @@ class company:
 		if self.picture_file != None:
 			file_name_and_path = self.picture_file
 		else:
-			company_base_dir = os.path.join("images","company")
+			company_base_dir = asset_path("images","company")
 			file_list = []
 			for files in os.walk(company_base_dir):
 				for found_file in files[2]:
@@ -161,8 +162,8 @@ class company:
 			else:
 				my_pick = random.randrange(0,number_of_files_to_pick_from)
 				file_name = file_list[my_pick]
-				file_name_and_path = os.path.join(company_base_dir,file_name)
-			self.picture_file = file_name_and_path
+				file_name_and_path = company_base_dir / file_name
+			self.picture_file = str(file_name_and_path)
 
 		image = Image.open(file_name_and_path)
 
@@ -532,7 +533,7 @@ class company:
 			last_words = []
 
 			for stock_exchange in stock_exchanges:
-				file_name = os.path.join("data","company_data",stock_exchange)
+				file_name = data_path("company_data",stock_exchange)
 
 				file = open(file_name)
 				raw_read = file.readlines()
@@ -678,6 +679,7 @@ class company:
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
+					self.solar_system_object_link.record_telemetry("firm_starts")
 
 
 				#if it is not we search for the process requested
@@ -713,6 +715,7 @@ class company:
 					new_firm.size = size
 					new_firm.last_consumption_date = self.solar_system_object_link.current_date
 					self.owned_firms[firm_name] = new_firm
+					self.solar_system_object_link.record_telemetry("firm_starts")
 
 					#checking input_output_dict FIXME this check can perhaps be omitted
 					for resource in new_firm.input_output_dict["input"]:
@@ -791,7 +794,7 @@ class firm():
 		if self.picture_file != None:
 			file_name_and_path = self.picture_file
 		else:
-			company_base_dir = os.path.join("images","firm")
+			company_base_dir = asset_path("images","firm")
 			file_list = []
 			for files in os.walk(company_base_dir):
 				for found_file in files[2]:
@@ -806,8 +809,8 @@ class firm():
 			else:
 				my_pick = random.randrange(0,number_of_files_to_pick_from)
 				file_name = file_list[my_pick]
-				file_name_and_path = os.path.join(company_base_dir,file_name)
-			self.picture_file = file_name_and_path
+				file_name_and_path = company_base_dir / file_name
+			self.picture_file = str(file_name_and_path)
 
 		image = Image.open(file_name_and_path)
 
@@ -1143,6 +1146,7 @@ class firm():
 			transaction_report["seller"].accounting.append(transaction_report)
 			transaction_report["buyer"].accounting.append(transaction_report)
 			market["transactions"][resource].append(transaction_report)
+			self.solar_system_object_link.record_telemetry("transactions")
 
 			if transaction_report["quantity"] < 0:
 				#print
@@ -1662,12 +1666,12 @@ class base(firm):
 			file_name_and_path = self.picture_file
 		else:
 			if self.position_coordinate == (None, None):
-				planet_base_dir = os.path.join("images","base","space")
+				planet_base_dir = asset_path("images","base","space")
 			else:
-				if os.access(os.path.join("images","base",self.home_planet.planet_name),os.R_OK):
-					planet_base_dir = os.path.join("images","base",self.home_planet.planet_name)
+				if os.access(asset_path("images","base",self.home_planet.planet_name),os.R_OK):
+					planet_base_dir = asset_path("images","base",self.home_planet.planet_name)
 				else:
-					planet_base_dir = os.path.join("images","base","other")
+					planet_base_dir = asset_path("images","base","other")
 
 			file_name = self.base_name + ".jpg"
 			file_list = []
@@ -1686,7 +1690,7 @@ class base(firm):
 					size = "large_random"
 				else:
 					size = "medium_random"
-				files_to_choose_from = os.listdir(os.path.join(planet_base_dir,size))
+				files_to_choose_from = os.listdir(planet_base_dir / size)
 				files_to_choose_from_filtered = []
 				for file_to_choose_from in files_to_choose_from:
 					if file_to_choose_from.find(".jpg") != -1:
@@ -1700,8 +1704,8 @@ class base(firm):
 				else:
 					my_pick = random.randrange(0,number_of_files_to_pick_from)
 					file_name = files_to_choose_from_filtered[my_pick]
-					file_name_and_path = os.path.join(planet_base_dir,size,file_name)
-			self.picture_file = file_name_and_path
+					file_name_and_path = planet_base_dir / size / file_name
+			self.picture_file = str(file_name_and_path)
 
 		image = Image.open(file_name_and_path)
 
