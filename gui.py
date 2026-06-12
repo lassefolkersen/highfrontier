@@ -19,6 +19,7 @@ from bidding_slider_scaling import (
     market_price_from_slider,
     market_price_to_slider,
     quantity_anchor_for_direction,
+    quantity_cap_for_direction,
     quantity_from_slider,
     quantity_to_slider,
 )
@@ -1152,7 +1153,7 @@ class trade_window():
             self.solar_system_object_link.messages.append(print_dict)
             return None
 #        else:
-#            print str(price) + " is ok within capital"
+#            print primitives.nicefy_numbers(price) + " is ok within capital"
 
 
         if self.selections["sale_object"].for_sale_deadline is not None:
@@ -1169,7 +1170,7 @@ class trade_window():
 
 
         self.selections["sale_object"].for_sale_bids[self.solar_system_object_link.current_player] = price
-        print_dict = {"text":"You have bid " + str(price) + " for " + str(self.selections["bid_on"]) + " - the auction will run till: " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
+        print_dict = {"text":"You have bid " + primitives.nicefy_numbers(price) + " for " + str(self.selections["bid_on"]) + " - the auction will run till: " + str(self.selections["sale_object"].for_sale_deadline),"type":"general gameplay info"}
         self.solar_system_object_link.messages.append(print_dict)
         return "clear"
 
@@ -1691,8 +1692,17 @@ class file_window():
             earth = sol.planets["earth"]
             base_names_chosen = ["stockholm","glasgow","bremen","rotterdam","stuttgart","genoa"]
             bases_chosen = {}
+            missing_bases = []
             for base_name_chosen in base_names_chosen:
-                bases_chosen[base_name_chosen] = earth.bases[base_name_chosen]
+                if base_name_chosen in earth.bases:
+                    bases_chosen[base_name_chosen] = earth.bases[base_name_chosen]
+                else:
+                    missing_bases.append(base_name_chosen)
+            if missing_bases:
+                sol.messages.append({"text":"Nuclear war scenario skipped missing bases: " + ", ".join(missing_bases),"type":"general gameplay info"})
+            if not bases_chosen:
+                sol.messages.append({"text":"Nuclear war scenario not available: no configured target bases exist in this map.","type":"general gameplay info"})
+                return
             earth.explode(56,10,bases_chosen,self.action_surface)
         else:
             return
@@ -2148,19 +2158,19 @@ class base_and_firm_market_window():
                 max_price = max(prices)
                 min_price = min(prices)
                 max_quantity = max(quantities)
-                sell = global_variables.standard_font.render("Max sell price: " + "%.5g" % max_price,True,(0,0,0))
-                buy = global_variables.standard_font.render("Min buy price: " + "%.5g" % min_price,True,(0,0,0))
+                sell = global_variables.standard_font.render("Max sell price: " + primitives.nicefy_numbers(max_price),True,(0,0,0))
+                buy = global_variables.standard_font.render("Min buy price: " + primitives.nicefy_numbers(min_price),True,(0,0,0))
                 if len(market["buy_offers"][resource]) == 0:
                     market_price = market["sell_offers"][resource][0]["price"]
-                    market_price_description = "Only sell offers. Lowest is: " + "%.5g" % market["sell_offers"][resource][0]["price"]
+                    market_price_description = "Only sell offers. Lowest is: " + primitives.nicefy_numbers(market["sell_offers"][resource][0]["price"])
                     market_analysis_surface.blit(sell,(0,0))
                 elif len(market["sell_offers"][resource]) == 0:
                     market_price = market["buy_offers"][resource][0]["price"]
-                    market_price_description = "Only buy offers. Highest is: " + "%.5g" % market["buy_offers"][resource][0]["price"]
+                    market_price_description = "Only buy offers. Highest is: " + primitives.nicefy_numbers(market["buy_offers"][resource][0]["price"])
                     market_analysis_surface.blit(buy,(0,self.graph_rect[3]-15))
 
                 else:
-                    market_price_description = "Highest buy offer: " + "%.5g" % market["buy_offers"][resource][0]["price"] + ". Lowest sell offer: " + "%.5g" % market["sell_offers"][resource][0]["price"]
+                    market_price_description = "Highest buy offer: " + primitives.nicefy_numbers(market["buy_offers"][resource][0]["price"]) + ". Lowest sell offer: " + primitives.nicefy_numbers(market["sell_offers"][resource][0]["price"])
                     market_price = (market["sell_offers"][resource][0]["price"] + market["buy_offers"][resource][0]["price"]) * 0.5
                     market_analysis_surface.blit(sell,(0,0))
                     market_analysis_surface.blit(buy,(0,self.graph_rect[3]-15))
@@ -2222,7 +2232,7 @@ class base_and_firm_market_window():
                     left_border = self.graph_rect[0]
                     width = x_length
                     #debugging_info = "exact y_pos: " + str(y_position_here + self.rect[1] + 21) + " top border: +" + str(top_border_length) + " bottom border: -" + str(bottom_border_length)
-                    self.positional_database["non_bidding_mode"][(left_border,top_border,width,height)] = {"linkto":provider[i],"text":provider[i].name + ": " + "%.5g" % prices[i],"figure":((left_border,y_position_here + self.graph_rect[1]),(left_border + width,y_position_here + self.graph_rect[1]))}
+                    self.positional_database["non_bidding_mode"][(left_border,top_border,width,height)] = {"linkto":provider[i],"text":provider[i].name + ": " + primitives.nicefy_numbers(prices[i]),"figure":((left_border,y_position_here + self.graph_rect[1]),(left_border + width,y_position_here + self.graph_rect[1]))}
 
 
                 #making x-axis scale
@@ -2243,7 +2253,7 @@ class base_and_firm_market_window():
                         break
                     x_pos_here = int((self.graph_rect[3]) * math.log10(x_mark_here) / math.log10(xlim[1]) )
                     pygame.draw.line(market_analysis_surface,(0,0,0),(x_pos_here,x_axis_vertical_position + mark_height/2),(x_pos_here,x_axis_vertical_position - mark_height/2))
-                    x_mark_label_text = "10^"+str(int(math.log10(x_mark_here)))
+                    x_mark_label_text = primitives.nicefy_numbers(x_mark_here)
                     if i == 0:
                         x_mark_label_text = x_mark_label_text + " units"
                     x_mark_label = global_variables.standard_font.render(x_mark_label_text,True,(0,0,0))
@@ -2320,7 +2330,7 @@ class base_and_firm_market_window():
                 left_border = x_position + self.graph_rect[0] - dot_size
                 top_border = y_position + self.graph_rect[1] - dot_size
                 if seller[i] is not None and buyer[i] is not None: #can happen with the empty startup transactions
-                    self.positional_database["non_bidding_mode"][(left_border,top_border,2*dot_size,2*dot_size)] = {"linkto":seller[i],"text":str(seller[i].name) + " to " + str(buyer[i].name) + ": 10^" + str(dot_size) + "units","figure":((dot_size),(x_position + self.graph_rect[0],y_position + self.graph_rect[1])),"debug":left_border- dot_size}
+                    self.positional_database["non_bidding_mode"][(left_border,top_border,2*dot_size,2*dot_size)] = {"linkto":seller[i],"text":str(seller[i].name) + " to " + str(buyer[i].name) + ": " + primitives.nicefy_numbers(quantity[i]) + " units","figure":((dot_size),(x_position + self.graph_rect[0],y_position + self.graph_rect[1])),"debug":left_border- dot_size}
 
             if len(price) != len(quantity) or len(price) != len(dates):
                 raise Exception("DEBUGGING WARNING: There is a problem with unequal length in the markethistoryplotter")
@@ -2404,7 +2414,30 @@ class base_and_firm_market_window():
 
 
         quantity_max = int(quantity_max)
-        quantity_range = (0,quantity_max)
+
+        def current_sell_stock_dict():
+            if isinstance(firm_selected, company.merchant):
+                if self.base_selected_for_merchant == firm_selected.from_location:
+                    return firm_selected.from_stock_dict
+                if self.base_selected_for_merchant == firm_selected.to_location:
+                    return firm_selected.to_stock_dict
+                raise Exception("The self.base_selected_for_merchant " + str(self.base_selected_for_merchant.name) + " was neither in the from or the to_location of " + str(firm_selected.name))
+            return firm_selected.stock_dict
+
+        def current_quantity_cap(selected_direction=None):
+            selected_direction = selected_direction or direction
+            sell_stock = current_sell_stock_dict() if selected_direction == "sell" else None
+            return quantity_cap_for_direction(selected_direction, resource, sell_stock, quantity_max)
+
+        def report_nothing_to_sell():
+            unit = self.solar_system_object_link.trade_resources[resource]["unit_of_measurment"]
+            print_dict = {"text":firm_selected.name + " has no " + unit + " of " + resource + " to sell.","type":"general gameplay info"}
+            self.solar_system_object_link.messages.append(print_dict)
+
+        if direction == "sell" and current_quantity_cap("sell") <= 0:
+            report_nothing_to_sell()
+
+        quantity_range = (0,current_quantity_cap(direction))
 
         if initial_quantity is not None:
             pre_selected_quantity = int(initial_quantity)
@@ -2445,7 +2478,7 @@ class base_and_firm_market_window():
         pre_selected_price_slider = market_price_to_slider(initial_price, highest_buy_offer, lowest_sell_offer, price_fallback_max)
 
 
-#        print "initial_quantity: " + str(initial_quantity)
+#        print "initial_quantity: " + primitives.nicefy_numbers(initial_quantity)
 #        print "quantity_range: " + str(quantity_range)
 #        print "initial_price: " + str(initial_price)
 #        print "price_range: " + str(price_range)
@@ -2460,7 +2493,7 @@ class base_and_firm_market_window():
         fixed_price_text = global_variables.standard_font.render("Set the price:",True,(0,0,0))
         self.action_surface.blit(fixed_price_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
         price_rect = pygame.Rect(self.graph_rect[0] + fixed_price_text.get_width(), self.graph_rect[1] + height_to_draw,self.graph_rect[2] - fixed_price_text.get_width(),fixed_price_text.get_height())
-        variable_price_text = global_variables.standard_font.render(str(int(initial_price)),True,(0,0,0))
+        variable_price_text = global_variables.standard_font.render(primitives.nicefy_numbers(initial_price),True,(0,0,0))
         self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
 
         price_bar_left = self.graph_rect[0] + 10
@@ -2473,7 +2506,7 @@ class base_and_firm_market_window():
         def price_execute(label, price_rect):
             pygame.draw.rect(self.action_surface,(212,212,212),price_rect)
             price = market_price_from_slider(self.price_bar.position, highest_buy_offer, lowest_sell_offer, price_fallback_max)
-            variable_price_text = global_variables.standard_font.render(str(price),True,(0,0,0))
+            variable_price_text = global_variables.standard_font.render(primitives.nicefy_numbers(price),True,(0,0,0))
             self.action_surface.blit(variable_price_text, (price_rect[0], price_rect[1]))
             pygame.display.update(price_rect)
 
@@ -2494,7 +2527,7 @@ class base_and_firm_market_window():
         fixed_quantity_text = global_variables.standard_font.render("Set the quantity:",True,(0,0,0))
         self.action_surface.blit(fixed_quantity_text, (self.graph_rect[0], self.graph_rect[1] + height_to_draw))
         quantity_rect = pygame.Rect(self.graph_rect[0] + fixed_quantity_text.get_width(), self.graph_rect[1] + height_to_draw,self.graph_rect[2] - fixed_quantity_text.get_width(),fixed_quantity_text.get_height())
-        variable_quantity_text = global_variables.standard_font.render(str(initial_quantity),True,(0,0,0))
+        variable_quantity_text = global_variables.standard_font.render(primitives.nicefy_numbers(min(initial_quantity, current_quantity_cap(direction))),True,(0,0,0))
         self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
 
         def current_quantity_anchor():
@@ -2506,14 +2539,18 @@ class base_and_firm_market_window():
 
         def quantity_execute(label, quantity_rect):
             pygame.draw.rect(self.action_surface,(212,212,212),quantity_rect)
-            quantity = quantity_from_slider(self.quantity_bar.position, current_quantity_anchor(), quantity_max)
-            variable_quantity_text = global_variables.standard_font.render(str(quantity),True,(0,0,0))
+            selected_direction = direction
+            if hasattr(self, "direction_buttons"):
+                selected_direction = self.direction_buttons.selected
+            quantity_cap = current_quantity_cap(selected_direction)
+            quantity = quantity_from_slider(self.quantity_bar.position, current_quantity_anchor(), quantity_max, max_quantity=quantity_cap)
+            variable_quantity_text = global_variables.standard_font.render(primitives.nicefy_numbers(quantity),True,(0,0,0))
             self.action_surface.blit(variable_quantity_text, (quantity_rect[0], quantity_rect[1]))
             pygame.display.update(quantity_rect)
 
         quantity_slider_range = (0, SLIDER_MAX)
         self.manual_bid_quantity_fallback_max = quantity_max
-        pre_selected_quantity_slider = quantity_to_slider(pre_selected_quantity, current_quantity_anchor(), quantity_max)
+        pre_selected_quantity_slider = quantity_to_slider(pre_selected_quantity, current_quantity_anchor(), quantity_max, max_quantity=current_quantity_cap(direction))
         self.quantity_bar = gui_components.hscrollbar(self.action_surface,
                                   quantity_execute,
                                   (self.graph_rect[0] + 10, self.graph_rect[1] + height_to_draw + 20),
@@ -2536,6 +2573,8 @@ class base_and_firm_market_window():
 #            print label
 #            print function_parameter
             if hasattr(self, "quantity_bar"):
+                if self.direction_buttons.selected == "sell" and current_quantity_cap("sell") <= 0:
+                    report_nothing_to_sell()
                 quantity_execute(self.quantity_bar.position, quantity_rect)
 
 
@@ -2602,14 +2641,26 @@ class base_and_firm_market_window():
         quantity_fallback_max = max(1, getattr(self, "manual_bid_quantity_fallback_max", self.quantity_bar.range_of_values[1]))
         quantity_anchor = quantity_anchor_for_direction(firm_selected.input_output_dict, direction, resource)
         price = market_price_from_slider(self.price_bar.position, highest_buy_offer, lowest_sell_offer, fallback_max)
-        quantity = quantity_from_slider(self.quantity_bar.position, quantity_anchor, quantity_fallback_max)
+        quantity_stock_dict = None
+        if direction == "sell":
+            if isinstance(firm_selected, company.merchant):
+                if market == firm_selected.from_location.market:
+                    quantity_stock_dict = firm_selected.from_stock_dict
+                elif market == firm_selected.to_location.market:
+                    quantity_stock_dict = firm_selected.to_stock_dict
+                else:
+                    raise Exception("Unknown direction for merchant type firm")
+            else:
+                quantity_stock_dict = firm_selected.stock_dict
+        quantity_cap = quantity_cap_for_direction(direction, resource, quantity_stock_dict, quantity_fallback_max)
+        quantity = quantity_from_slider(self.quantity_bar.position, quantity_anchor, quantity_fallback_max, max_quantity=quantity_cap if direction == "sell" else None)
 
         #determining unit
         unit = self.solar_system_object_link.trade_resources[resource]["unit_of_measurment"]
 
         if direction == "buy":
             if price * quantity > firm_selected.owner.capital:
-                print_dict = {"text":"Too low capital to bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
+                print_dict = {"text":"Too low capital to bid for " + primitives.nicefy_numbers(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + primitives.nicefy_numbers(price),"type":"general gameplay info"}
                 self.solar_system_object_link.messages.append(print_dict)
                 return
             own_offer = {"resource":resource,"price":float(price),"buyer":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
@@ -2623,8 +2674,12 @@ class base_and_firm_market_window():
                     raise Exception("Unknown direction for merchant type firm")
             else:
                 quantity_available = firm_selected.stock_dict[resource]
+            if quantity_available <= 0:
+                print_dict = {"text":firm_selected.name + " has no " + str(unit) + " of " + str(resource) + " to sell.","type":"general gameplay info"}
+                self.solar_system_object_link.messages.append(print_dict)
+                return
             if quantity > quantity_available:
-                print_dict = {"text":firm_selected.name + " only has " + str(firm_selected.stock_dict[resource]) + " " + str(unit) + " and can't offer " + str(quantity) + " for sale","type":"general gameplay info"}
+                print_dict = {"text":firm_selected.name + " only has " + primitives.nicefy_numbers(quantity_available) + " " + str(unit) + " and can't offer " + primitives.nicefy_numbers(quantity) + " for sale","type":"general gameplay info"}
                 self.solar_system_object_link.messages.append(print_dict)
                 return
             own_offer = {"resource":resource,"price":float(price),"seller":firm_selected,"name":firm_selected.name,"quantity":int(quantity),"date":self.solar_system_object_link.current_date}
@@ -2633,7 +2688,7 @@ class base_and_firm_market_window():
 
         firm_selected.make_market_bid(market,own_offer)
 
-        print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + str(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + str(price),"type":"general gameplay info"}
+        print_dict = {"text":firm_selected.name + " succesfully made a " + str(direction) + " bid for " + primitives.nicefy_numbers(quantity) + " " + str(unit) + " of " + str(resource) + " at price " + primitives.nicefy_numbers(price),"type":"general gameplay info"}
         self.solar_system_object_link.messages.append(print_dict)
         self.graph_selected = "market bids"
         return "clear"
@@ -2695,7 +2750,7 @@ class base_and_firm_market_window():
                                 if price < 0:
                                     price = 0
                                     if self.solar_system_object_link.message_printing["debugging"]:
-                                        print_dict = {"text":"Changed price from " + str(price) + " to 0","type":"debugging"}
+                                        print_dict = {"text":"Changed price from " + primitives.nicefy_numbers(price) + " to 0","type":"debugging"}
                                         self.solar_system_object_link.messages.append(print_dict)
 
                             else:
@@ -2714,7 +2769,7 @@ class base_and_firm_market_window():
                             else:
                                 quantity = None
 
-#                            print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + str(price) + " and qt: " + str(quantity)
+#                            print "click at " + str((x_relative_position,y_relative_position)) + " gives price: " + primitives.nicefy_numbers(price) + " and qt: " + primitives.nicefy_numbers(quantity)
                             self.make_manual_bid(price,quantity)
 
 
@@ -3153,14 +3208,15 @@ class base_build_menu():
         self.action_surface.blit(text, (self.rect[0] + 90, self.rect[1] + 150))
 
 
+        firm_size_label_x = self.rect[0] + 45
         small_label = global_variables.standard_font.render("Small",True,(0,0,0))
-        self.action_surface.blit(small_label, (self.rect[0] + 40, self.rect[1] + 40))
+        self.action_surface.blit(small_label, (firm_size_label_x, self.rect[1] + 40))
 
-        medium_label = global_variables.standard_font.render("Medium",True,(0,0,0))
-        self.action_surface.blit(medium_label, (self.rect[0] + 40, self.rect[1] + int(self.rect[3] / 2)))
+        medium_label = global_variables.standard_font.render("Mid",True,(0,0,0))
+        self.action_surface.blit(medium_label, (firm_size_label_x, self.rect[1] + int(self.rect[3] / 2)))
 
         large_label = global_variables.standard_font.render("Large",True,(0,0,0))
-        self.action_surface.blit(large_label, (self.rect[0] + 40, self.rect[1] + self.rect[3]-  50))
+        self.action_surface.blit(large_label, (firm_size_label_x, self.rect[1] + self.rect[3]-  50))
 
 
         def execute(label, technology):
@@ -3173,7 +3229,7 @@ class base_build_menu():
 
             selected_size = firm_size_from_slider(self.slider.position, max_size)
             self.selected_firm_size = selected_size
-            size_info = global_variables.standard_font_small.render("size: " + str(selected_size),True,(0,0,0))
+            size_info = global_variables.standard_font_small.render("size: " + primitives.nicefy_numbers(selected_size),True,(0,0,0))
             self.action_surface.blit(size_info, (self.rect[0] + 130, self.rect[1] + 170))
             lineno = 0
             for put in ["input","output"]:

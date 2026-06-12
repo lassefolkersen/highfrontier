@@ -33,7 +33,7 @@ class _FakePlanet:
         self.gas_changes.append((gas, ton))
 
 
-def _production_firm(byproducts, planet):
+def _production_firm(byproducts, planet, outputs=None):
     sol = _FakeSolarSystem()
     firm = company.firm.__new__(company.firm)
     firm.name = "test producer"
@@ -44,10 +44,12 @@ def _production_firm(byproducts, planet):
     firm.stock_dict = {}
     firm.input_output_dict = {
         "input": {},
-        "output": {},
+        "output": outputs or {},
         "timeframe": 30,
         "byproducts": byproducts,
     }
+    for resource in firm.input_output_dict["output"]:
+        firm.stock_dict[resource] = 0
     return firm, sol
 
 
@@ -66,3 +68,12 @@ def test_atmospheric_byproduct_still_changes_planet_atmosphere():
     firm.execute_stock_change(sol.start_date + datetime.timedelta(days=60))
 
     assert planet.gas_changes == [("carbondioxide", 20)]
+
+
+def test_non_trade_effect_output_does_not_need_trade_resource_or_stockpile():
+    firm, sol = _production_firm({}, _FakePlanet(), outputs={"terraforming": 10})
+
+    firm.execute_stock_change(sol.start_date + datetime.timedelta(days=60))
+
+    assert firm.last_consumption_date == sol.start_date + datetime.timedelta(days=60)
+    assert "terraforming" not in firm.stock_dict

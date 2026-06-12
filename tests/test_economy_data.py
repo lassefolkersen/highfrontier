@@ -10,7 +10,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 # Technology input/output entries should normally name stockpiled/traded
 # resources. Keep explicit non-stockpiled gameplay effects here if technology
 # data ever needs an effect output that should not be listed in trade resources.
-NON_STOCKPILED_TECHNOLOGY_EFFECTS = set()
+NON_STOCKPILED_TECHNOLOGY_EFFECTS = {"terraforming"}
+
+
+def test_terraforming_is_not_a_trade_resource_product():
+    assert "terraforming" not in _trade_resources()
 
 
 def _trade_resources():

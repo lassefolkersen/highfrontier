@@ -1281,10 +1281,17 @@ class firm():
 				for input_resource in new_stock_level:
 					self.stock_dict[input_resource] = new_stock_level[input_resource]
 				for output_resource in self.input_output_dict["output"]:
+					# Some technology outputs are non-stockpiled gameplay effects
+					# (for example terraforming). Until they have explicit effect
+					# handling, they should not appear as market products or crash
+					# production by indexing trade_resources/stock_dict.
+					if output_resource not in self.solar_system_object_link.trade_resources:
+						self.stock_dict.pop(output_resource, None)
+						continue
 					if not self.solar_system_object_link.trade_resources[output_resource]["storable"]:
 						self.stock_dict[output_resource] = 0
 
-					self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict[output_resource]
+					self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict.get(output_resource, 0)
 
 				#adding atmospheric byproducts to the atmosphere. Some byproducts, such as
 				#radioactive waste, are non-atmospheric effects until the game models them

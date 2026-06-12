@@ -192,9 +192,34 @@ def quantity_anchor_for_direction(input_output_dict, direction, resource):
     return float(value)
 
 
-def quantity_from_slider(position, anchor_quantity=None, fallback_max=0):
+def quantity_cap_for_direction(direction, resource, stock_dict=None, buy_fallback_max=0):
+    """Return the hard quantity cap for a manual bid direction.
+
+    Sell orders are constrained by current stock. Buy orders use the existing
+    fallback range because they are constrained later by capital/validation.
+    """
+    if direction == "sell":
+        try:
+            return max(0, int(stock_dict.get(resource, 0)))
+        except AttributeError:
+            return 0
+    return max(0, int(buy_fallback_max or 0))
+
+
+def _cap_quantity(value, max_quantity):
+    if max_quantity is None:
+        return value
+    try:
+        cap = max(0.0, float(max_quantity))
+    except (TypeError, ValueError):
+        return value
+    return _clamp(value, 0.0, cap)
+
+
+def quantity_from_slider(position, anchor_quantity=None, fallback_max=0, max_quantity=None):
     if not _valid_positive(anchor_quantity):
-        return int(round(_linear_from_slider(position, fallback_max)))
+        value = _linear_from_slider(position, fallback_max)
+        return int(round(_cap_quantity(value, max_quantity)))
 
     anchor = float(anchor_quantity)
     high_anchor_quantity = anchor * 10.0
@@ -207,10 +232,21 @@ def quantity_from_slider(position, anchor_quantity=None, fallback_max=0):
         value = anchor + (high_anchor_quantity - anchor) * ratio
     else:
         value = _high_edge_value(position, high_anchor_quantity, maximum_quantity)
-    return int(round(max(0.0, value)))
+    return int(round(_cap_quantity(max(0.0, value), max_quantity)))
 
 
-def quantity_to_slider(quantity, anchor_quantity=None, fallback_max=0):
+def quantity_to_slider(quantity, anchor_quantity=None, fallback_max=0, max_quantity=None):
+    if max_quantity is not None:
+        try:
+            cap = max(0.0, float(max_quantity))
+            if cap <= 0:
+                return SLIDER_MIN
+            if float(quantity) >= cap:
+                return SLIDER_MAX
+            quantity = _clamp(float(quantity), 0.0, cap)
+        except (TypeError, ValueError):
+            pass
+
     if not _valid_positive(anchor_quantity):
         return _linear_to_slider(quantity, fallback_max)
 
