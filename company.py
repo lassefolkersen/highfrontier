@@ -1286,12 +1286,17 @@ class firm():
 
 					self.stock_dict[output_resource] = self.input_output_dict["output"][output_resource] * number_of_rounds + self.stock_dict[output_resource]
 
-				#adding byproducts to the atmosphere
+				#adding atmospheric byproducts to the atmosphere. Some byproducts, such as
+				#radioactive waste, are non-atmospheric effects until the game models them
+				#explicitly; they must not crash the simulation thread.
 				for byproduct in self.input_output_dict["byproducts"]:
-					self.location.home_planet.change_gas_in_atmosphere(byproduct,self.input_output_dict["byproducts"][byproduct] * number_of_rounds)
-					if self.owner == self.solar_system_object_link.current_player:
-						print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(self.input_output_dict["byproducts"][byproduct] * number_of_rounds) + " units on " + str(self.location.home_planet.name),"type":"climate"}
-						self.solar_system_object_link.messages.append(print_dict)
+					byproduct_amount = self.input_output_dict["byproducts"][byproduct] * number_of_rounds
+					home_planet = self.location.home_planet
+					if str("athmospheric_" + byproduct) in list(getattr(home_planet, "planet_data", {}).keys()):
+						home_planet.change_gas_in_atmosphere(byproduct, byproduct_amount)
+						if self.owner == self.solar_system_object_link.current_player:
+							print_dict = {"text":"Because of " + self.name + " " + byproduct + " changed with " + str(byproduct_amount) + " units on " + str(home_planet.name),"type":"climate"}
+							self.solar_system_object_link.messages.append(print_dict)
 
 				for resource in self.input_output_dict["output"]:
 					if resource in self.solar_system_object_link.mineral_resources:
