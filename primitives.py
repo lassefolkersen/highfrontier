@@ -45,8 +45,9 @@ def make_linear_x_axis(surface,frame_size,xlim,solar_system_object_link,unit="")
             tick_mark_rendered_value_size = global_variables.standard_font.size(str(tick_mark_value))
         else:
             tick_mark_value = xlim[1] - ((xlim[1]-xlim[0]) * (i/float(tick_marks-1)))
-            tick_mark_rendered_value = global_variables.standard_font.render("%.3g" %tick_mark_value,True,(0,0,0))
-            tick_mark_rendered_value_size = global_variables.standard_font.size("%.3g" %tick_mark_value)
+            tick_mark_label = nicefy_numbers(tick_mark_value)
+            tick_mark_rendered_value = global_variables.standard_font.render(tick_mark_label,True,(0,0,0))
+            tick_mark_rendered_value_size = global_variables.standard_font.size(tick_mark_label)
 
         pygame.draw.line(surface,(0,0,0),(tick_mark_placement,size[1]-frame_size-tick_mark_width),(tick_mark_placement,size[1]-frame_size+tick_mark_width))
         x_correction = 0
@@ -90,8 +91,9 @@ def make_linear_y_axis(surface,frame_size,ylim,solar_system_object_link, unit=""
             tick_mark_rendered_value_size = global_variables.standard_font.size(str(tick_mark_value))
         else:
             tick_mark_value = ylim[1] - ((ylim[1]-ylim[0]) * (i/float(tick_marks-1)))
-            tick_mark_rendered_value = global_variables.standard_font.render("%.3g" %tick_mark_value,True,(0,0,0))
-            tick_mark_rendered_value_size = global_variables.standard_font.size("%.3g" %tick_mark_value)
+            tick_mark_label = nicefy_numbers(tick_mark_value)
+            tick_mark_rendered_value = global_variables.standard_font.render(tick_mark_label,True,(0,0,0))
+            tick_mark_rendered_value_size = global_variables.standard_font.size(tick_mark_label)
 
         pygame.draw.line(surface,(0,0,0),(frame_size-tick_mark_width,tick_mark_placement),(frame_size+tick_mark_width,tick_mark_placement))
 
@@ -410,31 +412,42 @@ def listify_tabular_data(data,size,manager,sort_by="rownames",column_order=None,
 
 
 
+def _trim_compact_number(value):
+    if value >= 100 or abs(value - round(value)) < 0.05:
+        text = str(int(round(value)))
+    elif value >= 10:
+        text = f"{value:.1f}"
+    else:
+        text = f"{value:.2f}"
+    return text.rstrip("0").rstrip(".")
+
+
 def nicefy_numbers(number):
+    """Return a compact human-readable number without scientific notation.
+
+    Uses game-style suffixes: K, M, B, T, then Qa/Qi/Sx/Sp/Oc/No/Dc.
     """
-    Takes a number and returns a string that has had added billion or trillion or whatever
-    """
-    if not (isinstance(number,int) or isinstance(number,int) or isinstance(number,float)):
+    if not isinstance(number, (int, float)):
         raise Exception("The received number was not of required class int, long or float")
 
-    if isinstance(number,float):
-        if abs(number) > 1000:
-            number = int(number)
-        else:
-            number = "%.4g" % number
+    if number == 0:
+        return "0"
 
-    if isinstance(number,int) or isinstance(number,int):
-        if abs(number) > 1000*1000*1000*1000*1000*3:
-            number = "%.4g" % number
-        elif abs(number) > 1000*1000*1000*1000*3:
-            number = str(int(number / (1000*1000*1000*1000) )) + " trillion"
-        elif abs(number) > 1000*1000*1000*3:
-            number = str(int(number / (1000*1000*1000) )) + " billion"
-        elif abs(number) > 1000*1000*3:
-            number = str(int(number / (1000*1000) )) + " million"
-        elif abs(number) > 1000*3:
-            number = str(int(number / 1000)) + " thousand"
-        else:
-            number = str(number)
+    sign = "-" if number < 0 else ""
+    value = abs(float(number))
+    suffixes = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
+    suffix_index = 0
+    while value >= 1000 and suffix_index < len(suffixes) - 1:
+        value /= 1000.0
+        suffix_index += 1
 
-    return number
+    if suffix_index == 0:
+        if isinstance(number, int) or value >= 100:
+            text = str(int(round(value)))
+        elif value >= 1:
+            text = f"{value:.2f}".rstrip("0").rstrip(".")
+        else:
+            text = f"{value:.6f}".rstrip("0").rstrip(".")
+    else:
+        text = _trim_compact_number(value) + suffixes[suffix_index]
+    return sign + text

@@ -10,6 +10,7 @@ from bidding_slider_scaling import (
     market_price_from_slider,
     market_price_to_slider,
     quantity_anchor_for_direction,
+    quantity_cap_for_direction,
     quantity_from_slider,
     quantity_to_slider,
 )
@@ -106,3 +107,17 @@ def test_quantity_anchor_for_direction_uses_inputs_for_buy_and_outputs_for_sell(
     assert quantity_anchor_for_direction(process, "sell", "education") == 123
     assert quantity_anchor_for_direction(process, "buy", "education") is None
     assert quantity_anchor_for_direction(process, "sell", "labor") is None
+
+
+def test_sell_quantity_mapping_can_be_capped_by_available_stock():
+    assert quantity_from_slider(SLIDER_MAX, 123, fallback_max=10, max_quantity=10) == 10
+    assert quantity_from_slider(SLIDER_HIGH_ANCHOR, 123, fallback_max=0, max_quantity=0) == 0
+    assert quantity_to_slider(999, 123, fallback_max=10, max_quantity=10) == SLIDER_MAX
+
+
+def test_quantity_cap_for_direction_uses_stock_for_sell_and_fallback_for_buy():
+    stock = {"labor": 0, "education": 12}
+
+    assert quantity_cap_for_direction("sell", "education", stock, buy_fallback_max=500) == 12
+    assert quantity_cap_for_direction("sell", "labor", stock, buy_fallback_max=500) == 0
+    assert quantity_cap_for_direction("buy", "labor", stock, buy_fallback_max=500) == 500

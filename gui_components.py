@@ -882,28 +882,8 @@ class fast_list():
                         else:
                             data_point_here = data[rowname][column_entry]
 
-                        if isinstance(data_point_here,int) or isinstance(data_point_here,int) or isinstance(data_point_here,float):
-                            if isinstance(data_point_here,float):
-                                if abs(data_point_here) > 1000:
-                                    data_point_here = int(data_point_here)
-                                else:
-                                    data_point_here = "%.4g" % data_point_here
-
-                            if isinstance(data_point_here,int) or isinstance(data_point_here,int):
-                                if abs(data_point_here) > 1000*1000*1000*1000*1000*3:
-                                    data_point_here = "%.4g" % data_point_here
-                                elif abs(data_point_here) > 1000*1000*1000*1000*3:
-                                    data_point_here = str(int(data_point_here / (1000*1000*1000*1000) )) + " trillion"
-                                elif abs(data_point_here) > 1000*1000*1000*3:
-                                    data_point_here = str(int(data_point_here / (1000*1000*1000) )) + " billion"
-                                elif abs(data_point_here) > 1000*1000*3:
-                                    data_point_here = str(int(data_point_here / (1000*1000) )) + " million"
-                                elif abs(data_point_here) > 1000*3:
-                                    data_point_here = str(int(data_point_here / 1000)) + " thousand"
-                                else:
-                                    data_point_here = str(data_point_here)
-
-                            #data_point_here = "%.3g" % data_point_here
+                        if isinstance(data_point_here, (int, float)):
+                            data_point_here = primitives.nicefy_numbers(data_point_here)
                         else:
                             data_point_here = str(data_point_here)
 
